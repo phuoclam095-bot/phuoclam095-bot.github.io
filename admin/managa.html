@@ -333,11 +333,9 @@
         function renderAlbums(albums) { const grid = document.getElementById('albumGrid'); grid.innerHTML = ''; albums.forEach(a => grid.appendChild(createAlbumCard(a))); document.getElementById('albumCount').innerText = albums.length; }
 
        function createAlbumCard(album) {
-            const card = document.createElement('div'); 
-            
-            // 🌟 Bóc tách chuẩn xác ID của Google Drive (hỗ trợ cả các tên biến khác nhau từ server)
-            const id = album.folder_id || album.folderId || album.id; 
-            card.className = 'album-card-vip'; 
+            const card = document.createElement('div');  
+            const id = album.folder_id || album.folderId || album.id;  
+            card.className = 'album-card-vip';  
             card.id = `card-${id}`;
             
             const img = album.thumbnailFileId ? `https://drive.google.com/thumbnail?id=${album.thumbnailFileId}&sz=w600` : 'https://images.unsplash.com/photo-1542838132-e0c19b48b940?auto=format&fit=crop&w=600&q=80';
@@ -345,32 +343,42 @@
             const limitVal = album.limit_photos ?? album.limitPhotos ?? 0;
             const downloadVal = album.allow_download ?? album.allowDownload ?? false;
             const commentVal = album.allow_comment ?? album.allowComment ?? false;
-            const albumTitle = (album.folderName || album.name || 'VIP Album').replace(/'/g, "\\'");
             
-            // 🌟 Lấy chuẩn xác tên định danh studio từ LocalStorage (ưu tiên của admin) hoặc từ dữ liệu album
-            const sSlug = localStorage.getItem('admin_studio_slug') || album.studio_slug || album.studioSlug || 'studio';
-
-            // 🌟 Lấy slug của album (hỗ trợ cả album_slug hoặc tự suy ra từ tên)
-            const aSlug = album.album_slug || album.albumSlug || createSlug(album.folderName || album.name || '');
+            // 🌟 Khai báo folderName trước tiên
+            const folderName = album.folderName || album.name || 'VIP Album';
+            const albumTitle = folderName.replace(/'/g, "\\'");
+            let rawStudio = localStorage.getItem('admin_studio_slug') || album.studio_slug || album.studioSlug || 'studio';
+            const sSlug = rawStudio.replace(/-+/g, '-').replace(/^-|-$/g, '') || 'studio';
             
-            // 🌟 Cấu hình lại link client theo đúng chuẩn URL thân thiện mới
+            // Tạo slug không có dấu gạch ngang (viết liền)
+            const aSlug = album.album_slug || album.albumSlug || createSlug(folderName);
+            
+            // Link client dạng URL thân thiện
             const clientPageUrl = `${PATHS.CLIENT}${sSlug}/${aSlug}`;
 
-
-            card.innerHTML = `<div class="card-img-header" style="background-image: url('${img}');"><div class="album-vip-title">${album.folderName || album.name || 'VIP Album'}</div></div>
+            card.innerHTML = `<div class="card-img-header" style="background-image: url('${img}');"><div class="album-vip-title">${folderName}</div></div>
                 <div class="stats-grid">
-                    <div class="stat-pill" onclick="window.open('${clientPageUrl}', '_blank')"><span class="stat-val">${album.selected_photos || 0}</span><span class="stat-lab">Chọn</span></div>
+                    <div class="stat-pill" onclick="window.open('${clientPageUrl}?mode=selected', '_blank')"><span class="stat-val">${album.selected_photos || 0}</span><span class="stat-lab">Chọn</span></div>
                     <div class="stat-pill"><span class="stat-val text-white">${album.total_photos || 0}</span><span class="stat-lab">Tổng</span></div>
                     <div class="stat-pill" onclick="openNoteModal('${id}', '${albumTitle}')"><span class="stat-val text-info">${album.comments || 0}</span><span class="stat-lab">Note</span></div>
                 </div>
                 <div class="vip-actions-grid">
                     <button class="btn-vip v-view" onclick="window.open('${clientPageUrl}', '_blank')"><i class="fas fa-eye"></i></button>
                     <button class="btn-vip v-drive" onclick="window.open('https://drive.google.com/drive/folders/${id}', '_blank')"><i class="fab fa-google-drive"></i></button>
-                    <button class="btn-vip v-export" onclick="handleExportClick('${id}', '${albumTitle}')"><i class="fas fa-file-export"></i></button> 
+                    <button class="btn-vip v-export" onclick="handleExportClick('${id}', '${albumTitle}')"><i class="fas fa-file-export"></i></button>  
                     <button class="btn-vip" style="background: #8b5cf6; grid-column: span 3;" onclick="openSettingsModal('${id}', ${limitVal}, ${downloadVal}, ${commentVal})"><i class="fas fa-sliders-h me-1"></i> Cài đặt cấu hình album</button>
                     <button class="btn-vip v-delete" onclick="deleteAlbum('${id}', '${albumTitle}')">Xóa album</button>
                 </div>`;
             return card;
+        }
+        function createSlug(str) {
+            if (!str) return 'album';
+            return str.toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[đĐ]/g, 'd')
+                .replace(/([^0-9a-z])/g, '') // Xóa sạch khoảng trắng và ký tự đặc biệt, viết liền không dấu không gạch ngang
+                .trim();
         }
        async function openNoteModal(folderId, albumName) {
             showToast("Đang tải ghi chú...");
