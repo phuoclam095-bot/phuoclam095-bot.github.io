@@ -9,8 +9,8 @@
         
         // Nếu đường dẫn có dạng /ten-studio/ten-album-slug
         if (pathSegments.length >= 2) {
-            const studioSlug = pathSegments[pathSegments.length - 2];
-            const albumSlug = pathSegments[pathSegments.length - 1];
+            let studioSlug = pathSegments[pathSegments.length - 2].replace(/[^0-9a-z]/g, '');
+            let albumSlug = pathSegments[pathSegments.length - 1].replace(/[^0-9a-z]/g, '');
             
             // 🌟 Chuyển hướng về client.html nhưng truyền tham số là album=... thay vì id=...
             window.location.replace(`/client.html?album=${albumSlug}&studio=${studioSlug}`);
