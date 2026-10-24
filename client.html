@@ -278,7 +278,6 @@
                 // 🌟 Đã bổ sung lại ${watermarkHTML} để hiển thị logo trên từng ô ảnh lưới
                 item.innerHTML = `
                     <img src="${getLink(p.id, 's400')}" loading="lazy">
-                    ${watermarkHTML}
                 `;
                 
                 item.onclick = () => { cur = i; syncGridUI(); };
