@@ -549,8 +549,8 @@
         }
 
         function createSlug(str) {
-            if (!str) return '';
-            str = str.toLowerCase();
+            if (!str) return 'album';
+            str = String(str).toLowerCase();
             str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
             str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
             str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
@@ -559,8 +559,8 @@
             str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
             str = str.replace(/đ/g, "d");
             
-            // Xóa sạch khoảng trắng và toàn bộ ký tự đặc biệt, ép viết liền sát nhau không dấu không gạch ngang
-            return str.replace(/[^0-9a-z]/g, '');
+            // Xóa sạch khoảng trắng và toàn bộ ký tự đặc biệt, ép viết liền không dấu không gạch ngang
+            return str.replace(/[^0-9a-z]/g, '') || 'album';
         }
         async function handleCreateAlbum() {
             const status = localStorage.getItem('admin_status');
