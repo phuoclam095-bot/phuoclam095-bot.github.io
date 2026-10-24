@@ -549,7 +549,7 @@
         }
 
         function createSlug(str) {
-            if (!str) return 'studio';
+            if (!str) return '';
             str = str.toLowerCase();
             str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
             str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
@@ -559,21 +559,8 @@
             str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
             str = str.replace(/đ/g, "d");
             
-            // Xóa sạch khoảng trắng và toàn bộ ký tự đặc biệt, ép viết liền không dấu không gạch ngang
-            return str.replace(/([^0-9a-z])/g, '').trim();
-        }
-        function createSlug(str) {
-            if (!str) return 'album';
-            str = str.toLowerCase();
-            str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
-            str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
-            str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
-            str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
-            str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
-            str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
-            str = str.replace(/đ/g, "d");
-            // Xóa ký tự đặc biệt, thay khoảng trắng và dấu cách thừa bằng dấu gạch ngang (-)
-            return str.replace(/([^0-9a-z])/g, '').trim();
+            // Xóa sạch khoảng trắng và toàn bộ ký tự đặc biệt, ép viết liền sát nhau không dấu không gạch ngang
+            return str.replace(/[^0-9a-z]/g, '');
         }
         async function handleCreateAlbum() {
             const status = localStorage.getItem('admin_status');
@@ -593,7 +580,8 @@
                 return;
             }
         
-            let studioSlug = localStorage.getItem('admin_studio_slug') || 'studio';
+            let rawStudio = localStorage.getItem('admin_studio_slug') || 'studio';
+            let studioSlug = rawStudio.replace(/[^0-9a-z]/g, '');
             let currentLogo = localStorage.getItem('studio_watermark_logo') || '';
             let isWatermarkChecked = document.getElementById('enableWatermark').checked;
         
