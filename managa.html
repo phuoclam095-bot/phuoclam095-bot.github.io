@@ -551,17 +551,20 @@
             new bootstrap.Modal(document.getElementById('settingsModal')).show();
         }
 
-        async function saveAlbumSettings() {
+       async function saveAlbumSettings() {
             const folderId = document.getElementById('editFolderId').value;
             const limitPhotos = parseInt(document.getElementById('editLimitPhotos').value) || 0;
             const download = document.getElementById('editAllowDownload').checked;
             const comment = document.getElementById('editAllowComment').checked;
-            const watermarkEnabled = document.getElementById('editWatermarkEnabled').checked;
+            
+            // 🌟 Kiểm tra kỹ xem đúng ID của công tắc watermark chưa
+            const watermarkEnabled = document.getElementById('editWatermarkEnabled').checked; 
             const watermarkLogo = editStoredLogoBase64;
             
+            console.log("Trạng thái công tắc gửi đi:", watermarkEnabled); // Bật F12 xem console log này là true hay false
+        
             showToast("Đang lưu cấu hình...");
             try {
-                // Gửi request lên n8n để cập nhật cài đặt bao gồm cả logo lên Supabase
                 const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/update-album-settings', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
