@@ -343,13 +343,12 @@
             const limitVal = album.limit_photos ?? album.limitPhotos ?? 0;
             const downloadVal = album.allow_download ?? album.allowDownload ?? false;
             const commentVal = album.allow_comment ?? album.allowComment ?? false;
-            let rawStudio = localStorage.getItem('admin_studio_slug') || album.studio_slug || album.studioSlug || 'studio';
-            const sSlug = rawStudio.replace(/-+/g, '-').replace(/^-|-$/g, '') || 'studio';
+            
             // 🌟 Khai báo folderName trước tiên
             const folderName = album.folderName || album.name || 'VIP Album';
             const albumTitle = folderName.replace(/'/g, "\\'");
-            
-            const sSlug = localStorage.getItem('admin_studio_slug') || album.studio_slug || album.studioSlug || 'studio';
+            let rawStudio = localStorage.getItem('admin_studio_slug') || album.studio_slug || album.studioSlug || 'studio';
+            const sSlug = rawStudio.replace(/-+/g, '-').replace(/^-|-$/g, '') || 'studio';
             
             // Tạo slug không có dấu gạch ngang (viết liền)
             const aSlug = album.album_slug || album.albumSlug || createSlug(folderName);
