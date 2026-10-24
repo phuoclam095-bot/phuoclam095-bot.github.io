@@ -615,7 +615,9 @@
                         settings: {
                             download: document.getElementById('allowDownload').checked,
                             comment: document.getElementById('allowComment').checked,
-                            limitPhotos: document.getElementById('limitPhotos').checked,
+                            limitPhotos: document.getElementById('limitPhotos').checked 
+                            ? (parseInt(document.getElementById('limitPhotosInput').value) || 0) 
+                            : 0,
                             watermarkEnabled: isWatermarkChecked,
                             watermarkLogo: currentLogo
                         }
