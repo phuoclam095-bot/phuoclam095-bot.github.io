@@ -343,7 +343,8 @@
             const limitVal = album.limit_photos ?? album.limitPhotos ?? 0;
             const downloadVal = album.allow_download ?? album.allowDownload ?? false;
             const commentVal = album.allow_comment ?? album.allowComment ?? false;
-            
+            const watermarkEnabledVal = album.watermark_enabled ?? album.watermarkEnabled ?? true;
+            const watermarkLogoVal = album.watermark_logo ?? album.watermarkLogo ?? '';
             // 🌟 Khai báo folderName trước tiên
             const folderName = album.folderName || album.name || 'VIP Album';
             const albumTitle = folderName.replace(/'/g, "\\'");
@@ -366,7 +367,7 @@
                     <button class="btn-vip v-view" onclick="window.open('${clientPageUrl}', '_blank')"><i class="fas fa-eye"></i></button>
                     <button class="btn-vip v-drive" onclick="window.open('https://drive.google.com/drive/folders/${id}', '_blank')"><i class="fab fa-google-drive"></i></button>
                     <button class="btn-vip v-export" onclick="handleExportClick('${id}', '${albumTitle}')"><i class="fas fa-file-export"></i></button>  
-                    <button class="btn-vip" style="background: #8b5cf6; grid-column: span 3;" onclick="openSettingsModal('${id}', ${limitVal}, ${downloadVal}, ${commentVal})"><i class="fas fa-sliders-h me-1"></i> Cài đặt cấu hình album</button>
+                    <button class="btn-vip" style="background: #8b5cf6; grid-column: span 3;" onclick="openSettingsModal('${id}', ${limitVal}, ${downloadVal}, ${commentVal}, ${watermarkEnabledVal}, '${watermarkLogoVal}')"><i class="fas fa-sliders-h me-1"></i> Cài đặt cấu hình album</button>
                     <button class="btn-vip v-delete" onclick="deleteAlbum('${id}', '${albumTitle}')">Xóa album</button>
                 </div>`;
             return card;
@@ -523,14 +524,29 @@
                 window.location.href = 'copy_local.html';
             }
         }
-        function openSettingsModal(folderId, limitVal, downloadVal, commentVal) {
+        function openSettingsModal(folderId, limitVal, downloadVal, commentVal, watermarkEnabledVal, watermarkLogoVal) {
             document.getElementById('editFolderId').value = folderId;
             document.getElementById('editLimitPhotos').value = (limitVal && limitVal > 0) ? limitVal : '';
             
-            // Xử lý chuẩn xác trạng thái bật/tắt của công tắc switch
+            // Trạng thái công tắc
             document.getElementById('editAllowDownload').checked = (downloadVal === true || downloadVal === 'true' || downloadVal === 1);
             document.getElementById('editAllowComment').checked = (commentVal === true || commentVal === 'true' || commentVal === 1);
             
+            // Xử lý cấu hình Watermark của riêng album này
+            const isWatermarkOn = (watermarkEnabledVal !== false && watermarkEnabledVal !== 'false' && watermarkEnabledVal !== 0);
+            document.getElementById('editWatermarkEnabled').checked = isWatermarkOn;
+            
+            editStoredLogoBase64 = watermarkLogoVal || '';
+            const preview = document.getElementById('editLogoPreview');
+            if (editStoredLogoBase64) {
+                preview.src = editStoredLogoBase64;
+                preview.style.display = 'block';
+            } else {
+                preview.src = '';
+                preview.style.display = 'none';
+            }
+            toggleEditWatermarkInput(); // Ẩn/hiện khung tải file tương ứng
+
             new bootstrap.Modal(document.getElementById('settingsModal')).show();
         }
 
@@ -539,26 +555,64 @@
             const limitPhotos = parseInt(document.getElementById('editLimitPhotos').value) || 0;
             const download = document.getElementById('editAllowDownload').checked;
             const comment = document.getElementById('editAllowComment').checked;
+            const watermarkEnabled = document.getElementById('editWatermarkEnabled').checked;
+            const watermarkLogo = editStoredLogoBase64;
             
             showToast("Đang lưu cấu hình...");
             try {
-                // Gửi request lên n8n để cập nhật bảng albums_data trên Supabase
+                // Gửi request lên n8n để cập nhật cài đặt bao gồm cả logo lên Supabase
                 const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/update-album-settings', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ folderId, limitPhotos, download, comment })
+                    body: JSON.stringify({ 
+                        folderId, 
+                        limitPhotos, 
+                        download, 
+                        comment, 
+                        watermarkEnabled, 
+                        watermarkLogo 
+                    })
                 });
                 const result = await res.json();
                 if(result.success) {
                     showToast("Cập nhật thành công!");
                     bootstrap.Modal.getInstance(document.getElementById('settingsModal')).hide();
-                    setTimeout(() => location.reload(), 1000); // Tải lại trang để cập nhật giao diện
+                    setTimeout(() => location.reload(), 1000); 
                 } else {
                     alert("Lưu thất bại!");
                 }
             } catch(e) {
                 alert("Lỗi kết nối máy chủ!");
             }
+        }
+        let editStoredLogoBase64 = ''; // Biến lưu tạm base64 logo đang sửa
+
+        // 🌟 Hàm ẩn/hiện ô chọn file logo khi cấu hình album
+        function toggleEditWatermarkInput() {
+            const isChecked = document.getElementById('editWatermarkEnabled').checked;
+            document.getElementById('editLogoUploadContainer').style.display = isChecked ? 'block' : 'none';
+        }
+
+        // 🌟 Hàm xử lý đọc file logo tải lên từ máy tính cho album cụ thể
+        function processEditLogoFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (file.size > 1024 * 1024) {
+                alert("Dung lượng file logo quá lớn! Vui lòng chọn ảnh dưới 1MB.");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                editStoredLogoBase64 = e.target.result;
+                const preview = document.getElementById('editLogoPreview');
+                if (preview) {
+                    preview.src = editStoredLogoBase64;
+                    preview.style.display = 'block';
+                }
+            };
+            reader.readAsDataURL(file);
         }
         async function init() { 
             updateHeaderUI(); 
@@ -598,10 +652,27 @@
                         <input class="form-check-input" type="checkbox" id="editAllowDownload">
                         <label class="form-check-label fw-bold text-white small" for="editAllowDownload">Cho phép khách tải ảnh gốc</label>
                     </div>
-                    <div class="form-check form-switch mb-4">
+                    <div class="form-check form-switch mb-3">
                         <input class="form-check-input" type="checkbox" id="editAllowComment">
                         <label class="form-check-label fw-bold text-white small" for="editAllowComment">Cho phép khách viết ghi chú / bình luận</label>
                     </div>
+
+                    <!-- 🌟 BỔ SUNG CÔNG TẮC ĐÓNG DẤU LOGO VÀ TẢI ẢNH LOGO -->
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="editWatermarkEnabled" onchange="toggleEditWatermarkInput()">
+                        <label class="form-check-label fw-bold text-white small" for="editWatermarkEnabled">Đóng dấu bản quyền Logo</label>
+                    </div>
+                    
+                    <div class="mb-3 mt-3 px-2" id="editLogoUploadContainer" style="display: none;">
+                        <label style="font-size: 0.7rem; color: var(--primary); font-weight: 900; margin-bottom: 5px; display: block; text-transform: uppercase;">Tải ảnh Logo từ máy tính</label>
+                        <input type="file" id="editStudioLogoFile" class="form-control bg-dark text-white border-secondary" accept="image/*" onchange="processEditLogoFile(event)" style="padding: 10px; font-size: 0.8rem;">
+                        <div class="form-text text-secondary" style="font-size: 0.7rem;">Khuyên dùng định dạng PNG nền trong suốt (Dung lượng <1MB).</div>
+                        <div class="mt-2">
+                            <img id="editLogoPreview" src="" style="max-height: 40px; display: none; border-radius: 4px; border: 1px solid var(--primary);">
+                        </div>
+                    </div>
+                    <!-- 🌟 KẾT THÚC PHẦN BỔ SUNG GIAO DIỆN LOGO -->
+
                     <button type="button" class="btn btn-copy-action w-100" onclick="saveAlbumSettings()">LƯU THAY ĐỔI</button>
                 </div>
             </div>
