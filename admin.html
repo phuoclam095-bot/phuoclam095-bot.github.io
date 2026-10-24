@@ -581,7 +581,7 @@
             }
         
             let rawStudio = localStorage.getItem('admin_studio_slug') || 'studio';
-            let studioSlug = rawStudio.replace(/[^0-9a-z]/g, '');
+            let studioSlug = rawStudio.replace(/[^0-9a-z]/g, '') || 'studio';
             let currentLogo = localStorage.getItem('studio_watermark_logo') || '';
             let isWatermarkChecked = document.getElementById('enableWatermark').checked;
         
@@ -655,10 +655,11 @@
                 localStorage.setItem('admin_avatar', decodeURIComponent(params.get('user_avatar') || ''));
                 localStorage.setItem('admin_status', params.get('user_status') || 'new');
                 localStorage.setItem('admin_expiry', params.get('user_expiry') || '0');
-                
-                // Nhận studio_slug từ hệ thống trả về (nếu có sẵn trong DB)
-                const sSlug = params.get('studio_slug');
-                if(sSlug) localStorage.setItem('admin_studio_slug', sSlug);
+                // Đảm bảo sau khi đăng nhập hoặc lưu cấu hình, giá trị này luôn trực chờ sẵn sàng
+                const sSlug = params.get('studio_slug') || localStorage.getItem('admin_studio_slug');
+                if(sSlug) {
+                    localStorage.setItem('admin_studio_slug', sSlug.replace(/[^0-9a-z]/g, ''));
+                }
         
                 updateUI(); 
                 window.history.replaceState({}, document.title, window.location.pathname);
