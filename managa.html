@@ -528,12 +528,12 @@
             document.getElementById('editFolderId').value = folderId;
             document.getElementById('editLimitPhotos').value = (limitVal && limitVal > 0) ? limitVal : '';
             
-            // Trạng thái công tắc
+            // Trạng thái các công tắc cũ
             document.getElementById('editAllowDownload').checked = (downloadVal === true || downloadVal === 'true' || downloadVal === 1);
             document.getElementById('editAllowComment').checked = (commentVal === true || commentVal === 'true' || commentVal === 1);
             
-            // Xử lý cấu hình Watermark của riêng album này
-            const isWatermarkOn = (watermarkEnabledVal !== false && watermarkEnabledVal !== 'false' && watermarkEnabledVal !== 0);
+            // 🌟 SỬA LẠI ĐOẠN NÀY: Bắt chuẩn xác trạng thái true/false từ database trả về
+            const isWatermarkOn = (watermarkEnabledVal === true || watermarkEnabledVal === 'true' || watermarkEnabledVal === 1);
             document.getElementById('editWatermarkEnabled').checked = isWatermarkOn;
             
             editStoredLogoBase64 = watermarkLogoVal || '';
@@ -545,7 +545,7 @@
                 preview.src = '';
                 preview.style.display = 'none';
             }
-            toggleEditWatermarkInput(); // Ẩn/hiện khung tải file tương ứng
+            toggleEditWatermarkInput(); // Tự động ẩn/hiện khung tải file theo đúng trạng thái bật/tắt
 
             new bootstrap.Modal(document.getElementById('settingsModal')).show();
         }
