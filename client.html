@@ -457,24 +457,26 @@
         }
      async function init() {
             try {
-                const res = await fetch(`${PATHS.GET}?id=${fid}&studio=${studioSlug || ''}`);
+                const urlParams = new URLSearchParams(window.location.search);
+                const albumSlug = urlParams.get('album');
+                const studioSlug = urlParams.get('studio');
+
+                const res = await fetch(`${PATHS.GET}?studio=${studioSlug}&album=${albumSlug}`);
                 const rawData = await res.json(); 
                 
-                // 🌟 LẤY ĐÚNG ĐỐI TƯỢNG BÊN TRONG MẢNG TRẢ VỀ TỪ N8N
                 const data = Array.isArray(rawData) ? rawData[0] : rawData;
                 
-                // Trích xuất cấu hình và danh sách ảnh chuẩn xác
                 photos = data.photos || [];
                 albumSettings = data.settings || albumSettings;
                 
-                // Lấy thông tin logo và trạng thái hiển thị
+                window.fid = data.folder_id || albumSlug; 
+                fid = window.fid;
+
                 const clientLogo = albumSettings.watermark_logo || '';
                 const isWatermarkOn = albumSettings.watermark_enabled !== false;
                 
-                // Tạo biến toàn cục để các hàm lưới và chi tiết cùng dùng chung
                 window.watermarkHTML = (isWatermarkOn && clientLogo) ? `<div class="watermark-overlay"><img src="${clientLogo}" alt="Logo"></div>` : '';
                 
-                // MỞ KHÓA TÍNH NĂNG NẾU ADMIN CHO PHÉP
                 if (albumSettings.download) document.getElementById('btnDownload').style.display = 'flex';
                 if (albumSettings.comment) document.getElementById('btnComment').style.display = 'flex';
 
@@ -487,17 +489,18 @@
                     }
                 }
 
-                const local = localStorage.getItem('anh_da_chon_cua_khach_' + fid);
+                const local = localStorage.getItem('anh_da_chon_cua_khach_' + (window.fid || albumSlug));
                 if (local) selectedIds = JSON.parse(local);
-                document.getElementById('loadOverlay').style.display='none';
                 
+                document.getElementById('loadOverlay').style.display = 'none';
                 initGrid();
+                
             } catch(e) { 
                 console.log(e);
-                alert("Lỗi tải dữ liệu!"); 
+                alert("Lỗi tải dữ liệu ảnh!"); 
             }
         }
-        init();
+
         // 🌟 BẮT BUỘC PHẢI CÓ DÒNG NÀY ĐỂ KÍCH HOẠT HỆ THỐNG KHI MỞ TRANG
         init();
     </script>
