@@ -495,6 +495,7 @@
             }
         }
        // 🌟 HÀM TẠO VÀ IN HỢP ĐỒNG ĐÃ ĐỊNH DẠNG LẠI TIỀN TỆ (DÙNG DẤU CHẤM, KHÔNG LẤY SỐ THẬP PHÂN)
+// 🌟 HÀM TẠO VÀ IN HỢP ĐỒNG: MÀN HÌNH CHỜ NẰM GỌN TRONG TRANG GIẤY
 async function printContract(c) {
     showToast("Đang tải thông tin studio...");
     
@@ -504,13 +505,13 @@ async function printContract(c) {
         return;
     }
 
-    // Hàm định dạng số tiền thành dạng 3.000.000 (dùng dấu chấm)
+    // Hàm định dạng số tiền dạng 3.000.000
     function formatMoney(amount) {
         let num = parseFloat(amount) || 0;
-        // Làm tròn thành số nguyên và ngăn cách bằng dấu chấm
         return Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
 
+    // Mở cửa sổ in với màn hình chờ nằm gọn bên trong trang giấy (invoice-box)
     printWindow.document.write(`<!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -522,8 +523,9 @@ async function printContract(c) {
         body { font-family: 'Montserrat', sans-serif; color: #111; margin: 0; padding: 40px; background: #f1f5f9; line-height: 1.5; }
         .invoice-box { max-width: 800px; margin: auto; padding: 30px; background: #fff; border: 1px solid #cbd5e1; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); border-radius: 12px; position: relative; min-height: 500px; }
         
-        #loadingOverlay { position: absolute; inset: 0; background: #fff; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; gap: 15px; }
-        .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #00ebb0; border-radius: 50%; animation: spin 1s linear infinite; }
+        /* 🌟 MÀN HÌNH CHỜ NẰM GỌN TRONG KHUNG TRANG GIẤY */
+        #loadingOverlay { position: absolute; inset: 0; background: #fff; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; gap: 15px; }
+        .spinner { width: 45px; height: 45px; border: 4px solid #f3f3f3; border-top: 4px solid #00ebb0; border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #00ebb0; padding-bottom: 20px; margin-bottom: 25px; }
@@ -582,10 +584,11 @@ async function printContract(c) {
 </head>
 <body>
     <div class="invoice-box">
+        <!-- 🌟 MÀN HÌNH CHỜ NẰM GỌN TRONG TRANG GIẤY -->
         <div id="loadingOverlay">
             <div class="spinner"></div>
-            <div style="font-weight: 700; font-size: 0.9rem; color: #050a14;">Đang tải thông tin studio từ hệ thống...</div>
-            <div style="font-size: 0.75rem; color: #666;">Vui lòng đợi trong giây lát.</div>
+            <div style="font-weight: 800; font-size: 1rem; color: #050a14;">Đang tải thông tin studio từ hệ thống...</div>
+            <div style="font-size: 0.8rem; color: #666;">Vui lòng đợi trong giây lát.</div>
         </div>
 
         <div class="no-print notice-bar">
@@ -705,6 +708,7 @@ async function printContract(c) {
 </body>
 </html>`);
 
+    // 2. Gọi API ngầm lấy thông tin studio từ n8n
     const studioSlug = localStorage.getItem('admin_studio_slug') || 'studio';
     let sName = "CHONANHNHANH.VN";
     let sPhone = "0879029170";
@@ -726,6 +730,7 @@ async function printContract(c) {
         console.log("Lỗi tải thông tin studio từ n8n:", e);
     }
 
+    // 3. Đổ dữ liệu thật vào cửa sổ in và ẩn màn hình chờ bên trong trang giấy
     let doc = printWindow.document;
     doc.getElementById('studioTitleText').innerText = sName;
     doc.getElementById('studioPhoneText').innerText = sPhone;
@@ -733,11 +738,13 @@ async function printContract(c) {
     doc.getElementById('studioLogoImg').src = sLogo;
     doc.getElementById('sigStudioName').innerText = sName;
 
+    // Ẩn màn hình chờ bên trong trang giấy
     doc.getElementById('loadingOverlay').style.display = 'none';
 
     const depositAmt = Math.round(parseFloat(c.deposit_amount) || 0);
-    doc.getElementById('depositDisplay').innerText = '- ' + depositAmt.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + ' ₫';
+    doc.getElementById('depositDisplay').innerText = '- ' + formatMoney(depositAmt) + ' ₫';
 
+    // Hàm tính toán tổng tiền động trực tiếp trong cửa sổ popup
     function updateCalc() {
         let inputs = doc.querySelectorAll('.price-input');
         let sum = 0;
@@ -746,10 +753,11 @@ async function printContract(c) {
             sum += val;
         });
         let remaining = sum - depositAmt;
-        doc.getElementById('grandTotalDisplay').innerText = Math.round(sum).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + ' ₫';
-        doc.getElementById('remainingDisplay').innerText = (remaining > 0 ? Math.round(remaining).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") : '0') + ' ₫';
+        doc.getElementById('grandTotalDisplay').innerText = formatMoney(sum) + ' ₫';
+        doc.getElementById('remainingDisplay').innerText = (remaining > 0 ? formatMoney(remaining) : '0') + ' ₫';
     }
 
+    // Gắn sự kiện thêm dòng
     doc.getElementById('btnAddRow').onclick = function() {
         let tbody = doc.getElementById('priceTableBody');
         let tr = doc.createElement('tr');
@@ -763,6 +771,7 @@ async function printContract(c) {
         updateCalc();
     };
 
+    // Gắn sự kiện tính tiền khi gõ phím
     doc.querySelectorAll('.price-input').forEach(inp => {
         inp.oninput = updateCalc;
     });
