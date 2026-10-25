@@ -468,18 +468,22 @@
         }
         function requestCalendarPermission() {
             const clientId = '549408699768-0hhl7oc0sjhr1c9tsa1fo9ahv5apuecc.apps.googleusercontent.com';
-            // Trỏ về một webhook riêng chuyên nhận token lịch trên n8n
             const redirectUri = 'https://wsm.congtubaclieu.com.vn/webhook/save-calendar-token'; 
-            
-            // Đích danh scope lịch
             const scope = 'https://www.googleapis.com/auth/calendar.events';
             
-            // Ép buộc prompt=consent để Google chắc chắn hiện bảng xin quyền Calendar
-            const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scope)}&access_type=offline&prompt=consent`;
+            // Lấy email đang đăng nhập từ localStorage để ép Google dùng luôn tài khoản này
+            const currentEmail = localStorage.getItem('admin_email') || '';
+            
+            let authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scope)}&access_type=offline`;
+            
+            // Nếu đã có email trong localStorage, tự động điền sẵn để không phải chọn lại
+            if (currentEmail) {
+                authUrl += `&login_hint=${encodeURIComponent(currentEmail)}`;
+            }
             
             window.location.href = authUrl;
         }
-    </script>
+            </script>
     
 </body>
 </html>
