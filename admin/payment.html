@@ -193,7 +193,7 @@
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
         <div class="container-fluid px-3 px-lg-5 d-flex flex-wrap align-items-center justify-content-between">
             
-            <a class="navbar-brand m-0" href="admin.html">CHONANHNHANH.VN</a>
+            <a class="navbar-brand m-0" href="index">CHONANHNHANH.VN</a>
             
             <div class="d-flex align-items-center ms-auto order-lg-3">
                 <div id="authControl">
@@ -213,12 +213,12 @@
 
             <div class="nav-center-container" id="navCenterArea">
                 <ul class="navbar-nav" id="adminNavLinks">
-                    <li class="nav-item"><a href="admin.html" class="nav-link">Tạo Album</a></li>
-                    <li class="nav-item"><a href="managa.html" class="nav-link">Quản Lý</a></li>
-                    <li class="nav-item"><a href="copy_local.html" class="nav-link">Sao Chép</a></li>
-                    <li class="nav-item"><a href="blog.html" class="nav-link">Blog</a></li>
-                    <li class="nav-item"><a href="payment.html" class="nav-link active">Gia Hạn</a></li>
-                    <li><a href="lienhe.html" class="nav-link">Liên Hệ</a></li>
+                    <li class="nav-item"><a href="index" class="nav-link">Tạo Album</a></li>
+                    <li class="nav-item"><a href="managa" class="nav-link">Quản Lý</a></li>
+                    <li class="nav-item"><a href="copy_local" class="nav-link">Sao Chép</a></li>
+                    <li class="nav-item"><a href="blog" class="nav-link">Blog</a></li>
+                    <li class="nav-item"><a href="payment" class="nav-link active">Gia Hạn</a></li>
+                    <li><a href="lienhe" class="nav-link">Liên Hệ</a></li>
                 </ul>
             </div>
             
@@ -352,7 +352,7 @@
                         clearInterval(pollingInterval);
                         localStorage.setItem('admin_status', 'active');
                         localStorage.setItem('admin_expiry', data.expiry_timestamp);
-                        window.location.href = `admin.html?user_status=active&user_expiry=${data.expiry_timestamp}&user_email=${encodeURIComponent(userEmail)}`;
+                        window.location.href = `index.html?user_status=active&user_expiry=${data.expiry_timestamp}&user_email=${encodeURIComponent(userEmail)}`;
                     }
                 } catch (e) {}
             }, 8000);
@@ -418,17 +418,17 @@
         
         document.getElementById('authControl').style.setProperty('display', 'flex', 'important');
     } else { 
-        window.location.href = 'admin.html'; 
+        window.location.href = 'index'; 
     }
 }
 
         window.onload = () => { 
             updateHeaderUI();
-            if(!userEmail) { window.location.href = "admin.html"; return; }
+            if(!userEmail) { window.location.href = "index"; return; }
             document.getElementById('btnContinue').innerText = `Thanh Toán ${selectedPkgData.price.toLocaleString('vi-VN')} VNĐ`;
             setTimeout(() => { document.getElementById('loadOverlay').style.display = 'none'; }, 500);
         };
-        function logoutAdmin() { localStorage.clear(); window.location.href = 'admin.html'; }
+        function logoutAdmin() { localStorage.clear(); window.location.href = 'index'; }
     </script>
 </body>
 </html>
