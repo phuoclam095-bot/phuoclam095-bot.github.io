@@ -495,10 +495,10 @@
             }
         }
        // 🌟 HÀM TẠO VÀ IN HỢP ĐỒNG CHỜ DỮ LIỆU N8N XONG MỚI HIỂN THỊ
+// 🌟 HÀM TẠO HỢP ĐỒNG CHO PHÉP THÊM DÒNG DỊCH VỤ & XUẤT PDF
 async function printContract(c) {
     showToast("Đang tải thông tin studio...");
     
-    // 1. Mở cửa sổ trống ngay lập tức theo cử chỉ click để tránh bị trình duyệt chặn popup
     let printWindow = window.open('', '_blank', 'width=950,height=850');
     if (printWindow) {
         printWindow.document.write(`
@@ -512,7 +512,6 @@ async function printContract(c) {
         `);
     }
 
-    // 2. Khai báo giá trị mặc định phòng hờ lỗi mạng
     let studioName = "CHONANHNHANH.VN";
     let studioPhone = "0879029170";
     let studioAddress = "Bạc Liêu";
@@ -520,7 +519,6 @@ async function printContract(c) {
 
     const studioSlug = localStorage.getItem('admin_studio_slug') || 'studio';
 
-    // 3. Đợi dữ liệu trả về từ webhook n8n
     try {
         const res = await fetch(`https://wsm.congtubaclieu.com.vn/webhook/get-studio-info?studio_slug=${studioSlug}`);
         let data = await res.json();
@@ -539,12 +537,8 @@ async function printContract(c) {
     const total = parseFloat(c.total_amount) || 0;
     const deposit = parseFloat(c.deposit_amount) || 0;
     const extra = parseFloat(c.extra_fee) || 0;
-    const grandTotal = total + extra;
-    const remaining = grandTotal - deposit;
-
     let eventDateFormatted = c.event_date ? c.event_date.replace('T', ' ').substring(0, 16) : '';
 
-    // 4. Sau khi đã có đủ dữ liệu chuẩn từ n8n, ghi đè toàn bộ nội dung hợp đồng chính thức vào cửa sổ
     if (printWindow) {
         printWindow.document.open();
         printWindow.document.write(`
@@ -567,7 +561,7 @@ async function printContract(c) {
                     .invoice-title h2 { margin: 0; color: #050a14; font-size: 1.3rem; letter-spacing: 1px; }
                     .invoice-title p { margin: 3px 0 0; font-size: 0.78rem; color: #666; }
                     
-                    .section-title { font-weight: 700; font-size: 0.85rem; background: #f8fafc; padding: 6px 10px; border-left: 4px solid #00ebb0; margin: 18px 0 10px; text-transform: uppercase; }
+                    .section-title { font-weight: 700; font-size: 0.85rem; background: #f8fafc; padding: 6px 10px; border-left: 4px solid #00ebb0; margin: 18px 0 10px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
                     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 8px; }
                     .info-item { margin-bottom: 6px; font-size: 0.82rem; }
                     .info-item span { font-weight: 600; color: #555; display: block; margin-bottom: 2px; }
@@ -579,8 +573,9 @@ async function printContract(c) {
                     table th, table td { border: 1px solid #e2e8f0; padding: 8px 10px; font-size: 0.82rem; vertical-align: middle; }
                     table th { background: #050a14; color: #fff; text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.5px; }
                     
-                    .col-content { width: 65%; }
+                    .col-content { width: 55%; }
                     .col-price { width: 35%; text-align: right; }
+                    .col-action { width: 10%; text-align: center; }
 
                     .total-section { margin-top: 15px; float: right; width: 320px; }
                     .total-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; font-size: 0.85rem; }
@@ -592,22 +587,31 @@ async function printContract(c) {
                     .sig-space { height: 55px; }
                     
                     .notice-bar { background: #00ebb0; color: #000; padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 0.78rem; margin-bottom: 15px; text-align: center; }
+                    
+                    .btn-add-row { background: #10b981; color: #fff; border: none; padding: 4px 10px; font-size: 0.75rem; font-weight: 700; border-radius: 4px; cursor: pointer; text-transform: uppercase; }
+                    .btn-del-row { background: #ef4444; color: #fff; border: none; padding: 4px 8px; font-size: 0.7rem; border-radius: 4px; cursor: pointer; }
+
+                    .action-buttons { display: flex; justify-content: center; gap: 15px; margin-top: 35px; }
+                    .action-btn { border: none; padding: 12px 25px; font-weight: 900; border-radius: 8px; cursor: pointer; text-transform: uppercase; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+                    .btn-print { background: #00ebb0; color: #000; }
+                    .btn-pdf { background: #3b82f6; color: #fff; }
 
                     @media print {
                         body { padding: 0; background: #fff; }
                         .invoice-box { border: none; box-shadow: none; padding: 0; }
                         .no-print { display: none; }
                         .editable-input { border: none; background: transparent; padding: 0; font-weight: 600; }
+                        .btn-del-row { display: none; }
                     }
                 </style>
             </head>
             <body>
                 <div class="invoice-box">
                     <div class="no-print notice-bar">
-                        💡 Chủ studio có thể click vào các ô bên dưới để chỉnh sửa thông tin trực tiếp trước khi bấm In!
+                        💡 Chủ studio có thể chỉnh sửa trực tiếp thông tin, thêm bớt dòng dịch vụ và chọn In hoặc xuất PDF gửi khách!
                     </div>
 
-                    <!-- HEADER / LOGO & THÔNG TIN STUDIO TỪ DATABASE -->
+                    <!-- HEADER -->
                     <div class="header">
                         <div class="logo-area">
                             <img src="${studioLogo}" alt="Logo Studio">
@@ -666,36 +670,42 @@ async function printContract(c) {
                         <input type="text" class="editable-input" value="${c.note || 'Không có ghi chú phát sinh.'}">
                     </div>
 
-                    <!-- BẢNG BÁO GIÁ -->
-                    <div class="section-title">Bảng kê chi phí & Thanh toán</div>
-                    <table>
+                    <!-- BẢNG BÁO GIÁ CÓ THỂ THÊM BỚT DÒNG -->
+                    <div class="section-title">
+                        <span>Bảng kê chi phí & Thanh toán</span>
+                        <button class="btn-add-row no-print" onclick="addRow()"><i class="fas fa-plus me-1"></i> Thêm dòng</button>
+                    </div>
+                    <table id="priceTable">
                         <thead>
                             <tr>
                                 <th class="col-content">Nội dung dịch vụ</th>
                                 <th class="col-price">Thành tiền (VNĐ)</th>
+                                <th class="col-action no-print">Xóa</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="priceTableBody">
                             <tr>
-                                <td class="col-content"><strong>Gói dịch vụ chính</strong> (Theo thỏa thuận)</td>
-                                <td class="col-price"><input type="text" class="editable-input" style="text-align: right;" value="${total}"></td>
+                                <td class="col-content"><input type="text" class="editable-input" value="Gói dịch vụ chính: ${c.service_package || 'Gói tiêu chuẩn'}"></td>
+                                <td class="col-price"><input type="text" class="editable-input" style="text-align: right;" value="${total}" oninput="calculateTotal()"></td>
+                                <td class="col-action no-print"><button class="btn-del-row" onclick="deleteRow(this)">X</button></td>
                             </tr>
                             <tr>
-                                <td class="col-content">Chi phí phát sinh thêm (Trang phục, phụ phí...)</td>
-                                <td class="col-price"><input type="text" class="editable-input" style="text-align: right;" value="${extra}"></td>
+                                <td class="col-content"><input type="text" class="editable-input" value="Chi phí phát sinh thêm (Trang phục, phụ phí...)"></td>
+                                <td class="col-price"><input type="text" class="editable-input" style="text-align: right;" value="${extra}" oninput="calculateTotal()"></td>
+                                <td class="col-action no-print"><button class="btn-del-row" onclick="deleteRow(this)">X</button></td>
                             </tr>
                         </tbody>
                     </table>
 
                     <!-- TỔNG KẾT TÀI CHÍNH -->
                     <div class="total-section">
-                        <div class="total-row"><span>Tổng giá trị:</span> <strong>${grandTotal.toLocaleString('vi-VN')} ₫</strong></div>
+                        <div class="total-row"><span>Tổng giá trị:</span> <strong id="grandTotalDisplay">${(total + extra).toLocaleString('vi-VN')} ₫</strong></div>
                         <div class="total-row" style="color: #059669;"><span>Đã đặt cọc:</span> <strong>- ${deposit.toLocaleString('vi-VN')} ₫</strong></div>
-                        <div class="total-row grand"><span>CÒN LẠI:</span> <span style="color: #d97706;">${remaining > 0 ? remaining.toLocaleString('vi-VN') + ' ₫' : '0 ₫'}</span></div>
+                        <div class="total-row grand"><span>CÒN LẠI:</span> <span id="remainingDisplay" style="color: #d97706;">${(total + extra - deposit > 0 ? (total + extra - deposit).toLocaleString('vi-VN') + ' ₫' : '0 ₫')}</span></div>
                     </div>
                     <div style="clear: both;"></div>
 
-                    <!-- CHỮ KÝ 2 BÊN -->
+                    <!-- CHỮ KÝ -->
                     <div class="signatures">
                         <div class="sig-box">
                             <p><strong>ĐẠI DIỆN STUDIO</strong></p>
@@ -711,11 +721,56 @@ async function printContract(c) {
                         </div>
                     </div>
 
-                    <!-- NÚT IN NHANH -->
-                    <div class="no-print" style="text-align: center; margin-top: 35px;">
-                        <button onclick="window.print()" style="background: #00ebb0; color: #000; border: none; padding: 12px 35px; font-weight: 900; border-radius: 8px; cursor: pointer; text-transform: uppercase; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(0,235,176,0.4);">🖨️ Xác Nhận & In Hợp Đồng</button>
+                    <!-- NÚT IN VÀ XUẤT PDF -->
+                    <div class="action-buttons no-print">
+                        <button class="action-btn btn-print" onclick="window.print()"><i class="fas fa-print me-2"></i> In Hợp Đồng</button>
+                        <button class="action-btn btn-pdf" onclick="exportPDF()"><i class="fas fa-file-pdf me-2"></i> Xuất PDF Gửi Khách</button>
                     </div>
                 </div>
+
+                <script>
+                    function addRow() {
+                        const tbody = document.getElementById('priceTableBody');
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = \`
+                            <td class="col-content"><input type="text" class="editable-input" value="Nội dung dịch vụ mới..."></td>
+                            <td class="col-price"><input type="text" class="editable-input" style="text-align: right;" value="0" oninput="calculateTotal()"></td>
+                            <td class="col-action no-print"><button class="btn-del-row" onclick="deleteRow(this)">X</button></td>
+                        \`;
+                        tbody.appendChild(tr);
+                        calculateTotal();
+                    }
+
+                    function deleteRow(btn) {
+                        const row = btn.closest('tr');
+                        if(document.querySelectorAll('#priceTableBody tr').length > 1) {
+                            row.remove();
+                            calculateTotal();
+                        } else {
+                            alert("Cần ít nhất một dòng chi phí trong hợp đồng!");
+                        }
+                    }
+
+                    function calculateTotal() {
+                        const priceInputs = document.querySelectorAll('#priceTableBody tr td.col-price input');
+                        let sum = 0;
+                        priceInputs.forEach(input => {
+                            let val = parseFloat(input.value.replace(/[^0-9.-]+/g,"")) || 0;
+                            sum += val;
+                        });
+                        const deposit = ${deposit};
+                        const grandTotal = sum;
+                        const remaining = grandTotal - deposit;
+
+                        document.getElementById('grandTotalDisplay').innerText = grandTotal.toLocaleString('vi-VN') + ' ₫';
+                        document.getElementById('remainingDisplay').innerText = remaining > 0 ? remaining.toLocaleString('vi-VN') + ' ₫' : '0 ₫';
+                    }
+
+                    function exportPDF() {
+                        alert("Mẹo: Để lưu thành file PDF gửi Zalo/Email cho khách, anh bấm nút này rồi chọn 'Save as PDF' (Lưu dưới dạng PDF) trong bảng chọn máy in nhé!");
+                        window.print();
+                    }
+                </script>
             </body>
             </html>
         `);
