@@ -496,9 +496,8 @@
         }
        // 🌟 HÀM TẠO VÀ IN HỢP ĐỒNG ĐÃ ĐỊNH DẠNG LẠI TIỀN TỆ (DÙNG DẤU CHẤM, KHÔNG LẤY SỐ THẬP PHÂN)
 // 🌟 HÀM TẠO VÀ IN HỢP ĐỒNG: MÀN HÌNH CHỜ NẰM GỌN TRONG TRANG GIẤY
+// 🌟 HÀM TẠO VÀ IN HỢP ĐỒNG: 100% NẰM TRỌN TRONG TRANG GIẤY, KHÔNG CÓ THÔNG BÁO NGOÀI
 async function printContract(c) {
-    showToast("Đang tải thông tin studio...");
-    
     let printWindow = window.open('', '_blank', 'width=950,height=850');
     if (!printWindow) {
         alert("Trình duyệt đã chặn cửa sổ popup! Vui lòng cho phép popup để xem hợp đồng.");
@@ -511,7 +510,7 @@ async function printContract(c) {
         return Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
 
-    // Mở cửa sổ in với màn hình chờ nằm gọn bên trong trang giấy (invoice-box)
+    // Mở cửa sổ in với giao diện trang giấy có sẵn màn hình chờ ở bên trong
     printWindow.document.write(`<!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -523,8 +522,8 @@ async function printContract(c) {
         body { font-family: 'Montserrat', sans-serif; color: #111; margin: 0; padding: 40px; background: #f1f5f9; line-height: 1.5; }
         .invoice-box { max-width: 800px; margin: auto; padding: 30px; background: #fff; border: 1px solid #cbd5e1; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); border-radius: 12px; position: relative; min-height: 500px; }
         
-        /* 🌟 MÀN HÌNH CHỜ NẰM GỌN TRONG KHUNG TRANG GIẤY */
-        #loadingOverlay { position: absolute; inset: 0; background: #fff; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; gap: 15px; }
+        /* 🌟 MÀN HÌNH CHỜ NẰM HOÀN TOÀN BÊN TRONG TRANG GIẤY */
+        #loadingOverlay { position: absolute; inset: 0; background: #ffffff; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; gap: 15px; }
         .spinner { width: 45px; height: 45px; border: 4px solid #f3f3f3; border-top: 4px solid #00ebb0; border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
@@ -584,7 +583,7 @@ async function printContract(c) {
 </head>
 <body>
     <div class="invoice-box">
-        <!-- 🌟 MÀN HÌNH CHỜ NẰM GỌN TRONG TRANG GIẤY -->
+        <!-- 🌟 MÀN HÌNH CHỜ ĐANG TẢI NẰM GỌN BÊN TRONG TRANG GIẤY -->
         <div id="loadingOverlay">
             <div class="spinner"></div>
             <div style="font-weight: 800; font-size: 1rem; color: #050a14;">Đang tải thông tin studio từ hệ thống...</div>
@@ -730,7 +729,7 @@ async function printContract(c) {
         console.log("Lỗi tải thông tin studio từ n8n:", e);
     }
 
-    // 3. Đổ dữ liệu thật vào cửa sổ in và ẩn màn hình chờ bên trong trang giấy
+    // 3. Đổ dữ liệu thật vào cửa sổ in và ẩn màn hình chờ đi
     let doc = printWindow.document;
     doc.getElementById('studioTitleText').innerText = sName;
     doc.getElementById('studioPhoneText').innerText = sPhone;
