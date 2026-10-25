@@ -494,9 +494,7 @@
                 alert("Lỗi kết nối máy chủ!");
             }
         }
-       // 🌟 HÀM TẠO VÀ IN HỢP ĐỒNG CHỜ DỮ LIỆU N8N XONG MỚI HIỂN THỊ
-// 🌟 HÀM TẠO HỢP ĐỒNG CHO PHÉP THÊM DÒNG DỊCH VỤ & XUẤT PDF
-// 🌟 HÀM TẠO VÀ IN HỢP ĐỒNG AN TOÀN, KHÔNG LỖI SCRIPT
+       // 🌟 HÀM TẠO VÀ IN HỢP ĐỒNG ĐÃ ĐƯỢC ĐÓNG NGOẶC CHUẨN XÁC
 async function printContract(c) {
     showToast("Đang tải thông tin studio...");
     
@@ -539,10 +537,15 @@ async function printContract(c) {
     const deposit = parseFloat(c.deposit_amount) || 0;
     const extra = parseFloat(c.extra_fee) || 0;
     let eventDateFormatted = c.event_date ? c.event_date.replace('T', ' ').substring(0, 16) : '';
+    let grandTotal = total + extra;
+    let remaining = grandTotal - deposit;
 
-    if (printWindow) {
-        printWindow.document.open();
-        printWindow.document.write(`<!DOCTYPE html>
+    if (!printWindow) {
+        alert("Trình duyệt đã chặn cửa sổ popup! Vui lòng cho phép popup để xem hợp đồng.");
+        return;
+    }
+
+    let htmlContent = `<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -586,7 +589,7 @@ async function printContract(c) {
         .sig-box p { margin: 4px 0; font-size: 0.82rem; }
         .sig-space { height: 55px; }
         
-        .notice-bar { background: #00ebb0; color: #000; padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 0.78rem; margin-bottom: 15px; text-align: center; }
+        .notice-bar { background: #00ebb0; color: #000; padding: 8px 12px; border-radius: 6px; font-weight: 700; font-size: 0.78rem; margin-bottom: 15px; text-align: center; line-height: 1.5; }
         
         .btn-add-row { background: #10b981; color: #fff; border: none; padding: 4px 10px; font-size: 0.75rem; font-weight: 700; border-radius: 4px; cursor: pointer; text-transform: uppercase; }
         .btn-del-row { background: #ef4444; color: #fff; border: none; padding: 4px 8px; font-size: 0.7rem; border-radius: 4px; cursor: pointer; }
@@ -608,7 +611,7 @@ async function printContract(c) {
 <body>
     <div class="invoice-box">
         <div class="no-print notice-bar">
-            💡 Chủ studio có thể chỉnh sửa trực tiếp thông tin, thêm bớt dòng dịch vụ và chọn In hoặc xuất PDF gửi khách!
+            💡 Chủ studio có thể chỉnh sửa trực tiếp thông tin, thêm bớt dòng dịch vụ và chọn In hoặc xuất PDF gửi khách!<br>
             ⚠️ Nếu chưa có thông tin studio vui lòng cấu hình ở trang chủ.
         </div>
 
@@ -695,9 +698,9 @@ async function printContract(c) {
         </table>
 
         <div class="total-section">
-            <div class="total-row"><span>Tổng giá trị:</span> <strong id="grandTotalDisplay">${(total + extra).toLocaleString('vi-VN')} ₫</strong></div>
+            <div class="total-row"><span>Tổng giá trị:</span> <strong id="grandTotalDisplay">${grandTotal.toLocaleString('vi-VN')} ₫</strong></div>
             <div class="total-row" style="color: #059669;"><span>Đã đặt cọc:</span> <strong>- ${deposit.toLocaleString('vi-VN')} ₫</strong></div>
-            <div class="total-row grand"><span>CÒN LẠI:</span> <span id="remainingDisplay" style="color: #d97706;">${(total + extra - deposit > 0 ? (total + extra - deposit).toLocaleString('vi-VN') + ' ₫' : '0 ₫')}</span></div>
+            <div class="total-row grand"><span>CÒN LẠI:</span> <span id="remainingDisplay" style="color: #d97706;">${remaining > 0 ? remaining.toLocaleString('vi-VN') + ' ₫' : '0 ₫'}</span></div>
         </div>
         <div style="clear: both;"></div>
 
@@ -763,14 +766,14 @@ async function printContract(c) {
             alert("Mẹo: Để lưu thành file PDF gửi Zalo/Email cho khách, anh bấm nút này rồi chọn 'Save as PDF' (Lưu dưới dạng PDF) trong bảng chọn máy in nhé!");
             window.print();
         }
-
+    </script>
 </body>
-</html>`);
-        printWindow.document.close();
-    }
-}
+</html>`;
 
-                    // 🌟 HÀM XÓA VĨNH VIỄN HỢP ĐỒNG
+    printWindow.document.open();
+    printWindow.document.write(htmlContent);
+    printWindow.document.close();
+}
         async function deleteContract(id) {
             if(!confirm("Cảnh báo: Hành động này sẽ xóa vĩnh viễn hợp đồng khỏi hệ thống và không thể khôi phục. Bạn có chắc chắn muốn xóa?")) return;
         
