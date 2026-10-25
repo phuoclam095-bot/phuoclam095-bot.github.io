@@ -485,10 +485,14 @@
 
         if (isVIP) {
             if (badge) {
-                badge.className = "status-tag tag-active";
+                badge.className = "status-tag";
+                badge.style.background = "var(--primary)";
+                badge.style.color = "#000";
                 badge.innerText = "ACTIVE";
             }
-            if (expText) expText.innerText = " - Hạn: " + new Date(expiry).toLocaleDateString('vi-VN');
+            if (expText) {
+                expText.innerText = " - Hạn: " + new Date(expiry).toLocaleDateString('vi-VN');
+            }
             
             if (mainWorkGrid) mainWorkGrid.style.setProperty('display', 'block', 'important');
             if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'none', 'important');
