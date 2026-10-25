@@ -387,7 +387,12 @@
        async function openNoteModal(folderId, albumName) {
             showToast("Đang tải ghi chú...");
             try {
-                const res = await fetch(`https://wsm.congtubaclieu.com.vn/webhook/get-photos?id=${folderId}`);
+                // 🌟 Lấy đúng studio slug hiện tại và truyền tham số album bằng folderId (hoặc slug)
+                let rawStudio = localStorage.getItem('admin_studio_slug') || 'studio';
+                const sSlug = rawStudio.replace(/-+/g, '-').replace(/^-|-$/g, '') || 'studio';
+
+                // Gọi đúng endpoint kèm theo tham số studio và album giống client.html
+                const res = await fetch(`https://wsm.congtubaclieu.com.vn/webhook/get-photos?studio=${sSlug}&album=${folderId}`);
                 const data = await res.json();
                 const rootObj = Array.isArray(data) ? data[0] : data;
                 const photos = rootObj.photos || [];
