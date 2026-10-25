@@ -497,11 +497,43 @@
             } catch (e) { statusText.style.display = 'none'; body.innerHTML += `<div class="msg-bubble msg-ai">Dạ lỗi kết nối rồi ạ!</div>`; }
             body.scrollTop = body.scrollHeight;
         }
+        let modalStudioLogoBase64 = '';
 
-        function openStudioConfigModal() {
+// Hàm xử lý đọc file logo trong Modal cấu hình
+            function processModalLogoFile(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+            
+                if (file.size > 1024 * 1024) {
+                    alert("Dung lượng file logo quá lớn! Vui lòng chọn ảnh dưới 1MB.");
+                    return;
+                }
+            
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    modalStudioLogoBase64 = e.target.result;
+                    
+                    const preview = document.getElementById('modalLogoPreview');
+                    if (preview) {
+                        preview.src = modalStudioLogoBase64;
+                        preview.style.display = 'inline-block';
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+            function openStudioConfigModal() {
             document.getElementById('modalStudioNameInput').value = localStorage.getItem('admin_studio_name') || '';
             document.getElementById('modalStudioPhoneInput').value = localStorage.getItem('admin_studio_phone') || '';
             document.getElementById('modalStudioAddressInput').value = localStorage.getItem('admin_studio_address') || '';
+            
+            modalStudioLogoBase64 = localStorage.getItem('studio_watermark_logo') || '';
+            const preview = document.getElementById('modalLogoPreview');
+            if (modalStudioLogoBase64 && preview) {
+                preview.src = modalStudioLogoBase64;
+                preview.style.display = 'inline-block';
+            } else if(preview) {
+                preview.style.display = 'none';
+            }
             
             new bootstrap.Modal(document.getElementById('studioConfigModal')).show();
         }
@@ -516,21 +548,22 @@
                 return alert("Vui lòng nhập Tên Studio!");
             }
         
-            // Tự động tạo tên viết tắt từ tên studio vừa nhập
             const studioSlug = createSlug(nameVal);
         
-            // Lưu trữ vào localStorage
+            // Lưu trữ tạm vào localStorage
             localStorage.setItem('admin_studio_slug', studioSlug);
             localStorage.setItem('admin_studio_name', nameVal);
             localStorage.setItem('admin_studio_phone', phoneVal);
             localStorage.setItem('admin_studio_address', addressVal);
+            if (modalStudioLogoBase64) {
+                localStorage.setItem('studio_watermark_logo', modalStudioLogoBase64);
+            }
         
-            // Đóng Modal
             const modalEl = document.getElementById('studioConfigModal');
             const modalInstance = bootstrap.Modal.getInstance(modalEl);
             if (modalInstance) modalInstance.hide();
         
-            // Gửi dữ liệu đầy đủ lên n8n / Database để lưu làm bill sau này
+            // Gửi thông tin kèm logo dạng Base64 lên n8n / Database
             try {
                 await fetch('https://wsm.congtubaclieu.com.vn/webhook/update-admin-studio', {
                     method: 'POST',
@@ -540,10 +573,11 @@
                         studioSlug: studioSlug,
                         studioName: nameVal,
                         studioPhone: phoneVal,
-                        studioAddress: addressVal
+                        studioAddress: addressVal,
+                        watermarkLogo: modalStudioLogoBase64 // <--- Gửi mã chuỗi Base64 của logo lên đây để lưu vào cột watermark_logo trong bảng albums_data
                     })
                 });
-                alert("Đã lưu thông tin Studio thành công!");
+                alert("Đã lưu thông tin Studio và Logo thành công!");
             } catch (e) {
                 console.log("Lỗi đồng bộ ngầm");
             }
@@ -705,7 +739,14 @@
                         <label style="font-size: 0.7rem; color: var(--primary); font-weight: 900; margin-bottom: 5px; display: block; text-transform: uppercase;">Địa chỉ Studio</label>
                         <input type="text" id="modalStudioAddressInput" placeholder="Ví dụ: Số 123, Đường Hai Bà Trưng" autocomplete="off" style="padding: 12px; font-size: 0.9rem;">
                     </div>
-    
+                    <div class="mb-3">
+                        <label style="font-size: 0.7rem; color: var(--primary); font-weight: 900; margin-bottom: 5px; display: block; text-transform: uppercase;">Logo Studio (Hiển thị hóa đơn & hệ thống)</label>
+                        <input type="file" id="modalStudioLogoFile" class="form-control bg-dark text-white border-secondary" accept="image/*" onchange="processModalLogoFile(event)" style="padding: 10px; font-size: 0.8rem;">
+                        <div class="form-text text-warning" style="font-size: 0.7rem;">Khuyên dùng PNG nền trong suốt (Dung lượng < 1MB).</div>
+                        <div class="mt-2 text-center">
+                            <img id="modalLogoPreview" src="" style="max-height: 50px; display: none; border-radius: 4px; border: 1px solid var(--primary); object-fit: contain;">
+                        </div>
+                    </div>
                     <button class="btn-create" style="margin-top: 10px;" onclick="saveStudioConfig()">LƯU THÔNG TIN</button>
                 </div>
             </div>
