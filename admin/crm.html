@@ -279,19 +279,95 @@
             return parseInt(raw) || 0;
         }
 
-        function updateHeaderUI() {
-            if (localStorage.getItem('admin_is_logged_in') === 'true') {
-                const name = localStorage.getItem('admin_name') || 'Chủ Studio';
-                const av = localStorage.getItem('admin_avatar');
-                const expiry = getExpiryTimestamp();
-                
-                document.getElementById('userNameDisplay').innerText = name;
-                document.getElementById('avatarPlaceholder').innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:32px; color:var(--primary)"></i>`;
-                document.getElementById('userExpiryText').innerText = expiry ? "Hạn: " + new Date(expiry).toLocaleDateString('vi-VN') : '';
-            } else {
-                window.location.href = 'index';
-            }
+        // 🌟 HÀM KIỂM TRA TRẠNG THÁI VIP VÀ KHÓA GIAO DIỆN NẾU HẾT HẠN (VIẾT Y HỆT MẪU)
+function updateHeaderUI() {
+    if (localStorage.getItem('admin_is_logged_in') === 'true') {
+        const name = localStorage.getItem('admin_name') || 'Chủ Studio';
+        const av = localStorage.getItem('admin_avatar');
+        const status = localStorage.getItem('admin_status') || 'new';
+        
+        // Lấy thời gian hết hạn chuẩn xác bằng hàm getExpiryTimestamp()
+        const expiry = getExpiryTimestamp(); 
+        
+        // Kiểm tra điều kiện VIP y hệt mẫu của bạn
+        const isVIP = (status === 'active' && expiry > Date.now());
+        
+        document.getElementById('userNameDisplay').innerText = name;
+        document.getElementById('avatarPlaceholder').innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:32px; color:var(--primary)"></i>`;
+        
+        const badge = document.getElementById('badgeStatus'); 
+        const expText = document.getElementById('userExpiryText');
+        
+        // Tìm các vùng nội dung chính trong crm.html cần khóa khi hết hạn
+        // (Ví dụ: khối thống kê doanh thu, bảng danh sách hợp đồng, nút thêm mới)
+        const mainCrmContainer = document.querySelector('.container-fluid.px-4.px-lg-5');
+        
+        // Tạo sẵn một khối thông báo khóa nếu chưa có trên giao diện
+        let expiredBlockNotice = document.getElementById('vipExpiredBlockNotice');
+        if (!expiredBlockNotice && mainCrmContainer) {
+            expiredBlockNotice = document.createElement('div');
+            expiredBlockNotice.id = 'vipExpiredBlockNotice';
+            expiredBlockNotice.style.cssText = 'display: none; max-width: 500px; margin: 40px auto 0; background: rgba(255, 71, 87, 0.1); border: 1.5px dashed #ff4757; border-radius: 24px; padding: 40px 20px; text-align: center; box-shadow: 0 10px 30px rgba(255, 71, 87, 0.1);';
+            expiredBlockNotice.innerHTML = `
+                <i class="fas fa-lock fa-3x text-danger mb-3"></i>
+                <h4 class="fw-bold text-white mb-2">TÍNH NĂNG ĐANG BỊ KHÓA</h4>
+                <p class="text-secondary small mb-4" style="line-height: 1.6;">
+                    Tài khoản của bạn đã hết hạn dùng thử hoặc chưa nâng cấp lên gói VIP. Vui lòng gia hạn để tiếp tục sử dụng hệ thống quản lý lịch & CRM.
+                </p>
+                <a href="payment" class="btn btn-primary fw-900 px-4 py-2 rounded-pill text-black text-uppercase" style="background: var(--primary); border: none; font-size: 0.85rem; text-decoration: none;">Gia Hạn VIP Ngay</a>
+            `;
+            mainCrmContainer.appendChild(expiredBlockNotice);
         }
+
+        if (isVIP) {
+            // HỢP LỆ: Hiển thị giao diện màu xanh ACTIVE
+            badge.innerText = "ACTIVE"; 
+            badge.style.background = "var(--primary)";
+            badge.style.color = "#000";
+            expText.innerText = "Hạn: " + new Date(expiry).toLocaleDateString('vi-VN');
+            
+            // Mở khóa hiển thị bảng CRM
+            if (mainCrmContainer) {
+                // Hiển thị lại các phần tử bên trong container trừ khung thông báo khóa
+                Array.from(mainCrmContainer.children).forEach(child => {
+                    if (child.id !== 'vipExpiredBlockNotice') child.style.display = '';
+                });
+            }
+            if (expiredBlockNotice) expiredBlockNotice.style.display = 'none';
+
+        } else {
+            // KHÔNG ĐỦ HẠN DÙNG / HẾT HẠN / TÀI KHOẢN MỚI CHƯA KÍCH HOẠT
+            badge.innerText = status === 'new' ? "MỚI" : "EXPIRED"; 
+            badge.style.background = "#ff4757"; 
+            badge.style.color = "#fff";
+            expText.innerText = expiry > 0 ? "Hết hạn: " + new Date(expiry).toLocaleDateString('vi-VN') : "Chưa đăng ký";
+            
+            // KHÓA GIAO DIỆN: Ẩn các thành phần quản lý CRM và bật bảng thông báo chặn y hệt mẫu
+            if (mainCrmContainer) {
+                Array.from(mainCrmContainer.children).forEach(child => {
+                    if (child.id !== 'vipExpiredBlockNotice') child.style.display = 'none';
+                });
+            }
+            if (expiredBlockNotice) expiredBlockNotice.style.display = 'block';
+        }
+        
+        document.getElementById('authControl').style.setProperty('display', 'flex', 'important');
+    } else { 
+        window.location.href = 'index'; 
+    }
+}
+
+function getExpiryTimestamp() {
+    let raw = localStorage.getItem('admin_expiry');
+    if (!raw) return 0;
+    if (raw.includes('/')) {
+        let parts = raw.split(/[\s/:]+/);
+        if (parts.length >= 3) {
+            return new Date(parts[2], parts[1] - 1, parts[0], parts[3] || 0, parts[4] || 0, parts[5] || 0).getTime();
+        }
+    }
+    return parseInt(raw) || 0;
+}
 
         function logoutAdmin() { 
             localStorage.clear(); 
