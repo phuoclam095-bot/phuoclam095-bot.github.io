@@ -348,7 +348,11 @@
                         totalRem += remaining;
                     }
 
-                    const formattedDate = c.event_date ? new Date(c.event_date).toLocaleString('vi-VN', {dateStyle: 'short', timeStyle: 'short'}) : '';
+                    const formattedDate = c.event_date ? new Date(c.event_date).toLocaleString('vi-VN', {
+                        timeZone: 'Asia/Ho_Chi_Minh',
+                        dateStyle: 'short', 
+                        timeStyle: 'short'
+                    }) : '';
 
                     tbody.innerHTML += `
                         <tr>
