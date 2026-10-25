@@ -200,32 +200,54 @@
     <div id="toastNotice"></div>
 
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
-        <div class="container-fluid px-lg-5">
-            <a class="navbar-brand" href="index">CHONANHNHANH.VN</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav mx-auto">
-                    <li class="nav-item"><a href="index" class="nav-link">Tạo Album</a></li>
-                    <li class="nav-item"><a href="managa" class="nav-link">Quản Lý</a></li>
-                    <li class="nav-item"><a href="copy_local" class="nav-link active">Sao Chép</a></li>
-                    <li class="nav-item"><a href="blog" class="nav-link">Blog</a></li>
-                    <li class="nav-item"><a href="payment" class="nav-link">Gia Hạn</a></li>
-                    <li class="nav-item"><a href="lienhe" class="nav-link">Liên Hệ</a></li>
-                </ul>
-                <div id="authControl" style="display: none !important;" class="align-items-center gap-2">
-                    <div class="user-status-box">
-                        <div id="avatarPlaceholder" class="avt-circle"></div>
-                        <div class="d-flex flex-column">
-                            <span id="userNameDisplay" style="font-weight:900; font-size:0.85rem; color:#fff; line-height: 1;">...</span>
-                            <div style="margin-top: 2px;">
-                                <span id="badgeStatus" class="status-tag" style="background:var(--primary); color:#000; font-weight:900;">...</span>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="btn btn-link text-danger p-0 ms-1" onclick="logoutAdmin()"><i class="fas fa-power-off"></i></button>
+    <div class="container-fluid px-3 px-lg-5 d-flex flex-wrap align-items-center justify-content-between">
+        
+        <!-- Logo bên trái -->
+        <a class="navbar-brand m-0" href="index"><img src="https://i.ibb.co/C3L2Ch5Z/logo.png" alt="Logo" style="height: 42px; width: auto;"></a>
+        
+        <!-- Khối thông tin User / Nút đăng nhập bên phải -->
+        <div class="d-flex align-items-center ms-auto order-lg-3">
+            <div id="loggedOutNav" style="display: none;">
+                <div class="btn-login-rainbow" onclick="startGoogleLogin()">
+                    <span>LOGIN VIP</span>
                 </div>
             </div>
+            <div id="loggedInNav" class="d-flex align-items-center" style="display: none;">
+                <div class="user-pill">
+                    <div id="avatarPlaceholder"></div>
+                    <div class="d-flex flex-column overflow-hidden">
+                        <span id="userNameDisplay" style="font-weight:900; font-size:0.75rem; line-height:1"></span>
+                        <div style="margin-top: 3px;">
+                            <span id="badgeStatus" class="status-tag" style="background:var(--primary); color:#000; font-weight:900;">...</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-link text-primary p-0 ms-2" onclick="openStudioConfigModal()" title="Cấu hình Studio" style="cursor:pointer">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()" style="cursor:pointer" title="Đăng xuất">
+                    <i class="fas fa-power-off"></i>
+                </button>
+            </div>
         </div>
-    </nav>
+
+        <!-- Thanh menu căn giữa tuyệt đối -->
+        <div class="nav-center-container" id="navCenterArea">
+            <ul class="navbar-nav" id="adminNavLinks">
+                <li><a href="index" class="nav-link">Tạo Album</a></li>
+                <li><a href="managa" class="nav-link">Quản Lý</a></li>
+                <li><a href="crm" class="nav-link">Lịch</a></li>
+                <li><a href="copy_local" class="nav-link active">Sao Chép</a></li>
+                <li><a href="blog" class="nav-link">Blog</a></li>
+                <li><a href="alarm" class="nav-link">Báo Thức</a></li>
+                <li><a href="payment" class="nav-link">Gia Hạn</a></li>
+                <li><a href="lienhe" class="nav-link">Liên Hệ</a></li>
+                <li><a href="fedback" class="nav-link">Góp Ý Và Báo Lỗi</a></li>
+            </ul>
+        </div>
+
+    </div>
+</nav>
 
     <div class="container-fluid">
         <div class="text-center"><h1 class="supreme-title">Sao Chép Ảnh</h1></div>
