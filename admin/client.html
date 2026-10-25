@@ -523,8 +523,11 @@
         } catch(e) { 
             console.error(e);
             loadOverlay.style.display = 'none';
-            if (errorText) errorText.innerText = e.message || "Đã xảy ra lỗi không xác định khi kết nối tới máy chủ.";
-            if (errorBox) errorBox.style.display = 'flex';
+            if (errorText) errorText.innerText = e.message || "Không tìm thấy album hoặc tên đường dẫn không tồn tại.";
+            if (errorBox) {
+                // Ép hiển thị khung thông báo lỗi dạng flex đè lên màn hình đen
+                errorBox.style.setProperty('display', 'flex', 'important');
+            }
         }
     }
         // 🌟 BẮT BUỘC PHẢI CÓ DÒNG NÀY ĐỂ KÍCH HOẠT HỆ THỐNG KHI MỞ TRANG
