@@ -455,42 +455,52 @@
 
         function updateHeaderUI() {
             if (localStorage.getItem('admin_is_logged_in') === 'true') {
-                const name = localStorage.getItem('admin_name');
+                const name = localStorage.getItem('admin_name') || 'Anh/Chị';
                 const av = localStorage.getItem('admin_avatar');
                 const status = localStorage.getItem('admin_status') || 'new';
-                
                 const expiry = getExpiryTimestamp();
                 
-                document.getElementById('userNameDisplay').innerText = name;
-                document.getElementById('avatarPlaceholder').innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:32px; color:var(--primary)"></i>`;
+                // Gán giá trị an toàn, kiểm tra phần tử tồn tại trước để tránh lỗi null
+                const nameDisplay = document.getElementById('userNameDisplay');
+                if (nameDisplay) nameDisplay.innerText = name;
+
+                const avatarPlaceholder = document.getElementById('avatarPlaceholder');
+                if (avatarPlaceholder) {
+                    avatarPlaceholder.innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:30px; color:var(--primary)"></i>`;
+                }
                 
-                const badge = document.getElementById('badgeStatus'); 
+                const badge = document.getElementById('badgeStatus');  
                 const expText = document.getElementById('userExpiryText');
                 
                 const mainWorkGrid = document.getElementById('mainWorkGrid');
                 const vipExpiredBlockNotice = document.getElementById('vipExpiredBlockNotice');
         
-                if (status === 'active' && expiry > Date.now()) { 
-
-                    badge.innerText = "ACTIVE"; 
-                    badge.style.background = "var(--primary)";
-                    badge.style.color = "#000";
-                    expText.innerText = "Hạn: " + new Date(expiry).toLocaleDateString('vi-VN'); 
+                if (status === 'active' && expiry > Date.now()) {  
+                    if (badge) {
+                        badge.innerText = "ACTIVE";  
+                        badge.style.background = "var(--primary)";
+                        badge.style.color = "#000";
+                    }
+                    if (expText) expText.innerText = "Hạn: " + new Date(expiry).toLocaleDateString('vi-VN');  
                     
                     if (mainWorkGrid) mainWorkGrid.style.setProperty('display', 'block', 'important');
                     if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'none', 'important');
-                } else { 
-                    badge.innerText = status === 'new' ? "MỚI" : "EXPIRED"; 
-                    badge.style.background = "#ff4757"; 
-                    badge.style.color = "#fff";
-                    expText.innerText = "";
+                } else {  
+                    if (badge) {
+                        badge.innerText = status === 'new' ? "MỚI" : "EXPIRED";  
+                        badge.style.background = "#ff4757";  
+                        badge.style.color = "#fff";
+                    }
+                    if (expText) expText.innerText = "";
                     
-                    if (mainWorkGrid) mainWorkGrid.innerHTML = '';
+                    if (mainWorkGrid) mainWorkGrid.style.setProperty('display', 'none', 'important');
                     if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'block', 'important');
                 }
-                document.getElementById('authControl').style.setProperty('display', 'flex', 'important');
-            } else { 
-                window.location.href = 'index'; 
+                
+                const authControl = document.getElementById('authControl');
+                if (authControl) authControl.style.setProperty('display', 'flex', 'important');
+            } else {  
+                window.location.href = 'index';  
             }
         }
         function handleCopyTabClick(e) {
