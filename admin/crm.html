@@ -349,11 +349,12 @@
             const monthSelect = document.getElementById('monthFilter');
             const currentValue = monthSelect.value;
             
-            // Lấy danh sách các tháng duy nhất từ event_date (định dạng YYYY-MM)
             const monthsSet = new Set();
             contracts.forEach(c => {
                 if (c.event_date) {
-                    const ym = c.event_date.substring(0, 7); // Lấy "YYYY-MM"
+                    // Lấy đúng 7 ký tự đầu tiên đại diện cho "YYYY-MM" (ví dụ: "2026-10")
+                    const cleanDate = c.event_date.replace('T', ' ');
+                    const ym = cleanDate.substring(0, 7); 
                     if (ym.length === 7) monthsSet.add(ym);
                 }
             });
@@ -365,7 +366,7 @@
             });
         
             monthSelect.innerHTML = optionsHTML;
-            monthSelect.value = currentValue; // Giữ lại lựa chọn của người dùng nếu có
+            monthSelect.value = currentValue;
         }
         
         // 🌟 HÀM HIỂN THỊ DỮ LIỆU LÊN BẢNG CRM
@@ -444,13 +445,14 @@
                 const dateStr = (c.event_date || '').toLowerCase();
                 const packageStr = (c.service_package || '').toLowerCase();
         
-                // Khớp từ khóa tìm kiếm (Tên, SĐT, Gói hoặc Ngày)
+                // Khớp từ khóa tìm kiếm
                 const matchKeyword = name.includes(keyword) || phone.includes(keyword) || dateStr.includes(keyword) || packageStr.includes(keyword);
         
-                // Khớp bộ lọc tháng
+                // Khớp bộ lọc tháng (chuẩn hóa chuỗi ngày tháng từ Database)
                 let matchMonth = true;
                 if (selectedMonth && c.event_date) {
-                    matchMonth = c.event_date.startsWith(selectedMonth);
+                    const cleanDate = c.event_date.replace('T', ' ');
+                    matchMonth = cleanDate.startsWith(selectedMonth);
                 }
         
                 return matchKeyword && matchMonth;
