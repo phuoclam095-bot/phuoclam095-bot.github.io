@@ -494,15 +494,21 @@
                 alert("Lỗi kết nối máy chủ!");
             }
         }
-       // 🌟 HÀM TẠO VÀ IN HỢP ĐỒNG AN TOÀN TUYỆT ĐỐI, KHÔNG XUNG ĐỘT SCRIPT
+       // 🌟 HÀM TẠO VÀ IN HỢP ĐỒNG ĐÃ ĐỊNH DẠNG LẠI TIỀN TỆ (DÙNG DẤU CHẤM, KHÔNG LẤY SỐ THẬP PHÂN)
 async function printContract(c) {
     showToast("Đang tải thông tin studio...");
     
-    // 1. Mở cửa sổ in ngay lập tức với giao diện màn hình chờ bên trong trang giấy
     let printWindow = window.open('', '_blank', 'width=950,height=850');
     if (!printWindow) {
         alert("Trình duyệt đã chặn cửa sổ popup! Vui lòng cho phép popup để xem hợp đồng.");
         return;
+    }
+
+    // Hàm định dạng số tiền thành dạng 3.000.000 (dùng dấu chấm)
+    function formatMoney(amount) {
+        let num = parseFloat(amount) || 0;
+        // Làm tròn thành số nguyên và ngăn cách bằng dấu chấm
+        return Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
 
     printWindow.document.write(`<!DOCTYPE html>
@@ -514,7 +520,12 @@ async function printContract(c) {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         body { font-family: 'Montserrat', sans-serif; color: #111; margin: 0; padding: 40px; background: #f1f5f9; line-height: 1.5; }
-        .invoice-box { max-width: 800px; margin: auto; padding: 30px; background: #fff; border: 1px solid #cbd5e1; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); border-radius: 12px; }
+        .invoice-box { max-width: 800px; margin: auto; padding: 30px; background: #fff; border: 1px solid #cbd5e1; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); border-radius: 12px; position: relative; min-height: 500px; }
+        
+        #loadingOverlay { position: absolute; inset: 0; background: #fff; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; gap: 15px; }
+        .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #00ebb0; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
         .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #00ebb0; padding-bottom: 20px; margin-bottom: 25px; }
         .logo-area { display: flex; align-items: center; gap: 15px; }
         .logo-area img { width: 70px; height: 70px; border-radius: 10px; object-fit: contain; background: #f8fafc; border: 1.5px solid #00ebb0; padding: 4px; flex-shrink: 0; }
@@ -565,17 +576,19 @@ async function printContract(c) {
             .no-print { display: none; }
             .editable-input { border: none; background: transparent; padding: 0; font-weight: 600; }
             .btn-del-row { display: none; }
+            #loadingOverlay { display: none !important; }
         }
     </style>
 </head>
 <body>
     <div class="invoice-box">
-        <!-- 🌟 DÒNG ĐANG TẢI THÔNG TIN STUDIO NẰM TRONG TRANG GIẤY -->
-        <div id="loadingStudioNotice" class="notice-bar" style="background: #f59e0b; color: #000;">
-            ⏳ Đang tải thông tin studio từ hệ thống... Vui lòng đợi trong giây lát.
+        <div id="loadingOverlay">
+            <div class="spinner"></div>
+            <div style="font-weight: 700; font-size: 0.9rem; color: #050a14;">Đang tải thông tin studio từ hệ thống...</div>
+            <div style="font-size: 0.75rem; color: #666;">Vui lòng đợi trong giây lát.</div>
         </div>
 
-        <div class="no-print notice-bar" id="mainNoticeBar" style="display: none;">
+        <div class="no-print notice-bar">
             💡 Chủ studio có thể chỉnh sửa trực tiếp thông tin, thêm bớt dòng dịch vụ và chọn In hoặc xuất PDF gửi khách!<br>
             ⚠️ Nếu chưa có thông tin studio vui lòng cấu hình ở trang chủ.
         </div>
@@ -651,12 +664,12 @@ async function printContract(c) {
             <tbody id="priceTableBody">
                 <tr>
                     <td class="col-content"><input type="text" class="editable-input" value="Gói dịch vụ chính: ${c.service_package || 'Gói tiêu chuẩn'}"></td>
-                    <td class="col-price"><input type="text" class="editable-input price-input" style="text-align: right;" value="${c.total_amount || 0}"></td>
+                    <td class="col-price"><input type="text" class="editable-input price-input" style="text-align: right;" value="${Math.round(parseFloat(c.total_amount) || 0)}"></td>
                     <td class="col-action no-print"><button class="btn-del-row" onclick="this.closest('tr').remove(); calculateTotal();">X</button></td>
                 </tr>
                 <tr>
                     <td class="col-content"><input type="text" class="editable-input" value="Chi phí phát sinh thêm (Trang phục, phụ phí...)"></td>
-                    <td class="col-price"><input type="text" class="editable-input price-input" style="text-align: right;" value="${c.extra_fee || 0}"></td>
+                    <td class="col-price"><input type="text" class="editable-input price-input" style="text-align: right;" value="${Math.round(parseFloat(c.extra_fee) || 0)}"></td>
                     <td class="col-action no-print"><button class="btn-del-row" onclick="this.closest('tr').remove(); calculateTotal();">X</button></td>
                 </tr>
             </tbody>
@@ -692,7 +705,6 @@ async function printContract(c) {
 </body>
 </html>`);
 
-    // 2. Gọi API ngầm lấy thông tin studio từ n8n
     const studioSlug = localStorage.getItem('admin_studio_slug') || 'studio';
     let sName = "CHONANHNHANH.VN";
     let sPhone = "0879029170";
@@ -714,7 +726,6 @@ async function printContract(c) {
         console.log("Lỗi tải thông tin studio từ n8n:", e);
     }
 
-    // 3. Đổ dữ liệu thật vào cửa sổ in và bật script xử lý tính toán động
     let doc = printWindow.document;
     doc.getElementById('studioTitleText').innerText = sName;
     doc.getElementById('studioPhoneText').innerText = sPhone;
@@ -722,14 +733,11 @@ async function printContract(c) {
     doc.getElementById('studioLogoImg').src = sLogo;
     doc.getElementById('sigStudioName').innerText = sName;
 
-    // Ẩn thông báo đang tải, hiện thông báo hướng dẫn chính thức
-    doc.getElementById('loadingStudioNotice').style.display = 'none';
-    doc.getElementById('mainNoticeBar').style.display = 'block';
+    doc.getElementById('loadingOverlay').style.display = 'none';
 
-    const depositAmt = parseFloat(c.deposit_amount) || 0;
-    doc.getElementById('depositDisplay').innerText = '- ' + depositAmt.toLocaleString('vi-VN') + ' ₫';
+    const depositAmt = Math.round(parseFloat(c.deposit_amount) || 0);
+    doc.getElementById('depositDisplay').innerText = '- ' + depositAmt.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + ' ₫';
 
-    // Hàm tính toán tổng tiền động trực tiếp trong cửa sổ popup
     function updateCalc() {
         let inputs = doc.querySelectorAll('.price-input');
         let sum = 0;
@@ -738,11 +746,10 @@ async function printContract(c) {
             sum += val;
         });
         let remaining = sum - depositAmt;
-        doc.getElementById('grandTotalDisplay').innerText = sum.toLocaleString('vi-VN') + ' ₫';
-        doc.getElementById('remainingDisplay').innerText = remaining > 0 ? remaining.toLocaleString('vi-VN') + ' ₫' : '0 ₫';
+        doc.getElementById('grandTotalDisplay').innerText = Math.round(sum).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + ' ₫';
+        doc.getElementById('remainingDisplay').innerText = (remaining > 0 ? Math.round(remaining).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") : '0') + ' ₫';
     }
 
-    // Gắn sự kiện thêm dòng
     doc.getElementById('btnAddRow').onclick = function() {
         let tbody = doc.getElementById('priceTableBody');
         let tr = doc.createElement('tr');
@@ -756,7 +763,6 @@ async function printContract(c) {
         updateCalc();
     };
 
-    // Gắn sự kiện tính tiền khi gõ phím
     doc.querySelectorAll('.price-input').forEach(inp => {
         inp.oninput = updateCalc;
     });
