@@ -125,7 +125,15 @@
         <div class="card-custom">
             <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
                 <h5 class="fw-900 text-primary mb-0">QUẢN LÝ HỢP ĐỒNG & LỊCH TRÌNH STUDIO</h5>
-                <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#addContractModal"><i class="fas fa-plus me-2"></i>Thêm Hợp Đồng Mới</button>
+                <div class="d-flex align-items-center gap-2">
+                    <!-- 🌟 NÚT KẾT NỐI VÀ ĐỒNG BỒ HÀNG LOẠT (KHÔNG TRÙNG LẶP) -->
+                    <button class="btn btn-outline-light fw-bold px-3 py-2 rounded-3 text-uppercase" style="font-size: 0.75rem; border-color: rgba(255,255,255,0.2);" onclick="requestCalendarPermission()">
+                        <i class="fab fa-google text-primary me-2"></i> Kết nối Lịch & Đồng bộ
+                    </button>
+                    <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#addContractModal">
+                        <i class="fas fa-plus me-2"></i> Thêm Hợp Đồng Mới
+                    </button>
+                </div>
             </div>
             <div class="table-responsive">
                 <table class="table table-dark table-hover mb-0">
@@ -472,5 +480,6 @@
             window.location.href = authUrl;
         }
     </script>
+    
 </body>
 </html>
