@@ -325,7 +325,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const PATHS = { LIST: 'https://wsm.congtubaclieu.com.vn/webhook/get-album-list', DELETE: 'https://wsm.congtubaclieu.com.vn/webhook/delete-album', EXPORT: 'https://wsm.congtubaclieu.com.vn/webhook/export_filenames', CLIENT: 'https://phuoclam095-bot.github.io/' };
+        const PATHS = { LIST: 'https://wsm.congtubaclieu.com.vn/webhook/get-album-list', DELETE: 'https://wsm.congtubaclieu.com.vn/webhook/delete-album', EXPORT: 'https://wsm.congtubaclieu.com.vn/webhook/export_filenames',NOTES: 'https://wsm.congtubaclieu.com.vn/webhook/get-album-notes', CLIENT: 'https://phuoclam095-bot.github.io/' };
         let adminEmail = localStorage.getItem('admin_email'), allAlbums = [];
 
         function showToast(msg) { const t = document.getElementById('toastNotice'); t.innerText = msg; t.style.display = 'block'; setTimeout(() => { t.style.display = 'none'; }, 2200); }
@@ -387,15 +387,10 @@
        async function openNoteModal(folderId, albumName) {
             showToast("Đang tải ghi chú...");
             try {
-                // 🌟 Lấy đúng studio slug hiện tại và truyền tham số album bằng folderId (hoặc slug)
-                let rawStudio = localStorage.getItem('admin_studio_slug') || 'studio';
-                const sSlug = rawStudio.replace(/-+/g, '-').replace(/^-|-$/g, '') || 'studio';
-
-                // Gọi đúng endpoint kèm theo tham số studio và album giống client.html
-                const res = await fetch(`https://wsm.congtubaclieu.com.vn/webhook/get-photos?studio=${sSlug}&album=${folderId}`);
+                // Gọi trực tiếp webhook mới bằng folderId, không lo lệch tham số slug nữa
+                const res = await fetch(`${PATHS.NOTES}?folderId=${folderId}`);
                 const data = await res.json();
-                const rootObj = Array.isArray(data) ? data[0] : data;
-                const photos = rootObj.photos || [];
+                const photos = data.photos || [];
                 
                 document.getElementById('noteModalInfo').innerText = `Album: ${albumName}`;
                 const container = document.getElementById('noteListContainer');
@@ -403,14 +398,14 @@
                 
                 let hasNote = false;
                 photos.forEach(p => {
-                    const contentNote = p.note || p.memo || p.ghi_chu;
+                    const contentNote = p.note;
                     if (contentNote && String(contentNote).trim() !== '') {
                         hasNote = true;
                         container.innerHTML += `
                             <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(0, 235, 176, 0.2); padding: 15px; border-radius: 15px; margin-bottom: 10px;">
                                 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                                    <img src="https://drive.google.com/thumbnail?id=${p.id || p.file_id}&sz=w100" style="width: 40px; height: 40px; object-fit: cover; border-radius: 8px; border: 1px solid var(--primary);">
-                                    <div style="font-size: 0.8rem; color: var(--primary); font-weight: 800;">📷 Tên ảnh: ${p.name || 'Không có tên'}</div>
+                                    <img src="https://drive.google.com/thumbnail?id=${p.id}&sz=w100" style="width: 40px; height: 40px; object-fit: cover; border-radius: 8px; border: 1px solid var(--primary);">
+                                    <div style="font-size: 0.8rem; color: var(--primary); font-weight: 800;">📷 Tên ảnh: ${p.name}</div>
                                 </div>
                                 <div style="font-size: 0.9rem; color: #fff; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 10px; border-left: 3px solid var(--primary);">
                                     <b>Ghi chú:</b> ${contentNote}
@@ -430,7 +425,6 @@
                 showToast("Không thể tải ghi chú!");
             }
         }
-
         async function handleExportClick(id, name) {
             showToast("Đang trích xuất dữ liệu...");
             try {
