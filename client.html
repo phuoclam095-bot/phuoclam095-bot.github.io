@@ -465,27 +465,17 @@
                 throw new Error(`Máy chủ phản hồi lỗi (Mã trạng thái: ${res.status}). Album không tồn tại.`);
             }
 
-            // 🌟 Đọc dữ liệu dưới dạng text trước để kiểm tra tránh lỗi sập JSON
+            // Đọc dữ liệu dưới dạng text trước để tránh sập JSON khi server trả về rỗng
             const responseText = await res.text();
             if (!responseText || responseText.trim() === "") {
                 throw new Error(`Album [${albumSlug}] không tồn tại hoặc chưa đồng bộ xong.`);
             }
 
             const jsonResponseData = JSON.parse(responseText);
-            const data = Array.isArray(rawData) ? rawData[0] : rawData;
+            const data = Array.isArray(jsonResponseData) ? jsonResponseData[0] : jsonResponseData;
             
             if (!data || !data.photos || data.photos.length === 0) {
                 throw new Error(`Album mã số [${albumSlug}] hiện tại không có bức ảnh nào!`);
-            }
-            if (!res.ok) {
-                throw new Error(`Máy chủ phản hồi lỗi (Mã trạng thái: ${res.status}). Album có thể không tồn tại.`);
-            }
-
-            rawData = await res.json();
-            const data = Array.isArray(rawData) ? rawData[0] : rawData;
-            
-            if (!data) {
-                throw new Error("Dữ liệu trả về từ máy chủ trống.");
             }
 
             photos = data.photos || [];
@@ -493,11 +483,6 @@
             
             window.fid = data.folder_id || albumSlug; 
             fid = window.fid;
-
-            // Kiểm tra nếu album không có ảnh nào
-            if (photos.length === 0) {
-                throw new Error("Album này hiện tại chưa có bức ảnh nào hoặc đang trong quá trình đồng bộ.");
-            }
 
             const clientLogo = albumSettings.watermark_logo || '';
             const isWatermarkOn = albumSettings.watermark_enabled !== false;
@@ -525,10 +510,11 @@
             loadOverlay.style.display = 'none';
             if (errorText) errorText.innerText = e.message || "Không tìm thấy album hoặc tên đường dẫn không tồn tại.";
             if (errorBox) {
-                // Ép hiển thị khung thông báo lỗi dạng flex đè lên màn hình đen
                 errorBox.style.setProperty('display', 'flex', 'important');
             }
         }
+
+            
     }
         // 🌟 BẮT BUỘC PHẢI CÓ DÒNG NÀY ĐỂ KÍCH HOẠT HỆ THỐNG KHI MỞ TRANG
         init();
