@@ -178,24 +178,7 @@
             if(v === 'viewer') showViewer(); else syncGridUI();
         }
 
-        function initGrid(photosArray) {
-            const gridContainer = document.getElementById('gridContainer'); // Tên container chứa ảnh của bạn
-            gridContainer.innerHTML = '';
         
-            photosArray.forEach(p => {
-                const item = document.createElement('div');
-                item.className = 'photo-item'; // Hoặc tên class khung ảnh hiện tại của bạn
-                item.innerHTML = `
-                    <img src="${getLink(p.id, 's400')}" loading="lazy">
-                    ${watermarkHTML}
-                `;
-                
-                item.onclick = () => { cur = i; syncGridUI(); };
-                item.ondblclick = () => { cur = i; setView('viewer'); };
-                grid.appendChild(item);
-            });
-            syncGridUI();
-        }
        function syncGridUI() {
             if(currentView !== 'grid') return;
             const pCurrent = photos[cur];
