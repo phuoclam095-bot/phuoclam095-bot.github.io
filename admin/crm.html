@@ -111,7 +111,10 @@ input[type="datetime-local"] { color-scheme: dark; }
 .form-control::placeholder { color: #8fa3bf !important; opacity: 1; font-weight: 400; }
 .form-label { color: #cbd5e1 !important; font-size: 0.75rem !important; letter-spacing: 0.5px; }
 #toastNotice { position: fixed; top: 110px; right: 30px; background: var(--primary); color: #000; padding: 12px 30px; border-radius: 12px; z-index: 20000; font-weight: 900; display: none; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
-
+.container-fluid.px-4.px-lg-5 {
+    max-width: 1550px;
+    margin: 0 auto;
+}
 /* --- RESPONSIVE TRÊN MOBILE --- */
 @media (max-width: 991.98px) {
     body { padding-top: 150px; }
@@ -134,7 +137,7 @@ input[type="datetime-local"] { color-scheme: dark; }
     <div id="toastNotice">Đang xử lý...</div>
 
   <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
-    <div class="container-fluid px-3 px-lg-5 d-flex flex-wrap align-items-center justify-content-between">
+    <div class="container py-4" style="max-width: 1550px;">
         
         <!-- Logo bên trái -->
         <a class="navbar-brand m-0" href="index"><img src="https://i.ibb.co/C3L2Ch5Z/logo.png" alt="Logo"></a>
