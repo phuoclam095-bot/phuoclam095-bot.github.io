@@ -325,81 +325,114 @@
                 statusInput.value = "Đã cọc (Còn nợ)";
             }
         }
-
-        // 🌟 TẢI DỮ LIỆU THẬT TỪ DATABASE QUA WEBHOOK N8N
+        let allContractsGlobal = []; // Lưu trữ danh sách gốc để phục vụ tìm kiếm & lọc
+        
         async function loadContracts() {
             const studioSlug = localStorage.getItem('admin_studio_slug') || 'studio';
             try {
                 const res = await fetch(`${PATHS.GET_CONTRACTS}?studio_slug=${studioSlug}`);
                 const data = await res.json();
-                const contracts = Array.isArray(data) ? data : (data.contracts || []);
+                allContractsGlobal = Array.isArray(data) ? data : (data.contracts || []);
                 
-                const tbody = document.getElementById('contractsTableBody');
-                tbody.innerHTML = '';
-
-                if (contracts.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="9" class="text-center text-secondary py-5">Chưa có hợp đồng nào trong hệ thống.</td></tr>`;
-                    return;
-                }
-
-                let totalRev = 0;
-                let totalDep = 0;
-                let totalRem = 0;
-
-                contracts.forEach(c => {
-                    const total = parseFloat(c.total_amount) || 0;
-                    const deposit = parseFloat(c.deposit_amount) || 0;
-                    const extra = parseFloat(c.extra_fee) || 0;
-                    const grandTotal = total + extra;
-                    const remaining = grandTotal - deposit;
-
-                    totalRev += grandTotal;
-                    totalDep += deposit;
-                    if (c.payment_status !== 'Đã tất toán') {
-                        totalRem += remaining;
-                    }
-
-                    const formattedDate = c.event_date ? (() => {
-                        let d = new Date(c.event_date);
-                        let day = String(d.getUTCDate()).padStart(2, '0');
-                        let month = String(d.getUTCMonth() + 1).padStart(2, '0');
-                        let year = d.getUTCFullYear();
-                        let hours = String(d.getUTCHours()).padStart(2, '0');
-                        let minutes = String(d.getUTCMinutes()).padStart(2, '0');
-                        return `${day}/${month}/${year} ${hours}:${minutes}`;
-                    })() : '';
-
-                    tbody.innerHTML += `
-                        <tr>
-                            <td>
-                                <div class="fw-bold text-white">${c.customer_name || 'Khách lẻ'}</div>
-                                <div class="text-bright-sub"><i class="fas fa-phone-alt me-1 text-primary" style="font-size: 0.7rem;"></i>${c.customer_phone || 'Chưa có SĐT'}</div>
-                            </td>
-                            <td>
-                                <div class="fw-bold text-white">${c.service_package || 'Gói chụp'}</div>
-                                <div class="text-bright-sub"><i class="fas fa-map-marker-alt me-1 text-danger" style="font-size: 0.7rem;"></i>${c.event_location || 'Tại studio'}</div>
-                            </td>
-                            <td>${formattedDate}</td>
-                            <td>${grandTotal.toLocaleString('vi-VN')} ₫</td>
-                            <td>${deposit.toLocaleString('vi-VN')} ₫</td>
-                            <td class="text-warning fw-bold">${remaining > 0 ? remaining.toLocaleString('vi-VN') + ' ₫' : '0 ₫'}</td>
-                            <td>${extra > 0 ? extra.toLocaleString('vi-VN') + ' ₫' : '0 ₫'}</td>
-                            <td><span class="badge ${c.payment_status === 'Đã tất toán' ? 'bg-success' : 'bg-info'} text-dark">${c.payment_status || 'Đã cọc'}</span></td>
-                            <td class="text-end">
-                                ${c.payment_status !== 'Đã tất toán' ? `<button class="btn-settle" onclick="settleContract(${c.id})">Tất toán</button>` : `<span class="text-success fw-bold small"><i class="fas fa-check-circle me-1"></i>Xong</span>`}
-                            </td>
-                        </tr>
-                    `;
-                });
-
-                document.getElementById('statTotalRevenue').innerText = totalRev.toLocaleString('vi-VN') + ' VNĐ';
-                document.getElementById('statTotalDeposit').innerText = totalDep.toLocaleString('vi-VN') + ' VNĐ';
-                document.getElementById('statTotalRemaining').innerText = totalRem.toLocaleString('vi-VN') + ' VNĐ';
-
+                // 🌟 SẮP XẾP: Đưa ngày gần nhất lên trên đầu
+                allContractsGlobal.sort((a, b) => new Date(a.event_date) - new Date(b.event_date));
+        
+                renderTable(allContractsGlobal);
             } catch(e) {
                 console.error(e);
                 document.getElementById('contractsTableBody').innerHTML = `<tr><td colspan="9" class="text-center text-danger py-4">Lỗi kết nối lấy dữ liệu từ máy chủ!</td></tr>`;
             }
+        }
+        
+        // 🌟 HÀM HIỂN THỊ VÀ LỌC DỮ LIỆU LÊN BẢNG
+        function renderTable(contracts) {
+            const tbody = document.getElementById('contractsTableBody');
+            tbody.innerHTML = '';
+        
+            if (contracts.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="text-center text-secondary py-5">Không tìm thấy hợp đồng phù hợp.</td></tr>`;
+                return;
+            }
+        
+            let totalRev = 0;
+            let totalDep = 0;
+            let totalRem = 0;
+        
+            contracts.forEach(c => {
+                const total = parseFloat(c.total_amount) || 0;
+                const deposit = parseFloat(c.deposit_amount) || 0;
+                const extra = parseFloat(c.extra_fee) || 0;
+                const grandTotal = total + extra;
+                const remaining = grandTotal - deposit;
+        
+                totalRev += grandTotal;
+                totalDep += deposit;
+                if (c.payment_status !== 'Đã tất toán') {
+                    totalRem += remaining;
+                }
+        
+                // Định dạng ngày giờ chuẩn UTC để hiển thị chính xác không lệch
+                const formattedDate = c.event_date ? (() => {
+                    let d = new Date(c.event_date);
+                    let day = String(d.getUTCDate()).padStart(2, '0');
+                    let month = String(d.getUTCMonth() + 1).padStart(2, '0');
+                    let year = d.getUTCFullYear();
+                    let hours = String(d.getUTCHours()).padStart(2, '0');
+                    let minutes = String(d.getUTCMinutes()).padStart(2, '0');
+                    return `${day}/${month}/${year} ${hours}:${minutes}`;
+                })() : '';
+        
+                tbody.innerHTML += `
+                    <tr>
+                        <td>
+                            <div class="fw-bold text-white">${c.customer_name || 'Khách lẻ'}</div>
+                            <div class="text-bright-sub"><i class="fas fa-phone-alt me-1 text-primary" style="font-size: 0.7rem;"></i>${c.customer_phone || 'Chưa có SĐT'}</div>
+                        </td>
+                        <td>
+                            <div class="fw-bold text-white">${c.service_package || 'Gói chụp'}</div>
+                            <div class="text-bright-sub"><i class="fas fa-map-marker-alt me-1 text-danger" style="font-size: 0.7rem;"></i>${c.event_location || 'Tại studio'}</div>
+                        </td>
+                        <td>${formattedDate}</td>
+                        <td>${grandTotal.toLocaleString('vi-VN')} ₫</td>
+                        <td>${deposit.toLocaleString('vi-VN')} ₫</td>
+                        <td class="text-warning fw-bold">${remaining > 0 ? remaining.toLocaleString('vi-VN') + ' ₫' : '0 ₫'}</td>
+                        <td>${extra > 0 ? extra.toLocaleString('vi-VN') + ' ₫' : '0 ₫'}</td>
+                        <td><span class="badge ${c.payment_status === 'Đã tất toán' ? 'bg-success' : 'bg-info'} text-dark">${c.payment_status || 'Đã cọc'}</span></td>
+                        <td class="text-end">
+                            ${c.payment_status !== 'Đã tất toán' ? `<button class="btn-settle" onclick="settleContract(${c.id})">Tất toán</button>` : `<span class="text-success fw-bold small"><i class="fas fa-check-circle me-1"></i>Xong</span>`}
+                        </td>
+                    </tr>
+                `;
+            });
+        
+            document.getElementById('statTotalRevenue').innerText = totalRev.toLocaleString('vi-VN') + ' VNĐ';
+            document.getElementById('statTotalDeposit').innerText = totalDep.toLocaleString('vi-VN') + ' VNĐ';
+            document.getElementById('statTotalRemaining').innerText = totalRem.toLocaleString('vi-VN') + ' VNĐ';
+        }
+        
+        // 🌟 HÀM LỌC VÀ TÍCH HỢP TÌM KIẾM THÔNG MINH
+        function filterContracts() {
+            const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
+            const selectedMonth = document.getElementById('monthFilter').value; // dạng "2026-10"
+        
+            let filtered = allContractsGlobal.filter(c => {
+                const name = (c.customer_name || '').toLowerCase();
+                const phone = (c.customer_phone || '').toLowerCase();
+                const dateStr = (c.event_date || '').toLowerCase();
+        
+                // Khớp từ khóa tìm kiếm (Tên, SĐT hoặc Ngày)
+                const matchKeyword = name.includes(keyword) || phone.includes(keyword) || dateStr.includes(keyword);
+        
+                // Khớp bộ lọc tháng
+                let matchMonth = true;
+                if (selectedMonth && c.event_date) {
+                    matchMonth = c.event_date.startsWith(selectedMonth);
+                }
+        
+                return matchKeyword && matchMonth;
+            });
+        
+            renderTable(filtered);
         }
 
         // 🌟 TẤT TOÁN NHANH (Cộng phát sinh + Tổng tiền - Cọc = 0)
