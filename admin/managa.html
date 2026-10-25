@@ -270,7 +270,7 @@
                     <li class="nav-item"><a href="index" class="nav-link">Tạo Album</a></li>
                     <!-- 🌟 ĐÃ FIX: Đổi href thành javascript:void(0) kết hợp onclick ngăn chặn triệt để chuyển hướng trên Mobile -->
                     
-                    <li class="nav-item"><a href="managa.html" class="nav-link active">Quản Lý</a></li>
+                    <li class="nav-item"><a href="managa" class="nav-link active">Quản Lý</a></li>
                     <li class="nav-item"><a href="javascript:void(0);" class="nav-link" onclick="handleCopyTabClick(event)">Sao Chép</a></li>
                 </ul>
             </div>
@@ -524,7 +524,7 @@
             if (window.innerWidth <= 991.98) {
                 alert("Xin lỗi tính năng này không thể sử dụng trên điện thoại");
             } else {
-                window.location.href = 'copy_local.html';
+                window.location.href = 'copy_local';
             }
         }
         function openSettingsModal(folderId, limitVal, downloadVal, commentVal, watermarkEnabledVal, watermarkLogoVal) {
