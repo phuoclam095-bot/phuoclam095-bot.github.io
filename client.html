@@ -468,10 +468,10 @@
             // 🌟 Đọc dữ liệu dưới dạng text trước để kiểm tra tránh lỗi sập JSON
             const responseText = await res.text();
             if (!responseText || responseText.trim() === "") {
-                throw new Error(`Album mã số [${albumSlug}] không tồn tại hoặc dữ liệu trả về từ máy chủ trống.`);
+                throw new Error(`Album [${albumSlug}] không tồn tại hoặc chưa đồng bộ xong.`);
             }
 
-            const rawData = JSON.parse(responseText);
+            const jsonResponseData = JSON.parse(responseText);
             const data = Array.isArray(rawData) ? rawData[0] : rawData;
             
             if (!data || !data.photos || data.photos.length === 0) {
@@ -481,7 +481,7 @@
                 throw new Error(`Máy chủ phản hồi lỗi (Mã trạng thái: ${res.status}). Album có thể không tồn tại.`);
             }
 
-            const rawData = await res.json();
+            rawData = await res.json();
             const data = Array.isArray(rawData) ? rawData[0] : rawData;
             
             if (!data) {
