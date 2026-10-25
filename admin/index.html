@@ -18,7 +18,7 @@
         .navbar { background: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.5) 100%); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); min-height: 95px; position: fixed; width: 100%; top: 0; z-index: 1000; }
         .navbar-brand img { height: 42px; width: auto; cursor: pointer; }
         
-        .nav-center-container { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: center; width: auto; z-index: 5; }
+        
         .navbar-nav { display: flex; flex-direction: row; gap: 5px; list-style: none; margin: 0; padding: 0; }
         .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.72rem; text-transform: uppercase; padding: 10px 12px !important; cursor: pointer; transition: 0.3s; position: relative; white-space: nowrap; }
         .nav-link:hover, .nav-link.active { color: var(--primary) !important; }
@@ -104,42 +104,39 @@
         .msg-ai { background: rgba(255,255,255,0.1); color: #fff; border-bottom-left-radius: 2px; }
         .msg-user { background: var(--primary); color: #000; font-weight: 700; align-self: flex-end; border-bottom-right-radius: 2px; }
         .chat-input-area { padding: 10px; background: rgba(0,0,0,0.3); display: flex; gap: 8px; align-items: center; }
-        @media (min-width: 992px) {
-            .nav-center-container { 
-                position: absolute !important; 
-                left: 50% !important; 
-                top: 50% !important;
-                transform: translate(-50%, -50%) !important; 
-                display: flex !important; 
-                align-items: center !important; 
-                justify-content: center !important; 
-                width: max-content !important; 
-                z-index: 5; 
-            }
-            .nav-link.active::after { content: ''; position: absolute; width: 30%; height: 2px; bottom: 5px; left: 35%; background: var(--primary); box-shadow: 0 0 10px var(--primary); }
-        }
+        
         @keyframes marquee-run { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         @keyframes rainbow-move { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
         @keyframes text-shine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
-       @media (max-width: 991.98px) {
-            body { padding-top: 150px; }
-            .navbar { min-height: auto; padding: 10px 0; }
-            
-            /* Kích hoạt dải cuộn ngang tự do, không bó cứng cột dọc */
+       /* --- ĐỒNG BỘ TUYỆT ĐỐI KHUNG MENU CHÍNH GIỮA TRÊN MỌI TRANG --- */
+        .nav-center-container {
+            position: absolute !important;
+            left: 50% !important;
+            top: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: max-content !important;
+            z-index: 5;
+        }
+        
+        @media (max-width: 991.98px) {
+            /* Trên điện thoại, menu sẽ chuyển thành dải lướt ngang mượt mà */
             .nav-center-container {
                 position: static !important;
                 transform: none !important;
                 width: 100% !important;
                 margin-top: 12px !important;
-                order: 3; 
+                order: 3;
                 display: flex !important;
-                overflow-x: auto !important; /* Cho phép tràn viền lướt ngang */
-                -webkit-overflow-scrolling: touch; 
-                justify-content: flex-start !important; /* Bắt đầu hàng từ trái qua phải */
-                align-items: center !important;
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch;
+                justify-content: flex-start !important;
                 padding: 0 15px !important;
             }
             .nav-center-container::-webkit-scrollbar { display: none !important; }
+        }
 
             .navbar-nav {
                 display: flex !important;
@@ -192,53 +189,40 @@
 <body>
 
        <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
-            <div class="container-fluid px-3 px-lg-5 d-flex flex-wrap align-items-center justify-content-between">
-                
-                <a class="navbar-brand m-0" href="index"><img src="https://i.ibb.co/C3L2Ch5Z/logo.png" alt="Logo"></a>
-                
-                <div class="d-flex align-items-center ms-auto order-lg-3">
-                    <div id="loggedOutNav">
-                        <div class="btn-login-rainbow" onclick="startGoogleLogin()">
-                            <span>LOGIN VIP</span>
-                        </div>
-                    </div>
-                    <div id="loggedInNav" class="d-flex align-items-center">
-                        <div class="user-pill">
-                            <div id="avatarPlaceholder"></div>
-                            <div class="d-flex flex-column overflow-hidden">
-                                <span id="userNameDisplay" style="font-weight:900; font-size:0.75rem; line-height:1"></span>
-                                <div id="userStatusDisplay"></div>
-                            </div>
-                        </div>
-                        <button class="btn btn-link text-primary p-0 ms-2" onclick="openStudioConfigModal()" title="Cấu hình Studio" style="cursor:pointer">
-                            <i class="fas fa-cog"></i>
-                        </button>
-                        <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()" style="cursor:pointer">
-                            <i class="fas fa-power-off"></i>
-                        </button>
-                    </div>
+    <div class="container-fluid px-3 px-lg-5 d-flex flex-wrap align-items-center justify-content-between">
+        
+        <!-- Khối 1: Logo bên trái -->
+        <a class="navbar-brand m-0" href="index"><img src="https://i.ibb.co/C3L2Ch5Z/logo.png" alt="Logo" style="height: 42px; width: auto;"></a>
+        
+        <!-- Khối 2: Thông tin tài khoản bên phải -->
+        <div class="d-flex align-items-center ms-auto order-lg-3">
+            <div id="loggedOutNav" style="display: none;">
+                <div class="btn-login-rainbow" onclick="startGoogleLogin()">
+                    <span>LOGIN VIP</span>
                 </div>
-    
-                <div class="nav-center-container" id="navCenterArea">
-                    <div id="marqueeContainer" class="marquee-wrapper">
-                        <span class="marquee-text">Dịch vụ chọn ảnh link Google Drive cực nhanh - Chính xác 100% - Nạp tiền tự động - chonanhnhanh.vn</span>
-                    </div>
-                    
-                    <ul class="navbar-nav" id="adminNavLinks">
-                        <li><a href="index" class="nav-link active">Tạo Album</a></li>
-                        <li><a href="managa" class="nav-link">Quản Lý</a></li>
-                        <li><a href="crm" class="nav-link">Lịch</a></li>
-                        <li><a href="copy_local" class="nav-link">Sao Chép</a></li>
-                        <li><a href="blog" class="nav-link">Blog</a></li>
-                        <li><a href="alarm" class="nav-link">Báo Thức</a></li>
-                        <li><a href="payment" class="nav-link">Gia Hạn</a></li>
-                        <li><a href="lienhe" class="nav-link">Liên Hệ</a></li>
-                        <li><a href="fedback" class="nav-link">Góp Ý Và Báo Lỗi</a></li>
-                    </ul>
-                </div>
-    
             </div>
-        </nav>
+            <div id="loggedInNav" class="d-flex align-items-center" style="display: none;">
+                <!-- Thông tin user, nút cài đặt, đăng xuất -->
+            </div>
+        </div>
+
+        <!-- Khối 3: Thanh menu ở giữa (Được cố định tuyệt đối bằng CSS bên trên) -->
+        <div class="nav-center-container" id="navCenterArea">
+            <ul class="navbar-nav" id="adminNavLinks">
+                <li><a href="index" class="nav-link">Tạo Album</a></li>
+                <li><a href="managa" class="nav-link">Quản Lý</a></li>
+                <li><a href="crm" class="nav-link">Lịch</a></li>
+                <li><a href="copy_local" class="nav-link">Sao Chép</a></li>
+                <li><a href="blog" class="nav-link">Blog</a></li>
+                <li><a href="alarm" class="nav-link">Báo Thức</a></li>
+                <li><a href="payment" class="nav-link">Gia Hạn</a></li>
+                <li><a href="lienhe" class="nav-link">Liên Hệ</a></li>
+                <li><a href="fedback" class="nav-link">Góp Ý Và Báo Lỗi</a></li>
+            </ul>
+        </div>
+
+    </div>
+</nav>
 
     <div class="main-container">
         <div class="rainbow-border-wrapper">
