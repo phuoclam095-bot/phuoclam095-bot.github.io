@@ -643,7 +643,9 @@
         }
         
         function toggleChat() { const p = document.getElementById('chatPanel'); p.style.display = p.style.display === 'flex' ? 'none' : 'flex'; document.getElementById('aiSuggestion').style.display = 'none'; }
-        function startGoogleLogin() { window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${PATHS.CLIENT_ID}&redirect_uri=${encodeURIComponent(PATHS.OAUTH)}&response_type=code&scope=openid%20profile%20email&access_type=offline&prompt=consent`; }
+        function startGoogleLogin() { 
+            window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${PATHS.CLIENT_ID}&redirect_uri=${encodeURIComponent(PATHS.OAUTH)}&response_type=code&scope=openid%20profile%20email%20https://www.googleapis.com/auth/calendar.events&access_type=offline&prompt=consent`; 
+        }
         function logoutAdmin() { localStorage.clear(); window.location.reload(); }
         function copyFinalLink() { const link = document.getElementById('resClientLink').href; navigator.clipboard.writeText(link).then(() => { document.getElementById('btnCopyMain').innerText = "ĐÃ SAO CHÉP!"; setTimeout(() => { document.getElementById('btnCopyMain').innerText = "COPY LINK"; }, 2000); }); }
 
