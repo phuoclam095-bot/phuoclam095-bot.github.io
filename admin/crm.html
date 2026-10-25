@@ -348,11 +348,7 @@
                         totalRem += remaining;
                     }
 
-                    const formattedDate = c.event_date ? new Date(c.event_date).toLocaleString('vi-VN', {
-                        timeZone: 'Asia/Ho_Chi_Minh',
-                        dateStyle: 'short', 
-                        timeStyle: 'short'
-                    }) : '';
+                    const formattedDate = c.event_date ? c.event_date.replace('T', ' ').substring(0, 16) : '';
 
                     tbody.innerHTML += `
                         <tr>
