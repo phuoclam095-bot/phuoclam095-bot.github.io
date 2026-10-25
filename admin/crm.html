@@ -494,41 +494,11 @@
                 alert("Lỗi kết nối máy chủ!");
             }
         }
-        // 🌟 HÀM TẠO VÀ IN HỢP ĐỒNG ĐÃ FIX GIAO DIỆN LOGO VÀ BẢNG BÁO GIÁ
-// 🌟 HÀM TẠO VÀ IN HỢP ĐỒNG CHUẨN XÁC, AN TOÀN TUYỆT ĐỐI
-// 🌟 HÀM TẠO VÀ IN HỢP ĐỒNG GỌN GÀNG, KHÔNG BAO GIỜ LỖI CÚ PHÁP
+       // 🌟 HÀM TẠO VÀ IN HỢP ĐỒNG AN TOÀN TUYỆT ĐỐI, KHÔNG XUNG ĐỘT SCRIPT
 async function printContract(c) {
     showToast("Đang tải thông tin studio...");
     
-    let studioName = "CHONANHNHANH.VN";
-    let studioPhone = "0879029170";
-    let studioAddress = "Bạc Liêu";
-    let studioLogo = localStorage.getItem('admin_avatar') || 'https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?auto=format&fit=crop&w=200&q=80';
-
-    const studioSlug = localStorage.getItem('admin_studio_slug') || 'studio';
-
-    try {
-        const res = await fetch(`https://wsm.congtubaclieu.com.vn/webhook/get-studio-info?studio_slug=${studioSlug}`);
-        let data = await res.json();
-        let info = Array.isArray(data) ? data[0] : (data.data || data);
-        
-        if (info) {
-            studioName = info.studio_name || studioName;
-            studioPhone = info.studio_phone || studioPhone;
-            studioAddress = info.studio_address || studioAddress;
-            studioLogo = info.watermark_logo || info.logo || studioLogo;
-        }
-    } catch (e) {
-        console.log("Lỗi tải thông tin studio từ n8n:", e);
-    }
-
-    const total = parseFloat(c.total_amount) || 0;
-    const deposit = parseFloat(c.deposit_amount) || 0;
-    const extra = parseFloat(c.extra_fee) || 0;
-    let eventDateFormatted = c.event_date ? c.event_date.replace('T', ' ').substring(0, 16) : '';
-    let grandTotal = total + extra;
-    let remaining = grandTotal - deposit;
-
+    // 1. Mở cửa sổ in ngay lập tức với giao diện màn hình chờ bên trong trang giấy
     let printWindow = window.open('', '_blank', 'width=950,height=850');
     if (!printWindow) {
         alert("Trình duyệt đã chặn cửa sổ popup! Vui lòng cho phép popup để xem hợp đồng.");
@@ -554,7 +524,7 @@ async function printContract(c) {
         .invoice-title h2 { margin: 0; color: #050a14; font-size: 1.3rem; letter-spacing: 1px; }
         .invoice-title p { margin: 3px 0 0; font-size: 0.78rem; color: #666; }
         
-        .section-title { font-weight: 700; font-size: 0.85rem; background: #f8fafc; padding: 6px 10px; border-left: 4px solid #00ebb0; margin: 18px 0 10px; text-transform: uppercase; }
+        .section-title { font-weight: 700; font-size: 0.85rem; background: #f8fafc; padding: 6px 10px; border-left: 4px solid #00ebb0; margin: 18px 0 10px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 8px; }
         .info-item { margin-bottom: 6px; font-size: 0.82rem; }
         .info-item span { font-weight: 600; color: #555; display: block; margin-bottom: 2px; }
@@ -566,8 +536,9 @@ async function printContract(c) {
         table th, table td { border: 1px solid #e2e8f0; padding: 8px 10px; font-size: 0.82rem; vertical-align: middle; }
         table th { background: #050a14; color: #fff; text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.5px; }
         
-        .col-content { width: 65%; }
+        .col-content { width: 55%; }
         .col-price { width: 35%; text-align: right; }
+        .col-action { width: 10%; text-align: center; }
 
         .total-section { margin-top: 15px; float: right; width: 320px; }
         .total-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; font-size: 0.85rem; }
@@ -579,6 +550,9 @@ async function printContract(c) {
         .sig-space { height: 55px; }
         
         .notice-bar { background: #00ebb0; color: #000; padding: 8px 12px; border-radius: 6px; font-weight: 700; font-size: 0.78rem; margin-bottom: 15px; text-align: center; line-height: 1.5; }
+        
+        .btn-add-row { background: #10b981; color: #fff; border: none; padding: 4px 10px; font-size: 0.75rem; font-weight: 700; border-radius: 4px; cursor: pointer; text-transform: uppercase; }
+        .btn-del-row { background: #ef4444; color: #fff; border: none; padding: 4px 8px; font-size: 0.7rem; border-radius: 4px; cursor: pointer; }
 
         .action-buttons { display: flex; justify-content: center; gap: 15px; margin-top: 35px; }
         .action-btn { border: none; padding: 12px 25px; font-weight: 900; border-radius: 8px; cursor: pointer; text-transform: uppercase; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
@@ -590,23 +564,29 @@ async function printContract(c) {
             .invoice-box { border: none; box-shadow: none; padding: 0; }
             .no-print { display: none; }
             .editable-input { border: none; background: transparent; padding: 0; font-weight: 600; }
+            .btn-del-row { display: none; }
         }
     </style>
 </head>
 <body>
     <div class="invoice-box">
-        <div class="no-print notice-bar">
-            💡 Chủ studio có thể chỉnh sửa trực tiếp thông tin và chọn In hoặc xuất PDF gửi khách!<br>
+        <!-- 🌟 DÒNG ĐANG TẢI THÔNG TIN STUDIO NẰM TRONG TRANG GIẤY -->
+        <div id="loadingStudioNotice" class="notice-bar" style="background: #f59e0b; color: #000;">
+            ⏳ Đang tải thông tin studio từ hệ thống... Vui lòng đợi trong giây lát.
+        </div>
+
+        <div class="no-print notice-bar" id="mainNoticeBar" style="display: none;">
+            💡 Chủ studio có thể chỉnh sửa trực tiếp thông tin, thêm bớt dòng dịch vụ và chọn In hoặc xuất PDF gửi khách!<br>
             ⚠️ Nếu chưa có thông tin studio vui lòng cấu hình ở trang chủ.
         </div>
 
         <div class="header">
             <div class="logo-area">
-                <img src="${studioLogo}" alt="Logo Studio">
+                <img id="studioLogoImg" src="" alt="Logo Studio">
                 <div>
-                    <div class="studio-title">${studioName}</div>
-                    <div class="studio-contact"><i class="fas fa-phone-alt me-1 text-primary"></i> ${studioPhone}</div>
-                    <div class="studio-contact"><i class="fas fa-map-marker-alt me-1 text-danger"></i> ${studioAddress}</div>
+                    <div class="studio-title" id="studioTitleText">CHONANHNHANH.VN</div>
+                    <div class="studio-contact"><i class="fas fa-phone-alt me-1 text-primary"></i> <span id="studioPhoneText">Đang cập nhật</span></div>
+                    <div class="studio-contact"><i class="fas fa-map-marker-alt me-1 text-danger"></i> <span id="studioAddressText">Đang cập nhật</span></div>
                 </div>
             </div>
             <div class="invoice-title">
@@ -644,7 +624,7 @@ async function printContract(c) {
         <div class="grid-2">
             <div class="info-item">
                 <span>Thời gian diễn ra:</span>
-                <input type="text" class="editable-input" value="${eventDateFormatted}">
+                <input type="text" class="editable-input" value="${c.event_date ? c.event_date.replace('T', ' ').substring(0, 16) : ''}">
             </div>
             <div class="info-item">
                 <span>Gói dịch vụ đăng ký:</span>
@@ -656,30 +636,36 @@ async function printContract(c) {
             <input type="text" class="editable-input" value="${c.note || 'Không có ghi chú phát sinh.'}">
         </div>
 
-        <div class="section-title">Bảng kê chi phí & Thanh toán</div>
-        <table>
+        <div class="section-title">
+            <span>Bảng kê chi phí & Thanh toán</span>
+            <button class="btn-add-row no-print" id="btnAddRow"><i class="fas fa-plus me-1"></i> Thêm dòng</button>
+        </div>
+        <table id="priceTable">
             <thead>
                 <tr>
                     <th class="col-content">Nội dung dịch vụ</th>
                     <th class="col-price">Thành tiền (VNĐ)</th>
+                    <th class="col-action no-print">Xóa</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="priceTableBody">
                 <tr>
-                    <td class="col-content"><strong>Gói dịch vụ chính:</strong> ${c.service_package || 'Gói tiêu chuẩn'}</td>
-                    <td class="col-price"><input type="text" class="editable-input" style="text-align: right;" value="${total}"></td>
+                    <td class="col-content"><input type="text" class="editable-input" value="Gói dịch vụ chính: ${c.service_package || 'Gói tiêu chuẩn'}"></td>
+                    <td class="col-price"><input type="text" class="editable-input price-input" style="text-align: right;" value="${c.total_amount || 0}"></td>
+                    <td class="col-action no-print"><button class="btn-del-row" onclick="this.closest('tr').remove(); calculateTotal();">X</button></td>
                 </tr>
                 <tr>
-                    <td class="col-content">Chi phí phát sinh thêm (Trang phục, phụ phí...)</td>
-                    <td class="col-price"><input type="text" class="editable-input" style="text-align: right;" value="${extra}"></td>
+                    <td class="col-content"><input type="text" class="editable-input" value="Chi phí phát sinh thêm (Trang phục, phụ phí...)"></td>
+                    <td class="col-price"><input type="text" class="editable-input price-input" style="text-align: right;" value="${c.extra_fee || 0}"></td>
+                    <td class="col-action no-print"><button class="btn-del-row" onclick="this.closest('tr').remove(); calculateTotal();">X</button></td>
                 </tr>
             </tbody>
         </table>
 
         <div class="total-section">
-            <div class="total-row"><span>Tổng giá trị:</span> <strong>${grandTotal.toLocaleString('vi-VN')} ₫</strong></div>
-            <div class="total-row" style="color: #059669;"><span>Đã đặt cọc:</span> <strong>- ${deposit.toLocaleString('vi-VN')} ₫</strong></div>
-            <div class="total-row grand"><span>CÒN LẠI:</span> <span style="color: #d97706;">${remaining > 0 ? remaining.toLocaleString('vi-VN') + ' ₫' : '0 ₫'}</span></div>
+            <div class="total-row"><span>Tổng giá trị:</span> <strong id="grandTotalDisplay">0 ₫</strong></div>
+            <div class="total-row" style="color: #059669;"><span>Đã đặt cọc:</span> <strong id="depositDisplay">- 0 ₫</strong></div>
+            <div class="total-row grand"><span>CÒN LẠI:</span> <span id="remainingDisplay" style="color: #d97706;">0 ₫</span></div>
         </div>
         <div style="clear: both;"></div>
 
@@ -688,7 +674,7 @@ async function printContract(c) {
                 <p><strong>ĐẠI DIỆN STUDIO</strong></p>
                 <p style="font-size: 0.72rem; color: #666;">(Ký và ghi rõ họ tên)</p>
                 <div class="sig-space"></div>
-                <p><strong>${studioName}</strong></p>
+                <p><strong id="sigStudioName">CHONANHNHANH.VN</strong></p>
             </div>
             <div class="sig-box">
                 <p><strong>ĐẠI DIỆN KHÁCH HÀNG</strong></p>
@@ -700,11 +686,82 @@ async function printContract(c) {
 
         <div class="action-buttons no-print">
             <button class="action-btn btn-print" onclick="window.print()"><i class="fas fa-print me-2"></i> In Hợp Đồng</button>
-            <button class="action-btn btn-pdf" onclick="alert('Mẹo: Để lưu thành file PDF gửi khách, anh bấm nút này rồi chọn Save as PDF trong bảng chọn máy in nhé!'); window.print();"><i class="fas fa-file-pdf me-2"></i> Xuất PDF Gửi Khách</button>
+            <button class="action-btn btn-pdf" onclick="window.print()"><i class="fas fa-file-pdf me-2"></i> Xuất PDF Gửi Khách</button>
         </div>
     </div>
 </body>
 </html>`);
+
+    // 2. Gọi API ngầm lấy thông tin studio từ n8n
+    const studioSlug = localStorage.getItem('admin_studio_slug') || 'studio';
+    let sName = "CHONANHNHANH.VN";
+    let sPhone = "0879029170";
+    let sAddress = "Bạc Liêu";
+    let sLogo = localStorage.getItem('admin_avatar') || 'https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?auto=format&fit=crop&w=200&q=80';
+
+    try {
+        const res = await fetch(`https://wsm.congtubaclieu.com.vn/webhook/get-studio-info?studio_slug=${studioSlug}`);
+        let data = await res.json();
+        let info = Array.isArray(data) ? data[0] : (data.data || data);
+        
+        if (info) {
+            sName = info.studio_name || sName;
+            sPhone = info.studio_phone || sPhone;
+            sAddress = info.studio_address || sAddress;
+            sLogo = info.watermark_logo || info.logo || sLogo;
+        }
+    } catch (e) {
+        console.log("Lỗi tải thông tin studio từ n8n:", e);
+    }
+
+    // 3. Đổ dữ liệu thật vào cửa sổ in và bật script xử lý tính toán động
+    let doc = printWindow.document;
+    doc.getElementById('studioTitleText').innerText = sName;
+    doc.getElementById('studioPhoneText').innerText = sPhone;
+    doc.getElementById('studioAddressText').innerText = sAddress;
+    doc.getElementById('studioLogoImg').src = sLogo;
+    doc.getElementById('sigStudioName').innerText = sName;
+
+    // Ẩn thông báo đang tải, hiện thông báo hướng dẫn chính thức
+    doc.getElementById('loadingStudioNotice').style.display = 'none';
+    doc.getElementById('mainNoticeBar').style.display = 'block';
+
+    const depositAmt = parseFloat(c.deposit_amount) || 0;
+    doc.getElementById('depositDisplay').innerText = '- ' + depositAmt.toLocaleString('vi-VN') + ' ₫';
+
+    // Hàm tính toán tổng tiền động trực tiếp trong cửa sổ popup
+    function updateCalc() {
+        let inputs = doc.querySelectorAll('.price-input');
+        let sum = 0;
+        inputs.forEach(inp => {
+            let val = parseFloat(inp.value.replace(/[^0-9.-]+/g,"")) || 0;
+            sum += val;
+        });
+        let remaining = sum - depositAmt;
+        doc.getElementById('grandTotalDisplay').innerText = sum.toLocaleString('vi-VN') + ' ₫';
+        doc.getElementById('remainingDisplay').innerText = remaining > 0 ? remaining.toLocaleString('vi-VN') + ' ₫' : '0 ₫';
+    }
+
+    // Gắn sự kiện thêm dòng
+    doc.getElementById('btnAddRow').onclick = function() {
+        let tbody = doc.getElementById('priceTableBody');
+        let tr = doc.createElement('tr');
+        tr.innerHTML = `
+            <td class="col-content"><input type="text" class="editable-input" value="Nội dung dịch vụ mới..."></td>
+            <td class="col-price"><input type="text" class="editable-input price-input" style="text-align: right;" value="0"></td>
+            <td class="col-action no-print"><button class="btn-del-row" onclick="this.closest('tr').remove();">X</button></td>
+        `;
+        tbody.appendChild(tr);
+        tr.querySelector('.price-input').oninput = updateCalc;
+        updateCalc();
+    };
+
+    // Gắn sự kiện tính tiền khi gõ phím
+    doc.querySelectorAll('.price-input').forEach(inp => {
+        inp.oninput = updateCalc;
+    });
+
+    updateCalc();
     printWindow.document.close();
 }
                     // 🌟 HÀM XÓA VĨNH VIỄN HỢP ĐỒNG
