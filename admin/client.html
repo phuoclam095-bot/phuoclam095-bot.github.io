@@ -97,7 +97,14 @@
 <body>
 
     <div id="loadOverlay"><div class="spinner-border text-success mb-2"></div><div style="font-weight: 900; color: var(--primary); font-size: 0.7rem; letter-spacing: 2px;">V21.1 ULTIMATE</div></div>
-
+    <div id="errorNotificationBox" style="display: none; position: fixed; inset: 0; background: rgba(5, 10, 20, 0.95); z-index: 9999; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center;">
+        <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+        <h3 class="fw-bold text-white mb-2">ĐÃ CÓ LỖI XẢY RA</h3>
+        <p id="errorMessageText" class="text-secondary small mb-4" style="max-width: 400px; line-height: 1.6;">
+            Không thể tải dữ liệu album. Vui lòng kiểm tra lại đường dẫn hoặc thử tải lại trang.
+        </p>
+        <button class="btn fw-900 px-4 py-2 rounded-pill text-black text-uppercase" style="background: var(--primary); border: none;" onclick="location.reload()">Tải Lại Trang</button>
+    </div>
     <nav class="navbar">
         <div class="header-left">
             <div id="displayFileName">FILENAME.JPG</div>
@@ -456,52 +463,70 @@
         }
 
     async function init() {
+        const errorBox = document.getElementById('errorNotificationBox');
+        const errorText = document.getElementById('errorMessageText');
+        const loadOverlay = document.getElementById('loadOverlay');
+
         try {
             const urlParams = new URLSearchParams(window.location.search);
             const albumSlug = urlParams.get('album');
             const studioSlug = urlParams.get('studio');
 
+            if (!albumSlug) {
+                throw new Error("Không tìm thấy đường dẫn định danh album trên trình duyệt.");
+            }
+
             const res = await fetch(`${PATHS.GET}?studio=${studioSlug}&album=${albumSlug}`);
-            const rawData = await res.json(); 
-            
+            if (!res.ok) {
+                throw new Error(`Máy chủ phản hồi lỗi (Mã trạng thái: ${res.status}). Album có thể không tồn tại.`);
+            }
+
+            const rawData = await res.json();
             const data = Array.isArray(rawData) ? rawData[0] : rawData;
             
+            if (!data) {
+                throw new Error("Dữ liệu trả về từ máy chủ trống.");
+            }
+
             photos = data.photos || [];
             albumSettings = data.settings || albumSettings;
             
             window.fid = data.folder_id || albumSlug; 
             fid = window.fid;
 
+            // Kiểm tra nếu album không có ảnh nào
+            if (photos.length === 0) {
+                throw new Error("Album này hiện tại chưa có bức ảnh nào hoặc đang trong quá trình đồng bộ.");
+            }
+
             const clientLogo = albumSettings.watermark_logo || '';
             const isWatermarkOn = albumSettings.watermark_enabled !== false;
             
-            // 🌟 Gán thẳng vào biến toàn cục watermarkHTML
             watermarkHTML = (isWatermarkOn && clientLogo) ? `<div class="watermark-overlay"><img src="${clientLogo}" alt="Logo"></div>` : '';
             
             if (albumSettings.download) document.getElementById('btnDownload').style.display = 'flex';
             if (albumSettings.comment) document.getElementById('btnComment').style.display = 'flex';
 
-            if(photos.length > 0) {
-                let folderName = photos[0].folderName || "VIP ALBUM";
-                if(studioSlug) {
-                    document.getElementById('albumTitle').innerText = `${studioSlug.toUpperCase()} - ${folderName}`;
-                } else {
-                    document.getElementById('albumTitle').innerText = folderName;
-                }
+            let folderName = photos[0].folderName || "VIP ALBUM";
+            if(studioSlug) {
+                document.getElementById('albumTitle').innerText = `${studioSlug.toUpperCase()} - ${folderName}`;
+            } else {
+                document.getElementById('albumTitle').innerText = folderName;
             }
 
             const local = localStorage.getItem('anh_da_chon_cua_khach_' + (window.fid || albumSlug));
             if (local) selectedIds = JSON.parse(local);
             
-            document.getElementById('loadOverlay').style.display = 'none';
-            initGrid(); // Lúc này initGrid sẽ nhận được watermarkHTML đầy đủ
+            loadOverlay.style.display = 'none';
+            initGrid(); 
             
         } catch(e) { 
-            console.log(e);
-            alert("Lỗi tải dữ liệu ảnh!"); 
+            console.error(e);
+            loadOverlay.style.display = 'none';
+            if (errorText) errorText.innerText = e.message || "Đã xảy ra lỗi không xác định khi kết nối tới máy chủ.";
+            if (errorBox) errorBox.style.display = 'flex';
         }
     }
-
         // 🌟 BẮT BUỘC PHẢI CÓ DÒNG NÀY ĐỂ KÍCH HOẠT HỆ THỐNG KHI MỞ TRANG
         init();
     </script>
