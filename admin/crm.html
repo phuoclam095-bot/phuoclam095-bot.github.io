@@ -474,8 +474,12 @@
             // Lấy email hiện tại của chủ studio đang đăng nhập
             const currentEmail = localStorage.getItem('admin_email') || '';
             
-            // Truyền email vào tham số state để Google giữ hộ và trả về khi callback
-            const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scope)}&access_type=offline&prompt=consent&state=${encodeURIComponent(currentEmail)}`;
+            // Xây dựng đường dẫn, kết hợp cả login_hint (để hiển thị sẵn tài khoản) và state (để truyền ngầm email về n8n)
+            let authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scope)}&access_type=offline&prompt=consent&state=${encodeURIComponent(currentEmail)}`;
+            
+            if (currentEmail) {
+                authUrl += `&login_hint=${encodeURIComponent(currentEmail)}`;
+            }
             
             window.location.href = authUrl;
         }
