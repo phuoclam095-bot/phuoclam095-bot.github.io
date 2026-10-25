@@ -226,9 +226,8 @@
                             <div id="avatarPlaceholder"></div>
                             <div class="d-flex flex-column overflow-hidden">
                                 <span id="userNameDisplay" style="font-weight:900; font-size:0.75rem; line-height:1"></span>
-                                <div class="d-flex align-items-center gap-1" style="margin-top: 2px;">
-                                    <span id="badgeStatus" class="status-tag" style="background:var(--primary); color:#000;">...</span>
-                                    <span id="userExpiryText" style="font-size: 0.65rem; color: #fff; font-weight: 800;"></span>
+                                <div style="margin-top: 3px;">
+                                    <span id="badgeStatus" class="status-tag tag-active">...</span>
                                 </div>
                             </div>
                         </div>
@@ -484,16 +483,19 @@
         const expText = document.getElementById('userExpiryText');
 
         if (isVIP) {
-            if (badge) {
-                badge.className = "status-tag";
-                badge.style.background = "var(--primary)";
-                badge.style.color = "#000";
-                badge.innerText = "ACTIVE";
+            if (isVIP) {
+                if (badge) {
+                    badge.className = "status-tag tag-active";
+                    // Gộp chung cả ACTIVE và ngày tháng vào chung một thẻ mang nền xanh
+                    badge.innerText = "ACTIVE - Hạn: " + new Date(expiry).toLocaleDateString('vi-VN');
+                }
+                // Xóa hoặc để trống expText vì đã gộp chung vào badge rồi
+                if (expText) expText.innerText = "";
+                
+                if (mainWorkGrid) mainWorkGrid.style.setProperty('display', 'block', 'important');
+                if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'none', 'important');
             }
-            if (expText) {
-                expText.innerText = " - Hạn: " + new Date(expiry).toLocaleDateString('vi-VN');
-            }
-            
+                        
             if (mainWorkGrid) mainWorkGrid.style.setProperty('display', 'block', 'important');
             if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'none', 'important');
         } else {
