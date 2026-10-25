@@ -462,6 +462,22 @@
 
             const res = await fetch(`${PATHS.GET}?studio=${studioSlug}&album=${albumSlug}`);
             if (!res.ok) {
+                throw new Error(`Máy chủ phản hồi lỗi (Mã trạng thái: ${res.status}). Album không tồn tại.`);
+            }
+
+            // 🌟 Đọc dữ liệu dưới dạng text trước để kiểm tra tránh lỗi sập JSON
+            const responseText = await res.text();
+            if (!responseText || responseText.trim() === "") {
+                throw new Error(`Album mã số [${albumSlug}] không tồn tại hoặc dữ liệu trả về từ máy chủ trống.`);
+            }
+
+            const rawData = JSON.parse(responseText);
+            const data = Array.isArray(rawData) ? rawData[0] : rawData;
+            
+            if (!data || !data.photos || data.photos.length === 0) {
+                throw new Error(`Album mã số [${albumSlug}] hiện tại không có bức ảnh nào!`);
+            }
+            if (!res.ok) {
                 throw new Error(`Máy chủ phản hồi lỗi (Mã trạng thái: ${res.status}). Album có thể không tồn tại.`);
             }
 
