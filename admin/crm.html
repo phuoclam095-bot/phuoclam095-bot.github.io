@@ -494,22 +494,36 @@
                 alert("Lỗi kết nối máy chủ!");
             }
         }
-        // 🌟 HÀM TẠO VÀ IN HỢP ĐỒNG ĐÃ FIX GIAO DIỆN LOGO VÀ BẢNG BÁO GIÁ
+       // 🌟 HÀM TẠO VÀ IN HỢP ĐỒNG CHỜ DỮ LIỆU N8N XONG MỚI HIỂN THỊ
 async function printContract(c) {
     showToast("Đang tải thông tin studio...");
     
+    // 1. Mở cửa sổ trống ngay lập tức theo cử chỉ click để tránh bị trình duyệt chặn popup
+    let printWindow = window.open('', '_blank', 'width=950,height=850');
+    if (printWindow) {
+        printWindow.document.write(`
+            <html>
+            <head><title>Đang tải hợp đồng...</title></head>
+            <body style="font-family: 'Montserrat', sans-serif; text-align: center; padding-top: 100px; background: #f1f5f9; color: #333;">
+                <h3 style="color: #00ebb0;">⏳ Đang tải thông tin studio từ hệ thống...</h3>
+                <p>Vui lòng đợi trong giây lát.</p>
+            </body>
+            </html>
+        `);
+    }
+
+    // 2. Khai báo giá trị mặc định phòng hờ lỗi mạng
     let studioName = "CHONANHNHANH.VN";
-    let studioPhone = "Đang cập nhật";
-    let studioAddress = "Đang cập nhật";
+    let studioPhone = "0879029170";
+    let studioAddress = "Bạc Liêu";
     let studioLogo = localStorage.getItem('admin_avatar') || 'https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?auto=format&fit=crop&w=200&q=80';
 
     const studioSlug = localStorage.getItem('admin_studio_slug') || 'studio';
 
+    // 3. Đợi dữ liệu trả về từ webhook n8n
     try {
         const res = await fetch(`https://wsm.congtubaclieu.com.vn/webhook/get-studio-info?studio_slug=${studioSlug}`);
         let data = await res.json();
-        
-        // Bóc tách dữ liệu linh hoạt (dù n8n trả về mảng trực tiếp hay bọc trong object)
         let info = Array.isArray(data) ? data[0] : (data.data || data);
         
         if (info) {
@@ -519,7 +533,7 @@ async function printContract(c) {
             studioLogo = info.watermark_logo || info.logo || studioLogo;
         }
     } catch (e) {
-        console.log("Lỗi lấy thông tin studio từ webhook:", e);
+        console.log("Lỗi tải thông tin studio từ n8n:", e);
     }
 
     const total = parseFloat(c.total_amount) || 0;
@@ -530,184 +544,183 @@ async function printContract(c) {
 
     let eventDateFormatted = c.event_date ? c.event_date.replace('T', ' ').substring(0, 16) : '';
 
-    let printWindow = window.open('', '_blank', 'width=950,height=850');
-    printWindow.document.write(`
-        <!DOCTYPE html>
-        <html lang="vi">
-        <head>
-            <meta charset="UTF-8">
-            <title>Hợp Đồng Dịch Vụ - ${c.customer_name}</title>
-            <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
-            <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-            <style>
-                body { font-family: 'Montserrat', sans-serif; color: #111; margin: 0; padding: 40px; background: #f1f5f9; line-height: 1.5; }
-                .invoice-box { max-width: 800px; margin: auto; padding: 30px; background: #fff; border: 1px solid #cbd5e1; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); border-radius: 12px; }
-                .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #00ebb0; padding-bottom: 20px; margin-bottom: 25px; }
-                .logo-area { display: flex; align-items: center; gap: 15px; }
-                
-                /* 🌟 FIX LOGO KHÔNG BỊ ZOOM CẮT LÉM */
-                .logo-area img { width: 70px; height: 70px; border-radius: 10px; object-fit: contain; background: #f8fafc; border: 1.5px solid #00ebb0; padding: 4px; flex-shrink: 0; }
-                
-                .studio-title { font-weight: 900; font-size: 1.1rem; color: #050a14; text-transform: uppercase; }
-                .studio-contact { font-size: 0.75rem; color: #555; margin-top: 2px; }
-                .invoice-title { text-align: right; }
-                .invoice-title h2 { margin: 0; color: #050a14; font-size: 1.3rem; letter-spacing: 1px; }
-                .invoice-title p { margin: 3px 0 0; font-size: 0.78rem; color: #666; }
-                
-                .section-title { font-weight: 700; font-size: 0.85rem; background: #f8fafc; padding: 6px 10px; border-left: 4px solid #00ebb0; margin: 18px 0 10px; text-transform: uppercase; }
-                .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 8px; }
-                .info-item { margin-bottom: 6px; font-size: 0.82rem; }
-                .info-item span { font-weight: 600; color: #555; display: block; margin-bottom: 2px; }
-                
-                .editable-input { width: 100%; padding: 5px 8px; border: 1px dashed #cbd5e1; border-radius: 5px; font-family: 'Montserrat', sans-serif; font-size: 0.82rem; background: #fafafa; color: #111; box-sizing: border-box; }
-                .editable-input:focus { border: 1px solid #00ebb0; background: #fff; outline: none; box-shadow: 0 0 5px rgba(0,235,176,0.3); }
+    // 4. Sau khi đã có đủ dữ liệu chuẩn từ n8n, ghi đè toàn bộ nội dung hợp đồng chính thức vào cửa sổ
+    if (printWindow) {
+        printWindow.document.open();
+        printWindow.document.write(`
+            <!DOCTYPE html>
+            <html lang="vi">
+            <head>
+                <meta charset="UTF-8">
+                <title>Hợp Đồng Dịch Vụ - ${c.customer_name}</title>
+                <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
+                <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+                <style>
+                    body { font-family: 'Montserrat', sans-serif; color: #111; margin: 0; padding: 40px; background: #f1f5f9; line-height: 1.5; }
+                    .invoice-box { max-width: 800px; margin: auto; padding: 30px; background: #fff; border: 1px solid #cbd5e1; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); border-radius: 12px; }
+                    .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #00ebb0; padding-bottom: 20px; margin-bottom: 25px; }
+                    .logo-area { display: flex; align-items: center; gap: 15px; }
+                    .logo-area img { width: 70px; height: 70px; border-radius: 10px; object-fit: contain; background: #f8fafc; border: 1.5px solid #00ebb0; padding: 4px; flex-shrink: 0; }
+                    .studio-title { font-weight: 900; font-size: 1.1rem; color: #050a14; text-transform: uppercase; }
+                    .studio-contact { font-size: 0.75rem; color: #555; margin-top: 2px; }
+                    .invoice-title { text-align: right; }
+                    .invoice-title h2 { margin: 0; color: #050a14; font-size: 1.3rem; letter-spacing: 1px; }
+                    .invoice-title p { margin: 3px 0 0; font-size: 0.78rem; color: #666; }
+                    
+                    .section-title { font-weight: 700; font-size: 0.85rem; background: #f8fafc; padding: 6px 10px; border-left: 4px solid #00ebb0; margin: 18px 0 10px; text-transform: uppercase; }
+                    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 8px; }
+                    .info-item { margin-bottom: 6px; font-size: 0.82rem; }
+                    .info-item span { font-weight: 600; color: #555; display: block; margin-bottom: 2px; }
+                    
+                    .editable-input { width: 100%; padding: 5px 8px; border: 1px dashed #cbd5e1; border-radius: 5px; font-family: 'Montserrat', sans-serif; font-size: 0.82rem; background: #fafafa; color: #111; box-sizing: border-box; }
+                    .editable-input:focus { border: 1px solid #00ebb0; background: #fff; outline: none; box-shadow: 0 0 5px rgba(0,235,176,0.3); }
 
-                /* 🌟 FIX BẢNG BÁO GIÁ CHO CÂN ĐỐI, KHÔNG TRÀN KHUNG */
-                table { width: 100%; border-collapse: collapse; margin-top: 15px; table-layout: fixed; }
-                table th, table td { border: 1px solid #e2e8f0; padding: 8px 10px; font-size: 0.82rem; vertical-align: middle; }
-                table th { background: #050a14; color: #fff; text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.5px; }
-                
-                .col-content { width: 65%; }
-                .col-price { width: 35%; text-align: right; }
+                    table { width: 100%; border-collapse: collapse; margin-top: 15px; table-layout: fixed; }
+                    table th, table td { border: 1px solid #e2e8f0; padding: 8px 10px; font-size: 0.82rem; vertical-align: middle; }
+                    table th { background: #050a14; color: #fff; text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.5px; }
+                    
+                    .col-content { width: 65%; }
+                    .col-price { width: 35%; text-align: right; }
 
-                .total-section { margin-top: 15px; float: right; width: 320px; }
-                .total-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; font-size: 0.85rem; }
-                .total-row.grand { font-weight: 900; font-size: 1.05rem; border-top: 2px solid #111; border-bottom: 2px solid #111; padding: 8px 0; margin-top: 4px; color: #050a14; }
-                
-                .signatures { display: flex; justify-content: space-between; margin-top: 70px; text-align: center; }
-                .sig-box { width: 45%; }
-                .sig-box p { margin: 4px 0; font-size: 0.82rem; }
-                .sig-space { height: 55px; }
-                
-                .notice-bar { background: #00ebb0; color: #000; padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 0.78rem; margin-bottom: 15px; text-align: center; }
+                    .total-section { margin-top: 15px; float: right; width: 320px; }
+                    .total-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; font-size: 0.85rem; }
+                    .total-row.grand { font-weight: 900; font-size: 1.05rem; border-top: 2px solid #111; border-bottom: 2px solid #111; padding: 8px 0; margin-top: 4px; color: #050a14; }
+                    
+                    .signatures { display: flex; justify-content: space-between; margin-top: 70px; text-align: center; }
+                    .sig-box { width: 45%; }
+                    .sig-box p { margin: 4px 0; font-size: 0.82rem; }
+                    .sig-space { height: 55px; }
+                    
+                    .notice-bar { background: #00ebb0; color: #000; padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 0.78rem; margin-bottom: 15px; text-align: center; }
 
-                @media print {
-                    body { padding: 0; background: #fff; }
-                    .invoice-box { border: none; box-shadow: none; padding: 0; }
-                    .no-print { display: none; }
-                    .editable-input { border: none; background: transparent; padding: 0; font-weight: 600; }
-                }
-            </style>
-        </head>
-        <body>
-            <div class="invoice-box">
-                <div class="no-print notice-bar">
-                    💡 Chủ studio có thể click vào các ô bên dưới để chỉnh sửa thông tin trực tiếp trước khi bấm In!
-                </div>
+                    @media print {
+                        body { padding: 0; background: #fff; }
+                        .invoice-box { border: none; box-shadow: none; padding: 0; }
+                        .no-print { display: none; }
+                        .editable-input { border: none; background: transparent; padding: 0; font-weight: 600; }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="invoice-box">
+                    <div class="no-print notice-bar">
+                        💡 Chủ studio có thể click vào các ô bên dưới để chỉnh sửa thông tin trực tiếp trước khi bấm In!
+                    </div>
 
-                <!-- HEADER / LOGO & THÔNG TIN STUDIO -->
-                <div class="header">
-                    <div class="logo-area">
-                        <img src="${studioLogo}" alt="Logo Studio">
+                    <!-- HEADER / LOGO & THÔNG TIN STUDIO TỪ DATABASE -->
+                    <div class="header">
+                        <div class="logo-area">
+                            <img src="${studioLogo}" alt="Logo Studio">
+                            <div>
+                                <div class="studio-title">${studioName}</div>
+                                <div class="studio-contact"><i class="fas fa-phone-alt me-1 text-primary"></i> ${studioPhone}</div>
+                                <div class="studio-contact"><i class="fas fa-map-marker-alt me-1 text-danger"></i> ${studioAddress}</div>
+                            </div>
+                        </div>
+                        <div class="invoice-title">
+                            <h2>HỢP ĐỒNG DỊCH VỤ</h2>
+                            <p>Mã đơn: #${c.id || 'HD-00'}</p>
+                            <p>Ngày lập: ${new Date().toLocaleDateString('vi-VN')}</p>
+                        </div>
+                    </div>
+
+                    <!-- THÔNG TIN KHÁCH HÀNG -->
+                    <div class="section-title">Thông tin khách hàng</div>
+                    <div class="grid-2">
                         <div>
-                            <div class="studio-title">${studioName}</div>
-                            <div class="studio-contact"><i class="fas fa-phone-alt me-1 text-primary"></i> ${studioPhone}</div>
-                            <div class="studio-contact"><i class="fas fa-map-marker-alt me-1 text-danger"></i> ${studioAddress}</div>
+                            <div class="info-item">
+                                <span>Họ tên khách hàng:</span>
+                                <input type="text" class="editable-input" value="${c.customer_name || ''}">
+                            </div>
+                            <div class="info-item" style="margin-top: 8px;">
+                                <span>Số điện thoại:</span>
+                                <input type="text" class="editable-input" value="${c.customer_phone || ''}">
+                            </div>
+                        </div>
+                        <div>
+                            <div class="info-item">
+                                <span>Email liên hệ:</span>
+                                <input type="text" class="editable-input" value="${c.customer_email || ''}">
+                            </div>
+                            <div class="info-item" style="margin-top: 8px;">
+                                <span>Địa điểm tổ chức:</span>
+                                <input type="text" class="editable-input" value="${c.event_location || 'Tại Studio'}">
+                            </div>
                         </div>
                     </div>
-                    <div class="invoice-title">
-                        <h2>HỢP ĐỒNG DỊCH VỤ</h2>
-                        <p>Mã đơn: #${c.id || 'HD-00'}</p>
-                        <p>Ngày lập: ${new Date().toLocaleDateString('vi-VN')}</p>
-                    </div>
-                </div>
 
-                <!-- THÔNG TIN KHÁCH HÀNG -->
-                <div class="section-title">Thông tin khách hàng</div>
-                <div class="grid-2">
-                    <div>
+                    <!-- THÔNG TIN LỊCH TRÌNH -->
+                    <div class="section-title">Chi tiết lịch trình & Sự kiện</div>
+                    <div class="grid-2">
                         <div class="info-item">
-                            <span>Họ tên khách hàng:</span>
-                            <input type="text" class="editable-input" value="${c.customer_name || ''}">
+                            <span>Thời gian diễn ra:</span>
+                            <input type="text" class="editable-input" value="${eventDateFormatted}">
                         </div>
-                        <div class="info-item" style="margin-top: 8px;">
-                            <span>Số điện thoại:</span>
-                            <input type="text" class="editable-input" value="${c.customer_phone || ''}">
-                        </div>
-                    </div>
-                    <div>
                         <div class="info-item">
-                            <span>Email liên hệ:</span>
-                            <input type="text" class="editable-input" value="${c.customer_email || ''}">
-                        </div>
-                        <div class="info-item" style="margin-top: 8px;">
-                            <span>Địa điểm tổ chức:</span>
-                            <input type="text" class="editable-input" value="${c.event_location || 'Tại Studio'}">
+                            <span>Gói dịch vụ đăng ký:</span>
+                            <input type="text" class="editable-input" value="${c.service_package || 'Gói tiêu chuẩn'}">
                         </div>
                     </div>
-                </div>
-
-                <!-- THÔNG TIN LỊCH TRÌNH -->
-                <div class="section-title">Chi tiết lịch trình & Sự kiện</div>
-                <div class="grid-2">
-                    <div class="info-item">
-                        <span>Thời gian diễn ra:</span>
-                        <input type="text" class="editable-input" value="${eventDateFormatted}">
+                    <div class="info-item" style="margin-top: 8px;">
+                        <span>Ghi chú / Yêu cầu riêng:</span>
+                        <input type="text" class="editable-input" value="${c.note || 'Không có ghi chú phát sinh.'}">
                     </div>
-                    <div class="info-item">
-                        <span>Gói dịch vụ đăng ký:</span>
-                        <input type="text" class="editable-input" value="${c.service_package || 'Gói tiêu chuẩn'}">
+
+                    <!-- BẢNG BÁO GIÁ -->
+                    <div class="section-title">Bảng kê chi phí & Thanh toán</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="col-content">Nội dung dịch vụ</th>
+                                <th class="col-price">Thành tiền (VNĐ)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="col-content"><strong>Gói dịch vụ chính</strong> (Theo thỏa thuận)</td>
+                                <td class="col-price"><input type="text" class="editable-input" style="text-align: right;" value="${total}"></td>
+                            </tr>
+                            <tr>
+                                <td class="col-content">Chi phí phát sinh thêm (Trang phục, phụ phí...)</td>
+                                <td class="col-price"><input type="text" class="editable-input" style="text-align: right;" value="${extra}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- TỔNG KẾT TÀI CHÍNH -->
+                    <div class="total-section">
+                        <div class="total-row"><span>Tổng giá trị:</span> <strong>${grandTotal.toLocaleString('vi-VN')} ₫</strong></div>
+                        <div class="total-row" style="color: #059669;"><span>Đã đặt cọc:</span> <strong>- ${deposit.toLocaleString('vi-VN')} ₫</strong></div>
+                        <div class="total-row grand"><span>CÒN LẠI:</span> <span style="color: #d97706;">${remaining > 0 ? remaining.toLocaleString('vi-VN') + ' ₫' : '0 ₫'}</span></div>
                     </div>
-                </div>
-                <div class="info-item" style="margin-top: 8px;">
-                    <span>Ghi chú / Yêu cầu riêng:</span>
-                    <input type="text" class="editable-input" value="${c.note || 'Không có ghi chú phát sinh.'}">
-                </div>
+                    <div style="clear: both;"></div>
 
-                <!-- BẢNG BÁO GIÁ -->
-                <div class="section-title">Bảng kê chi phí & Thanh toán</div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th class="col-content">Nội dung dịch vụ</th>
-                            <th class="col-price">Thành tiền (VNĐ)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="col-content"><strong>Gói dịch vụ chính</strong> (Theo thỏa thuận)</td>
-                            <td class="col-price"><input type="text" class="editable-input" style="text-align: right;" value="${total}"></td>
-                        </tr>
-                        <tr>
-                            <td class="col-content">Chi phí phát sinh thêm (Trang phục, phụ phí...)</td>
-                            <td class="col-price"><input type="text" class="editable-input" style="text-align: right;" value="${extra}"></td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <!-- TỔNG KẾT TÀI CHÍNH -->
-                <div class="total-section">
-                    <div class="total-row"><span>Tổng giá trị:</span> <strong>${grandTotal.toLocaleString('vi-VN')} ₫</strong></div>
-                    <div class="total-row" style="color: #059669;"><span>Đã đặt cọc:</span> <strong>- ${deposit.toLocaleString('vi-VN')} ₫</strong></div>
-                    <div class="total-row grand"><span>CÒN LẠI:</span> <span style="color: #d97706;">${remaining > 0 ? remaining.toLocaleString('vi-VN') + ' ₫' : '0 ₫'}</span></div>
-                </div>
-                <div style="clear: both;"></div>
-
-                <!-- CHỮ KÝ 2 BÊN -->
-                <div class="signatures">
-                    <div class="sig-box">
-                        <p><strong>ĐẠI DIỆN STUDIO</strong></p>
-                        <p style="font-size: 0.72rem; color: #666;">(Ký và ghi rõ họ tên)</p>
-                        <div class="sig-space"></div>
-                        <p><strong>${studioName}</strong></p>
+                    <!-- CHỮ KÝ 2 BÊN -->
+                    <div class="signatures">
+                        <div class="sig-box">
+                            <p><strong>ĐẠI DIỆN STUDIO</strong></p>
+                            <p style="font-size: 0.72rem; color: #666;">(Ký và ghi rõ họ tên)</p>
+                            <div class="sig-space"></div>
+                            <p><strong>${studioName}</strong></p>
+                        </div>
+                        <div class="sig-box">
+                            <p><strong>ĐẠI DIỆN KHÁCH HÀNG</strong></p>
+                            <p style="font-size: 0.72rem; color: #666;">(Ký và ghi rõ họ tên)</p>
+                            <div class="sig-space"></div>
+                            <p><strong>${c.customer_name}</strong></p>
+                        </div>
                     </div>
-                    <div class="sig-box">
-                        <p><strong>ĐẠI DIỆN KHÁCH HÀNG</strong></p>
-                        <p style="font-size: 0.72rem; color: #666;">(Ký và ghi rõ họ tên)</p>
-                        <div class="sig-space"></div>
-                        <p><strong>${c.customer_name}</strong></p>
+
+                    <!-- NÚT IN NHANH -->
+                    <div class="no-print" style="text-align: center; margin-top: 35px;">
+                        <button onclick="window.print()" style="background: #00ebb0; color: #000; border: none; padding: 12px 35px; font-weight: 900; border-radius: 8px; cursor: pointer; text-transform: uppercase; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(0,235,176,0.4);">🖨️ Xác Nhận & In Hợp Đồng</button>
                     </div>
                 </div>
-
-                <!-- NÚT IN NHANH -->
-                <div class="no-print" style="text-align: center; margin-top: 35px;">
-                    <button onclick="window.print()" style="background: #00ebb0; color: #000; border: none; padding: 12px 35px; font-weight: 900; border-radius: 8px; cursor: pointer; text-transform: uppercase; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(0,235,176,0.4);">🖨️ Xác Nhận & In Hợp Đồng</button>
-                </div>
-            </div>
-        </body>
-        </html>
-    `);
-    printWindow.document.close();
+            </body>
+            </html>
+        `);
+        printWindow.document.close();
+    }
 }
                     // 🌟 HÀM XÓA VĨNH VIỄN HỢP ĐỒNG
         async function deleteContract(id) {
