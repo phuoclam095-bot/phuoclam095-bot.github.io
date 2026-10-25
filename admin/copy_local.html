@@ -201,15 +201,15 @@
 
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
         <div class="container-fluid px-lg-5">
-            <a class="navbar-brand" href="admin.html">CHONANHNHANH.VN</a>
+            <a class="navbar-brand" href="index">CHONANHNHANH.VN</a>
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav mx-auto">
-                    <li class="nav-item"><a href="admin.html" class="nav-link">Tạo Album</a></li>
-                    <li class="nav-item"><a href="managa.html" class="nav-link">Quản Lý</a></li>
-                    <li class="nav-item"><a href="copy_local.html" class="nav-link active">Sao Chép</a></li>
-                    <li class="nav-item"><a href="blog.html" class="nav-link">Blog</a></li>
-                    <li class="nav-item"><a href="payment.html" class="nav-link">Gia Hạn</a></li>
-                    <li class="nav-item"><a href="lienhe.html" class="nav-link">Liên Hệ</a></li>
+                    <li class="nav-item"><a href="index" class="nav-link">Tạo Album</a></li>
+                    <li class="nav-item"><a href="managa" class="nav-link">Quản Lý</a></li>
+                    <li class="nav-item"><a href="copy_local" class="nav-link active">Sao Chép</a></li>
+                    <li class="nav-item"><a href="blog" class="nav-link">Blog</a></li>
+                    <li class="nav-item"><a href="payment" class="nav-link">Gia Hạn</a></li>
+                    <li class="nav-item"><a href="lienhe" class="nav-link">Liên Hệ</a></li>
                 </ul>
                 <div id="authControl" style="display: none !important;" class="align-items-center gap-2">
                     <div class="user-status-box">
@@ -243,7 +243,7 @@
             <p class="text-secondary small mb-4" style="line-height: 1.6;">
                 Tài khoản của bạn đã hết hạn dùng thử hoặc chưa nâng cấp lên gói VIP. Vui lòng gia hạn để tiếp tục sử dụng công nghệ sao chép siêu tốc.
             </p>
-            <a href="payment.html" class="btn btn-primary fw-900 px-4 py-2 rounded-pill text-black text-uppercase" style="background: var(--primary); border: none; font-size: 0.85rem; text-decoration: none;">Gia Hạn VIP Ngay</a>
+            <a href="payment" class="btn btn-primary fw-900 px-4 py-2 rounded-pill text-black text-uppercase" style="background: var(--primary); border: none; font-size: 0.85rem; text-decoration: none;">Gia Hạn VIP Ngay</a>
         </div>
         <div id="mainWorkGrid" class="main-grid">
 
@@ -278,7 +278,7 @@
                     </div>
 
                     <div id="noticeVIP" class="mt-2 text-center" style="display:none; font-weight:700; color:#ff4757; font-size: 0.75rem;">
-                        Vui lòng <a href="payment.html" style="color:var(--primary); text-decoration:underline;">Gia hạn VIP</a> để sử dụng.
+                        Vui lòng <a href="payment" style="color:var(--primary); text-decoration:underline;">Gia hạn VIP</a> để sử dụng.
                     </div>
                 </div>
             </div>
@@ -354,7 +354,7 @@
                 }
                 document.getElementById('authControl').style.setProperty('display', 'flex', 'important');
             } else { 
-                window.location.href = 'admin.html'; 
+                window.location.href = 'index'; 
             }
         }
         function getExpiryTimestamp() {
@@ -414,7 +414,7 @@
             div.className = `log-${type}`; div.innerText = msg; logBox.appendChild(div); logBox.scrollTop = logBox.scrollHeight;
         }
 
-        function logoutAdmin() { localStorage.clear(); window.location.href = 'admin.html'; }
+        function logoutAdmin() { localStorage.clear(); window.location.href = 'index'; }
         document.addEventListener('DOMContentLoaded', () => { updateHeaderUI(); setTimeout(() => { document.getElementById('loadOverlay').style.display = 'none'; }, 1500); });
     </script>
 </body>
