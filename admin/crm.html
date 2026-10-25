@@ -65,6 +65,9 @@
 
         #toastNotice { position: fixed; top: 110px; right: 30px; background: var(--primary); color: #000; padding: 12px 30px; border-radius: 12px; z-index: 20000; font-weight: 900; display: none; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
     </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
 <body>
 
@@ -193,7 +196,7 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label small fw-bold text-secondary">NGÀY GIỜ SỰ KIỆN <span class="text-danger">*</span></label>
-                                <input type="datetime-local" id="eventDate" class="form-control" lang="vi" step="60" required>
+                                <input type="text" id="eventDate" class="form-control" placeholder="Chọn ngày và giờ..." required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label small fw-bold text-secondary">ĐỊA ĐIỂM CHỤP / TỔ CHỨC</label>
@@ -491,6 +494,27 @@
             
             window.location.href = authUrl;
         }
+        document.addEventListener("DOMContentLoaded", function() {
+        flatpickr("#eventDate", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i", // Định dạng chuẩn gửi đi Database
+            altInput: true,
+            altFormat: "d/m/Y H:i", // Định dạng hiển thị trực quan ra màn hình cho người dùng: dd/mm/yyyy hh:mm
+            time_24hr: true,        // Chuẩn 24h tuyệt đối, không có SA/CH
+            minuteIncrement: 15,    // Bước nhảy 15 phút (00, 15, 30, 45)
+            locale: {
+                firstDayOfWeek: 1,
+                weekdays: {
+                    shorthand: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
+                    longhand: ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy']
+                },
+                months: {
+                    shorthand: ['Th1', 'Th2', 'Th3', 'Th4', 'Th5', 'Th6', 'Th7', 'Th8', 'Th9', 'Th10', 'Th11', 'Th12'],
+                    longhand: ['Tháng Một', 'Tháng Hai', 'Tháng Ba', 'Tháng Tư', 'Tháng Năm', 'Tháng Sáu', 'Tháng Bảy', 'Tháng Tám', 'Tháng Chín', 'Tháng Mười', 'Tháng Mười Một', 'Tháng Mười Hai']
+                }
+            }
+        });
+    });
             </script>
     
 </body>
