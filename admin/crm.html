@@ -49,10 +49,11 @@
         .btn-primary-custom { background: var(--primary); color: #000; font-weight: 900; border: none; border-radius: 12px; padding: 12px 25px; text-transform: uppercase; font-size: 0.8rem; transition: 0.3s; }
         .btn-primary-custom:hover { box-shadow: var(--neon); transform: translateY(-2px); }
 
-        /* 🌟 FIX ICON LỊCH TRẮNG SÁNG, KHÔNG BỊ CHÌM */
-        input[type="datetime-local"] {
-            color-scheme: dark;
-        }
+        /* Nút tất toán nhỏ gọn trong bảng */
+        .btn-settle { background: #10b981; color: #fff; font-weight: 800; font-size: 0.7rem; border: none; padding: 6px 12px; border-radius: 8px; text-transform: uppercase; transition: 0.2s; }
+        .btn-settle:hover { background: #059669; box-shadow: 0 0 10px rgba(16, 185, 129, 0.4); }
+
+        input[type="datetime-local"] { color-scheme: dark; }
 
         .modal-content { background: #0c152a !important; border: 2px solid var(--primary) !important; border-radius: 24px !important; box-shadow: 0 0 50px rgba(0,0,0,0.9), 0 0 20px rgba(0, 235, 176, 0.2) !important; }
         .form-control, .form-select { background: #13223f !important; border: 1.5px solid rgba(255,255,255,0.2) !important; color: #fff !important; border-radius: 12px; padding: 12px; font-size: 0.9rem; font-weight: 600; }
@@ -140,8 +141,25 @@
                         </tr>
                     </thead>
                     <tbody id="contractsTableBody">
+                        <!-- Dữ liệu mẫu minh họa có nút tất toán -->
                         <tr>
-                            <td colspan="9" class="text-center text-secondary py-5">Chưa có lịch trình nào được lưu.</td>
+                            <td>
+                                <div class="fw-bold text-white">Anh Minh & Chị Lan</div>
+                                <div class="small text-secondary">0912345678</div>
+                            </td>
+                            <td>
+                                <div class="fw-bold">Cưới VIP Studio</div>
+                                <div class="small text-secondary"><i class="fas fa-map-marker-alt me-1"></i>Phim trường Paris</div>
+                            </td>
+                            <td>28/10/2026 09:00</td>
+                            <td>10.000.000 ₫</td>
+                            <td>3.000.000 ₫</td>
+                            <td class="text-warning fw-bold">7.000.000 ₫</td>
+                            <td>500.000 ₫</td>
+                            <td><span class="badge bg-info text-dark">Đã cọc</span></td>
+                            <td class="text-end">
+                                <button class="btn-settle" onclick="settleContract(1)">Tất toán</button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -266,19 +284,16 @@
             setTimeout(() => { t.style.display = 'none'; }, 2500);
         }
 
-        // 🌟 TÍNH TOÁN TỰ ĐỘNG CÔNG NỢ VÀ TRẠNG THÁI THANH TOÁN
         function autoCalculate() {
             const total = parseFloat(document.getElementById('totalAmt').value) || 0;
             const deposit = parseFloat(document.getElementById('depositAmt').value) || 0;
             const extra = parseFloat(document.getElementById('extraFee').value) || 0;
             
-            // Tổng thực tế = Tổng hợp đồng + Phát sinh
             const grandTotal = total + extra;
             const remaining = grandTotal - deposit;
             
             document.getElementById('remainingPreview').innerText = remaining.toLocaleString('vi-VN') + ' VNĐ';
 
-            // Tự động gán trạng thái thanh toán
             const statusInput = document.getElementById('paymentStatus');
             if (deposit <= 0) {
                 statusInput.value = "Chưa cọc";
@@ -286,6 +301,28 @@
                 statusInput.value = "Đã tất toán";
             } else {
                 statusInput.value = "Đã cọc (Còn nợ)";
+            }
+        }
+
+        // 🌟 HÀM TẤT TOÁN NHANH KHI KHÁCH TRẢ HẾT TIỀN CÒN LẠI
+        async function settleContract(contractId) {
+            if(!confirm("Xác nhận khách đã thanh toán toàn bộ phần còn lại và tiến hành tất toán hợp đồng này?")) return;
+            
+            showToast("Đang cập nhật trạng thái tất toán...");
+            try {
+                const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/settle-contract', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: contractId })
+                });
+                if(res.ok) {
+                    showToast("Đã tất toán hợp đồng thành công!");
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    alert("Lỗi cập nhật trên máy chủ!");
+                }
+            } catch(e) {
+                alert("Lỗi kết nối máy chủ!");
             }
         }
 
