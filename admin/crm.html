@@ -471,15 +471,11 @@
             const redirectUri = 'https://wsm.congtubaclieu.com.vn/webhook/save-calendar-token'; 
             const scope = 'https://www.googleapis.com/auth/calendar.events';
             
-            // Lấy email đang đăng nhập từ localStorage để ép Google dùng luôn tài khoản này
+            // Lấy email hiện tại của chủ studio đang đăng nhập
             const currentEmail = localStorage.getItem('admin_email') || '';
             
-            let authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scope)}&access_type=offline`;
-            
-            // Nếu đã có email trong localStorage, tự động điền sẵn để không phải chọn lại
-            if (currentEmail) {
-                authUrl += `&login_hint=${encodeURIComponent(currentEmail)}`;
-            }
+            // Truyền email vào tham số state để Google giữ hộ và trả về khi callback
+            const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scope)}&access_type=offline&prompt=consent&state=${encodeURIComponent(currentEmail)}`;
             
             window.location.href = authUrl;
         }
