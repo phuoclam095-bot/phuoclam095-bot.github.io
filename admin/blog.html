@@ -152,17 +152,17 @@
             <!-- Logo hiển thị trên PC -->
             
           
-              <a class="navbar-brand m-0" href="admin.html">CHONANHNHANH.VN</a>
+              <a class="navbar-brand m-0" href="index">CHONANHNHANH.VN</a>
             <!-- Khung trung tâm menu chức năng (Căn giữa cả PC lẫn Mobile) -->
             <div class="nav-center-container" id="navCenterArea">
                 <ul class="navbar-nav" id="adminNavLinks">
-                    <li><a href="admin.html" class="nav-link">Tạo Album</a></li>
-                    <li><a href="managa.html" class="nav-link">Quản Lý</a></li>
-                    <li><a href="copy_local.html" class="nav-link">Sao Chép</a></li>
-                    <li><a href="blog.html" class="nav-link active">Blog</a></li>
-                    <li><a href="payment.html" class="nav-link">Gia Hạn</a></li>
-                    <li><a href="lienhe.html" class="nav-link">Liên Hệ</a></li>
-                    <li><a href="fedback.html" class="nav-link">Góp Ý</a></li>
+                    <li><a href="index" class="nav-link">Tạo Album</a></li>
+                    <li><a href="managa" class="nav-link">Quản Lý</a></li>
+                    <li><a href="copy_local" class="nav-link">Sao Chép</a></li>
+                    <li><a href="blog" class="nav-link active">Blog</a></li>
+                    <li><a href="payment" class="nav-link">Gia Hạn</a></li>
+                    <li><a href="lienhe" class="nav-link">Liên Hệ</a></li>
+                    <li><a href="fedback" class="nav-link">Góp Ý</a></li>
                 </ul>
             </div>
 
@@ -204,7 +204,7 @@
         </div>
 
         <div class="text-center mt-5">
-            <a href="fedback.html" class="btn-fedback-link"><i class="fas fa-comment-dots me-2"></i> Gửi Góp Ý Ngay</a>
+            <a href="fedback" class="btn-fedback-link"><i class="fas fa-comment-dots me-2"></i> Gửi Góp Ý Ngay</a>
         </div>
     </div>
 
@@ -255,7 +255,7 @@
                     if (!blog.id) return '<div class="col-md-4"></div>';
                     const driveId = blog.image?.includes('id=') ? blog.image.split('id=')[1].split('&')[0] : blog.image;
                     const imageUrl = blog.id?.startsWith('DEMO') ? blog.image : `https://drive.google.com/thumbnail?id=${driveId}&sz=w600`;
-                    return `<div class="col-md-4"><div class="blog-card" onclick="window.location.href='post.html?id=${blog.id}'"><img src="${imageUrl}" class="blog-img" onerror="this.src='https://via.placeholder.com/500x300'"><div class="blog-body"><div class="blog-title">${blog.title}</div><div class="blog-desc">${blog.content}</div><button class="btn-read">Xem thêm <i class="fas fa-arrow-right ms-2"></i></button></div></div></div>`;
+                    return `<div class="col-md-4"><div class="blog-card" onclick="window.location.href='post?id=${blog.id}'"><img src="${imageUrl}" class="blog-img" onerror="this.src='https://via.placeholder.com/500x300'"><div class="blog-body"><div class="blog-title">${blog.title}</div><div class="blog-desc">${blog.content}</div><button class="btn-read">Xem thêm <i class="fas fa-arrow-right ms-2"></i></button></div></div></div>`;
                 }).join('');
                 slides.push(`<div class="carousel-item ${i === 0 ? 'active' : ''}"><div class="row g-4">${groupHtml}</div></div>`);
             }
