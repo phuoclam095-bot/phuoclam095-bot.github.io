@@ -130,12 +130,9 @@
                     <input type="text" id="searchInput" class="form-control form-control-sm" placeholder="🔍 Tìm tên, SĐT, ngày..." style="width: 220px;" oninput="filterContracts()">
                     
                     <!-- 🌟 BỘ LỌC THEO THÁNG -->
-                    <select id="monthFilter" class="form-select form-select-sm" style="width: 150px;" onchange="filterContracts()">
+                    <!-- 🌟 BỘ LỌC THEO THÁNG (TỰ ĐỘNG CẬP NHẬT) -->
+                    <select id="monthFilter" class="form-select form-select-sm" style="width: 160px;" onchange="filterContracts()">
                         <option value="">Tất cả các tháng</option>
-                        <option value="2026-10">Tháng 10 / 2026</option>
-                        <option value="2026-11">Tháng 11 / 2026</option>
-                        <option value="2026-12">Tháng 12 / 2026</option>
-                        <option value="2027-01">Tháng 01 / 2027</option>
                     </select>
             
                     <button class="btn btn-outline-light fw-bold px-3 py-2 rounded-3 text-uppercase" style="font-size: 0.75rem; border-color: rgba(255,255,255,0.2);" onclick="requestCalendarPermission()">
@@ -325,8 +322,8 @@
                 statusInput.value = "Đã cọc (Còn nợ)";
             }
         }
-        let allContractsGlobal = []; // Lưu trữ danh sách gốc để phục vụ tìm kiếm & lọc
-        
+        let allContractsGlobal = []; // Lưu trữ danh sách gốc
+
         async function loadContracts() {
             const studioSlug = localStorage.getItem('admin_studio_slug') || 'studio';
             try {
@@ -337,6 +334,9 @@
                 // 🌟 SẮP XẾP: Đưa ngày gần nhất lên trên đầu
                 allContractsGlobal.sort((a, b) => new Date(a.event_date) - new Date(b.event_date));
         
+                // Tự động tạo danh sách các tháng có trong dữ liệu để đưa vào bộ lọc
+                populateMonthFilter(allContractsGlobal);
+        
                 renderTable(allContractsGlobal);
             } catch(e) {
                 console.error(e);
@@ -344,7 +344,31 @@
             }
         }
         
-        // 🌟 HÀM HIỂN THỊ VÀ LỌC DỮ LIỆU LÊN BẢNG
+        // 🌟 HÀM TỰ ĐỘNG ĐỔ DỮ LIỆU THÁNG VÀO DROPDOWN
+        function populateMonthFilter(contracts) {
+            const monthSelect = document.getElementById('monthFilter');
+            const currentValue = monthSelect.value;
+            
+            // Lấy danh sách các tháng duy nhất từ event_date (định dạng YYYY-MM)
+            const monthsSet = new Set();
+            contracts.forEach(c => {
+                if (c.event_date) {
+                    const ym = c.event_date.substring(0, 7); // Lấy "YYYY-MM"
+                    if (ym.length === 7) monthsSet.add(ym);
+                }
+            });
+        
+            let optionsHTML = '<option value="">Tất cả các tháng</option>';
+            Array.from(monthsSet).sort().forEach(ym => {
+                let parts = ym.split('-');
+                optionsHTML += `<option value="${ym}">Tháng ${parts[1]} / ${parts[0]}</option>`;
+            });
+        
+            monthSelect.innerHTML = optionsHTML;
+            monthSelect.value = currentValue; // Giữ lại lựa chọn của người dùng nếu có
+        }
+        
+        // 🌟 HÀM HIỂN THỊ DỮ LIỆU LÊN BẢNG CRM
         function renderTable(contracts) {
             const tbody = document.getElementById('contractsTableBody');
             tbody.innerHTML = '';
@@ -371,7 +395,6 @@
                     totalRem += remaining;
                 }
         
-                // Định dạng ngày giờ chuẩn UTC để hiển thị chính xác không lệch
                 const formattedDate = c.event_date ? (() => {
                     let d = new Date(c.event_date);
                     let day = String(d.getUTCDate()).padStart(2, '0');
@@ -410,7 +433,7 @@
             document.getElementById('statTotalRemaining').innerText = totalRem.toLocaleString('vi-VN') + ' VNĐ';
         }
         
-        // 🌟 HÀM LỌC VÀ TÍCH HỢP TÌM KIẾM THÔNG MINH
+        // 🌟 HÀM TÌM KIẾM VÀ LỌC THÔNG MINH KẾT HỢP
         function filterContracts() {
             const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
             const selectedMonth = document.getElementById('monthFilter').value; // dạng "2026-10"
@@ -419,9 +442,10 @@
                 const name = (c.customer_name || '').toLowerCase();
                 const phone = (c.customer_phone || '').toLowerCase();
                 const dateStr = (c.event_date || '').toLowerCase();
+                const packageStr = (c.service_package || '').toLowerCase();
         
-                // Khớp từ khóa tìm kiếm (Tên, SĐT hoặc Ngày)
-                const matchKeyword = name.includes(keyword) || phone.includes(keyword) || dateStr.includes(keyword);
+                // Khớp từ khóa tìm kiếm (Tên, SĐT, Gói hoặc Ngày)
+                const matchKeyword = name.includes(keyword) || phone.includes(keyword) || dateStr.includes(keyword) || packageStr.includes(keyword);
         
                 // Khớp bộ lọc tháng
                 let matchMonth = true;
