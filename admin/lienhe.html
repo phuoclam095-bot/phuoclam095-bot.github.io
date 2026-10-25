@@ -16,19 +16,36 @@
             -ms-user-select: none !important;
             cursor: default;
         }
-        @media (min-width: 992px) {
-            .nav-center-container { 
-                position: absolute !important; 
-                left: 50% !important; 
+       @media (min-width: 992px) {
+            .nav-center-container {  
+                position: absolute !important;  
+                left: 50% !important;  
                 top: 50% !important;
-                transform: translate(-50%, -50%) !important; 
-                display: flex !important; 
-                align-items: center !important; 
-                justify-content: center !important; 
-                width: max-content !important; 
-                z-index: 5; 
+                transform: translate(-50%, -50%) !important;  
+                display: flex !important;  
+                align-items: center !important;  
+                justify-content: center !important;  
+                width: max-content !important;  
+                z-index: 5;  
             }
-            .nav-link.active::after { content: ''; position: absolute; width: 40%; height: 2px; bottom: 2px; left: 30%; background: var(--primary); box-shadow: var(--neon); }
+            
+            /* Cấu hình chuẩn cho từng nút tab trên desktop */
+            .nav-link {
+                position: relative !important;
+            }
+            
+            /* Gạch chân phát sáng chạy chuẩn ngay ngắn dưới tab đang active */
+            .nav-link.active::after { 
+                content: '' !important; 
+                position: absolute !important; 
+                width: 50% !important; 
+                height: 2px !important; 
+                bottom: 8px !important; 
+                left: 25% !important; 
+                background: var(--primary) !important; 
+                box-shadow: 0 0 10px var(--primary) !important; 
+                transform: none !important;
+            }
         }
         body { background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5,10,20,0.7), rgba(5,10,20,0.9)), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-attachment: fixed; color: #fff; font-family: 'Montserrat', sans-serif; min-height: 100vh; padding-top: 100px; overflow-x: hidden; }
         
