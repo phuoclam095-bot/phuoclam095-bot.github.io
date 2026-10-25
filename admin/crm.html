@@ -507,17 +507,19 @@ async function printContract(c) {
 
     try {
         const res = await fetch(`https://wsm.congtubaclieu.com.vn/webhook/get-studio-info?studio_slug=${studioSlug}`);
-        const data = await res.json();
-        if (data && data.length > 0) {
-            let info = data[0];
+        let data = await res.json();
+        
+        // Bóc tách dữ liệu linh hoạt (dù n8n trả về mảng trực tiếp hay bọc trong object)
+        let info = Array.isArray(data) ? data[0] : (data.data || data);
+        
+        if (info) {
             studioName = info.studio_name || studioName;
             studioPhone = info.studio_phone || studioPhone;
             studioAddress = info.studio_address || studioAddress;
             studioLogo = info.watermark_logo || info.logo || studioLogo;
         }
     } catch (e) {
-        console.log("Dùng thông tin mặc định từ phiên đăng nhập");
-        studioName = localStorage.getItem('admin_name') || studioName;
+        console.log("Lỗi lấy thông tin studio từ webhook:", e);
     }
 
     const total = parseFloat(c.total_amount) || 0;
