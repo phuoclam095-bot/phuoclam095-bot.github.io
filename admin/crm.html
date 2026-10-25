@@ -192,6 +192,18 @@
                                 <input type="text" id="eventLocation" class="form-control" placeholder="VD: Phim trường Paris hoặc Khách sạn">
                             </div>
                         </div>
+                        
+                        <!-- 🌟 THÊM TÙY CHỌN ĐỒNG BỘ LỊCH GOOGLE -->
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <div class="form-check p-3 rounded" style="background: rgba(0, 235, 176, 0.05); border: 1px solid rgba(0, 235, 176, 0.2);">
+                                    <input class="form-check-input" type="checkbox" id="syncGoogleCalendar" checked style="background-color: #13223f; border-color: var(--primary);">
+                                    <label class="form-check-input-label text-white fw-bold small ms-2" for="syncGoogleCalendar" style="cursor: pointer;">
+                                        <i class="fab fa-google text-primary me-1"></i> Tự động đồng bộ lịch này vào Google Calendar cá nhân
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-md-4 mb-3">
                                 <label class="form-label small fw-bold text-secondary">TỔNG GIÁ TRỊ (VNĐ)</label>
@@ -400,27 +412,26 @@
                 deposit_amount: document.getElementById('depositAmt').value,
                 extra_fee: document.getElementById('extraFee').value,
                 payment_status: document.getElementById('paymentStatus').value,
-                note: document.getElementById('eventNote').value
+                note: document.getElementById('eventNote').value,
+                sync_calendar: document.getElementById('syncGoogleCalendar').checked // <--- Truyền trạng thái có đồng bộ hay không
             };
-
+        
             if(!data.customer_name || !data.event_date) {
                 return alert('Vui lòng nhập Tên khách hàng và Ngày giờ sự kiện!');
             }
-
-            showToast("Đang lưu hợp đồng và đồng bộ lịch...");
+        
+            showToast("Đang xử lý hợp đồng...");
             
             try {
-                const res = await fetch(PATHS.SAVE_CONTRACT, {
+                const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/save-contract', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
                 });
                 
                 if(res.ok) {
-                    showToast("Đã lưu và đồng bộ lịch thành công!");
-                    bootstrap.Modal.getInstance(document.getElementById('addContractModal')).hide();
-                    document.getElementById('contractForm').reset();
-                    loadContracts();
+                    showToast("Đã lưu hợp đồng thành công!");
+                    setTimeout(() => location.reload(), 1200);
                 } else {
                     alert('Lỗi lưu hợp đồng trên máy chủ!');
                 }
@@ -429,11 +440,37 @@
                 alert('Lỗi kết nối n8n webhook!');
             }
         }
-
         document.addEventListener('DOMContentLoaded', () => {
             updateHeaderUI();
             loadContracts();
         });
+        // Hàm yêu cầu riêng quyền Calendar khi chủ studio bấm kết nối
+        function connectGoogleCalendar() {
+            const clientId = '549408699768-0hhl7oc0sjhr1c9tsa1fo9ahv5apuecc.apps.googleusercontent.com';
+            // Redirect về một webhook riêng trên n8n để chuyên lưu refresh_token calendar
+            const redirectUri = 'https://wsm.congtubaclieu.com.vn/webhook/save-calendar-token'; 
+            
+            // Scope chuyên dụng để xin quyền quản lý lịch
+            const scope = 'https://www.googleapis.com/auth/calendar.events';
+            
+            const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scope)}&access_type=offline&prompt=consent`;
+            
+            // Chuyển hướng trình duyệt sang Google để xin quyền
+            window.location.href = authUrl;
+        }
+        function requestCalendarPermission() {
+            const clientId = '549408699768-0hhl7oc0sjhr1c9tsa1fo9ahv5apuecc.apps.googleusercontent.com';
+            // Trỏ về một webhook riêng chuyên nhận token lịch trên n8n
+            const redirectUri = 'https://wsm.congtubaclieu.com.vn/webhook/save-calendar-token'; 
+            
+            // Đích danh scope lịch
+            const scope = 'https://www.googleapis.com/auth/calendar.events';
+            
+            // Ép buộc prompt=consent để Google chắc chắn hiện bảng xin quyền Calendar
+            const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scope)}&access_type=offline&prompt=consent`;
+            
+            window.location.href = authUrl;
+        }
     </script>
 </body>
 </html>
