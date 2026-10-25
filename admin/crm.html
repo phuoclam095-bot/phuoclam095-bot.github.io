@@ -125,8 +125,19 @@
         <div class="card-custom">
             <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
                 <h5 class="fw-900 text-primary mb-0">QUẢN LÝ HỢP ĐỒNG & LỊCH TRÌNH STUDIO</h5>
-                <div class="d-flex align-items-center gap-2">
-                    <!-- 🌟 NÚT KẾT NỐI VÀ ĐỒNG BỒ HÀNG LOẠT (KHÔNG TRÙNG LẶP) -->
+                <div class="d-flex align-items-center flex-wrap gap-2">
+                    <!-- 🌟 THANH TÌM KIẾM THÔNG MINH -->
+                    <input type="text" id="searchInput" class="form-control form-control-sm" placeholder="🔍 Tìm tên, SĐT, ngày..." style="width: 220px;" oninput="filterContracts()">
+                    
+                    <!-- 🌟 BỘ LỌC THEO THÁNG -->
+                    <select id="monthFilter" class="form-select form-select-sm" style="width: 150px;" onchange="filterContracts()">
+                        <option value="">Tất cả các tháng</option>
+                        <option value="2026-10">Tháng 10 / 2026</option>
+                        <option value="2026-11">Tháng 11 / 2026</option>
+                        <option value="2026-12">Tháng 12 / 2026</option>
+                        <option value="2027-01">Tháng 01 / 2027</option>
+                    </select>
+            
                     <button class="btn btn-outline-light fw-bold px-3 py-2 rounded-3 text-uppercase" style="font-size: 0.75rem; border-color: rgba(255,255,255,0.2);" onclick="requestCalendarPermission()">
                         <i class="fab fa-google text-primary me-2"></i> Kết nối Lịch & Đồng bộ
                     </button>
