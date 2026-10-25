@@ -226,13 +226,13 @@
                         <div id="avatarPlaceholder"></div>
                         <div class="d-flex flex-column overflow-hidden">
                             <span id="userNameDisplay" style="font-weight:900; font-size:0.75rem; line-height:1"></span>
-                            <div id="userStatusDisplay"></div>
+                            <div id="userStatusDisplay">
+                                <span id="badgeStatus" class="status-tag">...</span>
+                                <span id="userExpiryText" style="font-size: 0.65rem; color: #fff; font-weight: 800;"></span>
+                            </div>
                         </div>
                     </div>
-                    <button class="btn btn-link text-primary p-0 ms-2" onclick="openStudioConfigModal()" title="Cấu hình Studio" style="cursor:pointer">
-                        <i class="fas fa-cog"></i>
-                    </button>
-                    <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()" style="cursor:pointer">
+                    <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()" style="cursor:pointer" title="Đăng xuất">
                         <i class="fas fa-power-off"></i>
                     </button>
                 </div>
@@ -454,55 +454,62 @@
         }
 
         function updateHeaderUI() {
-            if (localStorage.getItem('admin_is_logged_in') === 'true') {
-                const name = localStorage.getItem('admin_name') || 'Anh/Chị';
-                const av = localStorage.getItem('admin_avatar');
-                const status = localStorage.getItem('admin_status') || 'new';
-                const expiry = getExpiryTimestamp();
-                
-                // Gán giá trị an toàn, kiểm tra phần tử tồn tại trước để tránh lỗi null
-                const nameDisplay = document.getElementById('userNameDisplay');
-                if (nameDisplay) nameDisplay.innerText = name;
+    const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
+    const status = localStorage.getItem('admin_status') || 'new';
+    const expiry = getExpiryTimestamp();
+    const name = localStorage.getItem('admin_name') || 'Anh/Chị';
+    const isVIP = (status === 'active' && expiry > Date.now());
 
-                const avatarPlaceholder = document.getElementById('avatarPlaceholder');
-                if (avatarPlaceholder) {
-                    avatarPlaceholder.innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:30px; color:var(--primary)"></i>`;
-                }
-                
-                const badge = document.getElementById('badgeStatus');  
-                const expText = document.getElementById('userExpiryText');
-                
-                const mainWorkGrid = document.getElementById('mainWorkGrid');
-                const vipExpiredBlockNotice = document.getElementById('vipExpiredBlockNotice');
+    const navLinks = document.getElementById('adminNavLinks');
+    const loggedInNav = document.getElementById('loggedInNav');
+    const loggedOutNav = document.getElementById('loggedOutNav');
+    const mainWorkGrid = document.getElementById('mainWorkGrid');
+    const vipExpiredBlockNotice = document.getElementById('vipExpiredBlockNotice');
+
+    if (isLoggedIn) {
+        if(navLinks) navLinks.style.setProperty('display', 'flex', 'important');
+        if(loggedInNav) loggedInNav.style.setProperty('display', 'flex', 'important');
+        if(loggedOutNav) loggedOutNav.style.setProperty('display', 'none', 'important');
         
-                if (status === 'active' && expiry > Date.now()) {  
-                    if (badge) {
-                        badge.innerText = "ACTIVE";  
-                        badge.style.background = "var(--primary)";
-                        badge.style.color = "#000";
-                    }
-                    if (expText) expText.innerText = "Hạn: " + new Date(expiry).toLocaleDateString('vi-VN');  
-                    
-                    if (mainWorkGrid) mainWorkGrid.style.setProperty('display', 'block', 'important');
-                    if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'none', 'important');
-                } else {  
-                    if (badge) {
-                        badge.innerText = status === 'new' ? "MỚI" : "EXPIRED";  
-                        badge.style.background = "#ff4757";  
-                        badge.style.color = "#fff";
-                    }
-                    if (expText) expText.innerText = "";
-                    
-                    if (mainWorkGrid) mainWorkGrid.style.setProperty('display', 'none', 'important');
-                    if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'block', 'important');
-                }
-                
-                const authControl = document.getElementById('authControl');
-                if (authControl) authControl.style.setProperty('display', 'flex', 'important');
-            } else {  
-                window.location.href = 'index';  
-            }
+        const nameDisplay = document.getElementById('userNameDisplay');
+        if (nameDisplay) nameDisplay.innerText = name;
+
+        const avatarPlaceholder = document.getElementById('avatarPlaceholder');
+        const av = localStorage.getItem('admin_avatar');
+        if (avatarPlaceholder) {
+            avatarPlaceholder.innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:30px; color:var(--primary)"></i>`;
         }
+        
+        const badge = document.getElementById('badgeStatus'); 
+        const expText = document.getElementById('userExpiryText');
+
+        if (isVIP) {
+            if (badge) {
+                badge.className = "status-tag tag-active";
+                badge.innerText = "ACTIVE";
+            }
+            if (expText) expText.innerText = " - Hạn: " + new Date(expiry).toLocaleDateString('vi-VN');
+            
+            if (mainWorkGrid) mainWorkGrid.style.setProperty('display', 'block', 'important');
+            if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'none', 'important');
+        } else {
+            if (badge) {
+                badge.className = "status-tag tag-expired";
+                badge.innerText = status === 'new' ? "MỚI" : "EXPIRED";
+            }
+            if (expText) expText.innerText = expiry > 0 ? " - Hết hạn" : "";
+            
+            if (mainWorkGrid) mainWorkGrid.style.setProperty('display', 'none', 'important');
+            if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'block', 'important');
+        }
+    } else { 
+        if(navLinks) navLinks.style.setProperty('display', 'none', 'important');
+        if(loggedInNav) loggedInNav.style.setProperty('display', 'none', 'important');
+        if(loggedOutNav) loggedOutNav.style.setProperty('display', 'block', 'important');
+        if(mainWorkGrid) mainWorkGrid.style.setProperty('display', 'none', 'important');
+        if(vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'block', 'important');
+    }
+}
         function handleCopyTabClick(e) {
             e.preventDefault();
             e.stopPropagation();
