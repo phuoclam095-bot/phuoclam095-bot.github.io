@@ -495,6 +495,7 @@
             }
         }
        // 🌟 HÀM TẠO VÀ IN HỢP ĐỒNG ĐÃ ĐƯỢC ĐÓNG NGOẶC CHUẨN XÁC
+// 🌟 HÀM TẠO VÀ IN HỢP ĐỒNG ĐÃ ĐÓNG NGOẶC CHUẨN XÁC
 async function printContract(c) {
     showToast("Đang tải thông tin studio...");
     
@@ -774,153 +775,135 @@ async function printContract(c) {
     printWindow.document.write(htmlContent);
     printWindow.document.close();
 }
-        async function deleteContract(id) {
-            if(!confirm("Cảnh báo: Hành động này sẽ xóa vĩnh viễn hợp đồng khỏi hệ thống và không thể khôi phục. Bạn có chắc chắn muốn xóa?")) return;
-        
-            try {
-                const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/delete-contract', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: id })
-                });
-                if(res.ok) {
-                    showToast("Đã xóa vĩnh viễn hợp đồng!");
-                    loadContracts();
-                } else {
-                    alert("Lỗi xóa trên máy chủ!");
-                }
-            } catch(e) {
-                alert("Lỗi kết nối máy chủ!");
-            }
-        }
-        
-        // 🌟 HÀM TÌM KIẾM VÀ LỌC THÔNG MINH KẾT HỢP
-        function filterContracts() {
-            const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
-            const selectedMonth = document.getElementById('monthFilter').value; // dạng "2026-10"
-        
-            let filtered = allContractsGlobal.filter(c => {
-                const name = (c.customer_name || '').toLowerCase();
-                const phone = (c.customer_phone || '').toLowerCase();
-                const dateStr = (c.event_date || '').toLowerCase();
-                const packageStr = (c.service_package || '').toLowerCase();
-        
-                // Khớp từ khóa tìm kiếm
-                const matchKeyword = name.includes(keyword) || phone.includes(keyword) || dateStr.includes(keyword) || packageStr.includes(keyword);
-        
-                // Khớp bộ lọc tháng (chuẩn hóa chuỗi ngày tháng từ Database)
-                let matchMonth = true;
-                if (selectedMonth && c.event_date) {
-                    const cleanDate = c.event_date.replace('T', ' ');
-                    matchMonth = cleanDate.startsWith(selectedMonth);
-                }
-        
-                return matchKeyword && matchMonth;
-            });
-        
-            renderTable(filtered);
-        }
 
-        // 🌟 TẤT TOÁN NHANH (Cộng phát sinh + Tổng tiền - Cọc = 0)
-        async function settleContract(contractId) {
-            if(!confirm("Xác nhận khách đã thanh toán toàn bộ phần còn lại (bao gồm tổng tiền và chi phí phát sinh) để tất toán hợp đồng?")) return;
-            
-            showToast("Đang cập nhật tất toán...");
-            try {
-                const res = await fetch(PATHS.SETTLE_CONTRACT, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: contractId })
-                });
-                if(res.ok) {
-                    showToast("Đã tất toán thành công!");
-                    setTimeout(() => loadContracts(), 1000);
-                } else {
-                    alert("Lỗi cập nhật trên máy chủ!");
-                }
-            } catch(e) {
-                alert("Lỗi kết nối máy chủ!");
-            }
-        }
+async function deleteContract(id) {
+    if(!confirm("Cảnh báo: Hành động này sẽ xóa vĩnh viễn hợp đồng khỏi hệ thống và không thể khôi phục. Bạn có chắc chắn muốn xóa?")) return;
 
-        async function saveContract() {
-            const adminEmail = localStorage.getItem('admin_email') || "studio@congtubaclieu.com.vn";
-            const data = {
-                studio_email: adminEmail,
-                studio_slug: localStorage.getItem('admin_studio_slug') || 'studio',
-                customer_name: document.getElementById('custName').value,
-                customer_phone: document.getElementById('custPhone').value,
-                customer_email: document.getElementById('custEmail').value,
-                service_package: document.getElementById('servicePkg').value,
-                event_date: document.getElementById('eventDate').value,
-                event_location: document.getElementById('eventLocation').value,
-                total_amount: document.getElementById('totalAmt').value,
-                deposit_amount: document.getElementById('depositAmt').value,
-                extra_fee: document.getElementById('extraFee').value,
-                payment_status: document.getElementById('paymentStatus').value,
-                note: document.getElementById('eventNote').value,
-                sync_calendar: document.getElementById('syncGoogleCalendar').checked // <--- Truyền trạng thái có đồng bộ hay không
-            };
-        
-            if(!data.customer_name || !data.event_date) {
-                return alert('Vui lòng nhập Tên khách hàng và Ngày giờ sự kiện!');
-            }
-        
-            showToast("Đang xử lý hợp đồng...");
-            
-            try {
-                const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/save-contract', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-                
-                if(res.ok) {
-                    showToast("Đã lưu hợp đồng thành công!");
-                    setTimeout(() => location.reload(), 1200);
-                } else {
-                    alert('Lỗi lưu hợp đồng trên máy chủ!');
-                }
-            } catch(e) {
-                console.error(e);
-                alert('Lỗi kết nối n8n webhook!');
-            }
-        }
-        document.addEventListener('DOMContentLoaded', () => {
-            updateHeaderUI();
-            loadContracts();
+    try {
+        const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/delete-contract', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: id })
         });
-        // Hàm yêu cầu riêng quyền Calendar khi chủ studio bấm kết nối
-        function connectGoogleCalendar() {
-            const clientId = '549408699768-0hhl7oc0sjhr1c9tsa1fo9ahv5apuecc.apps.googleusercontent.com';
-            // Redirect về một webhook riêng trên n8n để chuyên lưu refresh_token calendar
-            const redirectUri = 'https://wsm.congtubaclieu.com.vn/webhook/save-calendar-token'; 
-            
-            // Scope chuyên dụng để xin quyền quản lý lịch
-            const scope = 'https://www.googleapis.com/auth/calendar.events';
-            
-            const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scope)}&access_type=offline&prompt=consent`;
-            
-            // Chuyển hướng trình duyệt sang Google để xin quyền
-            window.location.href = authUrl;
+        if(res.ok) {
+            showToast("Đã xóa vĩnh viễn hợp đồng!");
+            loadContracts();
+        } else {
+            alert("Lỗi xóa trên máy chủ!");
         }
-        function requestCalendarPermission() {
-            const clientId = '549408699768-0hhl7oc0sjhr1c9tsa1fo9ahv5apuecc.apps.googleusercontent.com';
-            const redirectUri = 'https://wsm.congtubaclieu.com.vn/webhook/save-calendar-token'; 
-            const scope = 'https://www.googleapis.com/auth/calendar.events';
-            
-            // Lấy email hiện tại của chủ studio đang đăng nhập
-            const currentEmail = localStorage.getItem('admin_email') || '';
-            
-            // Xây dựng đường dẫn, kết hợp cả login_hint (để hiển thị sẵn tài khoản) và state (để truyền ngầm email về n8n)
-            let authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scope)}&access_type=offline&prompt=consent&state=${encodeURIComponent(currentEmail)}`;
-            
-            if (currentEmail) {
-                authUrl += `&login_hint=${encodeURIComponent(currentEmail)}`;
-            }
-            
-            window.location.href = authUrl;
+    } catch(e) {
+        alert("Lỗi kết nối máy chủ!");
+    }
+}
+
+function filterContracts() {
+    const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
+    const selectedMonth = document.getElementById('monthFilter').value;
+
+    let filtered = allContractsGlobal.filter(c => {
+        const name = (c.customer_name || '').toLowerCase();
+        const phone = (c.customer_phone || '').toLowerCase();
+        const dateStr = (c.event_date || '').toLowerCase();
+        const packageStr = (c.service_package || '').toLowerCase();
+
+        const matchKeyword = name.includes(keyword) || phone.includes(keyword) || dateStr.includes(keyword) || packageStr.includes(keyword);
+
+        let matchMonth = true;
+        if (selectedMonth && c.event_date) {
+            const cleanDate = c.event_date.replace('T', ' ');
+            matchMonth = cleanDate.startsWith(selectedMonth);
         }
+
+        return matchKeyword && matchMonth;
+    });
+
+    renderTable(filtered);
+}
+
+async function settleContract(contractId) {
+    if(!confirm("Xác nhận khách đã thanh toán toàn bộ phần còn lại (bao gồm tổng tiền và chi phí phát sinh) để tất toán hợp đồng?")) return;
+    
+    showToast("Đang cập nhật tất toán...");
+    try {
+        const res = await fetch(PATHS.SETTLE_CONTRACT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: contractId })
+        });
+        if(res.ok) {
+            showToast("Đã tất toán thành công!");
+            setTimeout(() => loadContracts(), 1000);
+        } else {
+            alert("Lỗi cập nhật trên máy chủ!");
+        }
+    } catch(e) {
+        alert("Lỗi kết nối máy chủ!");
+    }
+}
+
+async function saveContract() {
+    const adminEmail = localStorage.getItem('admin_email') || "studio@congtubaclieu.com.vn";
+    const data = {
+        studio_email: adminEmail,
+        studio_slug: localStorage.getItem('admin_studio_slug') || 'studio',
+        customer_name: document.getElementById('custName').value,
+        customer_phone: document.getElementById('custPhone').value,
+        customer_email: document.getElementById('custEmail').value,
+        service_package: document.getElementById('servicePkg').value,
+        event_date: document.getElementById('eventDate').value,
+        event_location: document.getElementById('eventLocation').value,
+        total_amount: document.getElementById('totalAmt').value,
+        deposit_amount: document.getElementById('depositAmt').value,
+        extra_fee: document.getElementById('extraFee').value,
+        payment_status: document.getElementById('paymentStatus').value,
+        note: document.getElementById('eventNote').value,
+        sync_calendar: document.getElementById('syncGoogleCalendar').checked
+    };
+
+    if(!data.customer_name || !data.event_date) {
+        return alert('Vui lòng nhập Tên khách hàng và Ngày giờ sự kiện!');
+    }
+
+    showToast("Đang xử lý hợp đồng...");
+
+    try {
+        const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/save-contract', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        if(res.ok) {
+            showToast("Đã lưu hợp đồng thành công!");
+            setTimeout(() => location.reload(), 1200);
+        } else {
+            alert('Lỗi lưu hợp đồng trên máy chủ!');
+        }
+    } catch(e) {
+        console.error(e);
+        alert('Lỗi kết nối n8n webhook!');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    updateHeaderUI();
+    loadContracts();
+});
+
+function requestCalendarPermission() {
+    const clientId = '549408699768-0hhl7oc0sjhr1c9tsa1fo9ahv5apuecc.apps.googleusercontent.com';
+    const redirectUri = 'https://wsm.congtubaclieu.com.vn/webhook/save-calendar-token'; 
+    const scope = 'https://www.googleapis.com/auth/calendar.events';
+    const currentEmail = localStorage.getItem('admin_email') || '';
+
+    let authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scope)}&access_type=offline&prompt=consent&state=${encodeURIComponent(currentEmail)}`;
+
+    if (currentEmail) {
+        authUrl += `&login_hint=${encodeURIComponent(currentEmail)}`;
+    }
+
+    window.location.href = authUrl;
+}
             </script>
     
 </body>
