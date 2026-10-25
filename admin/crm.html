@@ -134,7 +134,9 @@
                     <select id="monthFilter" class="form-select form-select-sm" style="width: 160px;" onchange="filterContracts()">
                         <option value="">Tất cả các tháng</option>
                     </select>
-            
+                    <button class="btn btn-sm btn-outline-warning fw-bold text-uppercase" id="btnToggleHidden" onclick="toggleShowHidden()">
+                        <i class="fas fa-eye-slash me-1"></i> Xem ẩn (<span id="hiddenCount">0</span>)
+                    </button>
                     <button class="btn btn-outline-light fw-bold px-3 py-2 rounded-3 text-uppercase" style="font-size: 0.75rem; border-color: rgba(255,255,255,0.2);" onclick="requestCalendarPermission()">
                         <i class="fab fa-google text-primary me-2"></i> Kết nối Lịch & Đồng bộ
                     </button>
@@ -370,12 +372,38 @@
         }
         
         // 🌟 HÀM HIỂN THỊ DỮ LIỆU LÊN BẢNG CRM
+        let showHiddenMode = false; // Trạng thái có đang xem danh sách các lịch bị ẩn hay không
+
+        // 🌟 BẬT/TẮT CHẾ ĐỘ XEM LỊCH ĐÃ ẨN
+        function toggleShowHidden() {
+            showHiddenMode = !showHiddenMode;
+            const btn = document.getElementById('btnToggleHidden');
+            if (showHiddenMode) {
+                btn.innerHTML = `<i class="fas fa-eye me-1"></i> Thoát xem ẩn`;
+                btn.className = "btn btn-sm btn-warning fw-bold text-uppercase";
+            } else {
+                btn.innerHTML = `<i class="fas fa-eye-slash me-1"></i> Xem ẩn (<span id="hiddenCount">0</span>)`;
+                btn.className = "btn btn-sm btn-outline-warning fw-bold text-uppercase";
+            }
+            filterContracts();
+        }
+        
+        // 🌟 CẬP NHẬT LẠI HÀM RENDER ĐỂ HIỂN THỊ NÚT ẨN/XÓA Ở CỘT HÀNH ĐỘNG
         function renderTable(contracts) {
             const tbody = document.getElementById('contractsTableBody');
             tbody.innerHTML = '';
         
-            if (contracts.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" class="text-center text-secondary py-5">Không tìm thấy hợp đồng phù hợp.</td></tr>`;
+            // Lọc danh sách theo chế độ đang xem (Ẩn hay Hiện)
+            let displayedContracts = contracts.filter(c => showHiddenMode ? c.is_hidden === true : c.is_hidden !== true);
+        
+            // Cập nhật số lượng lịch đang ẩn lên nút tổng
+            let totalHidden = contracts.filter(c => c.is_hidden === true).length;
+            if(document.getElementById('hiddenCount')) {
+                document.getElementById('hiddenCount').innerText = totalHidden;
+            }
+        
+            if (displayedContracts.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="text-center text-secondary py-5">Không có hợp đồng nào phù hợp.</td></tr>`;
                 return;
             }
         
@@ -383,7 +411,7 @@
             let totalDep = 0;
             let totalRem = 0;
         
-            contracts.forEach(c => {
+            displayedContracts.forEach(c => {
                 const total = parseFloat(c.total_amount) || 0;
                 const deposit = parseFloat(c.deposit_amount) || 0;
                 const extra = parseFloat(c.extra_fee) || 0;
@@ -406,6 +434,20 @@
                     return `${day}/${month}/${year} ${hours}:${minutes}`;
                 })() : '';
         
+                // Xử lý nút hành động: Tất toán, Ẩn/Hiện, Xóa
+                let actionButtons = '';
+                if (c.payment_status !== 'Đã tất toán') {
+                    actionButtons += `<button class="btn-settle me-1" onclick="settleContract(${c.id})">Tất toán</button>`;
+                }
+        
+                if (c.is_hidden) {
+                    actionButtons += `<button class="btn btn-sm btn-outline-info p-1 px-2 me-1" style="font-size:0.65rem;" onclick="toggleHideContract(${c.id}, false)" title="Bỏ ẩn"><i class="fas fa-eye"></i></button>`;
+                } else {
+                    actionButtons += `<button class="btn btn-sm btn-outline-secondary p-1 px-2 me-1" style="font-size:0.65rem;" onclick="toggleHideContract(${c.id}, true)" title="Ẩn lịch"><i class="fas fa-eye-slash"></i></button>`;
+                }
+        
+                actionButtons += `<button class="btn btn-sm btn-outline-danger p-1 px-2" style="font-size:0.65rem;" onclick="deleteContract(${c.id})" title="Xóa vĩnh viễn"><i class="fas fa-trash"></i></button>`;
+        
                 tbody.innerHTML += `
                     <tr>
                         <td>
@@ -422,8 +464,8 @@
                         <td class="text-warning fw-bold">${remaining > 0 ? remaining.toLocaleString('vi-VN') + ' ₫' : '0 ₫'}</td>
                         <td>${extra > 0 ? extra.toLocaleString('vi-VN') + ' ₫' : '0 ₫'}</td>
                         <td><span class="badge ${c.payment_status === 'Đã tất toán' ? 'bg-success' : 'bg-info'} text-dark">${c.payment_status || 'Đã cọc'}</span></td>
-                        <td class="text-end">
-                            ${c.payment_status !== 'Đã tất toán' ? `<button class="btn-settle" onclick="settleContract(${c.id})">Tất toán</button>` : `<span class="text-success fw-bold small"><i class="fas fa-check-circle me-1"></i>Xong</span>`}
+                        <td class="text-end text-nowrap">
+                            ${actionButtons}
                         </td>
                     </tr>
                 `;
@@ -432,6 +474,46 @@
             document.getElementById('statTotalRevenue').innerText = totalRev.toLocaleString('vi-VN') + ' VNĐ';
             document.getElementById('statTotalDeposit').innerText = totalDep.toLocaleString('vi-VN') + ' VNĐ';
             document.getElementById('statTotalRemaining').innerText = totalRem.toLocaleString('vi-VN') + ' VNĐ';
+        }
+        
+        // 🌟 HÀM ẨN / HIỆN HỢP ĐỒNG
+        async function toggleHideContract(id, hideStatus) {
+            try {
+                const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/hide-contract', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: id, is_hidden: hideStatus })
+                });
+                if(res.ok) {
+                    showToast(hideStatus ? "Đã ẩn hợp đồng thành công!" : "Đã khôi phục hợp đồng!");
+                    loadContracts();
+                } else {
+                    alert("Lỗi cập nhật trên máy chủ!");
+                }
+            } catch(e) {
+                alert("Lỗi kết nối máy chủ!");
+            }
+        }
+        
+        // 🌟 HÀM XÓA VĨNH VIỄN HỢP ĐỒNG
+        async function deleteContract(id) {
+            if(!confirm("Cảnh báo: Hành động này sẽ xóa vĩnh viễn hợp đồng khỏi hệ thống và không thể khôi phục. Bạn có chắc chắn muốn xóa?")) return;
+        
+            try {
+                const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/delete-contract', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: id })
+                });
+                if(res.ok) {
+                    showToast("Đã xóa vĩnh viễn hợp đồng!");
+                    loadContracts();
+                } else {
+                    alert("Lỗi xóa trên máy chủ!");
+                }
+            } catch(e) {
+                alert("Lỗi kết nối máy chủ!");
+            }
         }
         
         // 🌟 HÀM TÌM KIẾM VÀ LỌC THÔNG MINH KẾT HỢP
