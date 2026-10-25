@@ -46,10 +46,12 @@
         .table-dark th { border-color: rgba(255,255,255,0.08); color: var(--primary); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 800; padding: 15px; }
         .table-dark td { border-color: rgba(255,255,255,0.04); vertical-align: middle; font-size: 0.85rem; padding: 15px; }
         
+        /* 🌟 SỬA MÀU SĐT VÀ ĐỊA ĐIỂM CHO SÁNG RÕ, KHÔNG BỊ MỜ */
+        .text-bright-sub { color: #cbd5e1 !important; font-size: 0.8rem; font-weight: 600; }
+
         .btn-primary-custom { background: var(--primary); color: #000; font-weight: 900; border: none; border-radius: 12px; padding: 12px 25px; text-transform: uppercase; font-size: 0.8rem; transition: 0.3s; }
         .btn-primary-custom:hover { box-shadow: var(--neon); transform: translateY(-2px); }
 
-        /* Nút tất toán nhỏ gọn trong bảng */
         .btn-settle { background: #10b981; color: #fff; font-weight: 800; font-size: 0.7rem; border: none; padding: 6px 12px; border-radius: 8px; text-transform: uppercase; transition: 0.2s; }
         .btn-settle:hover { background: #059669; box-shadow: 0 0 10px rgba(16, 185, 129, 0.4); }
 
@@ -141,25 +143,8 @@
                         </tr>
                     </thead>
                     <tbody id="contractsTableBody">
-                        <!-- Dữ liệu mẫu minh họa có nút tất toán -->
                         <tr>
-                            <td>
-                                <div class="fw-bold text-white">Anh Minh & Chị Lan</div>
-                                <div class="small text-secondary">0912345678</div>
-                            </td>
-                            <td>
-                                <div class="fw-bold">Cưới VIP Studio</div>
-                                <div class="small text-secondary"><i class="fas fa-map-marker-alt me-1"></i>Phim trường Paris</div>
-                            </td>
-                            <td>28/10/2026 09:00</td>
-                            <td>10.000.000 ₫</td>
-                            <td>3.000.000 ₫</td>
-                            <td class="text-warning fw-bold">7.000.000 ₫</td>
-                            <td>500.000 ₫</td>
-                            <td><span class="badge bg-info text-dark">Đã cọc</span></td>
-                            <td class="text-end">
-                                <button class="btn-settle" onclick="settleContract(1)">Tất toán</button>
-                            </td>
+                            <td colspan="9" class="text-center text-secondary py-5">Đang tải dữ liệu thực tế từ hệ thống...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -246,6 +231,12 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        const PATHS = {
+            GET_CONTRACTS: 'https://wsm.congtubaclieu.com.vn/webhook/get-contracts',
+            SAVE_CONTRACT: 'https://wsm.congtubaclieu.com.vn/webhook/save-contract',
+            SETTLE_CONTRACT: 'https://wsm.congtubaclieu.com.vn/webhook/settle-contract'
+        };
+
         function getExpiryTimestamp() {
             let raw = localStorage.getItem('admin_expiry');
             if (!raw) return 0;
@@ -304,20 +295,88 @@
             }
         }
 
-        // 🌟 HÀM TẤT TOÁN NHANH KHI KHÁCH TRẢ HẾT TIỀN CÒN LẠI
-        async function settleContract(contractId) {
-            if(!confirm("Xác nhận khách đã thanh toán toàn bộ phần còn lại và tiến hành tất toán hợp đồng này?")) return;
-            
-            showToast("Đang cập nhật trạng thái tất toán...");
+        // 🌟 TẢI DỮ LIỆU THẬT TỪ DATABASE QUA WEBHOOK N8N
+        async function loadContracts() {
+            const studioSlug = localStorage.getItem('admin_studio_slug') || 'studio';
             try {
-                const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/settle-contract', {
+                const res = await fetch(`${PATHS.GET_CONTRACTS}?studio_slug=${studioSlug}`);
+                const data = await res.json();
+                const contracts = Array.isArray(data) ? data : (data.contracts || []);
+                
+                const tbody = document.getElementById('contractsTableBody');
+                tbody.innerHTML = '';
+
+                if (contracts.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="9" class="text-center text-secondary py-5">Chưa có hợp đồng nào trong hệ thống.</td></tr>`;
+                    return;
+                }
+
+                let totalRev = 0;
+                let totalDep = 0;
+                let totalRem = 0;
+
+                contracts.forEach(c => {
+                    const total = parseFloat(c.total_amount) || 0;
+                    const deposit = parseFloat(c.deposit_amount) || 0;
+                    const extra = parseFloat(c.extra_fee) || 0;
+                    const grandTotal = total + extra;
+                    const remaining = grandTotal - deposit;
+
+                    totalRev += grandTotal;
+                    totalDep += deposit;
+                    if (c.payment_status !== 'Đã tất toán') {
+                        totalRem += remaining;
+                    }
+
+                    const formattedDate = c.event_date ? new Date(c.event_date).toLocaleString('vi-VN', {dateStyle: 'short', timeStyle: 'short'}) : '';
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>
+                                <div class="fw-bold text-white">${c.customer_name || 'Khách lẻ'}</div>
+                                <div class="text-bright-sub"><i class="fas fa-phone-alt me-1 text-primary" style="font-size: 0.7rem;"></i>${c.customer_phone || 'Chưa có SĐT'}</div>
+                            </td>
+                            <td>
+                                <div class="fw-bold text-white">${c.service_package || 'Gói chụp'}</div>
+                                <div class="text-bright-sub"><i class="fas fa-map-marker-alt me-1 text-danger" style="font-size: 0.7rem;"></i>${c.event_location || 'Tại studio'}</div>
+                            </td>
+                            <td>${formattedDate}</td>
+                            <td>${grandTotal.toLocaleString('vi-VN')} ₫</td>
+                            <td>${deposit.toLocaleString('vi-VN')} ₫</td>
+                            <td class="text-warning fw-bold">${remaining > 0 ? remaining.toLocaleString('vi-VN') + ' ₫' : '0 ₫'}</td>
+                            <td>${extra > 0 ? extra.toLocaleString('vi-VN') + ' ₫' : '0 ₫'}</td>
+                            <td><span class="badge ${c.payment_status === 'Đã tất toán' ? 'bg-success' : 'bg-info'} text-dark">${c.payment_status || 'Đã cọc'}</span></td>
+                            <td class="text-end">
+                                ${c.payment_status !== 'Đã tất toán' ? `<button class="btn-settle" onclick="settleContract(${c.id})">Tất toán</button>` : `<span class="text-success fw-bold small"><i class="fas fa-check-circle me-1"></i>Xong</span>`}
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                document.getElementById('statTotalRevenue').innerText = totalRev.toLocaleString('vi-VN') + ' VNĐ';
+                document.getElementById('statTotalDeposit').innerText = totalDep.toLocaleString('vi-VN') + ' VNĐ';
+                document.getElementById('statTotalRemaining').innerText = totalRem.toLocaleString('vi-VN') + ' VNĐ';
+
+            } catch(e) {
+                console.error(e);
+                document.getElementById('contractsTableBody').innerHTML = `<tr><td colspan="9" class="text-center text-danger py-4">Lỗi kết nối lấy dữ liệu từ máy chủ!</td></tr>`;
+            }
+        }
+
+        // 🌟 TẤT TOÁN NHANH (Cộng phát sinh + Tổng tiền - Cọc = 0)
+        async function settleContract(contractId) {
+            if(!confirm("Xác nhận khách đã thanh toán toàn bộ phần còn lại (bao gồm tổng tiền và chi phí phát sinh) để tất toán hợp đồng?")) return;
+            
+            showToast("Đang cập nhật tất toán...");
+            try {
+                const res = await fetch(PATHS.SETTLE_CONTRACT, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ id: contractId })
                 });
                 if(res.ok) {
-                    showToast("Đã tất toán hợp đồng thành công!");
-                    setTimeout(() => location.reload(), 1000);
+                    showToast("Đã tất toán thành công!");
+                    setTimeout(() => loadContracts(), 1000);
                 } else {
                     alert("Lỗi cập nhật trên máy chủ!");
                 }
@@ -351,7 +410,7 @@
             showToast("Đang lưu hợp đồng và đồng bộ lịch...");
             
             try {
-                const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/save-contract', {
+                const res = await fetch(PATHS.SAVE_CONTRACT, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
@@ -359,7 +418,9 @@
                 
                 if(res.ok) {
                     showToast("Đã lưu và đồng bộ lịch thành công!");
-                    setTimeout(() => location.reload(), 1200);
+                    bootstrap.Modal.getInstance(document.getElementById('addContractModal')).hide();
+                    document.getElementById('contractForm').reset();
+                    loadContracts();
                 } else {
                     alert('Lỗi lưu hợp đồng trên máy chủ!');
                 }
@@ -369,7 +430,10 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', updateHeaderUI);
+        document.addEventListener('DOMContentLoaded', () => {
+            updateHeaderUI();
+            loadContracts();
+        });
     </script>
 </body>
 </html>
