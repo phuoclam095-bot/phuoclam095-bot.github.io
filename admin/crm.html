@@ -156,6 +156,12 @@
                 background: var(--primary);
                 color: #000;
             }
+            /* Đảm bảo ô input date không bị chìm icon lịch */
+            .convert-input-wrapper {
+                position: relative;
+                display: flex;
+                align-items: center;
+            }
             input[type="date"]::-webkit-calendar-picker-indicator {
                 position: absolute;
                 right: 12px;
