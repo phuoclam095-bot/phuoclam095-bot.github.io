@@ -165,6 +165,16 @@
             input[type="date"]::-webkit-calendar-picker-indicator {
                 filter: invert(1); /* Đảo ngược màu icon từ đen sang trắng */
             }
+
+        .form-check-input {
+        background-color: #1a2234 !important;
+        border-color: rgba(255, 255, 255, 0.3) !important;
+        opacity: 1 !important;
+    }
+    .form-check-input:checked {
+        background-color: var(--primary) !important;
+        border-color: var(--primary) !important;
+    }
             </style>
 </head>
 <body>
@@ -321,7 +331,7 @@
                                 <label class="form-label small fw-bold text-secondary m-0">NGÀY GIỜ SỰ KIỆN <span class="text-danger">*</span></label>
                                 <!-- 🌟 Nút chọn chế độ nhập Âm lịch -->
                                 <div class="form-check form-switch m-0" style="min-height: auto;">
-                                    <input class="form-check-input" type="checkbox" id="isLunarEvent" onchange="toggleEventDateInputMode()" style="cursor: pointer; background-color: #1a2234 !important; border-color: rgba(255, 255, 255, 0.4) !important; opacity: 1 !important;">
+                                    <input class="form-check-input" type="checkbox" id="isLunarEvent" onchange="toggleEventDateInputMode()" style="cursor: pointer; background-color: #13223f; border-color: var(--primary);">
                                     <label class="form-check-label text-warning small fw-bold ms-1" for="isLunarEvent" style="cursor: pointer; font-size: 0.7rem !important;">Nhập bằng Lịch Âm</label>
                                 </div>
                             </div>
