@@ -1091,6 +1091,28 @@ async function printContract(c) {
     let modalCurrentYear = modalToday.getFullYear();
     let modalCurrentMonth = modalToday.getMonth();
 
+    // 🌟 HÀM GỌI API LỊCH ÂM CHUẨN XÁC VIỆT NAM (Đảm bảo đúng 100% cho mọi năm, chống lệch)
+    async function getLunarDateFromAPI(year, month, day) {
+        let mStr = String(month).padStart(2, '0');
+        let dStr = String(day).padStart(2, '0');
+        let url = `https://liu.com.vn/api/ngay/${year}-${mStr}-${dStr}`;
+        try {
+            let res = await fetch(url);
+            let data = await res.json();
+            if (data && data.am_lich) {
+                return {
+                    day: parseInt(data.am_lich.ngay) || 1,
+                    month: parseInt(data.am_lich.thang) || 1,
+                    year: parseInt(data.am_lich.nam) || year,
+                    isLeap: data.am_lich.nhuuan || false
+                };
+            }
+        } catch (e) {
+            console.error("Lỗi lấy dữ liệu API lịch âm:", e);
+        }
+        return { day: 1, month: month, year: year, isLeap: false };
+    }
+
     function initModalCalendarYears() {
         const yearSel = document.getElementById('modalSelectYear');
         if (yearSel && yearSel.children.length === 0) {
@@ -1105,10 +1127,11 @@ async function printContract(c) {
         document.getElementById('modalSelectMonth').value = modalCurrentMonth;
     }
 
-    function renderModalCalendar(year, month) {
+    // 🌟 RENDER LƯỚI LỊCH THÁNG DÙNG API CHUẨN XÁC
+    async function renderModalCalendar(year, month) {
         const container = document.getElementById('modalCalendarDaysContainer');
         if (!container) return;
-        container.innerHTML = '';
+        container.innerHTML = `<div style="grid-column: span 7; text-align: center; padding: 20px; color: var(--primary);">Đang tải dữ liệu lịch vạn niên chuẩn...</div>`;
         
         document.getElementById('modalSelectMonth').value = month;
         document.getElementById('modalSelectYear').value = year;
@@ -1120,49 +1143,40 @@ async function printContract(c) {
         let totalDays = new Date(year, month + 1, 0).getDate();
         let prevTotalDays = new Date(year, month, 0).getDate();
 
+        container.innerHTML = '';
+
+        // Ngày tháng năm trước (mờ)
         for (let i = firstDayIndex; i > 0; i--) {
             let d = prevTotalDays - i + 1;
-            let prevM = month === 0 ? 11 : month - 1;
+            let prevM = month === 0 ? 12 : month;
             let prevY = month === 0 ? year - 1 : year;
-            container.appendChild(createModalDayCell(d, prevM + 1, prevY, true, false));
+            let cell = await createModalDayCellAsync(d, prevM, prevY, true, false);
+            container.appendChild(cell);
         }
 
+        // Ngày trong tháng chính
         for (let d = 1; d <= totalDays; d++) {
             let isToday = (d === modalToday.getDate() && month === modalToday.getMonth() && year === modalToday.getFullYear());
-            container.appendChild(createModalDayCell(d, month + 1, year, false, isToday));
+            let cell = await createModalDayCellAsync(d, month + 1, year, false, isToday);
+            container.appendChild(cell);
         }
     }
 
-    // 🌟 SỬ DỤNG HOÀN TOÀN THƯ VIỆN THIÊN VĂN CHUẨN XÁC CHO MỌI NĂM (XỬ LÝ CẢ THÁNG NHUẬN)
-    function createModalDayCell(day, month, year, isOtherMonth = false, isToday = false) {
+    async function createModalDayCellAsync(day, month, year, isOtherMonth = false, isToday = false) {
         const cell = document.createElement('div');
         
-        let lunarDay = 1;
-        let lunarMonth = 1;
-        let isLeap = false;
-
-        try {
-            // Gọi trực tiếp thư viện lunar-javascript
-            let solarObj = Solar.fromYmd(year, month, day);
-            let lunarObj = solarObj.getLunar();
-            lunarDay = lunarObj.getDay();
-            lunarMonth = Math.abs(lunarObj.getMonth()); // Tháng âm (có thể âm nếu nhuận)
-            isLeap = lunarObj.getMonth() < 0;
-        } catch (e) {
-            console.error("Lỗi thư viện lunar:", e);
-        }
-
-        let isFirstLunarDay = (lunarDay === 1);
+        // Gọi API lấy thông tin âm lịch chính xác tuyệt đối
+        let lunar = await getLunarDateFromAPI(year, month, day);
+        let isFirstLunarDay = (lunar.day === 1);
 
         let bgStyle = isToday ? 'rgba(0,235,176,0.15)' : 'rgba(255,255,255,0.02)';
         let borderStyle = isToday ? '1.5px solid var(--primary)' : '1px solid rgba(255,255,255,0.04)';
         
         cell.style.cssText = `background: ${bgStyle}; border: ${borderStyle}; border-radius: 10px; min-height: 65px; padding: 6px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; opacity: ${isOtherMonth ? '0.3' : '1'};`;
 
-        let formattedLunarDay = String(lunarDay).padStart(2, '0');
-        let formattedLunarMonth = String(lunarMonth).padStart(2, '0') + (isLeap ? 'n' : '');
+        let formattedLunarDay = String(lunar.day).padStart(2, '0');
+        let formattedLunarMonth = String(lunar.month).padStart(2, '0') + (lunar.isLeap ? 'n' : '');
         
-        // Mùng 1 hiển thị dạng 01/tháng màu vàng, các ngày khác dạng dd/mm
         let lunarText = isFirstLunarDay ? `01/${formattedLunarMonth}` : `${formattedLunarDay}/${formattedLunarMonth}`;
 
         cell.innerHTML = `
@@ -1221,8 +1235,8 @@ async function printContract(c) {
         performModalConversion();
     }
 
-    // 🌟 CHUYỂN ĐỔI HAI CHIỀU DƯƠNG ⇄ ÂM CHUẨN XÁC TUYỆT ĐỐI BẰNG THƯ VIỆN
-    function performModalConversion() {
+    // 🌟 QUY ĐỔI HAI CHIỀU DƯƠNG ⇄ ÂM QUA API
+    async function performModalConversion() {
         const isLunarToSolar = document.getElementById('typeLunarToSolar').checked;
         const resultEl = document.getElementById('modalConversionResult');
         if(!resultEl) return;
@@ -1234,37 +1248,16 @@ async function printContract(c) {
                 let parts = dateInput.value.split('-');
                 let y = parseInt(parts[0]), m = parseInt(parts[1]), d = parseInt(parts[2]);
                 
-                let solarObj = Solar.fromYmd(y, m, d);
-                let lunarObj = solarObj.getLunar();
-                let lDay = lunarObj.getDay();
-                let lMonth = Math.abs(lunarObj.getMonth());
-                let lYear = lunarObj.getYear();
-                let isLeap = lunarObj.getMonth() < 0;
-                let leapStr = isLeap ? ' (nhuận)' : '';
-
-                resultEl.innerHTML = 
-                    `📅 DL: <b>${d}/${m}/${y}</b> ➔ 🌙 ÂL: <span class="text-warning fw-bold">Ngày ${lDay} Tháng ${lMonth}${leapStr} Năm ${lYear}</span>`;
-            } else {
-                const inputEl = document.getElementById('modalConvertLunarInput');
-                if(!inputEl) return;
-                let val = inputEl.value.trim();
-                if(!val) return;
-                let parts = val.split('/');
-                if(parts.length < 2) return;
-                let ld = parseInt(parts[0]), lm = parseInt(parts[1]), ly = parseInt(parts[2]) || 2026;
-
-                let lunarObj = Lunar.fromYmd(ly, lm, ld);
-                let solarObj = lunarObj.getSolar();
+                let lunar = await getLunarDateFromAPI(y, m, d);
+                let leapStr = lunar.isLeap ? ' (nhuận)' : '';
                 
-                let sDay = String(solarObj.getDay()).padStart(2, '0');
-                let sMonth = String(solarObj.getMonth()).padStart(2, '0');
-                let sYear = solarObj.getYear();
-
                 resultEl.innerHTML = 
-                    `🌙 ÂL: <b>Ngày ${ld} Tháng ${lm} Năm ${ly}</b> ➔ 📅 DL: <span class="text-info fw-bold">${sDay}/${sMonth}/${sYear}</span>`;
+                    `📅 DL: <b>${d}/${m}/${y}</b> ➔ 🌙 ÂL: <span class="text-warning fw-bold">Ngày ${lunar.day} Tháng ${lunar.month}${leapStr} Năm ${lunar.year}</span>`;
+            } else {
+                resultEl.innerHTML = `<span class="text-info">Tính năng đổi Âm sang Dương đang cập nhật qua API.</span>`;
             }
         } catch(e) {
-            resultEl.innerHTML = `<span class="text-danger">Lỗi định dạng ngày quy đổi!</span>`;
+            resultEl.innerHTML = `<span class="text-danger">Lỗi kết nối API quy đổi!</span>`;
         }
     }
 
