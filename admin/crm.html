@@ -1253,6 +1253,7 @@ async function printContract(c) {
 
         try {
             if (!isLunarToSolar) {
+                // Chiều Dương ➔ Âm
                 const dateInput = document.getElementById('modalConvertDate');
                 if(!dateInput || !dateInput.value) return;
                 let parts = dateInput.value.split('-');
@@ -1269,15 +1270,14 @@ async function printContract(c) {
                 resultEl.innerHTML = 
                     `📅 DL: <b>${d}/${m}/${y}</b> ➔ 🌙 ÂL: <span class="text-warning fw-bold">Ngày ${lDay} Tháng ${lMonth}${leapStr} Năm ${lYear}</span>`;
             } else {
+                // Chiều Âm ➔ Dương (Nhận dữ liệu từ ô input riêng biệt)
                 const inputEl = document.getElementById('modalConvertLunarInput');
-                if(!inputEl) return;
-                let val = inputEl.value.trim();
-                if(!val) return;
-                let parts = val.split('/');
-                if(parts.length < 2) return;
-                let ld = parseInt(parts[0]), lm = parseInt(parts[1]), ly = parseInt(parts[2]) || 2026;
+                if(!inputEl || !inputEl.value) return;
+                let parts = inputEl.value.split('-');
+                let y = parseInt(parts[0]), m = parseInt(parts[1]), d = parseInt(parts[2]);
 
-                let lunarObj = Lunar.fromYmd(ly, lm, ld);
+                // Coi ngày chọn ở ô input là ngày Âm lịch tương ứng cần quy đổi sang Dương lịch
+                let lunarObj = Lunar.fromYmd(y, m, d);
                 let solarObj = lunarObj.getSolar();
                 
                 let sDay = String(solarObj.getDay()).padStart(2, '0');
@@ -1285,7 +1285,7 @@ async function printContract(c) {
                 let sYear = solarObj.getYear();
 
                 resultEl.innerHTML = 
-                    `🌙 ÂL: <b>Ngày ${ld} Tháng ${lm} Năm ${ly}</b> ➔ 📅 DL: <span class="text-info fw-bold">${sDay}/${sMonth}/${sYear}</span>`;
+                    `🌙 ÂL (Chọn): <b>${d}/${m}/${y}</b> ➔ 📅 DL: <span class="text-info fw-bold">${sDay}/${sMonth}/${sYear}</span>`;
             }
         } catch(e) {
             resultEl.innerHTML = `<span class="text-danger">Lỗi định dạng ngày quy đổi!</span>`;
