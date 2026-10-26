@@ -1091,74 +1091,6 @@ async function printContract(c) {
     let modalCurrentYear = modalToday.getFullYear();
     let modalCurrentMonth = modalToday.getMonth();
 
-    // 🌟 THUẬT TOÁN ÂM LỊCH THUẦN CHUẨN XÁC TUYỆT ĐỐI (Không phụ thuộc CDN ngoài)
-    function jdFromDate(dd, mm, yy) {
-        let a = Math.floor((14 - mm) / 12);
-        let y = yy + 4800 - a;
-        let m = mm + 12 * a - 3;
-        let jd = dd + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
-        if (jd < 2299161) {
-            jd = dd + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - 32083;
-        }
-        return jd;
-    }
-
-    function solFromJD(jd) {
-        let a, b, c, d, e, m;
-        if (jd < 2299161) {
-            b = jd + 1524;
-        } else {
-            a = Math.floor((jd - 1867216.25) / 36524.25);
-            b = jd + 1 + a - Math.floor(a / 4);
-        }
-        c = b + 1524;
-        d = Math.floor((c - 122.1) / 365.25);
-        e = Math.floor(365.25 * d);
-        m = Math.floor((c - e) / 30.6001);
-        let day = c - e - Math.floor(30.6001 * m);
-        let month = m < 14 ? m - 1 : m - 13;
-        let year = month > 2 ? d - 4716 : d - 4715;
-        return { day, month, year };
-    }
-
-    // Hàm chuyển đổi Dương sang Âm (Khớp chuẩn mốc 26/10/2026 là 17/9 âm)
-    function convertSolarToLunar(dd, mm, yy) {
-        let targetJD = jdFromDate(dd, mm, yy);
-        let baseJD = jdFromDate(26, 10, 2026); // Mốc ngày hiện tại
-        let diff = targetJD - baseJD;
-        
-        if (yy === 2026 && mm === 10) {
-            let lDay = 17 + (dd - 26);
-            let lMonth = 9;
-            let lYear = 2026;
-            if (lDay > 29) { lDay -= 29; lMonth = 10; }
-            if (lDay <= 0) { lDay += 29; lMonth = 8; }
-            return { day: lDay, month: lMonth, year: lYear };
-        }
-
-        // Thuật toán chuẩn tịnh tiến chu kỳ trăng
-        let totalLunarDays = (17 + 8 * 29.53) + diff;
-        let lMonth = Math.floor(totalLunarDays / 29.53) % 12;
-        if (lMonth <= 0) lMonth += 12;
-        let lDay = Math.floor((totalLunarDays % 29.53) + 1);
-        if (lDay > 29) lDay = 29;
-        if (lDay <= 0) lDay = 1;
-
-        return { day: lDay, month: lMonth, year: yy };
-    }
-
-    // Hàm chuyển đổi Âm sang Dương
-    function convertLunarToSolar(ld, lm, ly) {
-        if (ly === 2026 && lm === 9) {
-            let solarDay = 26 + (ld - 17);
-            return { day: solarDay, month: 10, year: 2026 };
-        }
-        let baseSolarJD = jdFromDate(26, 10, 2026);
-        let targetLunarOffset = (ld - 17) + (lm - 9) * 29.53;
-        let estimatedJD = baseSolarJD + targetLunarOffset;
-        return solFromJD(Math.round(estimatedJD));
-    }
-
     function initModalCalendarYears() {
         const yearSel = document.getElementById('modalSelectYear');
         if(yearSel && yearSel.children.length === 0) {
@@ -1188,6 +1120,7 @@ async function printContract(c) {
         let totalDays = new Date(year, month + 1, 0).getDate();
         let prevTotalDays = new Date(year, month, 0).getDate();
 
+        // Ngày tháng năm trước (mờ)
         for (let i = firstDayIndex; i > 0; i--) {
             let d = prevTotalDays - i + 1;
             let prevM = month === 0 ? 11 : month - 1;
@@ -1195,33 +1128,51 @@ async function printContract(c) {
             container.appendChild(createModalDayCell(d, prevM + 1, prevY, true, false));
         }
 
+        // Ngày trong tháng chính
         for (let d = 1; d <= totalDays; d++) {
             let isToday = (d === modalToday.getDate() && month === modalToday.getMonth() && year === modalToday.getFullYear());
             container.appendChild(createModalDayCell(d, month + 1, year, false, isToday));
         }
     }
 
+    // 🌟 SỬ DỤNG ĐÚNG CHUẨN THƯ VIỆN LUNAR-JAVASCRIPT ĐỂ TÍNH CHÍNH XÁC THÁNG NHUẬN
     function createModalDayCell(day, month, year, isOtherMonth = false, isToday = false) {
         const cell = document.createElement('div');
         
-        let lunar = convertSolarToLunar(day, month, year);
-        let isFirstLunarDay = (lunar.day === 1);
+        let lunarDay = 1;
+        let lunarMonth = 1;
+
+        try {
+            // Gọi chuẩn phương thức của thư viện lunar-javascript
+            let solar = Solar.fromYmd(year, month, day);
+            let lunar = solar.getLunar();
+            lunarDay = lunar.getDay();
+            lunarMonth = lunar.getMonth(); // Thư viện trả về âm nếu là tháng nhuận
+        } catch(e) {
+            console.error("Lỗi thư viện lunar:", e);
+        }
+
+        let absLunarMonth = Math.abs(lunarMonth);
+        let isFirstLunarDay = (lunarDay === 1);
 
         let bgStyle = isToday ? 'rgba(0,235,176,0.15)' : 'rgba(255,255,255,0.02)';
         let borderStyle = isToday ? '1.5px solid var(--primary)' : '1px solid rgba(255,255,255,0.04)';
         
         cell.style.cssText = `background: ${bgStyle}; border: ${borderStyle}; border-radius: 10px; min-height: 65px; padding: 6px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; opacity: ${isOtherMonth ? '0.3' : '1'};`;
 
-        let formattedLunarDay = String(lunar.day).padStart(2, '0');
-        let formattedLunarMonth = String(lunar.month).padStart(2, '0');
+        let formattedLunarDay = String(lunarDay).padStart(2, '0');
+        let formattedLunarMonth = String(absLunarMonth).padStart(2, '0');
         
-        // Mùng 1 hiển thị định dạng 01/tháng màu vàng, các ngày khác hiển thị dd/mm
+        // Mùng 1 hiển thị dạng 01/tháng màu vàng, các ngày khác dạng dd/mm
         let lunarText = isFirstLunarDay ? `01/${formattedLunarMonth}` : `${formattedLunarDay}/${formattedLunarMonth}`;
+        if (lunarMonth < 0) {
+            lunarText += ' (nhuận)'; // Đánh dấu nếu là tháng nhuận để anh dễ kiểm tra
+        }
 
         cell.innerHTML = `
             <div style="font-size: 0.95rem; font-weight: 900; color: #fff;">${day}</div>
             <div>
-                <div style="font-size: 0.68rem; color: ${isFirstLunarDay ? '#f0c300' : 'var(--primary)'}; font-weight: ${isFirstLunarDay ? '900' : '700'};">
+                <div style="font-size: 0.65rem; color: ${isFirstLunarDay ? '#f0c300' : 'var(--primary)'}; font-weight: ${isFirstLunarDay ? '900' : '700'};">
                     ${lunarText}
                 </div>
             </div>
@@ -1257,11 +1208,12 @@ async function printContract(c) {
             let todayStr = modalToday.toISOString().split('T')[0];
             document.getElementById('modalConvertDate').value = todayStr;
         } else {
-            container.innerHTML = `<input type="text" id="modalConvertLunarInput" class="form-control form-control-sm text-center fw-bold" placeholder="VD: 17/09/2026" value="17/09/2026" oninput="performModalConversion()">`;
+            container.innerHTML = `<input type="text" id="modalConvertLunarInput" class="form-control form-control-sm text-center fw-bold" placeholder="VD: 05/09/2030" value="05/09/2030" oninput="performModalConversion()">`;
         }
         performModalConversion();
     }
 
+    // 🌟 QUY ĐỔI 2 CHIỀU SỬ DỤNG THƯ VIỆN CHUẨN XÁC TUYỆT ĐỐI
     function performModalConversion() {
         const isLunarToSolar = document.getElementById('typeLunarToSolar').checked;
         const resultEl = document.getElementById('modalConversionResult');
@@ -1274,9 +1226,11 @@ async function printContract(c) {
                 let parts = dateInput.value.split('-');
                 let y = parseInt(parts[0]), m = parseInt(parts[1]), d = parseInt(parts[2]);
                 
-                let lunar = convertSolarToLunar(d, m, y);
+                let solar = Solar.fromYmd(y, m, d);
+                let lunar = solar.getLunar();
+                
                 resultEl.innerHTML = 
-                    `📅 DL: <b>${d}/${m}/${y}</b> ➔ 🌙 ÂL: <span class="text-warning fw-bold">Ngày ${lunar.day} Tháng ${lunar.month} Năm ${lunar.year}</span>`;
+                    `📅 DL: <b>${d}/${m}/${y}</b> ➔ 🌙 ÂL: <span class="text-warning fw-bold">Ngày ${lunar.getDay()} Tháng ${Math.abs(lunar.getMonth())} Năm ${lunar.getYear()}</span>`;
             } else {
                 const inputEl = document.getElementById('modalConvertLunarInput');
                 if(!inputEl) return;
@@ -1284,12 +1238,14 @@ async function printContract(c) {
                 if(!val) return;
                 let parts = val.split('/');
                 if(parts.length < 2) return;
-                let ld = parseInt(parts[0]), lm = parseInt(parts[1]), ly = parseInt(parts[2]) || 2026;
+                let ld = parseInt(parts[0]), lm = parseInt(parts[1]), ly = parseInt(parts[2]) || 2030;
 
-                let solar = convertLunarToSolar(ld, lm, ly);
-                let sDay = String(solar.day).padStart(2, '0');
-                let sMonth = String(solar.month).padStart(2, '0');
-                let sYear = solar.year;
+                let lunar = Lunar.fromYmd(ly, lm, ld);
+                let solar = lunar.getSolar();
+                
+                let sDay = String(solar.getDay()).padStart(2, '0');
+                let sMonth = String(solar.getMonth()).padStart(2, '0');
+                let sYear = solar.getYear();
 
                 resultEl.innerHTML = 
                     `🌙 ÂL: <b>Ngày ${ld} Tháng ${lm} Năm ${ly}</b> ➔ 📅 DL: <span class="text-info fw-bold">${sDay}/${sMonth}/${sYear}</span>`;
