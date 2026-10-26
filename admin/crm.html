@@ -171,11 +171,9 @@
         border-color: rgba(255, 255, 255, 0.3) !important;
         opacity: 1 !important;
     }
-    #isLunarEvent.form-check-input::checked {
+    .form-check-input::checked {
         background-color: var(--primary) !important;
         border-color: var(--primary) !important;
-    #isLunarEvent.form-check-input:not(:checked) {
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23ffffff'/%3e%3c/svg%3e") !important;
     }
         
             </style>
@@ -249,7 +247,7 @@
 
         <div class="card-custom">
             <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
-                <h5 class="fw-900 text-primary mb-0">QUẢN LÝ HỢP ĐỒNG & LỊCH TRÌNH STUDIO</h5>
+                <h5 class="fw-900 text-white mb-0">QUẢN LÝ HỢP ĐỒNG & LỊCH TRÌNH STUDIO</h5>
                 <div class="d-flex align-items-center flex-wrap gap-2">
                     <!-- 🌟 THANH TÌM KIẾM THÔNG MINH -->
                     <button class="btn btn-sm btn-outline-primary fw-bold text-uppercase" data-bs-toggle="modal" data-bs-target="#lunarCalendarModal">
@@ -334,7 +332,7 @@
                                 <label class="form-label small fw-bold text-secondary m-0">NGÀY GIỜ SỰ KIỆN <span class="text-danger">*</span></label>
                                 <!-- 🌟 Nút chọn chế độ nhập Âm lịch -->
                                 <div class="form-check form-switch m-0" style="min-height: auto;">
-                                    <input class="form-check-input" type="checkbox" id="isLunarEvent" onchange="toggleEventDateInputMode()" style="cursor: pointer; background-color: #13223f; border-color: var(--white);">
+                                    <input class="form-check-input" type="checkbox" id="isLunarEvent" onchange="toggleEventDateInputMode()" style="cursor: pointer; background-color: #13223f; border-color: var(--primary); background-image: url(&quot;data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23ffffff'/%3e%3c/svg%3e&quot;);">
                                     <label class="form-check-label text-warning small fw-bold ms-1" for="isLunarEvent" style="cursor: pointer; font-size: 0.7rem !important;">Nhập bằng Lịch Âm</label>
                                 </div>
                             </div>
