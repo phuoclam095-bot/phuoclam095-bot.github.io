@@ -166,18 +166,12 @@
                 filter: invert(1); /* Đảo ngược màu icon từ đen sang trắng */
             }
 
-        .form-check-input {
-        background-color: #1a2234 !important;
-        border-color: rgba(255, 255, 255, 0.3) !important;
-        opacity: 1 !important;
-    }
-    .form-check-input:checked {
-        background-color: var(--primary) !important;
-        border-color: var(--primary) !important;
-    }
         .form-check-input:not(:checked) {
-        background-color: var(--primary) !important;
-        border-color: var(--primary) !important;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23ffffff'/%3e%3c/svg%3e") !important;
+    }
+    /* Giữ nguyên nút gạt màu trắng khi ON (hoặc tùy chỉnh theo ý muốn) */
+    .form-check-input:checked {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23ffffff'/%3e%3c/svg%3e") !important;
     }
             </style>
 </head>
