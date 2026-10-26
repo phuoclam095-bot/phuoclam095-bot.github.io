@@ -332,7 +332,7 @@
                                 <div class="form-check p-3 rounded" style="background: rgba(0, 235, 176, 0.05); border: 1px solid rgba(0, 235, 176, 0.2);">
                                     <input class="form-check-input" type="checkbox" id="syncGoogleCalendar" checked style="background-color: #13223f; border-color: var(--primary);">
                                     <label class="form-check-input-label text-white fw-bold small ms-2" for="syncGoogleCalendar" style="cursor: pointer;">
-                                        <i class="fab fa-google text-primary me-1"></i> Đồng bộ lịch google ( Do chưa được xác minh web nên sau khi thêm lịch vui lòng bấm vào kết nối lịch và đồng bộ bên ngoài )
+                                        <i class="fab fa-google text-primary me-1"></i> Đồng bộ lịch google ( Do chưa được xác minh web nên sau khi thêm lịch vui lòng bấm vào kết nối lịch và đồng bộ bên ngoài giao diện để đồng bộ ) )
                                     </label>
                                 </div>
                             </div>
@@ -1204,12 +1204,13 @@ async function printContract(c) {
         renderModalCalendar(modalCurrentYear, modalCurrentMonth);
     }
 
-    function switchConvertMode() {
+  function switchConvertMode() {
         const isLunarToSolar = document.getElementById('typeLunarToSolar').checked;
         const container = document.getElementById('convertInputContainer');
         
         if (!isLunarToSolar) {
-            container.innerHTML = `<input type="date" id="modalConvertDate" class="form-control form-control-sm text-center fw-bold" style="position: relative; z-index: 5;" onchange="performModalConversion()">`;
+            // Khôi phục lại input date chuẩn có hiện icon lịch và gán sẵn ngày hôm nay
+            container.innerHTML = `<input type="date" id="modalConvertDate" class="form-control form-control-sm text-center fw-bold" style="position: relative; z-index: 5; color-scheme: dark;" onchange="performModalConversion()">`;
             let todayStr = modalToday.toISOString().split('T')[0];
             let dateInput = document.getElementById('modalConvertDate');
             if (dateInput) {
