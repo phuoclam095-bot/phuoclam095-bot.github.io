@@ -1217,30 +1217,23 @@ async function printContract(c) {
         const isLunarToSolar = document.getElementById('typeLunarToSolar').checked;
         const container = document.getElementById('convertInputContainer');
         
+        // Tách riêng ID input cho 2 chiều để tránh xung đột dữ liệu
         if (!isLunarToSolar) {
-            // Chiều Dương ➔ Âm: Dùng input type="date" chuẩn kèm icon lịch
             container.innerHTML = `
                 <div class="convert-input-wrapper">
-                    <input type="date" id="modalConvertDate" class="form-control form-control-sm text-center fw-bold pe-4" onchange="performModalConversion()">
-                  
+                    <input type="date" id="modalConvertDate" class="form-control form-control-sm text-center fw-bold" style="color-scheme: dark;" onchange="performModalConversion()">
                 </div>`;
             let todayStr = modalToday.toISOString().split('T')[0];
             let dateInput = document.getElementById('modalConvertDate');
-            if (dateInput) {
-                dateInput.value = todayStr;
-            }
+            if (dateInput) dateInput.value = todayStr;
         } else {
-            // Chiều Âm ➔ Dương: Sử dụng input type="date" để hiển thị đầy đủ icon lịch, hệ thống sẽ tự động quy đổi giá trị tương ứng
             container.innerHTML = `
                 <div class="convert-input-wrapper">
-                    <input type="date" id="modalConvertDate" class="form-control form-control-sm text-center fw-bold pe-4" onchange="performModalConversion()">
-                    
+                    <input type="date" id="modalConvertLunarInput" class="form-control form-control-sm text-center fw-bold" style="color-scheme: dark;" onchange="performModalConversion()">
                 </div>`;
             let todayStr = modalToday.toISOString().split('T')[0];
-            let dateInput = document.getElementById('modalConvertDate');
-            if (dateInput) {
-                dateInput.value = todayStr;
-            }
+            let lunarInput = document.getElementById('modalConvertLunarInput');
+            if (lunarInput) lunarInput.value = todayStr;
         }
         performModalConversion();
     }
