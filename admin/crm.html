@@ -316,15 +316,29 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label small fw-bold text-secondary">NGÀY GIỜ SỰ KIỆN <span class="text-danger">*</span></label>
-                                <input type="datetime-local" id="eventDate" class="form-control" lang="vi" step="60" required>
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label class="form-label small fw-bold text-secondary m-0">NGÀY GIỜ SỰ KIỆN <span class="text-danger">*</span></label>
+                                <!-- 🌟 Nút chọn chế độ nhập Âm lịch -->
+                                <div class="form-check form-switch m-0" style="min-height: auto;">
+                                    <input class="form-check-input" type="checkbox" id="isLunarEvent" onchange="toggleEventDateInputMode()" style="cursor: pointer; background-color: #13223f; border-color: var(--primary);">
+                                    <label class="form-check-label text-warning small fw-bold ms-1" for="isLunarEvent" style="cursor: pointer; font-size: 0.7rem !important;">Nhập bằng Lịch Âm</label>
+                                </div>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label small fw-bold text-secondary">ĐỊA ĐIỂM CHỤP / TỔ CHỨC</label>
-                                <input type="text" id="eventLocation" class="form-control" placeholder="VD: Phim trường Paris hoặc Khách sạn">
+                            
+                            <!-- Ô input chọn ngày giờ (Dương hoặc Âm) -->
+                            <input type="datetime-local" id="eventDate" class="form-control" lang="vi" step="60" onchange="previewLunarSolarEventDate()" required>
+                            
+                            <!-- 🌟 Dòng hiển thị chú thích thông tin quy đổi Âm ⇄ Dương ngay bên dưới -->
+                            <div id="eventDateNotes" class="form-text text-info fw-bold mt-1" style="font-size: 0.72rem;">
+                                📅 Ngày Dương lịch chuẩn cho sự kiện.
                             </div>
                         </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label small fw-bold text-secondary">ĐỊA ĐIỂM CHỤP / TỔ CHỨC</label>
+                            <input type="text" id="eventLocation" class="form-control" placeholder="VD: Phim trường Paris hoặc Khách sạn">
+                        </div>
+                    </div>
                         
                         <!-- 🌟 THÊM TÙY CHỌN ĐỒNG BỘ LỊCH GOOGLE -->
                         <div class="row mb-3">
@@ -587,12 +601,28 @@ function getExpiryTimestamp() {
         
                 const formattedDate = c.event_date ? (() => {
                     let d = new Date(c.event_date);
-                    let day = String(d.getUTCDate()).padStart(2, '0');
-                    let month = String(d.getUTCMonth() + 1).padStart(2, '0');
+                    let day = d.getUTCDate();
+                    let month = d.getUTCMonth() + 1;
                     let year = d.getUTCFullYear();
                     let hours = String(d.getUTCHours()).padStart(2, '0');
                     let minutes = String(d.getUTCMinutes()).padStart(2, '0');
-                    return `${day}/${month}/${year} ${hours}:${minutes}`;
+                    
+                    let solarStr = `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year} ${hours}:${minutes}`;
+                    
+                    // Tự động tính ngày Âm tương ứng để hiển thị bên dưới
+                    try {
+                        let solarObj = Solar.fromYmd(year, month, day);
+                        let lunarObj = solarObj.getLunar();
+                        let lD = lunarObj.getDay();
+                        let lM = Math.abs(lunarObj.getMonth());
+                        let lY = lunarObj.getYear();
+                        let isLeap = lunarObj.getMonth() < 0;
+                        let leapStr = isLeap ? ' (nhuận)' : '';
+                        
+                        return `${solarStr}<br><span style="font-size:0.72rem; color: #f0c300; font-weight:700;"><i class="fas fa-moon me-1"></i>Âm: ${lD}/${lM}${leapStr}/${lY}</span>`;
+                    } catch(e) {
+                        return solarStr;
+                    }
                 })() : '';
         
                 // Xử lý nút hành động: Tất toán, Ẩn/Hiện, Xóa
@@ -1010,48 +1040,91 @@ async function printContract(c) {
         }
 
         async function saveContract() {
-            const adminEmail = localStorage.getItem('admin_email') || "studio@congtubaclieu.com.vn";
-            const data = {
-                studio_email: adminEmail,
-                studio_slug: localStorage.getItem('admin_studio_slug') || 'studio',
-                customer_name: document.getElementById('custName').value,
-                customer_phone: document.getElementById('custPhone').value,
-                customer_email: document.getElementById('custEmail').value,
-                service_package: document.getElementById('servicePkg').value,
-                event_date: document.getElementById('eventDate').value,
-                event_location: document.getElementById('eventLocation').value,
-                total_amount: document.getElementById('totalAmt').value,
-                deposit_amount: document.getElementById('depositAmt').value,
-                extra_fee: document.getElementById('extraFee').value,
-                payment_status: document.getElementById('paymentStatus').value,
-                note: document.getElementById('eventNote').value,
-                sync_calendar: document.getElementById('syncGoogleCalendar').checked // <--- Truyền trạng thái có đồng bộ hay không
-            };
+        const adminEmail = localStorage.getItem('admin_email') || "studio@congtubaclieu.com.vn";
         
-            if(!data.customer_name || !data.event_date) {
-                return alert('Vui lòng nhập Tên khách hàng và Ngày giờ sự kiện!');
-            }
-        
-            showToast("Đang xử lý hợp đồng...");
-            
+        let rawDateVal = document.getElementById('eventDate').value;
+        const isLunar = document.getElementById('isLunarEvent').checked;
+        let finalEventDate = rawDateVal;
+        let lunarDateStr = "";
+
+        if (rawDateVal) {
             try {
-                const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/save-contract', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-                
-                if(res.ok) {
-                    showToast("Đã lưu hợp đồng thành công!");
-                    setTimeout(() => location.reload(), 1200);
+                let parts = rawDateVal.split('T');
+                let dateParts = parts[0].split('-');
+                let y = parseInt(dateParts[0]), m = parseInt(dateParts[1]), d = parseInt(dateParts[2]);
+                let timePart = parts[1] || '00:00';
+
+                let solarObj, lunarObj;
+                if (isLunar) {
+                    // Nếu nhập bằng lịch Âm ➔ Quy đổi ra Dương để làm mốc chính lưu DB
+                    lunarObj = Lunar.fromYmd(y, m, d);
+                    solarObj = lunarObj.getSolar();
+                    
+                    let sY = solarObj.getYear();
+                    let sM = String(solarObj.getMonth()).padStart(2, '0');
+                    let sD = String(solarObj.getDay()).padStart(2, '0');
+                    
+                    finalEventDate = `${sY}-${sM}-${sD}T${timePart}`;
+                    let isLeap = lunarObj.getMonth() < 0;
+                    lunarDateStr = `${d}/${m}${isLeap ? 'n' : ''}/${y}`;
                 } else {
-                    alert('Lỗi lưu hợp đồng trên máy chủ!');
+                    // Nếu nhập bằng lịch Dương ➔ Tính ra ngày Âm tương ứng để lưu vào cột riêng
+                    solarObj = Solar.fromYmd(y, m, d);
+                    lunarObj = solarObj.getLunar();
+                    let lD = lunarObj.getDay();
+                    let lM = Math.abs(lunarObj.getMonth());
+                    let lY = lunarObj.getYear();
+                    let isLeap = lunarObj.getMonth() < 0;
+
+                    lunarDateStr = `${lD}/${lM}${isLeap ? 'n' : ''}/${lY}`;
                 }
-            } catch(e) {
-                console.error(e);
-                alert('Lỗi kết nối n8n webhook!');
+            } catch (e) {
+                console.error("Lỗi quy đổi ngày:", e);
             }
         }
+
+        const data = {
+            studio_email: adminEmail,
+            studio_slug: localStorage.getItem('admin_studio_slug') || 'studio',
+            customer_name: document.getElementById('custName').value,
+            customer_phone: document.getElementById('custPhone').value,
+            customer_email: document.getElementById('custEmail').value,
+            service_package: document.getElementById('servicePkg').value,
+            event_date: finalEventDate,
+            lunar_date: lunarDateStr, // <--- Gửi thêm cột ngày âm lên n8n
+            event_location: document.getElementById('eventLocation').value,
+            total_amount: document.getElementById('totalAmt').value,
+            deposit_amount: document.getElementById('depositAmt').value,
+            extra_fee: document.getElementById('extraFee').value,
+            payment_status: document.getElementById('paymentStatus').value,
+            note: document.getElementById('eventNote').value,
+            sync_calendar: document.getElementById('syncGoogleCalendar').checked
+        };
+        
+        if(!data.customer_name || !data.event_date) {
+            return alert('Vui lòng nhập Tên khách hàng và Ngày giờ sự kiện!');
+        }
+        
+        showToast("Đang xử lý hợp đồng...");
+        
+        try {
+            const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/save-contract', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            
+            if(res.ok) {
+                showToast("Đã lưu hợp đồng thành công!");
+                setTimeout(() => location.reload(), 1200);
+            } else {
+                alert('Lỗi lưu hợp đồng trên máy chủ!');
+            }
+        } catch(e) {
+            console.error(e);
+            alert('Lỗi kết nối n8n webhook!');
+        }
+    }
         document.addEventListener('DOMContentLoaded', () => {
             updateHeaderUI();
             loadContracts();
@@ -1306,6 +1379,60 @@ async function printContract(c) {
             });
         }
     });
+
+        // 🌟 Chuyển đổi giao diện nhập ngày giữa Dương lịch và Âm lịch trong modal thêm hợp đồng
+    function toggleEventDateInputMode() {
+        const isLunar = document.getElementById('isLunarEvent').checked;
+        const noteEl = document.getElementById('eventDateNotes');
+        if (isLunar) {
+            noteEl.innerHTML = `🌙 Bạn đang chọn chế độ <b>nhập ngày Âm lịch</b>. Hệ thống sẽ tự động quy đổi sang ngày Dương để lưu lịch trình.`;
+        } else {
+            noteEl.innerHTML = `📅 Ngày Dương lịch chuẩn cho sự kiện.`;
+        }
+        previewLunarSolarEventDate();
+    }
+
+    // 🌟 Tự động tính toán và hiển thị thông tin quy đổi ngay khi chọn ngày
+    function previewLunarSolarEventDate() {
+        const val = document.getElementById('eventDate').value;
+        const noteEl = document.getElementById('eventDateNotes');
+        const isLunar = document.getElementById('isLunarEvent').checked;
+
+        if (!val) return;
+
+        try {
+            let parts = val.split('T');
+            let dateParts = parts[0].split('-');
+            let y = parseInt(dateParts[0]), m = parseInt(dateParts[1]), d = parseInt(dateParts[2]);
+            let timePart = parts[1] || '00:00';
+
+            if (isLunar) {
+                // Nếu người dùng chọn nhập lịch Âm ➔ Quy đổi sang Dương để lưu database
+                let lunarObj = Lunar.fromYmd(y, m, d);
+                let solarObj = lunarObj.getSolar();
+                
+                let sY = solarObj.getYear();
+                let sM = String(solarObj.getMonth()).padStart(2, '0');
+                let sD = String(solarObj.getDay()).padStart(2, '0');
+
+                noteEl.innerHTML = `✅ ÂL: <b>${d}/${m}/${y}</b> ➔ Tương ứng Dương lịch: <span class="text-success fw-bold">${sD}/${sM}/${sY} ${timePart}</span> (Sẽ lưu ngày này vào hệ thống)`;
+            } else {
+                // Nếu là lịch Dương ➔ Hiển thị ngày Âm tương ứng
+                let solarObj = Solar.fromYmd(y, m, d);
+                let lunarObj = solarObj.getLunar();
+                
+                let lD = lunarObj.getDay();
+                let lM = Math.abs(lunarObj.getMonth());
+                let lY = lunarObj.getYear();
+                let isLeap = lunarObj.getMonth() < 0;
+                let leapStr = isLeap ? ' (nhuận)' : '';
+
+                noteEl.innerHTML = `🌙 DL: <b>${d}/${m}/${y}</b> ➔ Tương ứng Âm lịch: <span class="text-warning fw-bold">Ngày ${lD} Tháng ${lM}${leapStr} Năm ${lY}</span>`;
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
             </script>
     <!-- 🌟 MODAL LỊCH VẠN NIÊN -->
 <div class="modal fade" id="lunarCalendarModal" tabindex="-1">
