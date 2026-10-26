@@ -1195,9 +1195,12 @@ async function printContract(c) {
         const container = document.getElementById('convertInputContainer');
         
         if (!isLunarToSolar) {
+            // Khôi phục lại input date chuẩn có ngày mặc định là hôm nay
             container.innerHTML = `<input type="date" id="modalConvertDate" class="form-control form-control-sm text-center fw-bold" style="position: relative; z-index: 5;" onchange="performModalConversion()">`;
-            document.getElementById('modalConvertDate').valueAsDate = new Date();
+            let todayStr = modalToday.toISOString().split('T')[0];
+            document.getElementById('modalConvertDate').value = todayStr;
         } else {
+            // Chế độ Âm sang Dương
             container.innerHTML = `<input type="text" id="modalConvertLunarInput" class="form-control form-control-sm text-center fw-bold" placeholder="VD: 17/09/2026" value="17/09/2026" oninput="performModalConversion()">`;
         }
         performModalConversion();
