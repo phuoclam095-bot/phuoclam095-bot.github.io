@@ -1212,7 +1212,7 @@ async function printContract(c) {
         if (!isLunarToSolar) {
             container.innerHTML = `
                 <div class="convert-input-wrapper">
-                    <input type="date" id="modalConvertDate" class="form-control form-control-sm text-center fw-bold" style="color-scheme: dark;" onchange="performModalConversion()">
+                    <input type="date" id="modalConvertDate" class="form-control form-control-sm text-center fw-bold pe-4" onchange="performModalConversion()">
                 </div>`;
             let todayStr = modalToday.toISOString().split('T')[0];
             let dateInput = document.getElementById('modalConvertDate');
@@ -1220,7 +1220,7 @@ async function printContract(c) {
         } else {
             container.innerHTML = `
                 <div class="convert-input-wrapper">
-                    <input type="date" id="modalConvertLunarInput" class="form-control form-control-sm text-center fw-bold" style="color-scheme: dark;" onchange="performModalConversion()">
+                    <input type="date" id="modalConvertLunarInput" class="form-control form-control-sm text-center fw-bold pe-4" onchange="performModalConversion()">
                 </div>`;
             let todayStr = modalToday.toISOString().split('T')[0];
             let lunarInput = document.getElementById('modalConvertLunarInput');
