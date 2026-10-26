@@ -534,7 +534,12 @@
             document.getElementById('editAllowComment').checked = (commentVal === true || commentVal === 'true' || commentVal === 1);
             
             // 🌟 Bắt chuẩn xác mọi định dạng true từ database
-            const isWatermarkOn = (watermarkEnabledVal === true || watermarkEnabledVal === 'true' || watermarkEnabledVal === 1 || watermarkEnabledVal === 'TRUE');
+            const isWatermarkOn = watermarkEnabledVal === true || 
+                          watermarkEnabledVal === 'true' || 
+                          watermarkEnabledVal === 1 || 
+                          watermarkEnabledVal === '1' || 
+                          watermarkEnabledVal === 'TRUE';
+                          
             document.getElementById('editWatermarkEnabled').checked = isWatermarkOn;
             
             editStoredLogoBase64 = watermarkLogoVal || '';
