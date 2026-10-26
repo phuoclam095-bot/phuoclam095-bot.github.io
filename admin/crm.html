@@ -1209,7 +1209,7 @@ async function printContract(c) {
         const container = document.getElementById('convertInputContainer');
         
         if (!isLunarToSolar) {
-            // Khôi phục lại input date chuẩn có hiện icon lịch và gán sẵn ngày hôm nay
+            // Đảm bảo thêm đầy đủ style để trình duyệt hiện icon lịch rõ ràng
             container.innerHTML = `<input type="date" id="modalConvertDate" class="form-control form-control-sm text-center fw-bold" style="position: relative; z-index: 5; color-scheme: dark;" onchange="performModalConversion()">`;
             let todayStr = modalToday.toISOString().split('T')[0];
             let dateInput = document.getElementById('modalConvertDate');
