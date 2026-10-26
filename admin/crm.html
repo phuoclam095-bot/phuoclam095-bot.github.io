@@ -165,6 +165,14 @@
             input[type="date"]::-webkit-calendar-picker-indicator:hover {
                 opacity: 1;
             }
+                input[type="date"]::-webkit-calendar-picker-indicator {
+                filter: invert(1);
+                cursor: pointer;
+                opacity: 0.8;
+            }
+            input[type="date"]::-webkit-calendar-picker-indicator:hover {
+                opacity: 1;
+            }
     </style>
 </head>
 <body>
@@ -332,7 +340,7 @@
                                 <div class="form-check p-3 rounded" style="background: rgba(0, 235, 176, 0.05); border: 1px solid rgba(0, 235, 176, 0.2);">
                                     <input class="form-check-input" type="checkbox" id="syncGoogleCalendar" checked style="background-color: #13223f; border-color: var(--primary);">
                                     <label class="form-check-input-label text-white fw-bold small ms-2" for="syncGoogleCalendar" style="cursor: pointer;">
-                                        <i class="fab fa-google text-primary me-1"></i> Đồng bộ lịch google ( Do chưa được xác minh web nên sau khi thêm lịch vui lòng bấm vào kết nối lịch và đồng bộ bên ngoài giao diện để đồng bộ ) )
+                                        <i class="fab fa-google text-primary me-1"></i> Đồng bộ lịch google ( Do chưa được xác minh web nên sau khi thêm lịch vui lòng bấm vào kết nối lịch và đồng bộ bên ngoài giao diện để đồng bộ )
                                     </label>
                                 </div>
                             </div>
