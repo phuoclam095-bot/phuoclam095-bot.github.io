@@ -1311,9 +1311,12 @@ async function printContract(c) {
 <div class="modal fade" id="lunarCalendarModal" tabindex="-1">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content" style="background: rgba(10, 17, 36, 0.98) !important;">
-            <div class="modal-header border-0 pb-0">
-                <h5 class="modal-title fw-900 text-primary"><i class="fas fa-calendar-alt me-2"></i> Lịch Vạn Niên & Âm Dương</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            <div class="modal-header border-bottom border-secondary justify-content-center position-relative py-3">
+                <h5 class="modal-title text-white fw-bold m-0" style="font-size: 1.1rem;">
+                    <i class="fas fa-calendar-alt text-primary me-2"></i> Lịch Vạn Niên & Âm Dương
+                </h5>
+                <!-- Nút đóng X giữ nguyên ở góc phải -->
+                <button type="button" class="btn-close btn-close-white position-absolute end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-4">
                 <!-- Giao diện Lịch Tháng -->
@@ -1355,8 +1358,10 @@ async function printContract(c) {
 
                 <!-- Khung chuyển đổi nhanh ngày Âm / Dương -->
                 <div class="convert-box p-3 rounded" style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08);">
-                    <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
-                        <h6 class="fw-bold text-primary m-0" style="font-size: 0.82rem;"><i class="fas fa-exchange-alt me-2"></i>Chuyển Đổi Lịch Âm ⇄ Dương</h6>
+                    div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="text-white fw-bold" style="font-size: 0.9rem;">
+                            <i class="fas fa-exchange-alt text-primary me-2"></i> Chuyển Đổi Lịch Âm ⇄ Dương
+                        </span>
                         <div class="btn-group btn-group-sm" role="group">
                             <input type="radio" class="btn-check" name="convertType" id="typeSolarToLunar" checked onclick="switchConvertMode()">
                             <label class="btn btn-outline-primary py-1 px-2" style="font-size:0.7rem; font-weight:700;" for="typeSolarToLunar">Dương ➔ Âm</label>
