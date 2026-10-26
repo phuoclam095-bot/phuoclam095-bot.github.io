@@ -200,10 +200,9 @@
                     <div class="user-status-box">
                         <div id="avatarPlaceholder" class="avt-circle"></div>
                         <div class="d-flex flex-column">
-                            <span id="userNameDisplay">...</span>
-                            <div class="d-flex align-items-center gap-1" style="margin-top: 1px;">
-                                <span id="badgeStatus" class="status-tag">...</span>
-                                <span id="userExpiryDisplay"></span>
+                            <span id="userNameDisplay" style="font-weight:900; font-size:0.75rem; line-height:1">...</span>
+                            <div style="margin-top: 3px;">
+                                <span id="badgeStatus" class="status-tag" style="background:var(--primary); color:#000; font-weight:900;">...</span>
                             </div>
                         </div>
                     </div>
@@ -373,50 +372,55 @@
 
         function updateHeaderUI() {
     if (localStorage.getItem('admin_is_logged_in') === 'true') {
-        const name = localStorage.getItem('admin_name'), 
-              av = localStorage.getItem('admin_avatar'), 
-              status = localStorage.getItem('admin_status') || 'new';
+        const name = localStorage.getItem('admin_name') || 'Anh/Chị';
+        const av = localStorage.getItem('admin_avatar');
+        const status = localStorage.getItem('admin_status') || 'new';
         
         let expiryRaw = localStorage.getItem('admin_expiry');
         let expiryTimestamp = 0;
-        let displayDate = "";
 
-        // Kiểm tra xem dữ liệu là dãy số hay định dạng ngày tháng dd/MM/yyyy
         if (expiryRaw) {
             if (expiryRaw.includes('/')) {
-                // Xử lý chuỗi "DD/MM/YYYY HH:mm:ss"
                 const parts = expiryRaw.split(/[\s/:]+/);
                 if (parts.length >= 3) {
-                    // Cấu trúc Date(year, monthIndex, day, hours, minutes, seconds)
                     const y = parseInt(parts[2]), m = parseInt(parts[1]) - 1, d = parseInt(parts[0]);
                     const h = parts[3] ? parseInt(parts[3]) : 0;
                     const min = parts[4] ? parseInt(parts[4]) : 0;
                     const sec = parts[5] ? parseInt(parts[5]) : 0;
                     expiryTimestamp = new Date(y, m, d, h, min, sec).getTime();
-                    displayDate = ` (${parts[0]}/${parts[1]}/${parts[2]})`;
                 }
             } else {
-                // Xử lý dãy số timestamp thông thường
                 expiryTimestamp = parseInt(expiryRaw) || 0;
-                displayDate = expiryTimestamp > 0 ? " (" + new Date(expiryTimestamp).toLocaleDateString('vi-VN') + ")" : "";
             }
         }
 
         const isVIP = (status === 'active' && expiryTimestamp > Date.now());
         
-        document.getElementById('userNameDisplay').innerText = name;
-        document.getElementById('avatarPlaceholder').innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:30px; color:var(--primary)"></i>`;
+        const nameDisplay = document.getElementById('userNameDisplay');
+        if (nameDisplay) nameDisplay.innerText = name;
+
+        const avatarPlaceholder = document.getElementById('avatarPlaceholder');
+        if (avatarPlaceholder) {
+            avatarPlaceholder.innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:30px; color:var(--primary)"></i>`;
+        }
         
         const badge = document.getElementById('badgeStatus'); 
-        const expText = document.getElementById('userExpiryDisplay');
+        if (badge) {
+            badge.className = "status-tag";
+            if (isVIP) {
+                let dateStr = expiryTimestamp > 0 ? new Date(expiryTimestamp).toLocaleDateString('vi-VN') : '';
+                badge.innerText = "ACTIVE - Hạn: " + dateStr;
+                badge.style.background = "var(--primary)";
+                badge.style.color = "#000";
+            } else {
+                badge.innerText = status === 'new' ? "MỚI" : "EXPIRED";
+                badge.style.background = "#ff4757";
+                badge.style.color = "#fff";
+            }
+        }
         
-        badge.innerText = isVIP ? "ACTIVE" : (status === 'new' ? "MỚI" : "EXPIRED");
-        badge.style.background = isVIP ? "var(--primary)" : "#ff4757";
-        badge.style.color = isVIP ? "#000" : "#fff";
-        badge.className = "status-tag";
-        expText.innerText = displayDate;
-        
-        document.getElementById('authControl').style.setProperty('display', 'flex', 'important');
+        const authControl = document.getElementById('authControl');
+        if (authControl) authControl.style.setProperty('display', 'flex', 'important');
     } else { 
         window.location.href = 'index'; 
     }
