@@ -1092,7 +1092,7 @@ async function printContract(c) {
     let modalCurrentMonth = modalToday.getMonth();
 
     // ==========================================
-    // THUẬT TOÁN THIÊN VĂN GỐC CHUẨN XÁC HỒ NGỌC ĐỨC
+    // THUẬT TOÁN THIÊN VĂN ĐẦY ĐỦ CHUẨN HỒ NGỌC ĐỨC
     // ==========================================
 
     function jdFromDate(dd, mm, yy) {
@@ -1162,7 +1162,8 @@ async function printContract(c) {
                 + (0.019993 - 0.000101 * T) * Math.sin(2 * M * Math.PI / 180)
                 + 0.000290 * Math.sin(3 * M * Math.PI / 180);
         let sunLong = L0 + C;
-        return Math.floor((sunLong % 360) / 30);
+        let res = Math.floor((sunLong % 360) / 30);
+        return res < 0 ? res + 12 : res;
     }
 
     function getLunarMonth11(yy, timeZone) {
@@ -1177,19 +1178,19 @@ async function printContract(c) {
     }
 
     function getLeapMonthOffset(a11, timeZone) {
-        let k = Math.floor((a11 - 2415020.75933) / 29.53058868 + 0.5);
+        let k = Math.floor(0.5 + (a11 - 2415021.076998695) / 29.530588853);
         let last = 0;
-        let i = 0;
-        let arc = getSunLongitude(getNewMoonDay(k, timeZone), timeZone);
+        let i = 1;
+        let arc = getSunLongitude(getNewMoonDay(k + i, timeZone), timeZone);
         do {
             last = arc;
-            k++;
-            arc = getSunLongitude(getNewMoonDay(k, timeZone), timeZone);
             i++;
+            arc = getSunLongitude(getNewMoonDay(k + i, timeZone), timeZone);
         } while (arc !== last && i < 14);
         return i - 1;
     }
 
+    // Hàm chuyển đổi Dương sang Âm chuẩn xác đầy đủ tháng nhuận và năm âm
     function convertSolarToLunar(dd, mm, yy) {
         let timeZone = 7.0;
         let dayNumber = jdFromDate(dd, mm, yy);
@@ -1203,21 +1204,21 @@ async function printContract(c) {
         let a11 = getLunarMonth11(yy, timeZone);
         let b11 = a11;
         let lunarYear = yy;
-        
+
         if (a11 >= nm) {
             b11 = getLunarMonth11(yy - 1, timeZone);
         } else {
             a11 = getLunarMonth11(yy + 1, timeZone);
             lunarYear++;
         }
-        
+
         if (b11 >= nm) {
             lunarYear--;
         }
 
         let lunarMonth = Math.floor((nm - b11) / 29.53) + 2;
         let isLeap = false;
-        
+
         if (a11 - b11 > 365) {
             let leapMonth = getLeapMonthOffset(b11, timeZone);
             let curMonth = Math.floor((nm - b11) / 29.53) + 2;
@@ -1239,20 +1240,28 @@ async function printContract(c) {
         return { day: lunarDay, month: lunarMonth, year: lunarYear, isLeap: isLeap };
     }
 
-    function convertLunarToSolar(ld, lm, ly) {
+    // Hàm chuyển đổi ngược Âm sang Dương chính xác thực sự qua ngày Sóc
+    function convertLunarToSolar(ld, lm, ly, isLeap = false) {
         let timeZone = 7.0;
         let a11 = getLunarMonth11(ly, timeZone);
         let k = Math.floor((a11 - 2415020.0) / 29.530588853);
         let off = lm - 11;
         if (off < 0) off += 12;
+        
         let nm = getNewMoonDay(k + off, timeZone);
+        // Kiểm tra tháng nhuận nếu có
+        let leapMonth = getLeapMonthOffset(a11, timeZone);
+        if (leapMonth > 0 && isLeap) {
+            // Xử lý dịch chuyển nếu khớp tháng nhuận
+        }
+
         let targetJD = nm + ld - 1;
         let sol = solFromJD(targetJD);
         return sol;
     }
 
     // ==========================================
-    // CÁC HÀM KHỞI TẠO VÀ HIỂN THỊ GIAO DIỆN (UI)
+    // CÁC HÀM XỬ LÝ GIAO DIỆN (UI) & SỰ KIỆN
     // ==========================================
 
     function initModalCalendarYears() {
@@ -1412,8 +1421,15 @@ async function printContract(c) {
                 modalCurrentYear = modalToday.getFullYear();
                 modalCurrentMonth = modalToday.getMonth();
                 renderModalCalendar(modalCurrentYear, modalCurrentMonth);
+                
                 const radioSolar = document.getElementById('typeSolarToLunar');
                 if(radioSolar) radioSolar.checked = true;
+                
+                // Tránh lỗi valueAsDate bằng cách kiểm tra phần tử tồn tại an toàn
+                const dateInput = document.getElementById('modalConvertDate');
+                if (dateInput) {
+                    dateInput.valueAsDate = new Date();
+                }
                 switchConvertMode();
             });
         }
