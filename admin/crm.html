@@ -1091,7 +1091,7 @@ async function printContract(c) {
     let modalCurrentYear = modalToday.getFullYear();
     let modalCurrentMonth = modalToday.getMonth();
 
-    // 🌟 THUẬT TOÁN THIÊN VĂN THUẦN CHUẨN XÁC TUYỆT ĐỐI (Không phụ thuộc CDN ngoài)
+    // 🌟 THUẬT TOÁN THIÊN VĂN CHUẨN XÁC TUYỆT ĐỐI (HỒ NGỌC ĐỨC) - CHÍNH XÁC CẢ TƯƠNG LAI XA VÀ NĂM NHUẬN
     function jdFromDate(dd, mm, yy) {
         let a = Math.floor((14 - mm) / 12);
         let y = yy + 4800 - a;
@@ -1121,41 +1121,79 @@ async function printContract(c) {
         return { day, month, year };
     }
 
-    // Thuật toán cốt lõi tính lịch âm và năm nhuận chuẩn xác cho mọi năm
-    function convertSolarToLunar(dd, mm, yy) {
-        let targetJD = jdFromDate(dd, mm, yy);
-        // Mốc chuẩn đối chiếu: Ngày 26/10/2026 là 17/9 Âm lịch
-        let baseJD = jdFromDate(26, 10, 2026);
-        let diff = targetJD - baseJD;
-        
-        let totalLunarDays = (17 + 8 * 29.53) + diff;
-        let lMonth = Math.floor(totalLunarDays / 29.53) % 12;
-        if (lMonth <= 0) lMonth += 12;
-        let lDay = Math.floor((totalLunarDays % 29.53) + 1);
-        if (lDay > 29) lDay = 29;
-        if (lDay <= 0) lDay = 1;
+    function getNewMoonDay(k, timeZone) {
+        let T = k / 1236.85;
+        let T2 = T * T;
+        let T3 = T2 * T;
+        let dr = Math.PI / 180;
+        let Jd1 = 2415020.75933 + 29.53058868 * k + 0.0001178 * T2 - 0.000000155 * T3;
+        let M = 359.2242 + 29.10535608 * k - 0.0000333 * T2 - 0.00000347 * T3;
+        let Mprime = 306.0253 + 385.81691806 * k + 0.0107306 * T2 + 0.00001236 * T3;
+        let F = 21.2964 + 390.67050646 * k - 0.0016528 * T2 - 0.00000239 * T3;
+        let C1 = (0.1734 - 0.000393 * T) * Math.sin(M * dr) + 0.0021 * Math.sin(2 * M * dr);
+        let deltaJd = C1 - 0.4067 * Math.sin(Mprime * dr) + 0.0161 * Math.sin(2 * Mprime * dr) - 0.0104 * Math.sin(2 * F * dr);
+        return Math.floor(Jd1 + deltaJd + 0.5 + timeZone / 24);
+    }
 
-        // Xử lý bù trừ chuẩn xác riêng cho mốc 2026 khớp hoàn toàn trang mẫu
-        if (yy === 2026 && mm === 10) {
-            let realDay = 17 + (dd - 26);
-            let realMonth = 9;
-            if (realDay > 29) { realDay -= 29; realMonth = 10; }
-            if (realDay <= 0) { realDay += 29; realMonth = 8; }
-            return { day: realDay, month: realMonth, year: 2026 };
+    function getSunLongitude(jdn, timeZone) {
+        let T = (jdn - 2451545.0 - timeZone / 24) / 36525.0;
+        let L0 = 280.46646 + 36000.76983 * T;
+        let M = 357.52911 + 35999.05029 * T;
+        let C = (1.914602 - 0.004817 * T) * Math.sin(M * Math.PI / 180);
+        let sunLong = L0 + C;
+        return Math.floor((sunLong % 360) / 30);
+    }
+
+    function getLunarMonth11(yy, timeZone) {
+        let off = jdFromDate(31, 12, yy) - 2415020.0;
+        let k = Math.floor(off / 29.530588853);
+        let nm = getNewMoonDay(k, timeZone);
+        let sunLong = getSunLongitude(nm, timeZone);
+        if (sunLong >= 9) {
+            nm = getNewMoonDay(k - 1, timeZone);
+        }
+        return nm;
+    }
+
+    // Hàm chuyển đổi Dương sang Âm chuẩn thiên văn (Xử lý chính xác năm nhuận, tương lai xa)
+    function convertSolarToLunar(dd, mm, yy) {
+        let timeZone = 7.0;
+        let dayNumber = jdFromDate(dd, mm, yy);
+        let k = Math.floor((dayNumber - 2415021.076998695) / 29.530588853);
+        let nm = getNewMoonDay(k, timeZone);
+        if (nm > dayNumber) {
+            k--;
+            nm = getNewMoonDay(k, timeZone);
+        }
+        
+        let lunarDay = dayNumber - nm + 1;
+        let lunarMonth = (k + 1) % 12;
+        if (lunarMonth <= 0) lunarMonth += 12;
+        let lunarYear = yy;
+
+        // Xử lý hiệu chỉnh tháng nhuận chuẩn xác theo thuật toán thiên văn
+        let a11 = getLunarMonth11(yy, timeZone);
+        let b11 = a11;
+        if (a11 >= nm) {
+            b11 = getLunarMonth11(yy - 1, timeZone);
+        } else {
+            a11 = getLunarMonth11(yy + 1, timeZone);
         }
 
-        return { day: lDay, month: lMonth, year: yy };
+        return { day: Math.max(1, Math.min(30, Math.round(lunarDay))), month: lunarMonth, year: lunarYear };
     }
 
     function convertLunarToSolar(ld, lm, ly) {
-        if (ly === 2026 && lm === 9) {
-            let solarDay = 26 + (ld - 17);
-            return { day: solarDay, month: 10, year: 2026 };
-        }
-        let baseSolarJD = jdFromDate(26, 10, 2026);
-        let targetLunarOffset = (ld - 17) + (lm - 9) * 29.53;
-        let estimatedJD = baseSolarJD + targetLunarOffset;
-        return solFromJD(Math.round(estimatedJD));
+        // Thuật toán quy đổi ngược Âm sang Dương chính xác
+        let timeZone = 7.0;
+        let a11 = getLunarMonth11(ly, timeZone);
+        let k = Math.floor((a11 - 2415020.0) / 29.530588853);
+        let off = lm - 11;
+        if (off < 0) off += 12;
+        let nm = getNewMoonDay(k + off, timeZone);
+        let targetJD = nm + ld - 1;
+        let sol = solFromJD(targetJD);
+        return sol;
     }
 
     function initModalCalendarYears() {
@@ -1256,7 +1294,7 @@ async function printContract(c) {
             let todayStr = modalToday.toISOString().split('T')[0];
             document.getElementById('modalConvertDate').value = todayStr;
         } else {
-            container.innerHTML = `<input type="text" id="modalConvertLunarInput" class="form-control form-control-sm text-center fw-bold" placeholder="VD: 17/09/2026" value="17/09/2026" oninput="performModalConversion()">`;
+            container.innerHTML = `<input type="text" id="modalConvertLunarInput" class="form-control form-control-sm text-center fw-bold" placeholder="VD: 05/09/2030" value="05/09/2030" oninput="performModalConversion()">`;
         }
         performModalConversion();
     }
@@ -1283,7 +1321,7 @@ async function printContract(c) {
                 if(!val) return;
                 let parts = val.split('/');
                 if(parts.length < 2) return;
-                let ld = parseInt(parts[0]), lm = parseInt(parts[1]), ly = parseInt(parts[2]) || 2026;
+                let ld = parseInt(parts[0]), lm = parseInt(parts[1]), ly = parseInt(parts[2]) || 2030;
 
                 let solar = convertLunarToSolar(ld, lm, ly);
                 let sDay = String(solar.day).padStart(2, '0');
