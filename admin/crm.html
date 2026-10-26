@@ -1218,13 +1218,21 @@ async function printContract(c) {
             let dateInput = document.getElementById('modalConvertDate');
             if (dateInput) dateInput.value = todayStr;
         } else {
+            let solarObj = Solar.fromYmd(y, m, d);
+            let lunarObj = solarObj.getLunar();
+            let lY = lunarObj.getYear();
+            let lM = Math.abs(lunarObj.getMonth());
+            let lD = lunarObj.getDay();
+
+            // Format chuẩn YYYY-MM-DD cho input date
+            let lunarDateStr = `${lY}-${String(lM).padStart(2, '0')}-${String(lD).padStart(2, '0')}`;
+
             container.innerHTML = `
                 <div class="convert-input-wrapper">
-                    <input type="date" id="modalConvertLunarInput" class="form-control form-control-sm text-center fw-bold pe-4" onchange="performModalConversion()">
+                    <input type="date" id="modalConvertLunarInput" class="form-control form-control-sm text-center fw-bold" onchange="performModalConversion()">
                 </div>`;
-            let todayStr = modalToday.toISOString().split('T')[0];
             let lunarInput = document.getElementById('modalConvertLunarInput');
-            if (lunarInput) lunarInput.value = todayStr;
+            if (lunarInput) lunarInput.value = lunarDateStr;
         }
         performModalConversion();
     }
