@@ -157,23 +157,24 @@
                 color: #000;
             }
             /* Đảm bảo ô input date không bị chìm icon lịch */
+            .convert-input-wrapper {
+                position: relative;
+                display: flex;
+                align-items: center;
+            }
             input[type="date"]::-webkit-calendar-picker-indicator {
-                filter: invert(1);
+                position: absolute;
+                right: 12px;
+                filter: invert(1) brightness(1.5);
                 cursor: pointer;
-                opacity: 0.8;
+                opacity: 0.9;
+                width: 18px;
+                height: 18px;
             }
             input[type="date"]::-webkit-calendar-picker-indicator:hover {
                 opacity: 1;
             }
-                input[type="date"]::-webkit-calendar-picker-indicator {
-                filter: invert(1);
-                cursor: pointer;
-                opacity: 0.8;
-            }
-            input[type="date"]::-webkit-calendar-picker-indicator:hover {
-                opacity: 1;
-            }
-    </style>
+            </style>
 </head>
 <body>
 
@@ -1217,15 +1218,25 @@ async function printContract(c) {
         const container = document.getElementById('convertInputContainer');
         
         if (!isLunarToSolar) {
-            // Đảm bảo thêm đầy đủ style để trình duyệt hiện icon lịch rõ ràng
-            container.innerHTML = `<input type="date" id="modalConvertDate" class="form-control form-control-sm text-center fw-bold" style="position: relative; z-index: 5; color-scheme: dark;" onchange="performModalConversion()">`;
+            // Chiều Dương ➔ Âm
+            container.innerHTML = `
+                <div class="input-group input-group-sm">
+                    <input type="date" id="modalConvertDate" class="form-control text-center fw-bold" style="color-scheme: dark;" onchange="performModalConversion()">
+                </div>`;
             let todayStr = modalToday.toISOString().split('T')[0];
             let dateInput = document.getElementById('modalConvertDate');
             if (dateInput) {
                 dateInput.value = todayStr;
             }
         } else {
-            container.innerHTML = `<input type="text" id="modalConvertLunarInput" class="form-control form-control-sm text-center fw-bold" placeholder="VD: 17/09/2026" value="17/09/2026" oninput="performModalConversion()">`;
+            // Chiều Âm ➔ Dương: Thiết kế input text đi kèm icon lịch bên cạnh để đồng bộ hoàn toàn giao diện
+            container.innerHTML = `
+                <div class="input-group input-group-sm">
+                    <input type="text" id="modalConvertLunarInput" class="form-control text-center fw-bold" placeholder="DD/MM/YYYY (VD: 17/09/2026)" value="17/09/2026" oninput="performModalConversion()">
+                    <span class="input-group-text bg-dark border-secondary text-primary px-3" style="cursor: pointer;" title="Chọn ngày âm lịch" onclick="document.getElementById('modalConvertLunarInput').focus()">
+                        <i class="fas fa-calendar-alt"></i>
+                    </span>
+                </div>`;
         }
         performModalConversion();
     }
