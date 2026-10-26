@@ -1240,24 +1240,35 @@ async function printContract(c) {
         return { day: lunarDay, month: lunarMonth, year: lunarYear, isLeap: isLeap };
     }
 
-    // Hàm chuyển đổi ngược Âm sang Dương chính xác thực sự qua ngày Sóc
+    // Hàm chuyển đổi ngược Âm sang Dương đã chuẩn hóa chuẩn xác theo thuật toán gốc
     function convertLunarToSolar(ld, lm, ly, isLeap = false) {
         let timeZone = 7.0;
         let a11 = getLunarMonth11(ly, timeZone);
-        let k = Math.floor((a11 - 2415020.0) / 29.530588853);
+        let b11 = a11;
         let off = lm - 11;
-        if (off < 0) off += 12;
-        
+        if (off < 0) {
+            a11 = getLunarMonth11(ly - 1, timeZone);
+            b11 = a11;
+            off = lm + 1;
+        } else {
+            b11 = getLunarMonth11(ly + 1, timeZone);
+        }
+        let k = Math.floor(0.5 + (a11 - 2415021.076998695) / 29.530588853);
         let nm = getNewMoonDay(k + off, timeZone);
-        // Kiểm tra tháng nhuận nếu có
-        let leapMonth = getLeapMonthOffset(a11, timeZone);
-        if (leapMonth > 0 && isLeap) {
-            // Xử lý dịch chuyển nếu khớp tháng nhuận
+        
+        let leapOff = getLeapMonthOffset(a11, timeZone);
+        if (leapOff > 0) {
+            let leapMonth = leapOff - 2;
+            if (leapMonth < 0) leapMonth += 12;
+            if (isLeap && lm === leapMonth) {
+                nm = getNewMoonDay(k + off + 1, timeZone);
+            } else if (off >= leapOff) {
+                nm = getNewMoonDay(k + off + 1, timeZone);
+            }
         }
 
         let targetJD = nm + ld - 1;
-        let sol = solFromJD(targetJD);
-        return sol;
+        return solFromJD(targetJD);
     }
 
     // ==========================================
@@ -1425,7 +1436,6 @@ async function printContract(c) {
                 const radioSolar = document.getElementById('typeSolarToLunar');
                 if(radioSolar) radioSolar.checked = true;
                 
-                // Tránh lỗi valueAsDate bằng cách kiểm tra phần tử tồn tại an toàn
                 const dateInput = document.getElementById('modalConvertDate');
                 if (dateInput) {
                     dateInput.valueAsDate = new Date();
