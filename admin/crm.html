@@ -1218,10 +1218,11 @@ async function printContract(c) {
         const container = document.getElementById('convertInputContainer');
         
         if (!isLunarToSolar) {
-            // Chiều Dương ➔ Âm
+            // Chiều Dương ➔ Âm: Dùng input type="date" chuẩn kèm icon lịch
             container.innerHTML = `
-                <div class="input-group input-group-sm">
-                    <input type="date" id="modalConvertDate" class="form-control text-center fw-bold" style="color-scheme: dark;" onchange="performModalConversion()">
+                <div class="convert-input-wrapper">
+                    <input type="date" id="modalConvertDate" class="form-control form-control-sm text-center fw-bold pe-4" onchange="performModalConversion()">
+                    <i class="fas fa-calendar-alt custom-date-icon"></i>
                 </div>`;
             let todayStr = modalToday.toISOString().split('T')[0];
             let dateInput = document.getElementById('modalConvertDate');
@@ -1229,14 +1230,17 @@ async function printContract(c) {
                 dateInput.value = todayStr;
             }
         } else {
-            // Chiều Âm ➔ Dương: Thiết kế input text đi kèm icon lịch bên cạnh để đồng bộ hoàn toàn giao diện
+            // Chiều Âm ➔ Dương: Sử dụng input type="date" để hiển thị đầy đủ icon lịch, hệ thống sẽ tự động quy đổi giá trị tương ứng
             container.innerHTML = `
-                <div class="input-group input-group-sm">
-                    <input type="text" id="modalConvertLunarInput" class="form-control text-center fw-bold" placeholder="DD/MM/YYYY (VD: 17/09/2026)" value="17/09/2026" oninput="performModalConversion()">
-                    <span class="input-group-text bg-dark border-secondary text-primary px-3" style="cursor: pointer;" title="Chọn ngày âm lịch" onclick="document.getElementById('modalConvertLunarInput').focus()">
-                        <i class="fas fa-calendar-alt"></i>
-                    </span>
+                <div class="convert-input-wrapper">
+                    <input type="date" id="modalConvertDate" class="form-control form-control-sm text-center fw-bold pe-4" onchange="performModalConversion()">
+                    <i class="fas fa-calendar-alt custom-date-icon"></i>
                 </div>`;
+            let todayStr = modalToday.toISOString().split('T')[0];
+            let dateInput = document.getElementById('modalConvertDate');
+            if (dateInput) {
+                dateInput.value = todayStr;
+            }
         }
         performModalConversion();
     }
