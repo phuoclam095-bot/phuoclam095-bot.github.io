@@ -320,7 +320,7 @@
             const downloadVal = album.allow_download ?? album.allowDownload ?? false;
             const commentVal = album.allow_comment ?? album.allowComment ?? false;
             const rawWatermark = album.watermark_enabled ?? album.watermarkEnabled;
-            const watermarkEnabledVal = album.watermark_enabled ?? album.watermarkEnabled ?? true;
+            const watermarkEnabledVal = album.watermark_enabled ?? album.watermarkEnabled ?? false;
             const watermarkLogoVal = album.watermark_logo ?? album.watermarkLogo ?? '';
             // 🌟 Khai báo folderName trước tiên
             const folderName = album.folderName || album.name || 'VIP Album';
