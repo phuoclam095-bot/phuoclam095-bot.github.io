@@ -138,6 +138,32 @@
             #loggedInNav { padding-right: 8px; }
             .user-pill { min-width: auto; height: 42px; padding: 5px 8px; }
         }
+        /* --- Lịch --- */
+        .btn-today-quick {
+                background: rgba(0, 235, 176, 0.15);
+                border: 1px solid var(--primary);
+                color: var(--primary);
+                font-weight: 800;
+                font-size: 0.7rem;
+                padding: 4px 10px;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: 0.2s;
+                text-transform: uppercase;
+            }
+            .btn-today-quick:hover {
+                background: var(--primary);
+                color: #000;
+            }
+            /* Đảm bảo ô input date không bị chìm icon lịch */
+            input[type="date"]::-webkit-calendar-picker-indicator {
+                filter: invert(1);
+                cursor: pointer;
+                opacity: 0.8;
+            }
+            input[type="date"]::-webkit-calendar-picker-indicator:hover {
+                opacity: 1;
+            }
     </style>
 </head>
 <body>
@@ -1064,7 +1090,7 @@ async function printContract(c) {
     let modalCurrentYear = modalToday.getFullYear();
     let modalCurrentMonth = modalToday.getMonth();
 
-    // 🌟 THUẬT TOÁN ĐỔI ÂM LỊCH CHUẨN XÁC 
+    // Thuật toán Julian Date chuẩn
     function jdFromDate(dd, mm, yy) {
         let a = Math.floor((14 - mm) / 12);
         let y = yy + 4800 - a;
@@ -1076,7 +1102,6 @@ async function printContract(c) {
         return jd;
     }
 
-    // Chuyển đổi mốc ngày Julian về lại Dương lịch (phục vụ đổi Âm -> Dương)
     function solFromJD(jd) {
         let a, b, c, d, e, m;
         if (jd < 2299161) {
@@ -1095,12 +1120,10 @@ async function printContract(c) {
         return { day, month, year };
     }
 
-    // Mốc quy đổi tương đối chuẩn xác cho lịch âm việt nam (dùng sai số lịch mặt trăng trung bình)
     function convertSolarToLunar(dd, mm, yy) {
         let jd = jdFromDate(dd, mm, yy);
-        // Thuật toán bù trừ lịch âm so với Tết nguyên đán tương đối chuẩn
-        let offset = jd - 2451545.0; // Mốc năm 2000
-        let lunarDays = offset - 11.5; // Độ lệch trung bình chu kỳ trăng
+        let offset = jd - 2451545.0; 
+        let lunarDays = offset - 11.5; 
         let lunarMonthDays = 29.53058867;
         
         let lMonth = Math.floor(lunarDays / lunarMonthDays);
@@ -1113,6 +1136,14 @@ async function printContract(c) {
         if (altMonth < 1) altMonth += 12;
 
         return { day: lDay, month: altMonth, year: lYear };
+    }
+
+    // Thuật toán đổi từ Âm sang Dương tương đối
+    function convertLunarToSolar(ld, lm, ly) {
+        // Ước lượng mốc Dương lịch từ Âm lịch tương ứng
+        let approxJD = jdFromDate(1, lm, ly) + ld - 1;
+        let sol = solFromJD(approxJD);
+        return sol;
     }
 
     function initModalCalendarYears() {
@@ -1144,7 +1175,6 @@ async function printContract(c) {
         let totalDays = new Date(year, month + 1, 0).getDate();
         let prevTotalDays = new Date(year, month, 0).getDate();
 
-        // Ngày tháng năm trước (tháng cũ hiển thị mờ)
         for (let i = firstDayIndex; i > 0; i--) {
             let d = prevTotalDays - i + 1;
             let prevM = month === 0 ? 11 : month - 1;
@@ -1152,7 +1182,6 @@ async function printContract(c) {
             container.appendChild(createModalDayCell(d, prevM + 1, prevY, true, false));
         }
 
-        // Ngày trong tháng chính
         for (let d = 1; d <= totalDays; d++) {
             let isToday = (d === modalToday.getDate() && month === modalToday.getMonth() && year === modalToday.getFullYear());
             container.appendChild(createModalDayCell(d, month + 1, year, false, isToday));
@@ -1163,11 +1192,11 @@ async function printContract(c) {
         const cell = document.createElement('div');
         
         let lunar = convertSolarToLunar(day, month, year);
-        let isFirstLunarDay = (lunar.day === 1); // Kiểm tra xem có phải mùng 1 âm lịch không
+        let isFirstLunarDay = (lunar.day === 1); // Ngày mùng 1 âm
 
-        // 🌟 Nếu là mùng 1 âm lịch, đổi màu nền / chữ nổi bật để người dùng dễ nhìn thấy
-        let bgStyle = isToday ? 'rgba(0,235,176,0.2)' : (isFirstLunarDay ? 'rgba(240, 195, 0, 0.15)' : 'rgba(255,255,255,0.02)');
-        let borderStyle = isToday ? '1.5px solid var(--primary)' : (isFirstLunarDay ? '1.5px solid #f0c300' : '1px solid rgba(255,255,255,0.04)');
+        // 🌟 BỎ KHUNG VIỀN VÀ NỀN VÀNG, CHỈ ĐỔI MÀU CHỮ SỐ ÂM LỊCH THÀNH VÀNG CHO MÙNG 1
+        let bgStyle = isToday ? 'rgba(0,235,176,0.15)' : 'rgba(255,255,255,0.02)';
+        let borderStyle = isToday ? '1.5px solid var(--primary)' : '1px solid rgba(255,255,255,0.04)';
         
         cell.style.cssText = `background: ${bgStyle}; border: ${borderStyle}; border-radius: 10px; min-height: 65px; padding: 6px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; opacity: ${isOtherMonth ? '0.3' : '1'};`;
 
@@ -1175,7 +1204,7 @@ async function printContract(c) {
             <div style="font-size: 0.95rem; font-weight: 900; color: #fff;">${day}</div>
             <div>
                 <div style="font-size: 0.68rem; color: ${isFirstLunarDay ? '#f0c300' : 'var(--primary)'}; font-weight: ${isFirstLunarDay ? '900' : '700'};">
-                    ${lunar.day}/${lunar.month} ${isFirstLunarDay ? '⭐' : ''}
+                    ${lunar.day}/${lunar.month}
                 </div>
             </div>
         `;
@@ -1195,25 +1224,46 @@ async function printContract(c) {
         renderModalCalendar(modalCurrentYear, modalCurrentMonth);
     }
 
-    // 🌟 HÀM CHUYỂN ĐỔI HAI CHIỀU: DƯƠNG -> ÂM VÀ ÂM -> DƯƠNG
+    // Nút quay về tháng hiện tại nhanh
+    function jumpToToday() {
+        modalCurrentYear = modalToday.getFullYear();
+        modalCurrentMonth = modalToday.getMonth();
+        renderModalCalendar(modalCurrentYear, modalCurrentMonth);
+    }
+
+    function switchConvertMode() {
+        performModalConversion();
+    }
+
+    // Xử lý chuyển đổi 2 chiều Dương ⇄ Âm
     function performModalConversion() {
         const val = document.getElementById('modalConvertDate').value;
         if(!val) return;
         let parts = val.split('-');
         let y = parseInt(parts[0]), m = parseInt(parts[1]), d = parseInt(parts[2]);
         
-        let lunar = convertSolarToLunar(d, m, y);
+        const isLunarToSolar = document.getElementById('typeLunarToSolar').checked;
 
-        document.getElementById('modalConversionResult').innerHTML = 
-            `📅 Dương lịch: <b>${d}/${m}/${y}</b><br>➔ 🌙 Âm lịch tương ứng: <span class="text-warning fw-bold">Ngày ${lunar.day} Tháng ${lunar.month} Năm ${lunar.year}</span>`;
+        if (!isLunarToSolar) {
+            // Dương sang Âm
+            let lunar = convertSolarToLunar(d, m, y);
+            document.getElementById('modalConversionResult').innerHTML = 
+                `📅 DL: <b>${d}/${m}/${y}</b> ➔ 🌙 ÂL: <span class="text-warning fw-bold">Ngày ${lunar.day} Tháng ${lunar.month} Năm ${lunar.year}</span>`;
+        } else {
+            // Âm sang Dương (coi d là ngày âm, m là tháng âm, y là năm âm)
+            let solar = convertLunarToSolar(d, m, y);
+            document.getElementById('modalConversionResult').innerHTML = 
+                `🌙 ÂL: <b>Ngày ${d} Tháng ${m} Năm ${y}</b> ➔ 📅 DL: <span class="text-info fw-bold">${solar.day}/${solar.month}/${solar.year}</span>`;
+        }
     }
 
-    // Tự động khởi tạo khi modal được mở lên
     document.addEventListener('DOMContentLoaded', () => {
         initModalCalendarYears();
         const modalEl = document.getElementById('lunarCalendarModal');
         if(modalEl) {
             modalEl.addEventListener('show.bs.modal', () => {
+                modalCurrentYear = modalToday.getFullYear();
+                modalCurrentMonth = modalToday.getMonth();
                 renderModalCalendar(modalCurrentYear, modalCurrentMonth);
                 document.getElementById('modalConvertDate').valueAsDate = new Date();
                 performModalConversion();
@@ -1232,19 +1282,21 @@ async function printContract(c) {
             <div class="modal-body p-4">
                 <!-- Giao diện Lịch Tháng -->
                 <div class="calendar-card p-3 p-md-4 mb-3" style="background: rgba(255,255,255,0.02); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08);">
-                    <div class="cal-header d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                   <div class="cal-header d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
                         <div class="d-flex align-items-center gap-2">
                             <button class="btn btn-sm btn-outline-light rounded-circle" onclick="changeMonthModal(-1)"><i class="fas fa-chevron-left"></i></button>
-                            <h4 id="modalMonthYearLabel" class="m-0 fw-bold text-primary" style="min-width: 160px; text-align: center; font-size: 1.2rem;">Tháng 10/2026</h4>
+                            <h4 id="modalMonthYearLabel" class="m-0 fw-bold text-primary" style="min-width: 150px; text-align: center; font-size: 1.1rem;">Tháng 10/2026</h4>
                             <button class="btn btn-sm btn-outline-light rounded-circle" onclick="changeMonthModal(1)"><i class="fas fa-chevron-right"></i></button>
+                            <!-- Nút quay về tháng hôm nay nhanh -->
+                            <button class="btn-today-quick ms-1" onclick="jumpToToday()">Hôm nay</button>
                         </div>
                         <div class="d-flex gap-2">
-                            <select id="modalSelectMonth" class="form-select form-select-sm bg-dark text-primary border-secondary" style="width: 120px;" onchange="jumpToMonthModal()">
+                            <select id="modalSelectMonth" class="form-select form-select-sm bg-dark text-primary border-secondary" style="width: 110px;" onchange="jumpToMonthModal()">
                                 <option value="0">Tháng 1</option><option value="1">Tháng 2</option><option value="2">Tháng 3</option><option value="3">Tháng 4</option>
                                 <option value="4">Tháng 5</option><option value="5">Tháng 6</option><option value="6">Tháng 7</option><option value="7">Tháng 8</option>
                                 <option value="8">Tháng 9</option><option value="9">Tháng 10</option><option value="10">Tháng 11</option><option value="11">Tháng 12</option>
                             </select>
-                            <select id="modalSelectYear" class="form-select form-select-sm bg-dark text-primary border-secondary" style="width: 100px;" onchange="jumpToMonthModal()">
+                            <select id="modalSelectYear" class="form-select form-select-sm bg-dark text-primary border-secondary" style="width: 95px;" onchange="jumpToMonthModal()">
                                 <!-- Dynamic Years -->
                             </select>
                         </div>
@@ -1267,14 +1319,24 @@ async function printContract(c) {
 
                 <!-- Khung chuyển đổi nhanh ngày Âm / Dương -->
                 <div class="convert-box p-3 rounded" style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08);">
-                    <h6 class="fw-bold text-primary mb-2 text-center" style="font-size: 0.85rem;"><i class="fas fa-exchange-alt me-2"></i>Chuyển Đổi Nhanh Dương Lịch sang Âm Lịch</h6>
-                    <div class="row g-2 justify-content-center align-items-center">
+                    <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                        <h6 class="fw-bold text-primary m-0" style="font-size: 0.82rem;"><i class="fas fa-exchange-alt me-2"></i>Chuyển Đổi Lịch Âm ⇄ Dương</h6>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <input type="radio" class="btn-check" name="convertType" id="typeSolarToLunar" checked onclick="switchConvertMode()">
+                            <label class="btn btn-outline-primary py-1 px-2" style="font-size:0.7rem; font-weight:700;" for="typeSolarToLunar">Dương ➔ Âm</label>
+                
+                            <input type="radio" class="btn-check" name="convertType" id="typeLunarToSolar" onclick="switchConvertMode()">
+                            <label class="btn btn-outline-primary py-1 px-2" style="font-size:0.7rem; font-weight:700;" for="typeLunarToSolar">Âm ➔ Dương</label>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-2 align-items-center">
                         <div class="col-md-5">
-                            <input type="date" id="modalConvertDate" class="form-control form-control-sm text-center fw-bold" onchange="performModalConversion()">
+                            <input type="date" id="modalConvertDate" class="form-control form-control-sm text-center fw-bold" style="position: relative; z-index: 5;" onchange="performModalConversion()">
                         </div>
                         <div class="col-md-7">
                             <div id="modalConversionResult" class="p-2 bg-black rounded border border-success text-success fw-bold text-center" style="font-size: 0.78rem;">
-                                Chọn ngày để xem thông tin âm lịch tương ứng.
+                                Chọn ngày để quy đổi.
                             </div>
                         </div>
                     </div>
