@@ -527,34 +527,34 @@
             }
         }
         function openSettingsModal(folderId, limitVal, downloadVal, commentVal, watermarkEnabledVal, watermarkLogoVal) {
-            document.getElementById('editFolderId').value = folderId;
-            document.getElementById('editLimitPhotos').value = (limitVal && limitVal > 0) ? limitVal : '';
-            
-            document.getElementById('editAllowDownload').checked = (downloadVal === true || downloadVal === 'true' || downloadVal === 1);
-            document.getElementById('editAllowComment').checked = (commentVal === true || commentVal === 'true' || commentVal === 1);
-            
-            // 🌟 Bắt chuẩn xác mọi định dạng true từ database
-            const isWatermarkOn = watermarkEnabledVal === true || 
-                          watermarkEnabledVal === 'true' || 
+    document.getElementById('editFolderId').value = folderId;
+    document.getElementById('editLimitPhotos').value = (limitVal && limitVal > 0) ? limitVal : '';
+    
+    document.getElementById('editAllowDownload').checked = (downloadVal === true || downloadVal === 'true' || downloadVal === 1);
+    document.getElementById('editAllowComment').checked = (commentVal === true || commentVal === 'true' || commentVal === 1);
+    
+    // 🌟 Chuẩn hóa kiểm tra: chỉ khi nào thực sự là true hoặc 'TRUE' / 'true' / 1 thì mới bật, còn null, false hoặc bất kỳ giá trị nào khác đều là tắt
+    const isWatermarkOn = watermarkEnabledVal === true || 
+                          String(watermarkEnabledVal).toLowerCase() === 'true' || 
                           watermarkEnabledVal === 1 || 
-                          watermarkEnabledVal === '1' || 
-                          watermarkEnabledVal === 'TRUE';
+                          watermarkEnabledVal === '1';
                           
-            document.getElementById('editWatermarkEnabled').checked = isWatermarkOn;
-            
-            editStoredLogoBase64 = watermarkLogoVal || '';
-            const preview = document.getElementById('editLogoPreview');
-            if (editStoredLogoBase64) {
-                preview.src = editStoredLogoBase64;
-                preview.style.display = 'block';
-            } else {
-                preview.src = '';
-                preview.style.display = 'none';
-            }
-            toggleEditWatermarkInput();
-        
-            new bootstrap.Modal(document.getElementById('settingsModal')).show();
-        }
+    document.getElementById('editWatermarkEnabled').checked = isWatermarkOn;
+    
+    editStoredLogoBase64 = watermarkLogoVal || '';
+    const preview = document.getElementById('editLogoPreview');
+    if (editStoredLogoBase64 && editStoredLogoBase64 !== 'null' && editStoredLogoBase64 !== 'undefined') {
+        preview.src = editStoredLogoBase64;
+        preview.style.display = 'block';
+    } else {
+        editStoredLogoBase64 = '';
+        preview.src = '';
+        preview.style.display = 'none';
+    }
+    toggleEditWatermarkInput();
+
+    new bootstrap.Modal(document.getElementById('settingsModal')).show();
+}
 
        async function saveAlbumSettings() {
             const folderId = document.getElementById('editFolderId').value;
