@@ -331,7 +331,7 @@
                                 <label class="form-label small fw-bold text-secondary m-0">NGÀY GIỜ SỰ KIỆN <span class="text-danger">*</span></label>
                                 <!-- 🌟 Nút chọn chế độ nhập Âm lịch -->
                                 <div class="form-check form-switch m-0" style="min-height: auto;">
-                                    <input class="form-check-input" type="checkbox" id="isLunarEvent" onchange="toggleEventDateInputMode()" style="cursor: pointer; background-color: #13223f; border-color: var(--primary);">
+                                    <input class="form-check-input" type="checkbox" id="isLunarEvent" onchange="toggleEventDateInputMode()" style="cursor: pointer; background-color: #13223f; border-color: var(--white);">
                                     <label class="form-check-label text-warning small fw-bold ms-1" for="isLunarEvent" style="cursor: pointer; font-size: 0.7rem !important;">Nhập bằng Lịch Âm</label>
                                 </div>
                             </div>
@@ -617,7 +617,7 @@ function getExpiryTimestamp() {
                     let hours = String(d.getUTCHours()).padStart(2, '0');
                     let minutes = String(d.getUTCMinutes()).padStart(2, '0');
                     
-                    let solarStr = `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year} ${hours}:${minutes}`;
+                    let solarStr = `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year} - ${hours}:${minutes}`;
                     
                     // Tự động tính ngày Âm tương ứng để hiển thị bên dưới
                     try {
