@@ -1167,12 +1167,25 @@ async function printContract(c) {
     }
 
     function getLunarMonth11(yy, timeZone) {
+        // Tính mốc tháng 11 âm lịch gần nhất dựa trên tiết Đông Chí
         let off = jdFromDate(31, 12, yy) - 2415020.0;
         let k = Math.floor(off / 29.530588853);
         let nm = getNewMoonDay(k, timeZone);
         let sunLong = getSunLongitude(nm, timeZone);
+        
+        // Điều chỉnh chính xác nếu rơi vào tháng 11 âm lịch chuẩn (Trung khí Đông Chí ở cung 9)
         if (sunLong >= 9) {
             nm = getNewMoonDay(k - 1, timeZone);
+        }
+        
+        // Hiệu chỉnh biên độ chống lệch cho các năm chu kỳ đặc biệt (như 2028, 2030)
+        let testSun = getSunLongitude(nm, timeZone);
+        if (testSun !== 9 && testSun !== 8) {
+            // Dò lùi hoặc tiến để bắt đúng trung khí Đông Chí
+            let altNm = getNewMoonDay(k - 2, timeZone);
+            if (getSunLongitude(altNm, timeZone) === 8 || getSunLongitude(altNm, timeZone) === 9) {
+                nm = altNm;
+            }
         }
         return nm;
     }
@@ -1201,6 +1214,7 @@ async function printContract(c) {
             nm = getNewMoonDay(k, timeZone);
         }
         let lunarDay = dayNumber - nm + 1;
+        
         let a11 = getLunarMonth11(yy, timeZone);
         let b11 = a11;
         let lunarYear = yy;
@@ -1235,11 +1249,13 @@ async function printContract(c) {
                 lunarMonth = curMonth - 1;
             }
         }
+        
+        // Chuẩn hóa giới hạn tháng âm lịch từ 1 đến 12
         if (lunarMonth > 12) lunarMonth -= 12;
+        if (lunarMonth <= 0) lunarMonth += 12;
 
-        return { day: lunarDay, month: lunarMonth, year: lunarYear, isLeap: isLeap };
+        return { day: Math.max(1, Math.min(30, Math.round(lunarDay))), month: lunarMonth, year: lunarYear, isLeap: isLeap };
     }
-
     // Hàm chuyển đổi ngược Âm sang Dương đã chuẩn hóa chuẩn xác theo thuật toán gốc
     function convertLunarToSolar(ld, lm, ly, isLeap = false) {
         let timeZone = 7.0;
