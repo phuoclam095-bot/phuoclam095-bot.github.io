@@ -1038,9 +1038,9 @@ function openEditModal(c) {
     document.getElementById('editCustEmail').value = c.customer_email || '';
     document.getElementById('editServicePkg').value = c.service_package || '';
     document.getElementById('editEventLocation').value = c.event_location || '';
-    document.getElementById('editTotalAmt').value = c.total_amount || 0;
-    document.getElementById('editDepositAmt').value = c.deposit_amount || 0;
-    document.getElementById('editExtraFee').value = c.extra_fee || 0;
+    document.getElementById('editTotalAmt').value = Math.round(parseFloat(c.total_amount) || 0);
+    document.getElementById('editDepositAmt').value = Math.round(parseFloat(c.deposit_amount) || 0);
+    document.getElementById('editExtraFee').value = Math.round(parseFloat(c.extra_fee) || 0);
     document.getElementById('editEventNote').value = c.note || '';
     
     // Format lại ngày giờ cho input datetime-local (YYYY-MM-DDTHH:mm)
