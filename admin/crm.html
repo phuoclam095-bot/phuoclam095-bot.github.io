@@ -1193,13 +1193,15 @@ function previewEditLunarSolarEventDate() {
         // 🌟 TẤT TOÁN NHANH (Cộng phát sinh + Tổng tiền - Cọc = 0)
         async function settleContract(contractId) {
             if(!confirm("Xác nhận khách đã thanh toán toàn bộ phần còn lại (bao gồm tổng tiền và chi phí phát sinh) để tất toán hợp đồng?")) return;
-            
+            const currentSlug = localStorage.getItem('admin_studio_slug') || 'studio';
+            const currentEmail = localStorage.getItem('admin_email') || '';
             showToast("Đang cập nhật tất toán...");
             try {
                 const res = await fetch(PATHS.SETTLE_CONTRACT, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: contractId })
+                    body: JSON.stringify({ id: contractId, studio_slug: currentSlug,
+                admin_email: currentEmail })
                 });
                 if(res.ok) {
                     showToast("Đã tất toán thành công!");
