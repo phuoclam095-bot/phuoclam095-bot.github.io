@@ -560,6 +560,91 @@
             
             new bootstrap.Modal(document.getElementById('studioConfigModal')).show();
         }
+
+let quickPollingInterval = null;
+
+// 1. Mở Modal và gọi webhook tạo mã QR 10k (15 ngày)
+async function openQuickTrialModal() {
+    const userEmail = localStorage.getItem('admin_email');
+    const code = 'SEVQR' + Math.floor(100000 + Math.random() * 900000); // Tạo mã giao dịch ngẫu nhiên
+    
+    // Hiển thị Modal
+    const modal = new bootstrap.Modal(document.getElementById('quickTrialModal'));
+    modal.show();
+    
+    document.getElementById('quickPaymentTitle').innerText = "Đang tạo mã giao dịch...";
+    document.getElementById('quickQrLoading').style.display = 'block';
+    document.getElementById('quickQrContent').style.display = 'none';
+
+    try {
+        // Gửi request giống hệt trang payment sang webhook save-pending của n8n
+        const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/save-pending', {
+            method: 'POST', 
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ 
+                email: userEmail, 
+                paymentCode: code, 
+                amount: 10000,          // Giá tiền 10k
+                months: 0.5,            // Tương đương 15 ngày (hoặc tùy cấu hình n8n hiểu số tháng/ngày)
+                timestamp: Date.now() 
+            })
+        });
+        const data = await res.json();
+        
+        document.getElementById('quickQrCodeImg').src = data.qrDataURL;
+        document.getElementById('quickDisplayCode').innerText = code;
+        
+        document.getElementById('quickQrLoading').style.display = 'none';
+        document.getElementById('quickQrContent').style.display = 'block';
+        document.getElementById('quickPaymentTitle').innerText = "QUÉT MÃ KÍCH HOẠT NHANH";
+        
+        // Bắt đầu chạy vòng lặp kiểm tra (Polling) xem khách đã chuyển khoản chưa
+        startQuickPolling(code, userEmail);
+        
+    } catch (e) {
+        alert("Lỗi kết nối tạo mã QR thanh toán!");
+        cancelQuickTrial();
+    }
+}
+
+// 2. Vòng lặp chờ xác nhận thanh toán ngầm
+function startQuickPolling(code, userEmail) {
+    if (quickPollingInterval) clearInterval(quickPollingInterval);
+    
+    quickPollingInterval = setInterval(async () => {
+        try {
+            const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/google-oauth-callback', {
+                method: 'POST', 
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ action: 'check_status', email: userEmail, paymentCode: code })
+            });
+            const data = await res.json();
+            
+            // Nếu webhook trả về active, tiến hành lưu localStorage và load lại trang ngay
+            if (data.status === 'active') {
+                clearInterval(quickPollingInterval);
+                localStorage.setItem('admin_status', 'active');
+                localStorage.setItem('admin_expiry', data.expiry_timestamp);
+                
+                alert("Kích hoạt VIP thành công! Hệ thống sẽ tự động làm mới.");
+                window.location.reload();
+            }
+        } catch (e) {}
+    }, 8000); // Kiểm tra mỗi 8 giây
+}
+
+// 3. Hủy hoặc đóng modal
+function cancelQuickTrial() {
+    if (quickPollingInterval) clearInterval(quickPollingInterval);
+}
+
+// 4. Copy mã nội dung chuyển khoản nhanh
+function copyQuickCode() {
+    const codeText = document.getElementById('quickDisplayCode').innerText;
+    navigator.clipboard.writeText(codeText);
+    alert("Đã sao chép nội dung chuyển khoản: " + codeText);
+}
+
         
         // Lưu thông tin và tự động sinh Slug
         async function saveStudioConfig() {
@@ -771,89 +856,7 @@ async function checkAccountStatusLive() {
         updateUI();
     }
 
-    let quickPollingInterval = null;
-
-// 1. Mở Modal và gọi webhook tạo mã QR 10k (15 ngày)
-async function openQuickTrialModal() {
-    const userEmail = localStorage.getItem('admin_email');
-    const code = 'SEVQR' + Math.floor(100000 + Math.random() * 900000); // Tạo mã giao dịch ngẫu nhiên
     
-    // Hiển thị Modal
-    const modal = new bootstrap.Modal(document.getElementById('quickTrialModal'));
-    modal.show();
-    
-    document.getElementById('quickPaymentTitle').innerText = "Đang tạo mã giao dịch...";
-    document.getElementById('quickQrLoading').style.display = 'block';
-    document.getElementById('quickQrContent').style.display = 'none';
-
-    try {
-        // Gửi request giống hệt trang payment sang webhook save-pending của n8n
-        const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/save-pending', {
-            method: 'POST', 
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ 
-                email: userEmail, 
-                paymentCode: code, 
-                amount: 10000,          // Giá tiền 10k
-                months: 0.5,            // Tương đương 15 ngày (hoặc tùy cấu hình n8n hiểu số tháng/ngày)
-                timestamp: Date.now() 
-            })
-        });
-        const data = await res.json();
-        
-        document.getElementById('quickQrCodeImg').src = data.qrDataURL;
-        document.getElementById('quickDisplayCode').innerText = code;
-        
-        document.getElementById('quickQrLoading').style.display = 'none';
-        document.getElementById('quickQrContent').style.display = 'block';
-        document.getElementById('quickPaymentTitle').innerText = "QUÉT MÃ KÍCH HOẠT NHANH";
-        
-        // Bắt đầu chạy vòng lặp kiểm tra (Polling) xem khách đã chuyển khoản chưa
-        startQuickPolling(code, userEmail);
-        
-    } catch (e) {
-        alert("Lỗi kết nối tạo mã QR thanh toán!");
-        cancelQuickTrial();
-    }
-}
-
-// 2. Vòng lặp chờ xác nhận thanh toán ngầm
-function startQuickPolling(code, userEmail) {
-    if (quickPollingInterval) clearInterval(quickPollingInterval);
-    
-    quickPollingInterval = setInterval(async () => {
-        try {
-            const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/google-oauth-callback', {
-                method: 'POST', 
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ action: 'check_status', email: userEmail, paymentCode: code })
-            });
-            const data = await res.json();
-            
-            // Nếu webhook trả về active, tiến hành lưu localStorage và load lại trang ngay
-            if (data.status === 'active') {
-                clearInterval(quickPollingInterval);
-                localStorage.setItem('admin_status', 'active');
-                localStorage.setItem('admin_expiry', data.expiry_timestamp);
-                
-                alert("Kích hoạt VIP thành công! Hệ thống sẽ tự động làm mới.");
-                window.location.reload();
-            }
-        } catch (e) {}
-    }, 8000); // Kiểm tra mỗi 8 giây
-}
-
-// 3. Hủy hoặc đóng modal
-function cancelQuickTrial() {
-    if (quickPollingInterval) clearInterval(quickPollingInterval);
-}
-
-// 4. Copy mã nội dung chuyển khoản nhanh
-function copyQuickCode() {
-    const codeText = document.getElementById('quickDisplayCode').innerText;
-    navigator.clipboard.writeText(codeText);
-    alert("Đã sao chép nội dung chuyển khoản: " + codeText);
-}
 } </script>
     <!-- MODAL CẤU HÌNH THÔNG TIN STUDIO -->
     <div class="modal fade" id="studioConfigModal" tabindex="-1" data-bs-backdrop="static">
