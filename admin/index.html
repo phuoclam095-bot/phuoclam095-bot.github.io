@@ -832,7 +832,8 @@ function copyQuickCode() {
             }
             updateUI();
             if (localStorage.getItem('admin_is_logged_in') === 'true') checkAccountStatusLive();
-
+            const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
+            const studioSlug = localStorage.getItem('admin_studio_slug');
             // 🌟 THÊM ĐOẠN NÀY VÀO SAU KHI LOAD XONG TRANG
             // Nếu khách mới chưa có studio_slug thì tự động bật bảng cấu hình
             if (!localStorage.getItem('admin_studio_slug') || localStorage.getItem('admin_studio_slug') === '') {
