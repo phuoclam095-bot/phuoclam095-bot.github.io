@@ -380,11 +380,7 @@
         if(avatarPlaceholder) {
             avatarPlaceholder.innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:30px; color:var(--primary)"></i>`;
         }
-        if (!localStorage.getItem('admin_studio_name') || localStorage.getItem('admin_studio_name') === '') {
-            setTimeout(() => {
-                openStudioConfigModal();
-            }, 1000); // Đợi 1 giây sau khi load trang là tự hiện bảng cho khách mới nhập
-        }
+
         
         const statusEl = document.getElementById('userStatusDisplay');
         
@@ -805,32 +801,46 @@ function copyQuickCode() {
         function copyFinalLink() { const link = document.getElementById('resClientLink').href; navigator.clipboard.writeText(link).then(() => { document.getElementById('btnCopyMain').innerText = "ĐÃ SAO CHÉP!"; setTimeout(() => { document.getElementById('btnCopyMain').innerText = "COPY LINK"; }, 2000); }); }
 
         window.onload = () => {
-    const params = new URLSearchParams(window.location.search);
-    
-    // Nếu Google trả về trạng thái đăng nhập thành công
-    if (params.get('auth_status') === 'success') {
-        localStorage.setItem('admin_is_logged_in', 'true');
-        localStorage.setItem('admin_email', params.get('user_email') || '');
-        localStorage.setItem('admin_name', decodeURIComponent(params.get('user_name') || ''));
-        localStorage.setItem('admin_avatar', decodeURIComponent(params.get('user_avatar') || ''));
-        localStorage.setItem('admin_status', params.get('user_status') || 'new');
-        localStorage.setItem('admin_expiry', params.get('user_expiry') || '0');
-        
-        const sSlug = params.get('studio_slug');
-        if (sSlug) localStorage.setItem('admin_studio_slug', sSlug);
-        
-        // Xóa sạch tham số trên URL cho gọn gàng thanh địa chỉ
-        window.history.replaceState({}, document.title, window.location.pathname);
-    }
-    
-    // Kiểm tra trạng thái và vẽ lại giao diện
-    updateUI();
-    
-    // Nếu đã đăng nhập, gọi ngầm kiểm tra hạn dùng từ server
-    if (localStorage.getItem('admin_is_logged_in') === 'true') {
-        checkAccountStatusLive();
-    }
-};
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('auth_status') === 'success') {
+                localStorage.setItem('admin_is_logged_in', 'true');
+                localStorage.setItem('admin_email', params.get('user_email') || '');
+                localStorage.setItem('admin_name', decodeURIComponent(params.get('user_name') || ''));
+                localStorage.setItem('admin_avatar', decodeURIComponent(params.get('user_avatar') || ''));
+                localStorage.setItem('admin_status', params.get('user_status') || 'new');
+                localStorage.setItem('admin_expiry', params.get('user_expiry') || '0');
+                const sSlug = params.get('studio_slug');
+                if (sSlug) localStorage.setItem('admin_studio_slug', sSlug);
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+            updateUI();
+            if (localStorage.getItem('admin_is_logged_in') === 'true') checkAccountStatusLive();
+
+            // 🌟 THÊM ĐOẠN NÀY VÀO SAU KHI LOAD XONG TRANG
+            // Nếu khách mới chưa có studio_slug thì tự động bật bảng cấu hình
+            if (!localStorage.getItem('admin_studio_slug') || localStorage.getItem('admin_studio_slug'] === '') {
+                setTimeout(() => {
+                    const modalElement = document.getElementById('studioConfigModal');
+                    if (modalElement) {
+                        const myModal = new bootstrap.Modal(modalElement, {
+                            backdrop: 'static',
+                            keyboard: false
+                        });
+                        myModal.show();
+                    }
+                }, 1000);
+            }
+        };
+        document.addEventListener('DOMContentLoaded', () => {
+            const modalEl = document.getElementById('studioConfigModal');
+            if (modalEl) {
+                modalEl.addEventListener('hidden.bs.modal', function () {
+                    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+                    document.body.classList.remove('modal-open');
+                    document.body.style.overflow = '';
+                });
+            }
+        });
         // 🌟 Hàm gọi ngầm kiểm tra hạn sử dụng mới nhất từ server
 // 🌟 Hàm gọi ngầm kiểm tra hạn sử dụng mới nhất từ server (Đã bảo mật chống lách luật)
 async function checkAccountStatusLive() {
