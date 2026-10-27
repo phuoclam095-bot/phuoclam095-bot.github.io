@@ -724,10 +724,12 @@
             checkAccountStatusLive();
         };
         // 🌟 Hàm gọi ngầm kiểm tra hạn sử dụng mới nhất từ server
+// 🌟 Hàm gọi ngầm kiểm tra hạn sử dụng mới nhất từ server (Đã bảo mật chống lách luật)
 async function checkAccountStatusLive() {
     const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
     const email = localStorage.getItem('admin_email');
     
+    // Nếu chưa đăng nhập hoặc không có email trong máy ➔ Dừng luôn
     if (!isLoggedIn || !email) {
         updateUI();
         return;
@@ -738,22 +740,29 @@ async function checkAccountStatusLive() {
         const data = await res.json();
         const user = Array.isArray(data) ? data[0] : (data.user || data);
 
-        if (user) {
-            // Lưu các thông tin trả về từ Google Sheet vào localStorage
-            localStorage.setItem('admin_status', user.status || 'new');
-            localStorage.setItem('admin_expiry', user.expiry_timestamp || '0');
-            if (user.studio_slug) localStorage.setItem('admin_studio_slug', user.studio_slug);
-            if (user.name) localStorage.setItem('admin_name', user.name);
-            if (user.avatar) localStorage.setItem('admin_avatar', user.avatar);
+        // 🌟 NẾU SERVER TRẢ VỀ TRỐNG HOẶC KHÔNG TÌM THẤY USER TRONG HỆ THỐNG
+        if (!user || !user.email) {
+            console.warn("Tài khoản không tồn tại trên hệ thống hoặc đã bị xóa!");
+            logoutAdmin(); // Tự động xóa sạch localStorage và đưa về trang đầu
+            return;
         }
+
+        // Lưu các thông tin hợp lệ trả về từ server vào localStorage
+        localStorage.setItem('admin_status', user.status || 'new');
+        localStorage.setItem('admin_expiry', user.expiry_timestamp || '0');
+        if (user.studio_slug) localStorage.setItem('admin_studio_slug', user.studio_slug);
+        if (user.name) localStorage.setItem('admin_name', user.name);
+        if (user.avatar) localStorage.setItem('admin_avatar', user.avatar);
+
     } catch (e) {
-        console.log("Không thể kiểm tra hạn ngầm, sử dụng dữ liệu tạm thời trong bộ nhớ.");
+        console.error("Lỗi kết nối kiểm tra tài khoản:", e);
+        // Trường hợp mất kết nối mạng hoàn toàn thì có thể châm chước giữ lại phiên cũ, 
+        // nhưng nếu server phản hồi rõ ràng là không có dữ liệu thì sẽ bị chặn ở điều kiện !user ở trên.
     } finally {
         // Luôn gọi updateUI để vẽ lại giao diện sau khi kiểm tra xong
         updateUI();
     }
-}
-    </script>
+} </script>
     <!-- MODAL CẤU HÌNH THÔNG TIN STUDIO -->
     <div class="modal fade" id="studioConfigModal" tabindex="-1" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered">
