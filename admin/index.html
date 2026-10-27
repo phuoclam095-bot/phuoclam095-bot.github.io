@@ -696,33 +696,32 @@
         function copyFinalLink() { const link = document.getElementById('resClientLink').href; navigator.clipboard.writeText(link).then(() => { document.getElementById('btnCopyMain').innerText = "ĐÃ SAO CHÉP!"; setTimeout(() => { document.getElementById('btnCopyMain').innerText = "COPY LINK"; }, 2000); }); }
 
         window.onload = () => {
-            const params = new URLSearchParams(window.location.search);
-            if (params.get('auth_status') === 'success') {
-                localStorage.setItem('admin_is_logged_in', 'true');
-                localStorage.setItem('admin_email', params.get('user_email') || '');
-                localStorage.setItem('admin_name', decodeURIComponent(params.get('user_name') || ''));
-                localStorage.setItem('admin_avatar', decodeURIComponent(params.get('user_avatar') || ''));
-                localStorage.setItem('admin_status', params.get('user_status') || 'new');
-                localStorage.setItem('admin_expiry', params.get('user_expiry') || '0');
-                
-                // Nhận studio_slug từ hệ thống trả về (nếu có sẵn trong DB)
-                const sSlug = params.get('studio_slug');
-                if(sSlug) localStorage.setItem('admin_studio_slug', sSlug);
+    const params = new URLSearchParams(window.location.search);
+    
+    // Nếu Google trả về trạng thái đăng nhập thành công
+    if (params.get('auth_status') === 'success') {
+        localStorage.setItem('admin_is_logged_in', 'true');
+        localStorage.setItem('admin_email', params.get('user_email') || '');
+        localStorage.setItem('admin_name', decodeURIComponent(params.get('user_name') || ''));
+        localStorage.setItem('admin_avatar', decodeURIComponent(params.get('user_avatar') || ''));
+        localStorage.setItem('admin_status', params.get('user_status') || 'new');
+        localStorage.setItem('admin_expiry', params.get('user_expiry') || '0');
         
-                updateUI(); 
-                window.history.replaceState({}, document.title, window.location.pathname);
+        const sSlug = params.get('studio_slug');
+        if (sSlug) localStorage.setItem('admin_studio_slug', sSlug);
         
-                // Tự động bật bảng cấu hình nếu tài khoản chưa từng cài đặt tên studio
-                setTimeout(() => {
-                    if (!localStorage.getItem('admin_studio_slug')) {
-                        openStudioConfigModal();
-                    }
-                }, 600);
-            } else { 
-                updateUI(); 
-            }
-            checkAccountStatusLive();
-        };
+        // Xóa sạch tham số trên URL cho gọn gàng thanh địa chỉ
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+    
+    // Kiểm tra trạng thái và vẽ lại giao diện
+    updateUI();
+    
+    // Nếu đã đăng nhập, gọi ngầm kiểm tra hạn dùng từ server
+    if (localStorage.getItem('admin_is_logged_in') === 'true') {
+        checkAccountStatusLive();
+    }
+};
         // 🌟 Hàm gọi ngầm kiểm tra hạn sử dụng mới nhất từ server
 // 🌟 Hàm gọi ngầm kiểm tra hạn sử dụng mới nhất từ server (Đã bảo mật chống lách luật)
 async function checkAccountStatusLive() {
