@@ -380,6 +380,11 @@
         if(avatarPlaceholder) {
             avatarPlaceholder.innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:30px; color:var(--primary)"></i>`;
         }
+        if (!localStorage.getItem('admin_studio_name')) {
+            setTimeout(() => {
+                openStudioConfigModal();
+            }, 800); // Đợi 0.8 giây sau khi load xong trang là tự bật bảng
+        }
         
         const statusEl = document.getElementById('userStatusDisplay');
         
