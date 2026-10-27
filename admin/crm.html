@@ -448,14 +448,17 @@ function updateHeaderUI() {
         if (statusEl) {
             if (isVIP) {
                 statusEl.innerHTML = `<span class="status-tag tag-active">ACTIVE - Hạn: ${new Date(expiry).toLocaleDateString('vi-VN')}</span>`;
+                // Mở khóa bảng lịch, ẩn khung thông báo khóa
                 if (mainWorkGrid) mainWorkGrid.style.setProperty('display', 'block', 'important');
                 if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'none', 'important');
             } else if (status === 'new') {
                 statusEl.innerHTML = `<span class="status-tag tag-new">MỚI</span>`;
+                // Khóa bảng lịch, hiện khung thông báo khóa
                 if (mainWorkGrid) mainWorkGrid.style.setProperty('display', 'none', 'important');
                 if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'block', 'important');
             } else {
                 statusEl.innerHTML = `<span class="status-tag tag-expired">EXPIRED</span>`;
+                // Khóa bảng lịch, hiện khung thông báo khóa
                 if (mainWorkGrid) mainWorkGrid.style.setProperty('display', 'none', 'important');
                 if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'block', 'important');
             }
