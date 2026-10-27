@@ -187,16 +187,22 @@
             user-select: none;
             -webkit-user-select: none;
         }
-          #loadOverlay { position: fixed; inset: 0; background: #050a14; z-index: 20000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .load-logo { font-weight: 900; font-size: 2rem; color: var(--primary); letter-spacing: 5px; animation: floating 3s ease-in-out infinite; }
-        @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+          .navbar-brand-left {
+    font-weight: 900;
+    color: var(--primary) !important;
+    font-size: 1.2rem;
+    text-decoration: none;
+    text-shadow: 0 0 20px rgba(0, 235, 176, 0.4);
+    z-index: 10;
+    white-space: nowrap;
+}
     </style>
 </head>
 <body>
     
        <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
             <div class="container-fluid px-3 px-lg-5 d-flex flex-wrap align-items-center justify-content-between">
-                <div id="loadOverlay"><div class="load-logo">CHONANHNHANH.VN</div></div>
+                <a class="navbar-brand-left m-0" href="index">CHONANHNHANH.VN</a>
                 
                 
                 <div class="d-flex align-items-center ms-auto order-lg-3">
