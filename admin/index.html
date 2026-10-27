@@ -838,15 +838,17 @@ function copyQuickCode() {
                 const studioSlug = localStorage.getItem('admin_studio_slug');
 
                 if (!isLoggedIn) return; 
-                if (!studioSlug || studioSlug === '') {
-                    const modalElement = document.getElementById('studioConfigModal');
-                    if (modalElement) {
-                        const myModal = new bootstrap.Modal(modalElement, {
-                            backdrop: 'static',
-                            keyboard: false
-                        });
-                        myModal.show();
-                    }
+
+                if (studioSlug && studioSlug !== 'null' && studioSlug !== 'undefined' && studioSlug.trim() !== '') {
+                    return; 
+                }
+                const modalElement = document.getElementById('studioConfigModal');
+                if (modalElement) {
+                    const myModal = new bootstrap.Modal(modalElement, {
+                        backdrop: 'static',
+                        keyboard: false
+                    });
+                    myModal.show();
                 }
             }, 1000);
         };
