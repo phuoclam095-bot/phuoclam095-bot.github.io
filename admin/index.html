@@ -835,7 +835,7 @@ function copyQuickCode() {
 
             // 🌟 THÊM ĐOẠN NÀY VÀO SAU KHI LOAD XONG TRANG
             // Nếu khách mới chưa có studio_slug thì tự động bật bảng cấu hình
-            if (!localStorage.getItem('admin_studio_slug') || localStorage.getItem('admin_studio_slug'] === '') {
+            if (!localStorage.getItem('admin_studio_slug') || localStorage.getItem('admin_studio_slug') === '') {
                 setTimeout(() => {
                     const modalElement = document.getElementById('studioConfigModal');
                     if (modalElement) {
