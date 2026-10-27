@@ -515,25 +515,40 @@ function getExpiryTimestamp() {
         let allContractsGlobal = []; // Lưu trữ danh sách gốc
 
         async function loadContracts() {
-            const studioSlug = localStorage.getItem('admin_studio_slug') || 'studio';
-            const adminEmail = localStorage.getItem('admin_email') || '';
-            try {
-                const res = await fetch(`${PATHS.GET_CONTRACTS}?studio_slug=${encodeURIComponent(studioSlug)}&admin_email=${encodeURIComponent(adminEmail)}`);
-                const data = await res.json();
-                allContractsGlobal = Array.isArray(data) ? data : (data.contracts || []);
-                
-                // 🌟 SẮP XẾP: Đưa ngày gần nhất lên trên đầu
-                allContractsGlobal.sort((a, b) => new Date(a.event_date) - new Date(b.event_date));
+    const studioSlug = localStorage.getItem('admin_studio_slug') || 'studio';
+    const adminEmail = localStorage.getItem('admin_email') || '';
+
+    try {
+        const res = await fetch(`${PATHS.GET_CONTRACTS}?studio_slug=${encodeURIComponent(studioSlug)}&admin_email=${encodeURIComponent(adminEmail)}`);
         
-                // Tự động tạo danh sách các tháng có trong dữ liệu để đưa vào bộ lọc
-                populateMonthFilter(allContractsGlobal);
-        
-                renderTable(allContractsGlobal);
-            } catch(e) {
-                console.error(e);
-                document.getElementById('contractsTableBody').innerHTML = `<tr><td colspan="9" class="text-center text-danger py-4">Lỗi kết nối lấy dữ liệu từ máy chủ!</td></tr>`;
-            }
+        // Nếu server trả về lỗi HTTP (ví dụ 404, 500)
+        if (!res.ok) {
+            throw new Error("Lỗi máy chủ HTTP: " + res.status);
         }
+
+        const textData = await res.text();
+        
+        // Nếu chuỗi trả về rỗng
+        if (!textData || textData.trim() === "") {
+            allContractsGlobal = [];
+        } else {
+            const data = JSON.parse(textData);
+            allContractsGlobal = Array.isArray(data) ? data : (data.contracts || []);
+        }
+        
+        // Sắp xếp ngày gần nhất lên trên
+        allContractsGlobal.sort((a, b) => new Date(a.event_date) - new Date(b.event_date));
+        
+        // Đổ dữ liệu vào bộ lọc và render bảng
+        populateMonthFilter(allContractsGlobal);
+        renderTable(allContractsGlobal);
+
+    } catch(e) {
+        console.error("Lỗi tải hợp đồng:", e);
+        // Chỉ khi sập mạng hoặc lỗi kết nối thực sự mới báo câu lỗi đỏ này
+        document.getElementById('contractsTableBody').innerHTML = `<tr><td colspan="9" class="text-center text-danger py-4">Lỗi kết nối lấy dữ liệu từ máy chủ!</td></tr>`;
+    }
+}
         
         // 🌟 HÀM TỰ ĐỘNG ĐỔ DỮ LIỆU THÁNG VÀO DROPDOWN
         function populateMonthFilter(contracts) {
