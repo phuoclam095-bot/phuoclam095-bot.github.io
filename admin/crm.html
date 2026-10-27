@@ -640,18 +640,19 @@ function getExpiryTimestamp() {
                 }
         
                 const formattedDate = c.event_date ? (() => {
-                    let d = new Date(c.event_date);
-                    let day = d.getDate();
-                    let month = d.getUTCMonth() + 1;
-                    let year = d.getUTCFullYear();
-                    let hours = String(d.getHours()).padStart(2, '0');
-                    let minutes = String(d.getMinutes()).padStart(2, '0');
+                    // c.event_date thường có dạng "2026-10-28T07:49:00" hoặc "2026-10-28 07:49:00"
+                    let cleanStr = c.event_date.replace('T', ' ');
+                    let datePart = cleanStr.split(' ')[0]; // Lấy "2026-10-28"
+                    let timePart = cleanStr.split(' ')[1]; // Lấy "07:49:00" hoặc "07:49"
                     
-                    let solarStr = `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year} - ${hours}:${minutes}`;
+                    let [year, month, day] = datePart.split('-');
+                    let hourMin = timePart ? timePart.substring(0, 5) : '00:00'; // Giữ nguyên "07:49" chuẩn xác tuyệt đối
+                    
+                    let solarStr = `${day}/${month}/${year} - ${hourMin}`;
                     
                     // Tự động tính ngày Âm tương ứng để hiển thị bên dưới
                     try {
-                        let solarObj = Solar.fromYmd(year, month, day);
+                        let solarObj = Solar.fromYmd(parseInt(year), parseInt(month), parseInt(day));
                         let lunarObj = solarObj.getLunar();
                         let lD = lunarObj.getDay();
                         let lM = Math.abs(lunarObj.getMonth());
