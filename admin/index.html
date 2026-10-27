@@ -317,22 +317,27 @@
         const PATHS = { CLIENT_ID: '549408699768-0hhl7oc0sjhr1c9tsa1fo9ahv5apuecc.apps.googleusercontent.com', OAUTH: 'https://wsm.congtubaclieu.com.vn/webhook/google-oauth-callback', CREATE: 'https://wsm.congtubaclieu.com.vn/webhook/create-album-auto', INFO: 'https://wsm.congtubaclieu.com.vn/webhook/get-folder-info', CHAT: 'https://wsm.congtubaclieu.com.vn/webhook/chat-admin' };
         let isVIP = false;
         function getExpiryTimestamp() {
-                let raw = localStorage.getItem('admin_expiry');
-                if (!raw) return 0;
-                if (raw.includes('/')) {
-                    let parts = raw.split(/[\s/:]+/);
-                    if (parts.length >= 3) {
-                        return new Date(parts[2], parts[1] - 1, parts[0], parts[3] || 0, parts[4] || 0, parts[5] || 0).getTime();
-                    }
-                }
-                return parseInt(raw) || 0;
+            let raw = localStorage.getItem('admin_expiry');
+            if (!raw) return 0;
+            
+            if (!isNaN(raw)) {
+                return parseInt(raw);
             }
+            
+            if (raw.includes('/')) {
+                let parts = raw.split(/[\s/:]+/);
+                if (parts.length >= 3) {
+                    return new Date(parts[2], parts[1] - 1, parts[0], parts[3] || 0, parts[4] || 0, parts[5] || 0).getTime();
+                }
+            }
+            return parseInt(raw) || 0;
+        }
       function updateUI() {
     const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
     const status = localStorage.getItem('admin_status') || 'new';
     
     // Lấy thời hạn và tên từ localStorage (đã được cập nhật từ Google Sheet/Server)
-    const expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
+    const expiry = getExpiryTimestamp();
     const name = localStorage.getItem('admin_name') || 'Anh/Chị';
     
     // 🌟 Kiểm tra hạn thực tế: tài khoản active VÀ thời hạn phải lớn hơn thời điểm hiện tại (Date.now())
