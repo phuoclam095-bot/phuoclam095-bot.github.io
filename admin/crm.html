@@ -528,7 +528,7 @@ function getExpiryTimestamp() {
 
         async function loadContracts() {
     const studioSlug = localStorage.getItem('admin_studio_slug') || 'studio';
-
+    const adminEmail = localStorage.getItem('admin_email') || '';
     try {
         const res = await fetch(`${PATHS.GET_CONTRACTS}?studio_slug=${encodeURIComponent(studioSlug)}&admin_email=${encodeURIComponent(adminEmail)}`);
         
