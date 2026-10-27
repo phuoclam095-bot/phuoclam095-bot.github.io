@@ -317,23 +317,16 @@
         const PATHS = { CLIENT_ID: '549408699768-0hhl7oc0sjhr1c9tsa1fo9ahv5apuecc.apps.googleusercontent.com', OAUTH: 'https://wsm.congtubaclieu.com.vn/webhook/google-oauth-callback', CREATE: 'https://wsm.congtubaclieu.com.vn/webhook/create-album-auto', INFO: 'https://wsm.congtubaclieu.com.vn/webhook/get-folder-info', CHAT: 'https://wsm.congtubaclieu.com.vn/webhook/chat-admin' };
         let isVIP = false;
         function getExpiryTimestamp() {
-            let raw = localStorage.getItem('admin_expiry');
-            if (!raw) return 0;
-            
-            // Nếu lưu dưới dạng số timestamp (chuỗi số thuần túy hoặc kiểu số)
-            if (!isNaN(raw)) {
-                return parseInt(raw);
-            }
-            
-            // Nếu lỡ lưu dạng chuỗi ngày tháng cũ (dd/MM/yyyy HH:mm:ss)
-            if (raw.includes('/')) {
-                let parts = raw.split(/[\s/:]+/);
-                if (parts.length >= 3) {
-                    return new Date(parts[2], parts[1] - 1, parts[0], parts[3] || 0, parts[4] || 0, parts[5] || 0).getTime();
+                let raw = localStorage.getItem('admin_expiry');
+                if (!raw) return 0;
+                if (raw.includes('/')) {
+                    let parts = raw.split(/[\s/:]+/);
+                    if (parts.length >= 3) {
+                        return new Date(parts[2], parts[1] - 1, parts[0], parts[3] || 0, parts[4] || 0, parts[5] || 0).getTime();
+                    }
                 }
+                return parseInt(raw) || 0;
             }
-            return parseInt(raw) || 0;
-        }
       function updateUI() {
     const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
     const status = localStorage.getItem('admin_status') || 'new';
@@ -631,11 +624,15 @@ function startQuickPolling(code, userEmail) {
             // Nếu webhook trả về active, tiến hành lưu localStorage và load lại trang ngay
             if (data.status === 'active') {
                 clearInterval(quickPollingInterval);
+                
+                // 🌟 Lấy đúng giá trị từ data trả về (phòng trường hợp nằm trong object user)
+                let newExpiry = data.expiry_timestamp || (data.user && data.user.expiry_timestamp);
+                
                 localStorage.setItem('admin_status', 'active');
-                localStorage.setItem('admin_expiry', data.expiry_timestamp);
+                localStorage.setItem('admin_expiry', newExpiry); // Lưu đúng dãy số 13 chữ số mới nhất
                 
                 alert("Kích hoạt VIP thành công! Hệ thống sẽ tự động làm mới.");
-                window.location.reload();
+                window.location.reload(); // Tải lại để xóa cache trình duyệt
             }
         } catch (e) {}
     }, 8000); // Kiểm tra mỗi 8 giây
