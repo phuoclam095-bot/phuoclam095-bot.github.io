@@ -380,7 +380,6 @@
         if(avatarPlaceholder) {
             avatarPlaceholder.innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:30px; color:var(--primary)"></i>`;
         }
-
         
         const statusEl = document.getElementById('userStatusDisplay');
         
@@ -552,21 +551,39 @@
                 reader.readAsDataURL(file);
             }
             function openStudioConfigModal() {
-            document.getElementById('modalStudioNameInput').value = localStorage.getItem('admin_studio_name') || '';
-            document.getElementById('modalStudioPhoneInput').value = localStorage.getItem('admin_studio_phone') || '';
-            document.getElementById('modalStudioAddressInput').value = localStorage.getItem('admin_studio_address') || '';
-            
-            modalStudioLogoBase64 = localStorage.getItem('studio_watermark_logo') || '';
-            const preview = document.getElementById('modalLogoPreview');
-            if (modalStudioLogoBase64 && preview) {
-                preview.src = modalStudioLogoBase64;
-                preview.style.display = 'inline-block';
-            } else if(preview) {
-                preview.style.display = 'none';
-            }
-            
-            new bootstrap.Modal(document.getElementById('studioConfigModal')).show();
-        }
+    document.getElementById('modalStudioNameInput').value = localStorage.getItem('admin_studio_name') || '';
+    document.getElementById('modalStudioPhoneInput').value = localStorage.getItem('admin_studio_phone') || '';
+    document.getElementById('modalStudioAddressInput').value = localStorage.getItem('admin_studio_address') || '';
+    
+    modalStudioLogoBase64 = localStorage.getItem('studio_watermark_logo') || '';
+    const preview = document.getElementById('modalLogoPreview');
+    if (modalStudioLogoBase64 && preview) {
+        preview.src = modalStudioLogoBase64;
+        preview.style.display = 'inline-block';
+    } else if(preview) {
+        preview.style.display = 'none';
+    }
+    
+    const modalEl = document.getElementById('studioConfigModal');
+    const myModal = new bootstrap.Modal(modalEl);
+    myModal.show();
+}
+
+// Hàm đóng Modal an toàn, tự động dọn sạch lớp nền mờ để không bị lỗi đơ trang
+function closeStudioConfigModal() {
+    const modalEl = document.getElementById('studioConfigModal');
+    const myModal = bootstrap.Modal.getInstance(modalEl);
+    if (myModal) {
+        myModal.hide();
+    }
+    // Dọn dẹp triệt để lớp nền mờ nếu Bootstrap bị kẹt lại
+    setTimeout(() => {
+        document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+    }, 300);
+}
 
 let quickPollingInterval = null;
 
@@ -831,16 +848,6 @@ function copyQuickCode() {
                 }, 1000);
             }
         };
-        document.addEventListener('DOMContentLoaded', () => {
-            const modalEl = document.getElementById('studioConfigModal');
-            if (modalEl) {
-                modalEl.addEventListener('hidden.bs.modal', function () {
-                    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
-                    document.body.classList.remove('modal-open');
-                    document.body.style.overflow = '';
-                });
-            }
-        });
         // 🌟 Hàm gọi ngầm kiểm tra hạn sử dụng mới nhất từ server
 // 🌟 Hàm gọi ngầm kiểm tra hạn sử dụng mới nhất từ server (Đã bảo mật chống lách luật)
 async function checkAccountStatusLive() {
