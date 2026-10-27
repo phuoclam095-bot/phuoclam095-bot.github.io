@@ -641,29 +641,28 @@ function getExpiryTimestamp() {
                 }
         
                 const formattedDate = c.event_date ? (() => {
-                let d = new Date(c.event_date);
-                let day = d.getDate();
-                let month = d.getMonth() + 1;
-                let year = d.getFullYear();
-                let hours = String(d.getHours()).padStart(2, '0');
-                let minutes = String(d.getMinutes()).padStart(2, '0');
-                
-                let solarStr = `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year} - ${hours}:${minutes}`;
-                
-                // Tự động tính ngày Âm tương ứng để hiển thị bên dưới
-                try {
-                    let solarObj = Solar.fromYmd(year, month, day);
-                    let lunarObj = solarObj.getLunar();
-                    let lD = lunarObj.getDay();
-                    let lM = Math.abs(lunarObj.getMonth());
-                    let lY = lunarObj.getYear();
-                    let isLeap = lunarObj.getMonth() < 0;
-                    let leapStr = isLeap ? ' (nhuận)' : '';
+                    let d = new Date(c.event_date);
+                    let day = d.getDate();
+                    let month = d.getUTCMonth() + 1;
+                    let year = d.getUTCFullYear();
+                    let hours = String(d.getHours()).padStart(2, '0');
+                    let minutes = String(d.getMinutes()).padStart(2, '0');
                     
-                    return `${solarStr}<br><span style="font-size:0.72rem; color: #f0c300; font-weight:700;"><i class="fas fa-moon me-1"></i>Âm: ${lD}/${lM}${leapStr}/${lY}</span>`;
-                } catch(e) {
-                    return solarStr;
-                }
+                    let solarStr = `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year} - ${hours}:${minutes}`;
+                    
+                    // Tự động tính ngày Âm tương ứng để hiển thị bên dưới
+                    try {
+                        let solarObj = Solar.fromYmd(year, month, day);
+                        let lunarObj = solarObj.getLunar();
+                        let lD = lunarObj.getDay();
+                        let lM = Math.abs(lunarObj.getMonth());
+                        let lY = lunarObj.getYear();
+                        let isLeap = lunarObj.getMonth() < 0;
+                        let leapStr = isLeap ? ' (nhuận)' : '';
+                        
+                        return `${solarStr}<br><span style="font-size:0.72rem; color: #f0c300; font-weight:700;"><i class="fas fa-moon me-1"></i>Âm: ${lD}/${lM}${leapStr}/${lY}</span>`;
+                    } catch(e) {
+                        return solarStr;
                     }
                 })() : '';
         
