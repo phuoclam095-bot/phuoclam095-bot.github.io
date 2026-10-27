@@ -675,50 +675,50 @@ function copyQuickCode() {
 
         
         // Lưu thông tin và tự động sinh Slug
-        async function saveStudioConfig() {
-            const nameVal = document.getElementById('modalStudioNameInput').value.trim();
-            const phoneVal = document.getElementById('modalStudioPhoneInput').value.trim();
-            const addressVal = document.getElementById('modalStudioAddressInput').value.trim();
-        
-            if (!nameVal) {
-                return alert("Vui lòng nhập Tên Studio!");
-            }
-        
-            const studioSlug = createSlug(nameVal);
-        
-            // Lưu trữ tạm vào localStorage
-            localStorage.setItem('admin_studio_slug', studioSlug);
-            localStorage.setItem('admin_studio_name', nameVal);
-            localStorage.setItem('admin_studio_phone', phoneVal);
-            localStorage.setItem('admin_studio_address', addressVal);
-            if (modalStudioLogoBase64) {
-                localStorage.setItem('studio_watermark_logo', modalStudioLogoBase64);
-            }
-        
-            const modalEl = document.getElementById('studioConfigModal');
-            const modalInstance = bootstrap.Modal.getInstance(modalEl);
-            if (modalInstance) modalInstance.hide();
-        
-            // Gửi thông tin kèm logo dạng Base64 lên n8n / Database
-            try {
-                await fetch('https://wsm.congtubaclieu.com.vn/webhook/update-admin-studio', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        adminEmail: localStorage.getItem('admin_email'),
-                        studioSlug: studioSlug,
-                        studioName: nameVal,
-                        studioPhone: phoneVal,
-                        studioAddress: addressVal,
-                        watermarkLogo: modalStudioLogoBase64 // <--- Gửi mã chuỗi Base64 của logo lên đây để lưu vào cột watermark_logo trong bảng albums_data
-                    })
-                });
-                alert("Đã lưu thông tin Studio và Logo thành công!");
-            } catch (e) {
-                console.log("Lỗi đồng bộ ngầm");
-            }
-        }
-
+       async function saveStudioConfig() {
+    const nameVal = document.getElementById('modalStudioNameInput').value.trim();
+    const phoneVal = document.getElementById('modalStudioPhoneInput').value.trim();
+    const addressVal = document.getElementById('modalStudioAddressInput').value.trim();
+    
+    if (!nameVal) {
+        return alert("Vui lòng nhập Tên Studio!");
+    }
+    
+    const studioSlug = createSlug(nameVal);
+    
+    // Lưu tạm vào trình duyệt
+    localStorage.setItem('admin_studio_slug', studioSlug);
+    localStorage.setItem('admin_studio_name', nameVal);
+    localStorage.setItem('admin_studio_phone', phoneVal);
+    localStorage.setItem('admin_studio_address', addressVal);
+    if (modalStudioLogoBase64) {
+        localStorage.setItem('studio_watermark_logo', modalStudioLogoBase64);
+    }
+    
+    // Ẩn modal an toàn
+    const modalEl = document.getElementById('studioConfigModal');
+    const modalInstance = bootstrap.Modal.getInstance(modalEl);
+    if (modalInstance) modalInstance.hide();
+    
+    // 🌟 Gửi đầy đủ thông tin lên webhook n8n để lưu vào Database (bảng Users)
+    try {
+        await fetch('https://wsm.congtubaclieu.com.vn/webhook/update-admin-studio', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                adminEmail: localStorage.getItem('admin_email'),
+                studioSlug: studioSlug,
+                studioName: nameVal,
+                studioPhone: phoneVal,
+                studioAddress: addressVal,
+                watermarkLogo: modalStudioLogoBase64
+            })
+        });
+        alert("Đã lưu thông tin Studio và Logo thành công lên hệ thống!");
+    } catch (e) {
+        console.log("Lỗi đồng bộ ngầm lên server");
+    }
+}
         function createSlug(str) {
             if (!str) return '';
             str = str.toLowerCase();
@@ -856,7 +856,6 @@ async function checkAccountStatusLive() {
     const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
     const email = localStorage.getItem('admin_email');
     
-    // Nếu chưa đăng nhập hoặc không có email trong máy ➔ Dừng luôn
     if (!isLoggedIn || !email) {
         updateUI();
         return;
@@ -867,31 +866,32 @@ async function checkAccountStatusLive() {
         const data = await res.json();
         const user = Array.isArray(data) ? data[0] : (data.user || data);
 
-        // 🌟 NẾU SERVER TRẢ VỀ TRỐNG HOẶC KHÔNG TÌM THẤY USER TRONG HỆ THỐNG
         if (!user || !user.email) {
             console.warn("Tài khoản không tồn tại trên hệ thống hoặc đã bị xóa!");
-            logoutAdmin(); // Tự động xóa sạch localStorage và đưa về trang đầu
+            logoutAdmin(); 
             return;
         }
 
-        // Lưu các thông tin hợp lệ trả về từ server vào localStorage
+        // Lưu các thông tin cơ bản
         localStorage.setItem('admin_status', user.status || 'new');
         localStorage.setItem('admin_expiry', user.expiry_timestamp || '0');
-        if (user.studio_slug) localStorage.setItem('admin_studio_slug', user.studio_slug);
         if (user.name) localStorage.setItem('admin_name', user.name);
         if (user.avatar) localStorage.setItem('admin_avatar', user.avatar);
 
+        // 🌟 ĐỒNG BỘ THÔNG TIN STUDIO TỪ DATABASE VỀ LOCALSTORAGE (Tránh mất khi đăng xuất)
+        if (user.studio_slug) localStorage.setItem('admin_studio_slug', user.studio_slug);
+        if (user.studio_name) localStorage.setItem('admin_studio_name', user.studio_name);
+        if (user.studio_phone) localStorage.setItem('admin_studio_phone', user.studio_phone);
+        if (user.studio_address) localStorage.setItem('admin_studio_address', user.studio_address);
+        if (user.watermark_logo) localStorage.setItem('studio_watermark_logo', user.watermark_logo);
+
     } catch (e) {
         console.error("Lỗi kết nối kiểm tra tài khoản:", e);
-        // Trường hợp mất kết nối mạng hoàn toàn thì có thể châm chước giữ lại phiên cũ, 
-        // nhưng nếu server phản hồi rõ ràng là không có dữ liệu thì sẽ bị chặn ở điều kiện !user ở trên.
     } finally {
-        // Luôn gọi updateUI để vẽ lại giao diện sau khi kiểm tra xong
         updateUI();
     }
-
-    
-} </script>
+}
+    </script>
     <!-- MODAL CẤU HÌNH THÔNG TIN STUDIO -->
     <div class="modal fade" id="studioConfigModal" tabindex="-1" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered">
