@@ -380,10 +380,10 @@
         if(avatarPlaceholder) {
             avatarPlaceholder.innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:30px; color:var(--primary)"></i>`;
         }
-        if (!localStorage.getItem('admin_studio_name')) {
+        if (!localStorage.getItem('admin_studio_name') || localStorage.getItem('admin_studio_name') === '') {
             setTimeout(() => {
                 openStudioConfigModal();
-            }, 800); // Đợi 0.8 giây sau khi load xong trang là tự bật bảng
+            }, 1000); // Đợi 1 giây sau khi load trang là tự hiện bảng cho khách mới nhập
         }
         
         const statusEl = document.getElementById('userStatusDisplay');
