@@ -687,7 +687,7 @@ function getExpiryTimestamp() {
                 const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/hide-contract', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: id, is_hidden: hideStatus })
+                    body: JSON.stringify({ id: id, is_hidden: hideStatus, studio_slug: currentSlug,admin_email: currentEmail })
                 });
                 if(res.ok) {
                     showToast(hideStatus ? "Đã ẩn hợp đồng thành công!" : "Đã khôi phục hợp đồng!");
@@ -991,7 +991,12 @@ async function printContract(c) {
                 const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/delete-contract', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: id })
+                    body: JSON.stringify({ 
+                        id: id, 
+                        studio_slug: currentSlug,
+                        admin_email: currentEmail
+                    })
+                    
                 });
                 if(res.ok) {
                     showToast("Đã xóa vĩnh viễn hợp đồng!");
