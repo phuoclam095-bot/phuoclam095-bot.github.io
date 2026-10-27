@@ -950,7 +950,7 @@ async function printContract(c) {
 
     try {
         const adminEmail = localStorage.getItem('admin_email') || '';
-        const res = await fetch(`https://wsm.congtubaclieu.com.vn/webhook/get-studio-info?studio_slug=${studioSlug}`);
+        const res = await fetch(`https://wsm.congtubaclieu.com.vn/webhook/get-studio-info?studio_slug=${studioSlug}&admin_email=${encodeURIComponent(adminEmail)}`);
         let data = await res.json();
         let info = Array.isArray(data) ? data[0] : (data.data || data);
         
