@@ -708,7 +708,35 @@
             } else { 
                 updateUI(); 
             }
+            checkAccountStatusLive();
         };
+        // 🌟 Hàm gọi ngầm kiểm tra hạn sử dụng mới nhất từ server
+async function checkAccountStatusLive() {
+    const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
+    const email = localStorage.getItem('admin_email');
+    
+    if (!isLoggedIn || !email) return;
+
+    try {
+        // Gọi đến một webhook n8n trên server để lấy thông tin tài khoản mới nhất
+        const res = await fetch(`https://wsm.congtubaclieu.com.vn/webhook/check-account-status?email=${encodeURIComponent(email)}`);
+        const data = await res.json();
+        const user = Array.isArray(data) ? data[0] : (data.user || data);
+
+        if (user) {
+            // Cập nhật lại trạng thái và hạn mới nhất vào localStorage
+            localStorage.setItem('admin_status', user.status || 'new');
+            localStorage.setItem('admin_expiry', user.expiry || '0');
+            if (user.studio_slug) localStorage.setItem('admin_studio_slug', user.studio_slug);
+            if (user.name) localStorage.setItem('admin_name', user.name);
+            
+            // Vẽ lại giao diện theo hạn mới nhất
+            updateUI();
+        }
+    } catch (e) {
+        console.log("Không thể kiểm tra hạn ngầm, sử dụng dữ liệu tạm thời.");
+    }
+}
     </script>
     <!-- MODAL CẤU HÌNH THÔNG TIN STUDIO -->
     <div class="modal fade" id="studioConfigModal" tabindex="-1" data-bs-backdrop="static">
