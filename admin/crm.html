@@ -649,6 +649,7 @@ function getExpiryTimestamp() {
                 } else {
                     actionButtons += `<button class="btn btn-sm btn-outline-secondary p-1 px-2 me-1" style="font-size:0.65rem;" onclick="toggleHideContract(${c.id}, true)" title="Ẩn lịch"><i class="fas fa-eye-slash"></i></button>`;
                 }
+                actionButtons += `<button class="btn btn-sm btn-outline-info p-1 px-2 me-1" style="font-size:0.65rem;" onclick='openEditModal(${JSON.stringify(c)})' title="Chỉnh sửa thông tin"><i class="fas fa-pen"></i></button>`;
                 actionButtons += `<button class="btn btn-sm btn-outline-warning p-1 px-2 me-1" style="font-size:0.65rem;" onclick='printContract(${JSON.stringify(c)})' title="Xuất hợp đồng"><i class="fas fa-file-pdf"></i></button>`;
                 actionButtons += `<button class="btn btn-sm btn-outline-danger p-1 px-2" style="font-size:0.65rem;" onclick="deleteContract(${c.id})" title="Xóa vĩnh viễn"><i class="fas fa-trash"></i></button>`;
         
@@ -1029,7 +1030,156 @@ async function printContract(c) {
         
             renderTable(filtered);
         }
+        // 🌟 Mở Modal Chỉnh Sửa và điền sẵn dữ liệu cũ
+function openEditModal(c) {
+    document.getElementById('editContractId').value = c.id || '';
+    document.getElementById('editCustName').value = c.customer_name || '';
+    document.getElementById('editCustPhone').value = c.customer_phone || '';
+    document.getElementById('editCustEmail').value = c.customer_email || '';
+    document.getElementById('editServicePkg').value = c.service_package || '';
+    document.getElementById('editEventLocation').value = c.event_location || '';
+    document.getElementById('editTotalAmt').value = c.total_amount || 0;
+    document.getElementById('editDepositAmt').value = c.deposit_amount || 0;
+    document.getElementById('editExtraFee').value = c.extra_fee || 0;
+    document.getElementById('editEventNote').value = c.note || '';
+    
+    // Format lại ngày giờ cho input datetime-local (YYYY-MM-DDTHH:mm)
+    if (c.event_date) {
+        let cleanDt = c.event_date.replace(' ', 'T').substring(0, 16);
+        document.getElementById('editEventDate').value = cleanDt;
+    }
 
+    document.getElementById('editIsLunarEvent').checked = false;
+    toggleEditEventDateInputMode();
+    autoCalculateEdit();
+
+    // Hiển thị Modal
+    let modal = new bootstrap.Modal(document.getElementById('editContractModal'));
+    modal.show();
+}
+
+// 🌟 Tự động tính toán khi nhập trên form Sửa
+function autoCalculateEdit() {
+    const total = parseFloat(document.getElementById('editTotalAmt').value) || 0;
+    const deposit = parseFloat(document.getElementById('editDepositAmt').value) || 0;
+    const extra = parseFloat(document.getElementById('editExtraFee').value) || 0;
+    
+    const grandTotal = total + extra;
+    const remaining = grandTotal - deposit;
+    
+    document.getElementById('editRemainingPreview').innerText = remaining.toLocaleString('vi-VN') + ' VNĐ';
+
+    const statusInput = document.getElementById('editPaymentStatus');
+    if (deposit <= 0) {
+        statusInput.value = "Chưa cọc";
+    } else if (remaining <= 0) {
+        statusInput.value = "Đã tất toán";
+    } else {
+        statusInput.value = "Đã cọc (Còn nợ)";
+    }
+}
+
+function toggleEditEventDateInputMode() {
+    const isLunar = document.getElementById('editIsLunarEvent').checked;
+    const noteEl = document.getElementById('editEventDateNotes');
+    noteEl.innerHTML = isLunar ? `🌙 Nhập ngày Âm lịch, hệ thống sẽ tự quy đổi sang Dương.` : `📅 Ngày Dương lịch chuẩn cho sự kiện.`;
+    previewEditLunarSolarEventDate();
+}
+
+function previewEditLunarSolarEventDate() {
+    const val = document.getElementById('editEventDate').value;
+    const noteEl = document.getElementById('editEventDateNotes');
+    const isLunar = document.getElementById('editIsLunarEvent').checked;
+    if (!val) return;
+    try {
+        let parts = val.split('T');
+        let dateParts = parts[0].split('-');
+        let y = parseInt(dateParts[0]), m = parseInt(dateParts[1]), d = parseInt(dateParts[2]);
+        let timePart = parts[1] || '00:00';
+
+        if (isLunar) {
+            let lunarObj = Lunar.fromYmd(y, m, d);
+            let solarObj = lunarObj.getSolar();
+            let sY = solarObj.getYear();
+            let sM = String(solarObj.getMonth()).padStart(2, '0');
+            let sD = String(solarObj.getDay()).padStart(2, '0');
+            noteEl.innerHTML = `✅ ÂL: <b>${d}/${m}/${y}</b> ➔ Dương lịch: <span class="text-success fw-bold">${sD}/${sM}/${sY} ${timePart}</span>`;
+        } else {
+            let solarObj = Solar.fromYmd(y, m, d);
+            let lunarObj = solarObj.getLunar();
+            noteEl.innerHTML = `🌙 DL: <b>${d}/${m}/${y}</b> ➔ Âm lịch: <span class="text-warning fw-bold">Ngày ${lunarObj.getDay()} Tháng ${Math.abs(lunarObj.getMonth())} Năm ${lunarObj.getYear()}</span>`;
+        }
+    } catch (e) { console.error(e); }
+}
+
+// 🌟 Gửi yêu cầu cập nhật lên n8n Webhook
+        async function updateContract() {
+            let rawDateVal = document.getElementById('editEventDate').value;
+            const isLunar = document.getElementById('editIsLunarEvent').checked;
+            let finalEventDate = rawDateVal;
+            let lunarDateStr = "";
+        
+            if (rawDateVal) {
+                try {
+                    let parts = rawDateVal.split('T');
+                    let dateParts = parts[0].split('-');
+                    let y = parseInt(dateParts[0]), m = parseInt(dateParts[1]), d = parseInt(dateParts[2]);
+                    let timePart = parts[1] || '00:00';
+        
+                    if (isLunar) {
+                        let lunarObj = Lunar.fromYmd(y, m, d);
+                        let solarObj = lunarObj.getSolar();
+                        finalEventDate = `${solarObj.getYear()}-${String(solarObj.getMonth()).padStart(2, '0')}-${String(solarObj.getDay()).padStart(2, '0')}T${timePart}`;
+                        lunarDateStr = `${d}/${m}/${y}`;
+                    } else {
+                        let solarObj = Solar.fromYmd(y, m, d);
+                        let lunarObj = solarObj.getLunar();
+                        lunarDateStr = `${lunarObj.getDay()}/${Math.abs(lunarObj.getMonth())}/${lunarObj.getYear()}`;
+                    }
+                } catch (e) { console.error(e); }
+            }
+        
+            const data = {
+                id: document.getElementById('editContractId').value,
+                studio_slug: localStorage.getItem('admin_studio_slug') || 'studio',
+                customer_name: document.getElementById('editCustName').value,
+                customer_phone: document.getElementById('editCustPhone').value,
+                customer_email: document.getElementById('editCustEmail').value,
+                service_package: document.getElementById('editServicePkg').value,
+                event_date: finalEventDate,
+                lunar_date: lunarDateStr,
+                event_location: document.getElementById('editEventLocation').value,
+                total_amount: document.getElementById('editTotalAmt').value,
+                deposit_amount: document.getElementById('editDepositAmt').value,
+                extra_fee: document.getElementById('editExtraFee').value,
+                payment_status: document.getElementById('editPaymentStatus').value,
+                note: document.getElementById('editEventNote').value
+            };
+        
+            if(!data.customer_name || !data.event_date) {
+                return alert('Vui lòng nhập Tên khách hàng và Ngày giờ sự kiện!');
+            }
+        
+            showToast("Đang cập nhật hợp đồng...");
+        
+            try {
+                const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/update-contract', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                if(res.ok) {
+                    showToast("Đã cập nhật hợp đồng thành công!");
+                    setTimeout(() => location.reload(), 1200);
+                } else {
+                    alert('Lỗi cập nhật trên máy chủ!');
+                }
+            } catch(e) {
+                console.error(e);
+                alert('Lỗi kết nối webhook n8n!');
+            }
+        }
         // 🌟 TẤT TOÁN NHANH (Cộng phát sinh + Tổng tiền - Cọc = 0)
         async function settleContract(contractId) {
             if(!confirm("Xác nhận khách đã thanh toán toàn bộ phần còn lại (bao gồm tổng tiền và chi phí phát sinh) để tất toán hợp đồng?")) return;
@@ -1526,5 +1676,90 @@ async function printContract(c) {
         </div>
     </div>
 </div>
+    <div class="modal fade" id="editContractModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-900 text-info">CHỈNH SỬA HỢP ĐỒNG & LỊCH TRÌNH</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="editContractForm">
+                        <input type="hidden" id="editContractId">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-bold text-secondary">TÊN KHÁCH HÀNG <span class="text-danger">*</span></label>
+                                <input type="text" id="editCustName" class="form-control" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-bold text-secondary">SỐ ĐIỆN THOẠI</label>
+                                <input type="text" id="editCustPhone" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-bold text-secondary">EMAIL KHÁCH HÀNG</label>
+                                <input type="email" id="editCustEmail" class="form-control">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-bold text-secondary">GÓI DỊCH VỤ</label>
+                                <input type="text" id="editServicePkg" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label class="form-label small fw-bold text-secondary m-0">NGÀY GIỜ SỰ KIỆN <span class="text-danger">*</span></label>
+                                    <div class="form-check form-switch m-0" style="min-height: auto;">
+                                        <input class="form-check-input" type="checkbox" id="editIsLunarEvent" onchange="toggleEditEventDateInputMode()" style="cursor: pointer; background-color: #13223f; border-color: var(--primary);">
+                                        <label class="form-check-label text-warning small fw-bold ms-1" for="editIsLunarEvent" style="cursor: pointer; font-size: 0.7rem !important;">Nhập bằng Lịch Âm</label>
+                                    </div>
+                                </div>
+                                <input type="datetime-local" id="editEventDate" class="form-control" lang="vi" step="60" onchange="previewEditLunarSolarEventDate()" required>
+                                <div id="editEventDateNotes" class="form-text text-info fw-bold mt-1" style="font-size: 0.72rem;">
+                                    📅 Ngày Dương lịch chuẩn cho sự kiện.
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-bold text-secondary">ĐỊA ĐIỂM CHỤP / TỔ CHỨC</label>
+                                <input type="text" id="editEventLocation" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label small fw-bold text-secondary">TỔNG GIÁ TRỊ (VNĐ)</label>
+                                <input type="number" id="editTotalAmt" class="form-control" value="0" oninput="autoCalculateEdit()">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label small fw-bold text-secondary">TIỀN ĐÃ CỌC (VNĐ)</label>
+                                <input type="number" id="editDepositAmt" class="form-control" value="0" oninput="autoCalculateEdit()">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label small fw-bold text-secondary">CHI PHÍ PHÁT SINH (VNĐ)</label>
+                                <input type="number" id="editExtraFee" class="form-control" value="0" oninput="autoCalculateEdit()">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label small fw-bold text-secondary">TRẠNG THÁI THANH TOÁN</label>
+                                <input type="text" id="editPaymentStatus" class="form-control text-info fw-bold" readonly value="Chưa cọc">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-secondary">GHI CHÚ / YÊU CẦU PHÁT SINH</label>
+                            <textarea id="editEventNote" class="form-control" rows="2"></textarea>
+                        </div>
+                        <div class="mb-4 p-3 rounded" style="background: rgba(0, 235, 176, 0.05); border: 1px dashed var(--primary);">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="small fw-bold text-secondary">CÔNG NỢ CÒN LẠI PHẢI THU:</span>
+                                <span id="editRemainingPreview" class="text-warning fw-900 fs-5">0 VNĐ</span>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-info w-100 py-3 fw-900 text-uppercase" style="border-radius: 12px;" onclick="updateContract()">LƯU CẬP NHẬT HỢP ĐỒNG</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
