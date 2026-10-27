@@ -832,12 +832,13 @@ function copyQuickCode() {
             }
             updateUI();
             if (localStorage.getItem('admin_is_logged_in') === 'true') checkAccountStatusLive();
-            const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
-            const studioSlug = localStorage.getItem('admin_studio_slug');
-            // 🌟 THÊM ĐOẠN NÀY VÀO SAU KHI LOAD XONG TRANG
-            // Nếu khách mới chưa có studio_slug thì tự động bật bảng cấu hình
-            if (!localStorage.getItem('admin_studio_slug') || localStorage.getItem('admin_studio_slug') === '') {
-                setTimeout(() => {
+
+            setTimeout(() => {
+                const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
+                const studioSlug = localStorage.getItem('admin_studio_slug');
+
+                if (!isLoggedIn) return; 
+                if (!studioSlug || studioSlug === '') {
                     const modalElement = document.getElementById('studioConfigModal');
                     if (modalElement) {
                         const myModal = new bootstrap.Modal(modalElement, {
@@ -846,11 +847,9 @@ function copyQuickCode() {
                         });
                         myModal.show();
                     }
-                }, 1000);
-            }
+                }
+            }, 1000);
         };
-        // 🌟 Hàm gọi ngầm kiểm tra hạn sử dụng mới nhất từ server
-// 🌟 Hàm gọi ngầm kiểm tra hạn sử dụng mới nhất từ server (Đã bảo mật chống lách luật)
 async function checkAccountStatusLive() {
     const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
     const email = localStorage.getItem('admin_email');
