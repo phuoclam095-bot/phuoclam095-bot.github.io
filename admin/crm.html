@@ -104,9 +104,9 @@
 
         /* --- CRM STYLES --- */
         .card-custom { background: rgba(10, 20, 40, 0.7); backdrop-filter: blur(15px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .table-dark { background: transparent; color: #fff; }
-        .table-dark th { border-color: rgba(255,255,255,0.08); color: var(--primary); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 800; padding: 15px; }
-        .table-dark td { border-color: rgba(255,255,255,0.04); vertical-align: middle; font-size: 0.85rem; padding: 15px; }
+        
+        
+
         .text-bright-sub { color: #cbd5e1 !important; font-size: 0.8rem; font-weight: 600; }
 
         .btn-primary-custom { background: var(--primary); color: #000; font-weight: 900; border: none; border-radius: 12px; padding: 12px 25px; text-transform: uppercase; font-size: 0.8rem; transition: 0.3s; cursor: pointer; }
@@ -187,6 +187,146 @@
     z-index: 10;
     white-space: nowrap;
 }
+
+     /* --- NÂNG CẤP GIAO DIỆN BẢNG CRM SANG TRỌNG & HIỆN ĐẠI (KIỂU SHEET XEN KẼ MÀU) --- */
+        .table-responsive {
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 235, 176, 0.15);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+        }
+
+        .table-dark {
+            background-color: #081121 !important;
+            color: #f8fafc;
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        /* 🌟 Phần Header của bảng: Tông màu tối sâu thẳm kết hợp điểm nhấn neon nhẹ */
+        .table-dark th {
+            background: linear-gradient(180deg, #101c33 0%, #0a1426 100%) !important;
+            color: var(--primary) !important;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            font-weight: 900;
+            padding: 16px 14px;
+            border-bottom: 2px solid var(--primary) !important;
+            border-top: none;
+            border-left: none;
+            border-right: 1px solid rgba(255, 255, 255, 0.04);
+            white-space: nowrap;
+        }
+
+        /* 🌟 Hiệu ứng màu xen kẽ 2 màu (Zebra Striping) cực kỳ sang trọng */
+        .table-dark tbody tr {
+            transition: all 0.25s ease;
+        }
+
+        .table-dark tbody tr:nth-child(odd) {
+            background-color: #0b1528 !important; /* Dải màu thứ nhất (Tối vừa) */
+        }
+
+        .table-dark tbody tr:nth-child(even) {
+            background-color: #070e1b !important; /* Dải màu thứ hai (Tối sâu hơn) */
+        }
+
+        /* Hiệu ứng khi rê chuột (Hover) sáng bừng từng dòng giúp dễ theo dõi */
+        .table-dark tbody tr:hover {
+            background-color: rgba(0, 235, 176, 0.08) !important;
+            box-shadow: inset 3px 0 0 var(--primary); /* Tạo điểm nhấn viền sáng bên trái khi rê vào */
+        }
+
+        .table-dark td {
+            border-top: none !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03) !important;
+            border-right: 1px solid rgba(255, 255, 255, 0.02);
+            vertical-align: middle;
+            font-size: 0.82rem;
+            padding: 16px 14px;
+            color: #e2e8f0;
+        }
+
+        /* Tinh chỉnh các nút hành động nhỏ gọn, sắc nét bên trong bảng */
+        .table-dark td .btn-sm {
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+        .table-dark td .btn-sm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }/* --- NÂNG CẤP GIAO DIỆN BẢNG CRM SANG TRỌNG & HIỆN ĐẠI (KIỂU SHEET XEN KẼ MÀU) --- */
+        .table-responsive {
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 235, 176, 0.15);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+        }
+
+        .table-dark {
+            background-color: #081121 !important;
+            color: #f8fafc;
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        /* 🌟 Phần Header của bảng: Tông màu tối sâu thẳm kết hợp điểm nhấn neon nhẹ */
+        .table-dark th {
+            background: linear-gradient(180deg, #101c33 0%, #0a1426 100%) !important;
+            color: var(--primary) !important;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            font-weight: 900;
+            padding: 16px 14px;
+            border-bottom: 2px solid var(--primary) !important;
+            border-top: none;
+            border-left: none;
+            border-right: 1px solid rgba(255, 255, 255, 0.04);
+            white-space: nowrap;
+        }
+
+        /* 🌟 Hiệu ứng màu xen kẽ 2 màu (Zebra Striping) cực kỳ sang trọng */
+        .table-dark tbody tr {
+            transition: all 0.25s ease;
+        }
+
+        .table-dark tbody tr:nth-child(odd) {
+            background-color: #0b1528 !important; /* Dải màu thứ nhất (Tối vừa) */
+        }
+
+        .table-dark tbody tr:nth-child(even) {
+            background-color: #070e1b !important; /* Dải màu thứ hai (Tối sâu hơn) */
+        }
+
+        /* Hiệu ứng khi rê chuột (Hover) sáng bừng từng dòng giúp dễ theo dõi */
+        .table-dark tbody tr:hover {
+            background-color: rgba(0, 235, 176, 0.08) !important;
+            box-shadow: inset 3px 0 0 var(--primary); /* Tạo điểm nhấn viền sáng bên trái khi rê vào */
+        }
+
+        .table-dark td {
+            border-top: none !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03) !important;
+            border-right: 1px solid rgba(255, 255, 255, 0.02);
+            vertical-align: middle;
+            font-size: 0.82rem;
+            padding: 16px 14px;
+            color: #e2e8f0;
+        }
+
+        /* Tinh chỉnh các nút hành động nhỏ gọn, sắc nét bên trong bảng */
+        .table-dark td .btn-sm {
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+        .table-dark td .btn-sm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }   
         
             </style>
 </head>
