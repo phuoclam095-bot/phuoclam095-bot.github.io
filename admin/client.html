@@ -177,7 +177,7 @@
         function getLink(id, sz) { 
             // Nếu là dạng xem chi tiết (viewer), giới hạn mức tối đa s1200 (nét căng trên mọi màn hình nhưng cực nhẹ)
             if (sz === 's2000' || sz === 'original') {
-                return `https://drive.google.com/thumbnail?id=${id}&sz=s1200`;
+                return `https://drive.google.com/thumbnail?id=${id}&sz=s600`;
             }
             return `https://drive.google.com/thumbnail?id=${id}&sz=${sz}`; 
         }
@@ -231,7 +231,7 @@
             const p = photos[cur]; 
             if(!p) return;
             
-            document.getElementById('mainImg').src = getLink(p.id, 's1200');
+            document.getElementById('mainImg').src = getLink(p.id, 's600');
             document.getElementById('displayFileName').innerText = p.name || "UNNAMED";
             document.getElementById('photoInfoBadge').innerText = `${cur + 1} / ${photos.length}`;
 
@@ -249,7 +249,7 @@
                 
                 const th = document.createElement('div');
                 th.className = `th-vip ${i === cur ? 'act' : ''} ${isSel ? 'sel' : ''}`;
-                th.innerHTML = `<img src="${getLink(photoItem.id, 's1200')}">`;
+                th.innerHTML = `<img src="${getLink(photoItem.id, 's600')}">`;
                 
                 if(isSel) {
                     const num = selectedIds.indexOf(photoItem.id) + 1;
