@@ -170,7 +170,14 @@
         }
         // ---------------------------------------
 
-        function getLink(id, sz) { return `https://drive.google.com/thumbnail?id=${id}&sz=${sz}`; }
+        // 🌟 Hạ DPI / Giảm kích thước ảnh để load lẹ hơn trên mobile và PC
+        function getLink(id, sz) { 
+            // Nếu là dạng xem lưới (grid), dùng sz=s220 hoặc s300 cho siêu nhẹ
+            // Nếu là dạng xem chi tiết (viewer), dùng sz=s1200 thay vì s2000 để nét vừa đủ mà không bị nặng
+            if (sz === 's400') return `https://drive.google.com/thumbnail?id=${id}&sz=s300`;
+            if (sz === 's2000') return `https://drive.google.com/thumbnail?id=${id}&sz=s1200`;
+            return `https://drive.google.com/thumbnail?id=${id}&sz=${sz}`; 
+        }
 
         function setView(v) {
             currentView = v;
