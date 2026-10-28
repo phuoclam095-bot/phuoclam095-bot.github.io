@@ -176,8 +176,8 @@
         // 🌟 Hạ DPI / Giảm kích thước ảnh để load lẹ hơn trên mobile và PC
         function getLink(id, sz) { 
             // Nếu là thumbnail nhỏ ở thanh trượt hoặc lưới, dùng link thumbnail chuẩn
-            if (sz === 's100' || sz === 's300' || sz === 's400') {
-                return `https://drive.google.com/thumbnail?id=${id}&sz=${sz}`;
+            if (sz === 's100' || sz === 's300' || sz === 's400' || sz === 's200') {
+                return `https://lh3.googleusercontent.com/d/${id}=s150`;
             }
             // 🌟 Riêng ảnh chính khi xem chi tiết trên Safari, dùng link xem trực tiếp (lh3.googleusercontent.com) để không bao giờ bị lỗi dấu hỏi
             return `https://lh3.googleusercontent.com/d/${id}=s1200`;
