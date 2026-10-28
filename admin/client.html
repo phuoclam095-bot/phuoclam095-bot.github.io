@@ -174,9 +174,7 @@
         // ---------------------------------------
 
         // 🌟 Hạ DPI / Giảm kích thước ảnh để load lẹ hơn trên mobile và PC
-        function getLink(id, sz) { 
-            return `https://drive.google.com/thumbnail?id=${id}&sz=${sz}`; 
-        }
+        function getLink(id, sz) { return `https://drive.google.com/thumbnail?id=${id}&sz=${sz}`; }
 
         function setView(v) {
             currentView = v;
@@ -227,7 +225,7 @@
             const p = photos[cur]; 
             if(!p) return;
             
-            document.getElementById('mainImg').src = getLink(p.id, 's1200');
+            document.getElementById('mainImg').src = getLink(p.id, 's800');
             document.getElementById('displayFileName').innerText = p.name || "UNNAMED";
             document.getElementById('photoInfoBadge').innerText = `${cur + 1} / ${photos.length}`;
 
