@@ -13,7 +13,7 @@
             let albumSlug = pathSegments[pathSegments.length - 1].replace(/[^0-9a-z]/g, '');
             
             // 🌟 Chuyển hướng về client.html nhưng truyền tham số là album=... thay vì id=...
-            window.location.replace(`/client?album=${albumSlug}&studio=${studioSlug}`);
+            window.location.replace(`/admin/client?album=${albumSlug}&studio=${studioSlug}`);
         } else {
             window.location.replace('/');
         }
