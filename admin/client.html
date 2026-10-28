@@ -227,7 +227,7 @@
             const p = photos[cur]; 
             if(!p) return;
             
-            document.getElementById('mainImg').src = getLink(p.id, 's800');
+            document.getElementById('mainImg').src = getLink(p.id, 's100');
             document.getElementById('displayFileName').innerText = p.name || "UNNAMED";
             document.getElementById('photoInfoBadge').innerText = `${cur + 1} / ${photos.length}`;
 
