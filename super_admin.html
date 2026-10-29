@@ -20,6 +20,13 @@
         .nav-link:hover, .nav-link.active { background: var(--primary); color: #000; font-weight: 700; }
         .tab-pane { display: none; }
         .tab-pane.active { display: block; }
+        .table-custom th, .table-custom td {
+        white-space: nowrap; /* Tránh ngắt dòng làm chìm chữ */
+            }
+            .table-custom th:first-child, .table-custom td:first-child {
+                width: 60px; /* Cột STT nhỏ gọn */
+                text-align: center;
+            }
     </style>
 </head>
 <body>
@@ -283,7 +290,7 @@
     let body = document.getElementById('transactionTableBody');
     if (!body) return;
     
-    body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">Đang tải lịch sử giao dịch...</td></tr>`;
+    body.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-secondary">Đang tải lịch sử giao dịch...</td></tr>`;
     
     try {
         let response = await fetch(TRANSACTIONS_API_URL, {
@@ -296,12 +303,16 @@
         let resultData = Array.isArray(data) ? data[0] : data;
         let txList = resultData.transactions || [];
 
+        // Giới hạn tối đa 100 dòng hiển thị
+        txList = txList.slice(0, 100);
+
         body.innerHTML = '';
         if (txList.length > 0) {
-            txList.forEach(tx => {
+            txList.forEach((tx, index) => {
                 let statusBadge = (tx.status && tx.status.toLowerCase() === 'active') ? 'success' : 'warning';
                 body.innerHTML += `
                     <tr>
+                        <td class="text-center text-secondary">${index + 1}</td>
                         <td><b class="text-primary">${tx.paymentCode}</b></td>
                         <td><div class="text-white">${tx.email}</div></td>
                         <td><b class="text-success">${tx.amount}</b></td>
@@ -311,11 +322,11 @@
                     </tr>`;
             });
         } else {
-            body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">Chưa có lịch sử giao dịch nào.</td></tr>`;
+            body.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-secondary">Chưa có lịch sử giao dịch nào.</td></tr>`;
         }
     } catch (e) {
         console.error("Lỗi tải giao dịch:", e);
-        body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-danger">Không thể kết nối tới webhook giao dịch.</td></tr>`;
+        body.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-danger">Không thể kết nối tới webhook giao dịch.</td></tr>`;
     }
 }
         async function loadAllData() {
