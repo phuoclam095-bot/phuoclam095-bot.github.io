@@ -119,6 +119,22 @@
             </div>
         </div>
 
+        <!-- MODAL XEM CHI TIẾT LỊCH & HỢP ĐỒNG CỦA STUDIO -->
+<div class="modal fade" id="contractDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content bg-dark text-white border-secondary">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title"><i class="fas fa-calendar-alt text-primary me-2"></i>Danh Sách Lịch Chụp & Hợp Đồng: <span id="contractStudioEmailTitle" class="text-warning">--</span></h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" style="max-height: 75vh; overflow-y: auto;" id="contractDetailContent"></div>
+            <div class="modal-footer border-secondary">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+        
         <!-- TAB 2: LỊCH TRÌNH & HỢP ĐỒNG CRM -->
         <div id="tab-contracts" class="tab-pane">
     <div class="card card-stat p-0 overflow-hidden">
@@ -644,20 +660,6 @@ function viewStudioContracts(email) {
     
     
     </script>
-    <!-- MODAL XEM CHI TIẾT LỊCH & HỢP ĐỒNG CỦA STUDIO -->
-<div class="modal fade" id="contractDetailModal" tabindex="-1">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content bg-dark text-white border-secondary">
-            <div class="modal-header border-secondary">
-                <h5 class="modal-title"><i class="fas fa-calendar-alt text-primary me-2"></i>Danh Sách Lịch Chụp & Hợp Đồng: <span id="contractStudioEmailTitle" class="text-warning">--</span></h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body" style="max-height: 75vh; overflow-y: auto;" id="contractDetailContent"></div>
-            <div class="modal-footer border-secondary">
-                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Đóng</button>
-            </div>
-        </div>
-    </div>
-</div>
+    
 </body>
 </html>
