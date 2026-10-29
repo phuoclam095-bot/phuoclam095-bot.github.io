@@ -281,14 +281,15 @@
             body: JSON.stringify({ action: 'get_all_stats' })
         });
         
-        let responseJson = await response.json();
+        let rawData = await response.json();
         
-        // n8n trả về mảng bọc ngoài nên ta lấy phần tử đầu tiên responseJson[0] hoặc trực tiếp nếu trả object
-        let data = Array.isArray(responseJson) ? responseJson[0] : responseJson;
+        // Tự động xử lý dù n8n trả về mảng hay object đơn lẻ
+        let data = Array.isArray(rawData) ? rawData[0] : rawData;
+        console.log("Dữ liệu đã chuẩn hóa cho HTML:", data);
 
-        // 1. Cập nhật các thẻ thống kê tổng quan lên giao diện
+        // 1. Gán số liệu tổng quan lên giao diện (Kiểm tra tồn tại ID để tránh lỗi null)
         if (document.getElementById('totalStudiosCount')) {
-            document.getElementById('totalStudiosCount').innerText = data.totalStudios || 0;
+            document.getElementById('totalStudiosCountinnerText = data.totalStudios || 0;
         }
         if (document.getElementById('totalAlbumsCount')) {
             document.getElementById('totalAlbumsCount').innerText = data.totalAlbums || 0;
@@ -300,24 +301,33 @@
             document.getElementById('pendingBlogsCount').innerText = data.pendingBlogs || 0;
         }
 
-        // 2. Render danh sách studio ra bảng chính
+        // 2. Đổ danh sách studio ra bảng quản lý
         let tbody = document.getElementById('studioTableBody');
-        if (!tbody) return;
-        tbody.innerHTML = '';
+        if (!tbody) {
+            console.error("Không tìm thấy thẻ có ID là 'studioTableBody' trong file HTML!");
+            return;
+        }
+        
+        tbody.innerHTML = ''; // Xóa dữ liệu cũ
 
         if (data.studios && data.studios.length > 0) {
             data.studios.forEach(s => {
                 let tr = document.createElement('tr');
                 
-                // Liệt kê tên các album của studio này để hiển thị trực quan
-                let albumsHtml = s.albums.map(a => `
-                    <div class="mb-1">
-                        <a href="${a.driveLink}" target="_blank" class="text-decoration-none text-primary">
-                            📁 ${a.albumName}
-                        </a> 
-                        <span class="badge bg-light text-dark border">(${a.totalPhotos} ảnh - Chọn: ${a.selectedCount})</span>
-                    </div>
-                `).join('');
+                // Gom danh sách album của studio
+                let albumsHtml = '';
+                if (s.albums && s.albums.length > 0) {
+                    albumsHtml = s.albums.map(a => `
+                        <div class="mb-1">
+                            <a href="${a.driveLink}" target="_blank" class="text-decoration-none text-primary">
+                                📁 ${a.albumName}
+                            </a> 
+                            <span class="badge bg-light text-dark border">(${a.totalPhotos} ảnh - Chọn: ${a.selectedCount})</span>
+                        </div>
+                    `).join('');
+                } else {
+                    albumsHtml = '<span class="text-muted">Chưa có album</span>';
+                }
 
                 tr.innerHTML = `
                     <td>
@@ -330,7 +340,7 @@
                     </td>
                     <td>
                         <div style="max-height: 120px; overflow-y: auto;">
-                            <span class="badge bg-secondary mb-1">${s.albumsCount} Album</span>
+                            <span class="badge bg-secondary mb-1">${s.albumsCount || s.albums.length} Album</span>
                             ${albumsHtml}
                         </div>
                     </td>
@@ -351,12 +361,14 @@
         }
 
     } catch (e) {
-        console.error("Lỗi tải dữ liệu:", e);
+        console.error("Lỗi khi fetch dữ liệu:", e);
     }
 }
 
-// Gọi hàm chạy ngay khi mở trang
-loadAllData();
+// Gọi tự động khi tải trang xong
+document.addEventListener("DOMContentLoaded", () => {
+    loadAllData();
+});
 
         function renderMockData() {
             let mock = {
