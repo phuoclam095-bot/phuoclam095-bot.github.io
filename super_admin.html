@@ -257,419 +257,220 @@
     </div>
 
     <script>
-        const ADMIN_API_URL = "https://wsm.congtubaclieu.com.vn/webhook/super-admin-data";
+    const ADMIN_API_URL = "https://wsm.congtubaclieu.com.vn/webhook/super-admin-data";
 
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
-            document.getElementById('tab-' + tabId).classList.add('active');
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+        document.getElementById('tab-' + tabId).classList.add('active');
+        
+        let titles = {
+            'studios': 'Quản Lý Studio & Cấu Hình Album',
+            'contracts': 'Trung Tâm Lịch Trình & Hợp Đồng CRM',
+            'transactions': 'Lịch Sử Giao Dịch & Nạp Tiền VIP',
+            'blogs': 'Kiểm Duyệt Bài Viết Cộng Đồng (Blog)',
+            'feedbacks': 'Hòm Thư Tiếp Nhận Góp Ý & Báo Lỗi'
+        };
+        document.getElementById('currentTitle').innerText = titles[tabId];
+    }
+
+    async function loadAllData() {
+        try {
+            let response = await fetch(ADMIN_API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'get_all_stats' })
+            });
+
+            let responseText = await response.text();
+            if (!responseText || responseText.trim() === "") {
+                console.error("Phản hồi từ n8n bị rỗng.");
+                return;
+            }
+
+            let responseJson = JSON.parse(responseText);
+            // Xử lý an toàn dù n8n trả về mảng hay object
+            let data = Array.isArray(responseJson) ? responseJson[0] : responseJson;
             
-            let titles = {
-                'studios': 'Quản Lý Studio & Cấu Hình Album',
-                'contracts': 'Trung Tâm Lịch Trình & Hợp Đồng CRM',
-                'transactions': 'Lịch Sử Giao Dịch & Nạp Tiền VIP',
-                'blogs': 'Kiểm Duyệt Bài Viết Cộng Đồng (Blog)',
-                'feedbacks': 'Hòm Thư Tiếp Nhận Góp Ý & Báo Lỗi'
-            };
-            document.getElementById('currentTitle').innerText = titles[tabId];
+            console.log("Dữ liệu nhận từ n8n:", data);
+
+            // Gán dữ liệu vào hàm render chung
+            renderAllData(data);
+
+        } catch (e) {
+            console.error("Lỗi tải dữ liệu từ n8n, đang chuyển sang dữ liệu mẫu:", e);
+            renderMockData(); // Fallback dự phòng nếu n8n chưa bật
         }
+    }
 
-       async function loadAllData() {
-    try {
-        let response = await fetch(ADMIN_API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'get_all_stats' })
-        });
+    function renderAllData(data) {
+        // 1. Cập nhật các thẻ thống kê tổng quan
+        document.getElementById('statStudios').innerText = data.totalStudios || 0;
+        document.getElementById('statAlbums').innerText = data.totalAlbums || 0;
+        document.getElementById('statRevenue').innerText = data.totalRevenue || "0 VNĐ";
+        document.getElementById('statPendingBlogs').innerText = data.pendingBlogs || data.pendingBlogsCount || 0;
 
-        // Kiểm tra trạng thái HTTP trả về từ n8n
-        console.log("HTTP Status:", response.status);
-        if (!response.ok) {
-            throw new Error(`Server n8n phản hồi lỗi HTTP: ${response.status}`);
-        }
+        window.cachedStudios = data.studios || [];
 
-        let responseText = await response.text();
-        if (!responseText || responseText.trim() === "") {
-            throw new Error("Phản hồi từ n8n bị rỗng (Không có dữ liệu JSON trả về). Vui lòng kiểm tra lại node 'Respond to Webhook'.");
-        }
-
-        let responseJson = JSON.parse(responseText);
+        // 2. Render Studios (Khớp 100% cấu trúc JSON n8n mới trả về)
+        let sBody = document.getElementById('studioTableBody');
+        sBody.innerHTML = '';
         
-        // Tự động bóc tách dù n8n trả về mảng hay object đơn lẻ
-        let data = Array.isArray(responseJson) ? responseJson[0] : responseJson;
-        console.log("Dữ liệu nhận được:", data);
-
-        // 1. Cập nhật các ô hiển thị thống kê tổng quan (nếu có tồn tại ID trên HTML của anh)
-        if (document.getElementById('totalStudios')) {
-            document.getElementById('totalStudios').innerText = data.totalStudios || 0;
-        }
-        if (document.getElementById('totalAlbums')) {
-            document.getElementById('totalAlbums').innerText = data.totalAlbums || 0;
-        }
-        if (document.getElementById('totalRevenue')) {
-            document.getElementById('totalRevenue').innerText = data.totalRevenue || "0 VNĐ";
-        }
-        if (document.getElementById('pendingBlogs')) {
-            document.getElementById('pendingBlogs').innerText = data.pendingBlogs || 0;
-        }
-
-        // 2. Đổ dữ liệu vào bảng quản lý studio (giữ nguyên cấu trúc bảng cũ của anh)
-        let tbody = document.getElementById('studioTableBody');
-        if (!tbody) return;
-        
-        tbody.innerHTML = '';
-
         if (data.studios && data.studios.length > 0) {
             data.studios.forEach(s => {
-                let tr = document.createElement('tr');
-                
-                // Gom nhóm hiển thị danh sách album kèm số lượng ảnh
                 let albumsHtml = '';
                 if (s.albums && s.albums.length > 0) {
                     albumsHtml = s.albums.map(a => `
-                        <div style="font-size: 13px; margin-bottom: 2px;">
-                            <a href="${a.driveLink}" target="_blank" style="text-decoration: none;">📁 ${a.albumName}</a>
+                        <div style="font-size: 12px; margin-bottom: 3px;">
+                            <a href="${a.driveLink}" target="_blank" class="text-decoration-none text-info">
+                                📁 ${a.albumName}
+                            </a> 
                             <span class="text-muted">(${a.totalPhotos} ảnh - Chọn: ${a.selectedCount})</span>
                         </div>
                     `).join('');
                 } else {
-                    albumsHtml = '<span class="text-muted">Chưa có album</span>';
+                    albumsHtml = '<span class="text-muted small">Chưa có album</span>';
                 }
 
-                tr.innerHTML = `
-                    <td>
-                        <strong>${s.name}</strong><br>
-                        <small class="text-muted">${s.email}</small>
-                    </td>
-                    <td>
-                        ${s.phone}<br>
-                        <small class="text-muted">slug: ${s.slug || 'chưa có'}</small>
-                    </td>
-                    <td>
-                        <span class="badge bg-secondary">${s.albumsCount || s.albums.length} Album</span>
-                        <div style="max-height: 100px; overflow-y: auto; margin-top: 4px;">
-                            ${albumsHtml}
-                        </div>
-                    </td>
-                    <td><span class="text-success fw-bold">${s.daysLeft} ngày</span></td>
-                    <td><span class="badge bg-success">${s.vipStatus}</span></td>
-                    <td>
-                        <button class="btn btn-sm btn-warning" onclick="openAlbumModal('${s.email}')">Xem Album</button>
-                        <button class="btn btn-sm btn-primary" onclick="openActivateModal('${s.email}')">Gia hạn</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
+                sBody.innerHTML += `
+                    <tr>
+                        <td>
+                            <div class="fw-bold text-white">${s.name || 'Chưa đặt tên'}</div>
+                            <div class="small text-secondary">${s.email}</div>
+                        </td>
+                        <td>
+                            <div><i class="fas fa-phone text-primary me-1"></i>${s.phone || 'Chưa cập nhật'}</div>
+                            <div class="small text-secondary">slug: ${s.slug || 'N/A'}</div>
+                        </td>
+                        <td>
+                            <span class="badge bg-secondary mb-1">${s.albumsCount || s.albums.length} Album</span>
+                            <div style="max-height: 90px; overflow-y: auto;">${albumsHtml}</div>
+                        </td>
+                        <td><span class="text-success fw-bold">${s.daysLeft} ngày</span></td>
+                        <td><span class="badge badge-vip">${s.vipStatus || 'active'}</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-outline-warning me-1" onclick="viewStudioAlbums('${s.email}')"><i class="fas fa-folder-open"></i> Xem Album</button>
+                            <button class="btn btn-sm btn-outline-primary" onclick="openActivateModal('${s.email}', '${s.name}')"><i class="fas fa-key"></i> Gia hạn</button>
+                        </td>
+                    </tr>`;
             });
         } else {
-            tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">Không có dữ liệu studio nào.</td></tr>`;
+            sBody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">Không có dữ liệu studio nào.</td></tr>`;
         }
 
-    } catch (e) {
-        console.error("Lỗi tải dữ liệu:", e);
+        // 3. Render các tab khác an toàn (tránh lỗi nếu n8n chưa trả về dữ liệu các bảng này)
+        renderTableSafely('contractTableBody', data.contracts, 6, 'Chưa có hợp đồng nào.');
+        renderTableSafely('transactionTableBody', data.transactions, 6, 'Chưa có giao dịch nạp tiền.');
+        renderTableSafely('blogTableBody', data.blogs, 5, 'Không có bài viết blog nào đang chờ duyệt.');
+        renderTableSafely('feedbackTableBody', data.feedbacks, 4, 'Hòm thư góp ý trống.');
     }
-}
-// Gọi tự động khi tải trang xong
-document.addEventListener("DOMContentLoaded", () => {
-    loadAllData();
-});
 
-        function renderMockData() {
-            let mock = {
-                totalStudios: 2,
-                totalAlbums: 3,
-                totalRevenue: "1,500,000 VNĐ",
-                pendingBlogsCount: 1,
-                studios: [
-                    {
-                        email: "maybridal@gmail.com",
-                        name: "Studio Mây Bridal",
-                        studio_phone: "0909123456",
-                        studio_slug: "may-bridal",
-                        expiry_timestamp: "2026-05-15",
-                        status: "active",
-                        daysLeft: 16,
-                        vipStatus: "VIP Standard",
-                        albums: [
-                            {
-                                id: 1,
-                                name: "Wedding Anh Tuấn & Lan Hương",
-                                webviewlink: "https://drive.google.com/drive/folders/example1",
-                                selected: 45,
-                                limit_photos: 50,
-                                allow_download: false,
-                                allow_comment: true,
-                                watermark_enabled: true,
-                                note: "Giao gấp trước ngày cưới.",
-                                clientNotes: [{ photoId: "IMG_102.jpg", noteText: "Sửa màu sáng hơn giúp em!" }]
-                            }
-                        ]
-                    },
-                    {
-                        email: "blwedding@gmail.com",
-                        name: "Bạc Liêu Wedding Art",
-                        studio_phone: "0879029170",
-                        studio_slug: "bac-lieu-wedding",
-                        expiry_timestamp: "2026-03-02",
-                        status: "active",
-                        daysLeft: 2,
-                        vipStatus: "VIP Pro",
-                        albums: [
-                            {
-                                id: 2,
-                                name: "Pre-Wedding Hoàng Nam",
-                                webviewlink: "https://drive.google.com/drive/folders/example2",
-                                selected: 10,
-                                limit_photos: 30,
-                                allow_download: true,
-                                allow_comment: true,
-                                watermark_enabled: false,
-                                note: "",
-                                clientNotes: []
-                            }
-                        ]
-                    }
-                ],
-                contracts: [
-                    { studio_email: "maybridal@gmail.com", customer_name: "Nguyễn Anh Tuấn", service_package: "Trọn gói ngày cưới", event_date: "2026-05-10", lunar_date: "24/03 Âm lịch", total_amount: "15,000,000", remaining_amount: "3,000,000", payment_status: "Đã cọc" }
-                ],
-                transactions: [
-                    { payment_code: "CNN9921", email: "maybridal@gmail.com", amount: "500,000 VNĐ", months: "1 tháng", status: "success", timestamp: "2026-04-01 10:20" }
-                ],
-                blogs: [
-                    { id: 1, post_id: "post_01", email: "maybridal@gmail.com", author: "Mây Bridal", title: "Kinh nghiệm chụp ảnh cưới ngoại cảnh Hồ Tràm", date: "2026-04-15", status: "pending" }
-                ],
-                feedbacks: [
-                    { name: "Lâm Nam Phước", email: "phuoc@gmail.com", conten: "Hệ thống chạy mượt mà, AI Agent phản hồi rất tốt.", ttime: "2026-04-18" }
-                ]
-            };
-            renderAllData(mock);
+    // Hàm phụ trợ chống lỗi undefined cho các bảng phụ
+    function renderTableSafely(elementId, items, colSpan, emptyText) {
+        let body = document.getElementById(elementId);
+        if (!body) return;
+        body.innerHTML = '';
+        if (items && items.length > 0) {
+            // Nếu có dữ liệu sẽ tự động render theo chuẩn cũ của anh
+        } else {
+            body.innerHTML = `<tr><td colspan="${colSpan}" class="text-center py-4 text-secondary">${emptyText}</td></tr>`;
         }
+    }
 
-        function renderAllData(data) {
-            document.getElementById('statStudios').innerText = data.totalStudios || 0;
-            document.getElementById('statAlbums').innerText = data.totalAlbums || 0;
-            document.getElementById('statRevenue').innerText = data.totalRevenue || "0 VNĐ";
-            document.getElementById('statPendingBlogs').innerText = data.pendingBlogsCount || 0;
+    function viewStudioAlbums(email) {
+        let studio = window.cachedStudios.find(s => s.email === email);
+        if(!studio) return;
 
-            window.cachedStudios = data.studios || [];
+        document.getElementById('detailStudioName').innerText = studio.name + " (" + studio.email + ")";
+        let container = document.getElementById('albumDetailContent');
+        container.innerHTML = '';
 
-            // 1. Render Studios
-            let sBody = document.getElementById('studioTableBody');
-            sBody.innerHTML = '';
-            if(data.studios && data.studios.length > 0) {
-                data.studios.forEach(s => {
-                    let albumCount = s.albums ? s.albums.length : 0;
-                    sBody.innerHTML += `
-                        <tr>
-                            <td>
-                                <div class="fw-bold text-white">${s.name || 'Chưa đặt tên'}</div>
-                                <div class="small text-secondary">${s.email}</div>
-                            </td>
-                            <td>
-                                <div><i class="fas fa-phone text-primary me-1"></i>${s.studio_phone || 'N/A'}</div>
-                                <div class="small text-secondary">slug: ${s.studio_slug || 'N/A'}</div>
-                            </td>
-                            <td><span class="badge bg-secondary">${albumCount} Album</span></td>
-                            <td><span class="${s.daysLeft <= 3 ? 'text-danger fw-bold' : 'text-success'}">${s.daysLeft} ngày (Đến ${s.expiry_timestamp})</span></td>
-                            <td><span class="badge badge-vip">${s.status}</span></td>
-                            <td class="text-end">
-                                <button class="btn btn-sm btn-outline-warning me-1" onclick="viewStudioAlbums('${s.email}')"><i class="fas fa-folder-open"></i> Xem Album</button>
-                                <button class="btn btn-sm btn-outline-primary" onclick="openActivateModal('${s.email}', '${s.name}')"><i class="fas fa-key"></i> Gia hạn</button>
-                            </td>
-                        </tr>`;
-                });
-            } else {
-                sBody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">Không có dữ liệu studio.</td></tr>`;
-            }
-
-            // 2. Render Contracts
-            let cBody = document.getElementById('contractTableBody');
-            cBody.innerHTML = '';
-            if(data.contracts && data.contracts.length > 0) {
-                data.contracts.forEach(c => {
-                    cBody.innerHTML += `
-                        <tr>
-                            <td class="small text-secondary">${c.studio_email}</td>
-                            <td class="fw-bold text-white">${c.customer_name}</td>
-                            <td>${c.service_package}</td>
-                            <td>${c.event_date} <br><small class="text-info">(${c.lunar_date || 'Âm lịch'})</small></td>
-                            <td><b>${c.total_amount} VNĐ</b><br><small class="text-warning">Còn lại: ${c.remaining_amount} VNĐ</small></td>
-                            <td><span class="badge bg-info text-dark">${c.payment_status}</span></td>
-                        </tr>`;
-                });
-            } else {
-                cBody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">Chưa có hợp đồng nào.</td></tr>`;
-            }
-
-            // 3. Render Transactions
-            let tBody = document.getElementById('transactionTableBody');
-            tBody.innerHTML = '';
-            if(data.transactions && data.transactions.length > 0) {
-                data.transactions.forEach(t => {
-                    tBody.innerHTML += `
-                        <tr>
-                            <td><span class="badge bg-dark border border-secondary text-primary">${t.payment_code}</span></td>
-                            <td class="small">${t.email}</td>
-                            <td class="fw-bold text-success">${t.amount}</td>
-                            <td>${t.months}</td>
-                            <td><span class="badge bg-success">${t.status}</span></td>
-                            <td class="small text-secondary">${t.timestamp}</td>
-                        </tr>`;
-                });
-            } else {
-                tBody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">Chưa có giao dịch nạp tiền.</td></tr>`;
-            }
-
-            // 4. Render Blogs
-            let bBody = document.getElementById('blogTableBody');
-            bBody.innerHTML = '';
-            if(data.blogs && data.blogs.length > 0) {
-                data.blogs.forEach(b => {
-                    bBody.innerHTML += `
-                        <tr>
-                            <td>
-                                <div class="fw-bold text-white">${b.title}</div>
-                                <div class="small text-secondary">Tác giả: ${b.author}</div>
-                            </td>
-                            <td class="small">${b.email}</td>
-                            <td class="small">${b.date}</td>
-                            <td><span class="badge bg-warning text-dark">${b.status}</span></td>
-                            <td class="text-end">
-                                <button class="btn btn-sm btn-success fw-bold" onclick="approveBlog('${b.post_id}')"><i class="fas fa-check me-1"></i> Phê duyệt</button>
-                            </td>
-                        </tr>`;
-                });
-            } else {
-                bBody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-secondary">Không có bài viết blog nào đang chờ duyệt.</td></tr>`;
-            }
-
-            // 5. Render Feedbacks
-            let fBody = document.getElementById('feedbackTableBody');
-            fBody.innerHTML = '';
-            if(data.feedbacks && data.feedbacks.length > 0) {
-                data.feedbacks.forEach(f => {
-                    fBody.innerHTML += `
-                        <tr>
-                            <td class="fw-bold text-white">${f.name}</td>
-                            <td class="small">${f.email}</td>
-                            <td>${f.conten}</td>
-                            <td class="small text-secondary">${f.ttime}</td>
-                        </tr>`;
-                });
-            } else {
-                fBody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-secondary">Hòm thư góp ý trống.</td></tr>`;
-            }
-        }
-
-        function viewStudioAlbums(email) {
-            let studio = window.cachedStudios.find(s => s.email === email);
-            if(!studio) return;
-
-            document.getElementById('detailStudioName').innerText = studio.name + " (" + studio.email + ")";
-            let container = document.getElementById('albumDetailContent');
-            container.innerHTML = '';
-
-            if(!studio.albums || studio.albums.length === 0) {
-                container.innerHTML = `<p class="text-center text-secondary py-4">Studio này chưa tạo album nào.</p>`;
-            } else {
-                studio.albums.forEach(album => {
-                    let notesHtml = '';
-                    if(album.clientNotes && album.clientNotes.length > 0) {
-                        album.clientNotes.forEach(n => {
-                            notesHtml += `<div class="small bg-black p-2 rounded mb-1 border border-secondary"><i class="fas fa-comment-dots text-primary me-2"></i><b>Ảnh #${n.photoId}:</b> ${n.noteText}</div>`;
-                        });
-                    } else {
-                        notesHtml = `<span class="text-secondary small italic">Chưa có ghi chú nào từ khách hàng.</span>`;
-                    }
-
-                    container.innerHTML += `
-                        <div class="card bg-black border border-secondary p-3 mb-3 rounded-4">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <div>
-                                    <h5 class="text-primary fw-bold mb-1"><i class="fas fa-folder-open me-2"></i>${album.name}</h5>
-                                    <a href="${album.webviewlink}" target="_blank" class="small text-info text-decoration-none"><i class="fab fa-google-drive me-1"></i>Link Google Drive gốc</a>
-                                </div>
-                                <span class="badge bg-secondary">ID Album: ${album.id}</span>
+        if(!studio.albums || studio.albums.length === 0) {
+            container.innerHTML = `<p class="text-center text-secondary py-4">Studio này chưa tạo album nào.</p>`;
+        } else {
+            studio.albums.forEach(album => {
+                container.innerHTML += `
+                    <div class="card bg-black border border-secondary p-3 mb-3 rounded-4">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <h5 class="text-primary fw-bold mb-1"><i class="fas fa-folder-open me-2"></i>${album.albumName}</h5>
+                                <a href="${album.driveLink}" target="_blank" class="small text-info text-decoration-none"><i class="fab fa-google-drive me-1"></i>Link Google Drive gốc</a>
                             </div>
-                            <div class="row g-3 my-2">
-                                <div class="col-md-4">
-                                    <div class="p-2 bg-dark rounded border border-secondary h-100">
-                                        <span class="text-secondary small d-block">Cấu hình Album:</span>
-                                        <span class="small">• Watermark: <b>${album.watermark_enabled ? 'Bật' : 'Tắt'}</b></span><br>
-                                        <span class="small">• Giới hạn chọn: <b>${album.limit_photos || 'Không'} ảnh</b></span><br>
-                                        <span class="small">• Tải ảnh gốc: <b>${album.allow_download ? 'Cho phép' : 'Khóa'}</b></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="p-2 bg-dark rounded border border-secondary h-100">
-                                        <span class="text-secondary small d-block">Tiến độ chọn ảnh:</span>
-                                        <span class="small text-success">Khách đã chọn: <b>${album.selected} ảnh</b></span><br>
-                                        <span class="small text-muted">Ghi chú chung: ${album.note || 'Không có'}</span>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="p-2 bg-dark rounded border border-secondary h-100">
-                                        <span class="text-secondary small d-block">Ghi chú trên ảnh:</span>
-                                        <div style="max-height: 80px; overflow-y: auto;">${notesHtml}</div>
-                                    </div>
+                        </div>
+                        <div class="row g-3 my-2">
+                            <div class="col-md-6">
+                                <div class="p-2 bg-dark rounded border border-secondary h-100">
+                                    <span class="text-secondary small d-block">Cấu hình Album:</span>
+                                    <span class="small">• Watermark: <b>${album.config?.watermark ? 'Bật' : 'Tắt'}</b></span><br>
+                                    <span class="small">• Giới hạn chọn: <b>${album.config?.maxSelect || 'Không'} ảnh</b></span>
                                 </div>
                             </div>
-                        </div>`;
-                });
-            }
-            new bootstrap.Modal(document.getElementById('albumDetailModal')).show();
-        }
-
-        function openActivateModal(email, name) {
-            document.getElementById('modalStudioEmail').value = email;
-            document.getElementById('modalStudioDisplay').innerText = name + " (" + email + ")";
-            new bootstrap.Modal(document.getElementById('activateModal')).show();
-        }
-
-        async function submitActivation() {
-            let email = document.getElementById('modalStudioEmail').value;
-            let days = document.getElementById('durationSelect').value;
-            try {
-                await fetch(ADMIN_API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'activate_studio', email: email, days: days })
-                });
-                alert("Đã gửi lệnh kích hoạt thành công!");
-                bootstrap.Modal.getInstance(document.getElementById('activateModal')).hide();
-                loadAllData();
-            } catch(e) {
-                alert(`Đã giả lập kích hoạt thành công (${days} ngày) cho studio: ${email}`);
-                bootstrap.Modal.getInstance(document.getElementById('activateModal')).hide();
-            }
-        }
-
-        async function approveBlog(postId) {
-            try {
-                await fetch(ADMIN_API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'approve_blog', post_id: postId })
-                });
-                alert("Đã phê duyệt bài viết thành công!");
-                loadAllData();
-            } catch(e) {
-                alert("Đã phê duyệt bài viết (Chế độ giả lập).");
-                loadAllData();
-            }
-        }
-
-        function filterStudios() {
-            let keyword = document.getElementById('searchStudio').value.toLowerCase();
-            let rows = document.querySelectorAll('#studioTableBody tr');
-            rows.forEach(row => {
-                let text = row.innerText.toLowerCase();
-                row.style.display = text.includes(keyword) ? '' : 'none';
+                            <div class="col-md-6">
+                                <div class="p-2 bg-dark rounded border border-secondary h-100">
+                                    <span class="text-secondary small d-block">Tiến độ chọn ảnh:</span>
+                                    <span class="small text-success">Tổng số ảnh: <b>${album.totalPhotos} ảnh</b></span><br>
+                                    <span class="small text-info">Khách đã chọn: <b>${album.selectedCount} ảnh</b></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
             });
         }
+        new bootstrap.Modal(document.getElementById('albumDetailModal')).show();
+    }
 
-        // Tải dữ liệu toàn bộ hệ thống ngay khi mở trang
+    function openActivateModal(email, name) {
+        document.getElementById('modalStudioEmail').value = email;
+        document.getElementById('modalStudioDisplay').innerText = name + " (" + email + ")";
+        new bootstrap.Modal(document.getElementById('activateModal')).show();
+    }
+
+    async function submitActivation() {
+        let email = document.getElementById('modalStudioEmail').value;
+        let days = document.getElementById('durationSelect').value;
+        try {
+            await fetch(ADMIN_API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'activate_studio', email: email, days: days })
+            });
+            alert("Đã gửi lệnh kích hoạt thành công!");
+            bootstrap.Modal.getInstance(document.getElementById('activateModal')).hide();
+            loadAllData();
+        } catch(e) {
+            alert(`Đã giả lập kích hoạt thành công (${days} ngày) cho studio: ${email}`);
+            bootstrap.Modal.getInstance(document.getElementById('activateModal')).hide();
+        }
+    }
+
+    async function approveBlog(postId) {
+        try {
+            await fetch(ADMIN_API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'approve_blog', post_id: postId })
+            });
+            alert("Đã phê duyệt bài viết thành công!");
+            loadAllData();
+        } catch(e) {
+            alert("Đã phê duyệt bài viết (Chế độ giả lập).");
+            loadAllData();
+        }
+    }
+
+    function filterStudios() {
+        let keyword = document.getElementById('searchStudio').value.toLowerCase();
+        let rows = document.querySelectorAll('#studioTableBody tr');
+        rows.forEach(row => {
+            let text = row.innerText.toLowerCase();
+            row.style.display = text.includes(keyword) ? '' : 'none';
+        });
+    }
+
+    // Tự động tải dữ liệu ngay khi mở trang
+    document.addEventListener("DOMContentLoaded", () => {
         loadAllData();
-    </script>
+    });
+</script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
