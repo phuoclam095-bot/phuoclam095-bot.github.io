@@ -256,9 +256,10 @@
     </div>
 
     <script>
+        const TRANSACTIONS_API_URL = "https://wsm.congtubaclieu.com.vn/webhook/super-admin-transactions";
         const ADMIN_API_URL = "https://wsm.congtubaclieu.com.vn/webhook/super-admin-data";
         const CONTRACTS_API_URL = "https://wsm.congtubaclieu.com.vn/webhook/super-admin-contracts";
-        function switchTab(tabId) {
+       function switchTab(tabId) {
     document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
     document.getElementById('tab-' + tabId).classList.add('active');
     
@@ -271,9 +272,50 @@
     };
     document.getElementById('currentTitle').innerText = titles[tabId];
 
-    // Gọi riêng webhook tải hợp đồng khi bấm vào tab contracts
     if (tabId === 'contracts') {
         loadContractsData();
+    } else if (tabId === 'transactions') {
+        loadTransactionsData(); // Gọi webhook tải lịch sử giao dịch khi bấm vào tab này
+    }
+}
+
+        async function loadTransactionsData() {
+    let body = document.getElementById('transactionTableBody');
+    if (!body) return;
+    
+    body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">Đang tải lịch sử giao dịch...</td></tr>`;
+    
+    try {
+        let response = await fetch(TRANSACTIONS_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'get_transactions' })
+        });
+        let data = await response.json();
+        
+        let resultData = Array.isArray(data) ? data[0] : data;
+        let txList = resultData.transactions || [];
+
+        body.innerHTML = '';
+        if (txList.length > 0) {
+            txList.forEach(tx => {
+                let statusBadge = (tx.status.toLowerCase() === 'success' || tx.status.toLowerCase() === 'completed') ? 'success' : 'warning';
+                body.innerHTML += `
+                    <tr>
+                        <td><b class="text-primary">${tx.transactionCode}</b></td>
+                        <td><div class="text-white">${tx.email}</div></td>
+                        <td><b class="text-success">${tx.amount}</b></td>
+                        <td><span class="badge bg-dark border border-secondary text-info">${tx.packageName}</span></td>
+                        <td><span class="badge bg-${statusBadge}">${tx.status}</span></td>
+                        <td><small class="text-secondary">${tx.createdAt}</small></td>
+                    </tr>`;
+            });
+        } else {
+            body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">Chưa có lịch sử giao dịch nào.</td></tr>`;
+        }
+    } catch (e) {
+        console.error("Lỗi tải giao dịch:", e);
+        body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-danger">Không thể kết nối tới webhook giao dịch.</td></tr>`;
     }
 }
 
