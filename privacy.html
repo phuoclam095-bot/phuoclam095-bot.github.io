@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chính Sách Bảo Mật - ChonAnhNhanh.vn</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {  
+            --primary: #00ebb0;  
+            --accent: #51ff7d;
+            --bg-deep: #050a14;  
+            --neon: 0 0 20px rgba(0, 235, 176, 0.4);
+            --rainbow: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000);
+        }
+        body {  
+            background-color: var(--bg-deep);  
+            background-image: linear-gradient(to bottom, rgba(5, 10, 20, 0.6) 0%, rgba(5, 10, 20, 0.8) 100%),  
+                              url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover; background-position: center; background-attachment: fixed;
+            color: #cbd5e1; font-family: 'Montserrat', sans-serif; min-height: 100vh; padding-top: 130px; overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* --- NAVBAR & MENU CHUẨN ĐỒNG BỘ --- */
+        .navbar { 
+            background: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.5) 100%); 
+            backdrop-filter: blur(25px); 
+            border-bottom: 1px solid rgba(255,255,255,0.05); 
+            min-height: 95px; 
+            position: fixed; 
+            width: 100%; 
+            top: 0; 
+            z-index: 1000; 
+        }
+        .navbar-brand-left {
+            font-weight: 900;
+            color: var(--primary) !important;
+            font-size: 1.2rem;
+            text-decoration: none;
+            text-shadow: 0 0 20px rgba(0, 235, 176, 0.4);
+            z-index: 10;
+            white-space: nowrap;
+        }
+
+        @media (min-width: 992px) {
+            .nav-center-container {  
+                position: absolute !important;  
+                left: 50% !important;  
+                top: 50% !important;
+                transform: translate(-50%, -50%) !important;  
+                display: flex !important;  
+                align-items: center !important;  
+                justify-content: center !important;  
+                width: max-content !important;  
+                z-index: 5;  
+            }
+            .nav-link.active::after {  
+                content: '';  
+                position: absolute;  
+                width: 30%;  
+                height: 2px;  
+                bottom: 5px;  
+                left: 35%;  
+                background: var(--primary);  
+                box-shadow: 0 0 10px var(--primary);  
+            }
+        }
+
+        .navbar-nav { display: flex; flex-direction: row; gap: 5px; list-style: none; margin: 0; padding: 0; }
+        .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.72rem; text-transform: uppercase; padding: 10px 12px !important; cursor: pointer; transition: 0.3s ease; position: relative; white-space: nowrap; }
+        .nav-link:hover, .nav-link.active { color: var(--primary) !important; }
+
+        @media (max-width: 991.98px) {
+            body { padding-top: 150px; }
+            .navbar { min-height: auto; padding: 10px 0; }
+            .nav-center-container { 
+                position: static !important; transform: none !important; width: 100% !important; margin-top: 12px !important; order: 3; display: flex !important; overflow-x: auto !important; -webkit-overflow-scrolling: touch; justify-content: flex-start !important; padding: 0 15px !important; 
+            }
+            .nav-center-container::-webkit-scrollbar { display: none !important; }
+            .navbar-nav { display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; gap: 8px !important; width: max-content !important; justify-content: flex-start !important; margin: 0 !important; }
+            .nav-link { font-size: 0.72rem !important; padding: 8px 14px !important; background: rgba(255, 255, 255, 0.05) !important; border-radius: 10px !important; border: 1px solid rgba(0, 235, 176, 0.15) !important; }
+            .nav-link.active { background: rgba(0, 235, 176, 0.15) !important; border-color: var(--primary) !important; }
+        }
+
+        /* --- CONTAINER NỘI DUNG CHÍNH --- */
+        .container-custom { 
+            max-width: 900px; 
+            margin: 0 auto 50px auto; 
+            padding: 40px; 
+            background: rgba(10, 20, 40, 0.85); 
+            backdrop-filter: blur(15px);
+            border-radius: 20px; 
+            border: 1px solid rgba(255,255,255,0.08); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+        }
+        h1 { color: #fff; font-size: 2rem; font-weight: 900; margin-bottom: 10px; text-transform: uppercase; }
+        h2 { color: var(--primary); font-size: 1.2rem; font-weight: 700; margin-top: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; }
+        p, li { font-size: 0.95rem; margin-bottom: 15px; }
+        ul { padding-left: 20px; }
+        .update-date { font-size: 0.8rem; color: #94a3b8; margin-bottom: 30px; font-style: italic; }
+        .highlight { color: #fff; font-weight: 600; }
+        .footer-note { margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; font-size: 0.85rem; text-align: center; color: #94a3b8; }
+        a { color: var(--primary); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg fixed-top navbar-dark">
+    <div class="container-fluid px-3 px-lg-5 d-flex flex-wrap align-items-center justify-content-between">
+        
+        <a class="navbar-brand-left m-0" href="index">CHONANHNHANH<span style="color:#f0c300">.VN</span></a>
+
+        <div class="nav-center-container" id="navCenterArea">
+            <ul class="navbar-nav" id="adminNavLinks">
+                <li class="nav-item"><a href="index" class="nav-link">Tạo Album</a></li>
+                <li class="nav-item"><a href="managa" class="nav-link">Quản Lý</a></li>
+                <li class="nav-item"><a href="crm" class="nav-link">Lịch</a></li>
+                <li class="nav-item"><a href="copy_local" class="nav-link">Sao Chép</a></li>
+                <li class="nav-item"><a href="blog" class="nav-link">Blog</a></li>
+                <li class="nav-item"><a href="alarm" class="nav-link">Báo Thức</a></li>
+                <li class="nav-item"><a href="payment" class="nav-link">Gia Hạn</a></li>
+                <li class="nav-item"><a href="lienhe" class="nav-link">Liên Hệ</a></li>
+                <li class="nav-item"><a href="fedback" class="nav-link">Góp Ý Và Báo Lỗi</a></li>
+                <li class="nav-item"><a href="privacy" class="nav-link active">Chính Sách Bảo Mật</a></li>
+            </ul>
+        </div>
+
+    </div>
+</nav>
+    <div class="container">
+        <h1>Chính Sách Bảo Mật</h1>
+        <div class="update-date">Cập nhật lần cuối: Tháng 10, 2026 | Last updated: October 2026</div>
+
+        <p>Chào mừng bạn đến với <span class="highlight">ChonAnhNhanh.vn</span>. Chúng tôi cam kết bảo vệ thông tin cá nhân và quyền riêng tư của bạn khi bạn sử dụng nền tảng quản lý lịch trình, chọn ảnh và dịch vụ của chúng tôi.</p>
+
+        <h2>1. Thông tin chúng tôi thu thập (Information We Collect)</h2>
+        <p>Khi bạn sử dụng hệ thống của chúng tôi (bao gồm cả việc đăng nhập qua tài khoản Google), chúng tôi có thể thu thập các thông tin sau:</p>
+        <ul>
+            <li><strong>Thông tin tài khoản Google:</strong> Địa chỉ Email, Tên hiển thị và Ảnh đại diện (Avatar) khi bạn đồng ý đăng nhập xác thực qua Google OAuth.</li>
+            <li><strong>Dữ liệu dịch vụ & Sự kiện:</strong> Thông tin hợp đồng, ngày giờ sự kiện, tên khách hàng và các ghi chú do bạn hoặc khách hàng của bạn tạo ra trên hệ thống.</li>
+            <li><strong>Dữ liệu hình ảnh:</strong> Các liên kết hình ảnh được lưu trữ và liên kết từ Google Drive/Cloud để phục vụ cho việc hiển thị album và chọn ảnh.</li>
+        </ul>
+
+        <h2>2. Mục đích sử dụng thông tin (How We Use Your Information)</h2>
+        <p>Thông tin thu thập được sử dụng hoàn toàn cho các mục đích vận hành nội bộ:</p>
+        <ul>
+            <li>Xác thực quyền quản trị viên (Admin) và phân quyền truy cập hệ thống CRM, quản lý lịch trình studio.</li>
+            <li>Đồng bộ sự kiện trực tiếp vào Google Calendar của bạn (nếu bạn cấp quyền sử dụng Google Calendar API).</li>
+            <li>Cung cấp giao diện chọn ảnh, ghi chú và quản lý đơn hàng mượt mà cho khách hàng của studio.</li>
+        </ul>
+
+        <h2>3. Chia sẻ thông tin và Bảo mật (Data Security & Sharing)</h2>
+        <p>Chúng tôi cam kết <span class="highlight">không bán, trao đổi hoặc chuyển giao</span> thông tin cá nhân của bạn cho bất kỳ bên thứ ba nào khác. Dữ liệu của bạn được lưu trữ an toàn trên cơ sở dữ liệu bảo mật (Supabase) và chỉ sử dụng trong phạm vi hoạt động của hệ thống ChonAnhNhanh.</p>
+
+        <h2>4. Quyền của bạn đối với dữ liệu (Your Data Rights)</h2>
+        <p>Bạn hoàn toàn có quyền thu hồi quyền truy cập ứng dụng của chúng tôi bất cứ lúc nào thông qua trang cài đặt bảo mật tài khoản Google tại: <a href="https://myaccount.google.com/permissions" target="_blank">https://myaccount.google.com/permissions</a>. Bạn cũng có thể yêu cầu chúng tôi xóa toàn bộ dữ liệu lưu trữ của studio bất cứ lúc nào.</p>
+
+        <h2>5. Liên hệ (Contact Us)</h2>
+        <p>Nếu bạn có bất kỳ câu hỏi nào về Chính sách bảo mật này, vui lòng liên hệ với chúng tôi qua:</p>
+        <ul>
+            <li>Email hỗ trợ: <span class="highlight">support@chonanhnhanh.vn</span></li>
+            <li>Hotline / Zalo: <span class="highlight">0879029170</span></li>
+            <li>Địa chỉ hoạt động: Bạc Liêu - Cà Mau, Việt Nam</li>
+        </ul>
+
+        <div class="footer-note">
+            &copy; 2026 ChonAnhNhanh.vn. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>
