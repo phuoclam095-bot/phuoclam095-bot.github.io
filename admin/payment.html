@@ -2,439 +2,171 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CHONANHNHANH.VN - GIA HẠN VIP</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chính Sách Bảo Mật - ChonAnhNhanh.vn</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #00ebb0; --gold-vip: #f0c300; --bg-deep: #050a14; --neon: 0 0 20px rgba(0, 235, 176, 0.4); --rainbow: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000); }
-        
-        body { 
-            background-color: var(--bg-deep); 
-            background-image: linear-gradient(to bottom, rgba(5, 10, 20, 0.8), rgba(5, 10, 20, 0.95)), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); 
-            background-size: cover; background-position: center; background-attachment: fixed; 
-            color: #fff; font-family: 'Montserrat', sans-serif; min-height: 100vh; padding-top: 130px; overflow-x: hidden; 
+        :root {  
+            --primary: #00ebb0;  
+            --accent: #51ff7d;
+            --bg-deep: #050a14;  
+            --neon: 0 0 20px rgba(0, 235, 176, 0.4);
+            --rainbow: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000);
         }
-        
-        /* Chống nháy chuột bôi đen văn bản lỗi */
-        .package-card, .pkg-name, .price-val, .feature-list, .supreme-title {
-            user-select: none !important;
-            -webkit-user-select: none !important;
-            cursor: default;
+        body {  
+            background-color: var(--bg-deep);  
+            background-image: linear-gradient(to bottom, rgba(5, 10, 20, 0.6) 0%, rgba(5, 10, 20, 0.8) 100%),  
+                              url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover; background-position: center; background-attachment: fixed;
+            color: #cbd5e1; font-family: 'Montserrat', sans-serif; min-height: 100vh; padding-top: 130px; overflow-x: hidden;
+            line-height: 1.6;
         }
-        .btn-continue, .package-card, .nav-link, .btn-back-cancel { cursor: pointer !important; }
 
-        #loadOverlay { position: fixed; inset: 0; background: #050a14; z-index: 20000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .load-logo { font-weight: 900; font-size: 2rem; color: var(--primary); letter-spacing: 5px; animation: floating 3s ease-in-out infinite; }
-        @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        /* --- NAVBAR & MENU CHUẨN ĐỒNG BỘ --- */
+        .navbar { 
+            background: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.5) 100%); 
+            backdrop-filter: blur(25px); 
+            border-bottom: 1px solid rgba(255,255,255,0.05); 
+            min-height: 95px; 
+            position: fixed; 
+            width: 100%; 
+            top: 0; 
+            z-index: 1000; 
+        }
+        .navbar-brand-left {
+            font-weight: 900;
+            color: var(--primary) !important;
+            font-size: 1.2rem;
+            text-decoration: none;
+            text-shadow: 0 0 20px rgba(0, 235, 176, 0.4);
+            z-index: 10;
+            white-space: nowrap;
+        }
 
-        /* --- NAVBAR --- */
-        .navbar { background: rgba(5, 10, 20, 0.95); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); min-height: 95px; position: fixed; width: 100%; top: 0; z-index: 1000; }
-        .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); font-size: 1.2rem; text-decoration: none; }
-        
+        @media (min-width: 992px) {
+            .nav-center-container {  
+                position: absolute !important;  
+                left: 50% !important;  
+                top: 50% !important;
+                transform: translate(-50%, -50%) !important;  
+                display: flex !important;  
+                align-items: center !important;  
+                justify-content: center !important;  
+                width: max-content !important;  
+                z-index: 5;  
+            }
+            .nav-link.active::after {  
+                content: '';  
+                position: absolute;  
+                width: 30%;  
+                height: 2px;  
+                bottom: 5px;  
+                left: 35%;  
+                background: var(--primary);  
+                box-shadow: 0 0 10px var(--primary);  
+            }
+        }
+
         .navbar-nav { display: flex; flex-direction: row; gap: 5px; list-style: none; margin: 0; padding: 0; }
-        .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.72rem; text-transform: uppercase; padding: 10px 12px !important; transition: 0.3s; position: relative; text-decoration: none; white-space: nowrap; }
+        .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.72rem; text-transform: uppercase; padding: 10px 12px !important; cursor: pointer; transition: 0.3s ease; position: relative; white-space: nowrap; }
         .nav-link:hover, .nav-link.active { color: var(--primary) !important; }
 
-        .btn-back-mobile { display: none; }
-
-        /* --- ĐỊNH VỊ MENU CHÍNH GIỮA TRÊN PC --- */
-        @media (min-width: 992px) {
-            .nav-center-container { 
-                position: absolute !important; 
-                left: 50% !important; 
-                top: 50% !important;
-                transform: translate(-50%, -50%) !important; 
-                display: flex !important; 
-                align-items: center !important; 
-                justify-content: center !important; 
-                width: max-content !important; 
-                z-index: 5; 
-            }
-            .nav-link.active::after { content: ''; position: absolute; width: 40%; height: 2px; bottom: 2px; left: 30%; background: var(--primary); box-shadow: var(--neon); }
-        }
-
-        /* --- USER BOX --- */
-        #authControl { 
-            display: none !important; 
-            border: 1.5px solid var(--primary);
-            border-radius: 50px;
-            padding-right: 12px;
-            background: rgba(0, 0, 0, 0.3);
-            align-items: center;
-        }
-        .user-status-box { padding: 5px 12px; display: flex; align-items: center; gap: 12px; height: 48px; }
-        #avatarPlaceholder { width: 32px; height: 32px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--primary); background: #000; display: flex; align-items: center; justify-content: center; }
-        #avatarPlaceholder img { width: 100%; height: 100%; object-fit: cover; }
-        .status-tag { font-size: 0.55rem; padding: 2px 8px; border-radius: 4px; font-weight: 900; text-transform: uppercase; line-height: 1; }
-        #userExpiryDisplay { font-size: 0.75rem !important; color: #fff !important; font-weight: 800 !important; }
-
-        .supreme-title { font-weight: 900; font-size: 2.2rem; text-transform: uppercase; letter-spacing: 10px; text-align: center; margin-bottom: 35px; background: linear-gradient(90deg, #fff, var(--primary), #fff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: text-shine 4s linear infinite; }
-        @keyframes text-shine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
-
-        /* PACKAGE GRID PC */
-        .package-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; max-width: 1400px; margin: 0 auto 35px; padding: 0 15px; align-items: stretch; }
-        
-        .package-card { background: rgba(10, 17, 36, 0.95); border-radius: 32px; padding: 30px 22px; text-align: center; border: 1px solid rgba(255,255,255,0.1); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); height: 100%; display: flex; flex-direction: column; position: relative; }
-        .package-card:hover { transform: translateY(-8px); border-color: var(--primary); box-shadow: var(--neon); }
-        .package-card.selected { border-width: 2.5px; border-color: var(--primary); background: rgba(0, 235, 176, 0.08); }
-
-        .pkg-name { font-weight: 900; font-size: 1.35rem; color: var(--primary); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 1px; }
-        .luxury .pkg-name { color: var(--gold-vip); }
-        
-        .pkg-price { display: flex; align-items: baseline; justify-content: center; gap: 4px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 15px; }
-        .price-val { font-size: 2.2rem; font-weight: 900; color: #fff; line-height: 1; }
-        .price-unit { font-size: 0.85rem; color: #94a3b8; font-weight: 800; white-space: nowrap; }
-
-        .feature-list { list-style: none; padding: 0; margin: 0; text-align: left; flex-grow: 1; }
-        .feature-list li { font-size: 0.82rem; color: #f1f5f9; margin-bottom: 12px; display: flex; align-items: flex-start; gap: 8px; line-height: 1.4; font-weight: 500; }
-        .feature-list i { color: var(--primary); margin-top: 3px; font-size: 0.95rem; flex-shrink: 0; }
-        .luxury .feature-list i { color: var(--gold-vip); }
-
-        .vip-gold-wrap { position: relative; padding: 3px; border-radius: 35px; background: linear-gradient(135deg, #f0c300, #fff, #f0c300); background-size: 200% auto; animation: shine-gold 5s linear infinite; height: 100%; }
-        @keyframes shine-gold { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
-        .package-card.luxury { background: #000 !important; border: none !important; }
-
-        .btn-continue { background: var(--primary); color: #000; border: none; padding: 16px 80px; font-size: 1.1rem; border-radius: 50px; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: 0.3s; box-shadow: var(--neon); margin-top: 5px; }
-        .btn-continue:hover { transform: scale(1.03); box-shadow: 0 0 30px var(--primary); }
-
-        #paymentPollingMode { max-width: 540px; margin: 20px auto; background: rgba(10, 20, 40, 0.98); border-radius: 40px; border: 2.5px solid var(--primary); padding: 35px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
-        .qr-frame { background: #fff; padding: 15px; border-radius: 20px; display: inline-block; margin-bottom: 25px; box-shadow: 0 0 25px rgba(255,255,255,0.1); }
-        #qrCodeImg { width: 240px; height: 260px; border-radius: 10px; object-fit: contain; }
-        .payment-info-box { background: rgba(0,0,0,0.6); border-radius: 25px; padding: 20px; border: 1px solid rgba(255,255,255,0.08); }
-
-        .btn-back-cancel { background: transparent; color: #fff; border: 1.5px solid var(--primary); padding: 12px 40px; border-radius: 50px; font-weight: 800; font-size: 0.95rem; margin-top: 25px; transition: 0.3s; text-transform: uppercase; cursor: pointer; }
-        .btn-back-cancel:hover { background: var(--primary); color: #000; }
-
-        #toastNotice { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #000; padding: 12px 30px; border-radius: 12px; z-index: 10000; font-weight: 900; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-
-        /* --- 🌟 TỐI ƯU HOÁ ĐIỆN THOẠI RESPONSIVE TUYỆT ĐỐI --- */
-       @media (max-width: 991.98px) {
+        @media (max-width: 991.98px) {
             body { padding-top: 150px; }
-            .navbar { padding: 10px 0; min-height: auto; }
-            
-            .navbar-brand { display: none !important; }
-            .btn-back-mobile { 
-                display: flex !important; 
-                align-items: center; 
-                justify-content: center;
-                background: rgba(255, 255, 255, 0.1); 
-                border: 1px solid rgba(0, 235, 176, 0.3);
-                color: var(--primary) !important; 
-                width: 38px; 
-                height: 38px; 
-                border-radius: 50%; 
-                text-decoration: none !important;
-                font-size: 0.9rem;
-                z-index: 10;
-            }
-
-            /* Mở khóa dải menu lướt chạm hàng ngang cực mượt */
-            .nav-center-container {
-                position: static !important;
-                transform: none !important;
-                width: 100% !important;
-                margin-top: 12px !important;
-                order: 3; 
-                display: flex !important;
-                overflow-x: auto !important;
-                -webkit-overflow-scrolling: touch;
-                justify-content: flex-start !important; 
-                align-items: center !important;
-                padding: 0 15px !important;
+            .navbar { min-height: auto; padding: 10px 0; }
+            .nav-center-container { 
+                position: static !important; transform: none !important; width: 100% !important; margin-top: 12px !important; order: 3; display: flex !important; overflow-x: auto !important; -webkit-overflow-scrolling: touch; justify-content: flex-start !important; padding: 0 15px !important; 
             }
             .nav-center-container::-webkit-scrollbar { display: none !important; }
-
-            .navbar-nav {
-                display: flex !important;
-                flex-direction: row !important;
-                flex-wrap: nowrap !important;
-                gap: 8px !important;
-                width: max-content !important;
-                justify-content: flex-start !important;
-                margin: 0 !important;
-            }
-
-            .nav-link {
-                font-size: 0.72rem !important;
-                padding: 8px 14px !important;
-                background: rgba(255, 255, 255, 0.05) !important;
-                border-radius: 10px !important;
-                border: 1px solid rgba(0, 235, 176, 0.15) !important;
-            }
-            .nav-link.active {
-                background: rgba(0, 235, 176, 0.15) !important;
-                border-color: var(--primary) !important;
-            }
-            .nav-link.active::after { display: none !important; }
-
-            #authControl { padding-right: 8px; }
-            .user-status-box { padding: 5px 8px; gap: 8px; height: 42px; min-width: auto; }
-            #avatarPlaceholder { width: 28px; height: 28px; }
-            #userNameDisplay { font-size: 0.7rem !important; }
-            #userExpiryDisplay { font-size: 0.65rem !important; }
-
-            /* Bảng giá 1 cột dọc cuộn trang mượt mà */
-            .supreme-title { font-size: 1.6rem; letter-spacing: 4px; margin-bottom: 25px; }
-            .package-grid { grid-template-columns: 1fr !important; gap: 20px; padding: 0 15px; height: auto !important; }
-            .package-card { padding: 25px 20px; border-radius: 28px; }
-            .btn-continue { width: 90%; padding: 16px 0; font-size: 1rem; }
-            #paymentPollingMode { width: 92%; padding: 25px 15px; }
-            #qrCodeImg { width: 200px; height: 220px; }
+            .navbar-nav { display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; gap: 8px !important; width: max-content !important; justify-content: flex-start !important; margin: 0 !important; }
+            .nav-link { font-size: 0.72rem !important; padding: 8px 14px !important; background: rgba(255, 255, 255, 0.05) !important; border-radius: 10px !important; border: 1px solid rgba(0, 235, 176, 0.15) !important; }
+            .nav-link.active { background: rgba(0, 235, 176, 0.15) !important; border-color: var(--primary) !important; }
         }
+
+        /* --- CONTAINER NỘI DUNG CHÍNH --- */
+        .container-custom { 
+            max-width: 900px; 
+            margin: 0 auto 50px auto; 
+            padding: 40px; 
+            background: rgba(10, 20, 40, 0.85); 
+            backdrop-filter: blur(15px);
+            border-radius: 20px; 
+            border: 1px solid rgba(255,255,255,0.08); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+        }
+        h1 { color: #fff; font-size: 2rem; font-weight: 900; margin-bottom: 10px; text-transform: uppercase; }
+        h2 { color: var(--primary); font-size: 1.2rem; font-weight: 700; margin-top: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; }
+        p, li { font-size: 0.95rem; margin-bottom: 15px; }
+        ul { padding-left: 20px; }
+        .update-date { font-size: 0.8rem; color: #94a3b8; margin-bottom: 30px; font-style: italic; }
+        .highlight { color: #fff; font-weight: 600; }
+        .footer-note { margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; font-size: 0.85rem; text-align: center; color: #94a3b8; }
+        a { color: var(--primary); text-decoration: none; }
+        a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
-    <div id="toastNotice">Nội dung đã được sao chép!</div>
+<nav class="navbar navbar-expand-lg fixed-top navbar-dark">
+    <div class="container-fluid px-3 px-lg-5 d-flex flex-wrap align-items-center justify-content-between">
+        
+        <a class="navbar-brand-left m-0" href="index">CHONANHNHANH<span style="color:#f0c300">.VN</span></a>
 
-    <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
-        <div class="container-fluid px-3 px-lg-5 d-flex flex-wrap align-items-center justify-content-between">
-            
-            <a class="navbar-brand m-0" href="index">CHONANHNHANH<span style="color:#f0c300">.VN</span></a>
-            
-            <div class="d-flex align-items-center ms-auto order-lg-3">
-                <div id="authControl">
-                    <div class="user-status-box">
-                        <div id="avatarPlaceholder" class="avt-circle"></div>
-                        <div class="d-flex flex-column">
-                            <span id="userNameDisplay" style="font-weight:900; font-size:0.75rem; line-height:1">...</span>
-                            <div style="margin-top: 3px;">
-                                <span id="badgeStatus" class="status-tag" style="background:var(--primary); color:#000; font-weight:900;">...</span>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()"><i class="fas fa-power-off"></i></button>
-                </div>
-            </div>
-
-            <div class="nav-center-container" id="navCenterArea">
-                <ul class="navbar-nav" id="adminNavLinks">
-                    <li class="nav-item"><a href="index" class="nav-link">Tạo Album</a></li>
-                    <li class="nav-item"><a href="managa" class="nav-link">Quản Lý</a></li>
-                    <li class="nav-item"><a href="crm" class="nav-link">Lịch</a></li>
-                    <li class="nav-item"><a href="copy_local" class="nav-link">Sao Chép</a></li>
-                    <li class="nav-item"><a href="blog" class="nav-link">Blog</a></li>
-                    <li class="nav-item"><a href="alarm" class="nav-link">Báo Thức</a></li>
-                    <li class="nav-item"><a href="payment" class="nav-link active">Gia Hạn</a></li>
-                    <li><a href="lienhe" class="nav-link">Liên Hệ</a></li>
-                    <li><a href="fedback" class="nav-link">Góp Ý Và Báo Lỗi</a></li>
-                    <li><a href="privacy" class="nav-link">Chính Sách Bảo Mật</a></li>
-                </ul>
-            </div>
-            
-            <div style="width: 40px;" class="d-lg-none"></div>
-
-        </div>
-    </nav>
-
-    <div class="container-fluid py-4">
-        <div id="selectionMode">
-            <h1 class="supreme-title">Nâng Cấp Quy Trình Studio</h1>
-            
-            <div class="package-grid">
-                <div class="package-card" onclick="selectPkg(this, {months: 1, price: 70000, name: 'Gói Dùng Thử'})">
-                    <div class="pkg-name">Gói Dùng Thử</div>
-                    <div class="pkg-price"><span class="price-val">70.000</span><span class="price-unit"> / 1 tháng</span></div>
-                    <ul class="feature-list">
-                        <li><i class="fas fa-check-circle"></i>Giải pháp lọc ảnh studio siêu nhanh và hiệu quả</li>
-                        <li><i class="fas fa-check-circle"></i>Đảm bảo độ chính xác tuyệt đối 100% khi lọc</li>
-                        <li><i class="fas fa-history"></i>Lưu trữ toàn bộ album ổn định trong 30 ngày</li>
-                        <li><i class="fas fa-download"></i>Cho phép tải ảnh gốc Full HD cực nét</li>
-                        <li><i class="fas fa-user-shield"></i>Hỗ trợ gắn thêm Watermark bảo mật Studio</li>
-                        <li><i class="fas fa-headset"></i>Hỗ trợ kỹ thuật qua Zalo giờ hành chính</li>
-                    </ul>
-                </div>
-
-                <div class="package-card" onclick="selectPkg(this, {months: 3, price: 200000, name: 'Gói Cơ Bản'})">
-                    <div class="pkg-name">Gói Cơ Bản</div>
-                    <div class="pkg-price"><span class="price-val">200.000</span><span class="price-unit"> / 3 tháng</span></div>
-                    <ul class="feature-list">
-                        <li><i class="fas fa-rocket"></i>Tối ưu hóa 100% hiệu suất làm việc cho Studio</li>
-                        <li><i class="fas fa-bolt"></i>Ưu tiên xử lý Thumbnail nhanh hơn gói thường</li>
-                        <li><i class="fas fa-history"></i>Lưu trữ album an toàn suốt 90 ngày liên tục</li>
-                        <li><i class="fas fa-download"></i>Tải ảnh gốc siêu tốc & Gắn Logo thương hiệu</li>
-                        <li><i class="fas fa-user-shield"></i>Hệ thống bảo mật dữ liệu an toàn tuyệt đối</li>
-                        <li><i class="fas fa-headset"></i>Hỗ trợ kỹ thuật ưu tiên hàng đầu qua Zalo</li>
-                    </ul>
-                </div>
-
-                <div class="package-card" onclick="selectPkg(this, {months: 6, price: 350000, name: 'Gói Pro'})">
-                    <div class="pkg-name">Gói Pro</div>
-                    <div class="pkg-price"><span class="price-val">350.000</span><span class="price-unit"> / 6 tháng</span></div>
-                    <ul class="feature-list">
-                        <li><i class="fas fa-crown"></i>Khẳng định đẳng cấp quy trình Studio chuyên nghiệp</li>
-                        <li><i class="fas fa-rocket"></i>Tốc độ tải ảnh siêu tốc, tức thì không cần chờ</li>
-                        <li><i class="fas fa-user-edit"></i> VIP: Hỗ trợ Chuyển đổi tài khoản khi cần</li>
-                        <li><i class="fas fa-history"></i>Lưu trữ dữ liệu dài hạn lên đến 180 ngày</li>
-                        <li><i class="fas fa-user-shield"></i>Gắn Logo thương hiệu độc quyền Studio</li>
-                        <li><i class="fas fa-star"></i>Hỗ trợ đa kênh 24/7 danh sách ưu tiên cao nhất</li>
-                    </ul>
-                </div>
-
-                <div class="vip-gold-wrap">
-                    <div class="package-card luxury selected" onclick="selectPkg(this, {months: 12, price: 600000, name: 'Gói UNLIMITED'})">
-                        <div class="pkg-name">UNLIMITED VIP</div>
-                        <div class="pkg-price"><span class="price-val">600.000</span><span class="price-unit"> / Năm</span></div>
-                        <ul class="feature-list">
-                            <li><i class="fas fa-magic"></i>Giải phóng 100% sức lao động cho chủ Studio</li>
-                            <li><i class="fas fa-history"></i>Lưu trữ album trọn gói 1 năm toàn bộ dữ liệu</li>
-                            <li><i class="fas fa-tools"></i>Phát triển thêm tính năng riêng theo yêu cầu</li>
-                            <li><i class="fas fa-sync"></i>Hỗ trợ Chuyển đổi tài khoản miễn phí trọn đời</li>
-                            <li><i class="fas fa-user-shield"></i>Bảo mật & Riêng tư cấp độ cao nhất cho Studio VIP</li>
-                            <li><i class="fas fa-gem"></i>Support VIP 24/7 trực tiếp từ đội ngũ ADMIN</li>
-                        </ul>
-                        <div style="position:absolute; top:12px; right:12px; background:var(--gold-vip); color:#000; font-size:0.6rem; font-weight:900; padding:4px 14px; border-radius:50px; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">⭐ TỐT NHẤT</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="text-center"><button id="btnContinue" class="btn-continue" onclick="processPayment()">Tiến Hành Thanh Toán VIP</button></div>
+        <div class="nav-center-container" id="navCenterArea">
+            <ul class="navbar-nav" id="adminNavLinks">
+                <li class="nav-item"><a href="index" class="nav-link">Tạo Album</a></li>
+                <li class="nav-item"><a href="managa" class="nav-link">Quản Lý</a></li>
+                <li class="nav-item"><a href="crm" class="nav-link">Lịch</a></li>
+                <li class="nav-item"><a href="copy_local" class="nav-link">Sao Chép</a></li>
+                <li class="nav-item"><a href="blog" class="nav-link">Blog</a></li>
+                <li class="nav-item"><a href="alarm" class="nav-link">Báo Thức</a></li>
+                <li class="nav-item"><a href="payment" class="nav-link">Gia Hạn</a></li>
+                <li class="nav-item"><a href="lienhe" class="nav-link">Liên Hệ</a></li>
+                <li class="nav-item"><a href="fedback" class="nav-link">Góp Ý Và Báo Lỗi</a></li>
+                <li class="nav-item"><a href="privacy" class="nav-link active">Chính Sách Bảo Mật</a></li>
+            </ul>
         </div>
 
-        <div id="paymentPollingMode" style="display: none;">
-            <h3 id="paymentTitle" style="color:var(--primary); font-weight:900; margin-bottom:20px; text-transform:uppercase;">Đang tạo mã giao dịch...</h3>
-            <div id="qrLoading"><i class="fas fa-circle-notch fa-spin fa-3x text-success"></i></div>
-            <div id="qrContent" style="display: none;">
-                <div class="qr-frame"><img id="qrCodeImg" src=""></div>
-                <div class="payment-info-box">
-                    <div class="mb-2" style="font-size:1.1rem">Số tiền: <strong id="displayAmount" class="text-danger fs-3"></strong></div>
-                    <div style="font-size:1.1rem; color:#fff">Nội dung: <strong id="displayPaymentCode" class="text-info fs-4" style="cursor:pointer" onclick="copyCode()"></strong> <span class="badge bg-primary ms-2" onclick="copyCode()" style="cursor:pointer; padding:8px 12px;">COPY</span></div>
-                </div>
-                <div class="alert alert-success mt-4" style="background:rgba(25, 135, 84, 0.1); border:1px solid var(--primary); color:#fff; font-size:0.95rem;"><i class="fas fa-sync fa-spin me-2"></i>Chờ kích hoạt VIP tự động sau khi nhận được tiền...</div>
-                <button class="btn-back-cancel" onclick="cancelPayment()">Hủy & Chọn Lại Gói Khác</button>
-            </div>
+    </div>
+</nav>
+    <div class="container">
+        <h1>Chính Sách Bảo Mật</h1>
+        <div class="update-date">Cập nhật lần cuối: Tháng 10, 2026 | Last updated: October 2026</div>
+
+        <p>Chào mừng bạn đến với <span class="highlight">ChonAnhNhanh.vn</span>. Chúng tôi cam kết bảo vệ thông tin cá nhân và quyền riêng tư của bạn khi bạn sử dụng nền tảng quản lý lịch trình, chọn ảnh và dịch vụ của chúng tôi.</p>
+
+        <h2>1. Thông tin chúng tôi thu thập (Information We Collect)</h2>
+        <p>Khi bạn sử dụng hệ thống của chúng tôi (bao gồm cả việc đăng nhập qua tài khoản Google), chúng tôi có thể thu thập các thông tin sau:</p>
+        <ul>
+            <li><strong>Thông tin tài khoản Google:</strong> Địa chỉ Email, Tên hiển thị và Ảnh đại diện (Avatar) khi bạn đồng ý đăng nhập xác thực qua Google OAuth.</li>
+            <li><strong>Dữ liệu dịch vụ & Sự kiện:</strong> Thông tin hợp đồng, ngày giờ sự kiện, tên khách hàng và các ghi chú do bạn hoặc khách hàng của bạn tạo ra trên hệ thống.</li>
+            <li><strong>Dữ liệu hình ảnh:</strong> Các liên kết hình ảnh được lưu trữ và liên kết từ Google Drive/Cloud để phục vụ cho việc hiển thị album và chọn ảnh.</li>
+        </ul>
+
+        <h2>2. Mục đích sử dụng thông tin (How We Use Your Information)</h2>
+        <p>Thông tin thu thập được sử dụng hoàn toàn cho các mục đích vận hành nội bộ:</p>
+        <ul>
+            <li>Xác thực quyền quản trị viên (Admin) và phân quyền truy cập hệ thống CRM, quản lý lịch trình studio.</li>
+            <li>Đồng bộ sự kiện trực tiếp vào Google Calendar của bạn (nếu bạn cấp quyền sử dụng Google Calendar API).</li>
+            <li>Cung cấp giao diện chọn ảnh, ghi chú và quản lý đơn hàng mượt mà cho khách hàng của studio.</li>
+        </ul>
+
+        <h2>3. Chia sẻ thông tin và Bảo mật (Data Security & Sharing)</h2>
+        <p>Chúng tôi cam kết <span class="highlight">không bán, trao đổi hoặc chuyển giao</span> thông tin cá nhân của bạn cho bất kỳ bên thứ ba nào khác. Dữ liệu của bạn được lưu trữ an toàn trên cơ sở dữ liệu bảo mật (Supabase) và chỉ sử dụng trong phạm vi hoạt động của hệ thống ChonAnhNhanh.</p>
+
+        <h2>4. Quyền của bạn đối với dữ liệu (Your Data Rights)</h2>
+        <p>Bạn hoàn toàn có quyền thu hồi quyền truy cập ứng dụng của chúng tôi bất cứ lúc nào thông qua trang cài đặt bảo mật tài khoản Google tại: <a href="https://myaccount.google.com/permissions" target="_blank">https://myaccount.google.com/permissions</a>. Bạn cũng có thể yêu cầu chúng tôi xóa toàn bộ dữ liệu lưu trữ của studio bất cứ lúc nào.</p>
+
+        <h2>5. Liên hệ (Contact Us)</h2>
+        <p>Nếu bạn có bất kỳ câu hỏi nào về Chính sách bảo mật này, vui lòng liên hệ với chúng tôi qua:</p>
+        <ul>
+            <li>Email hỗ trợ: <span class="highlight">phuoclam095@gmail.com</span></li>
+            <li>Hotline / Zalo: <span class="highlight">0879029170</span></li>
+            <li>Địa chỉ hoạt động: Bạc Liêu - Cà Mau, Việt Nam</li>
+        </ul>
+
+        <div class="footer-note">
+            &copy; 2026 ChonAnhNhanh.vn. All rights reserved.
         </div>
     </div>
-
-    <script>
-        let selectedPkgData = {months: 12, price: 600000, name: 'Gói UNLIMITED'};
-        let userEmail = localStorage.getItem('admin_email');
-        let pollingInterval = null;
-
-        function selectPkg(el, data) {
-            document.querySelectorAll('.package-card').forEach(opt => opt.classList.remove('selected'));
-            const card = el.classList.contains('package-card') ? el : el.querySelector('.package-card');
-            if(card) card.classList.add('selected');
-            selectedPkgData = data;
-            document.getElementById('btnContinue').innerText = `Thanh Toán ${data.price.toLocaleString('vi-VN')} VNĐ`;
-        }
-
-        async function processPayment() {
-            const code = 'SEVQR' + Math.floor(100000 + Math.random() * 900000);
-            document.getElementById('selectionMode').style.display = 'none';
-            document.getElementById('paymentPollingMode').style.display = 'block';
-            document.getElementById('paymentTitle').innerText = "Đang tạo mã giao dịch...";
-            try {
-                const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/save-pending', {
-                    method: 'POST', headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ email: userEmail, paymentCode: code, amount: selectedPkgData.price, months: selectedPkgData.months, timestamp: Date.now() })
-                });
-                const data = await res.json();
-                document.getElementById('qrCodeImg').src = data.qrDataURL;
-                document.getElementById('displayAmount').innerText = selectedPkgData.price.toLocaleString('vi-VN') + ' VNĐ';
-                document.getElementById('displayPaymentCode').innerText = code;
-                document.getElementById('qrLoading').style.display = 'none';
-                document.getElementById('qrContent').style.display = 'block';
-                document.getElementById('paymentTitle').innerText = "QUÉT MÃ ĐỂ KÍCH HOẠT VIP";
-                startPolling(code);
-            } catch (e) { cancelPayment(); }
-        }
-
-        function startPolling(code) {
-            pollingInterval = setInterval(async () => {
-                try {
-                    const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/google-oauth-callback', {
-                        method: 'POST', headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({ action: 'check_status', email: userEmail, paymentCode: code })
-                    });
-                    const data = await res.json();
-                    if (data.status === 'active') {
-                        clearInterval(pollingInterval);
-                        localStorage.setItem('admin_status', 'active');
-                        localStorage.setItem('admin_expiry', data.expiry_timestamp);
-                        window.location.href = `index.html?user_status=active&user_expiry=${data.expiry_timestamp}&user_email=${encodeURIComponent(userEmail)}`;
-                    }
-                } catch (e) {}
-            }, 8000);
-        }
-
-        function cancelPayment() {
-            if(pollingInterval) clearInterval(pollingInterval);
-            document.getElementById('paymentPollingMode').style.display = 'none';
-            document.getElementById('selectionMode').style.display = 'block';
-            document.getElementById('qrContent').style.display = 'none';
-            document.getElementById('qrLoading').style.display = 'block';
-        }
-
-        function copyCode() {
-            navigator.clipboard.writeText(document.getElementById('displayPaymentCode').innerText);
-            const t = document.getElementById('toastNotice'); t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2000);
-        }
-
-        function updateHeaderUI() {
-    if (localStorage.getItem('admin_is_logged_in') === 'true') {
-        const name = localStorage.getItem('admin_name') || 'Anh/Chị';
-        const av = localStorage.getItem('admin_avatar');
-        const status = localStorage.getItem('admin_status') || 'new';
-        
-        let expiryRaw = localStorage.getItem('admin_expiry');
-        let expiryTimestamp = 0;
-
-        if (expiryRaw) {
-            if (expiryRaw.includes('/')) {
-                const parts = expiryRaw.split(/[\s/:]+/);
-                if (parts.length >= 3) {
-                    const y = parseInt(parts[2]), m = parseInt(parts[1]) - 1, d = parseInt(parts[0]);
-                    const h = parts[3] ? parseInt(parts[3]) : 0;
-                    const min = parts[4] ? parseInt(parts[4]) : 0;
-                    const sec = parts[5] ? parseInt(parts[5]) : 0;
-                    expiryTimestamp = new Date(y, m, d, h, min, sec).getTime();
-                }
-            } else {
-                expiryTimestamp = parseInt(expiryRaw) || 0;
-            }
-        }
-
-        const isVIP = (status === 'active' && expiryTimestamp > Date.now());
-        
-        const nameDisplay = document.getElementById('userNameDisplay');
-        if (nameDisplay) nameDisplay.innerText = name;
-
-        const avatarPlaceholder = document.getElementById('avatarPlaceholder');
-        if (avatarPlaceholder) {
-            avatarPlaceholder.innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:30px; color:var(--primary)"></i>`;
-        }
-        
-        const badge = document.getElementById('badgeStatus'); 
-        if (badge) {
-            badge.className = "status-tag";
-            if (isVIP) {
-                let dateStr = expiryTimestamp > 0 ? new Date(expiryTimestamp).toLocaleDateString('vi-VN') : '';
-                badge.innerText = "ACTIVE - Hạn: " + dateStr;
-                badge.style.background = "var(--primary)";
-                badge.style.color = "#000";
-            } else {
-                badge.innerText = status === 'new' ? "MỚI" : "EXPIRED";
-                badge.style.background = "#ff4757";
-                badge.style.color = "#fff";
-            }
-        }
-        
-        const authControl = document.getElementById('authControl');
-        if (authControl) authControl.style.setProperty('display', 'flex', 'important');
-    } else { 
-        window.location.href = 'index'; 
-    }
-}
-
-        window.onload = () => { 
-            updateHeaderUI();
-            if(!userEmail) { window.location.href = "index"; return; }
-            document.getElementById('btnContinue').innerText = `Thanh Toán ${selectedPkgData.price.toLocaleString('vi-VN')} VNĐ`;
-            setTimeout(() => { document.getElementById('loadOverlay').style.display = 'none'; }, 500);
-        };
-        function logoutAdmin() { localStorage.clear(); window.location.href = 'index'; }
-    </script>
 </body>
 </html>
