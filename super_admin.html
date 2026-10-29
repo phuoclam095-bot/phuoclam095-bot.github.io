@@ -23,10 +23,10 @@
         .table-custom th, .table-custom td {
         white-space: nowrap; /* Tránh ngắt dòng làm chìm chữ */
             }
-            .table-custom th:first-child, .table-custom td:first-child {
-                width: 60px; /* Cột STT nhỏ gọn */
-                text-align: center;
-            }
+        .table-custom th:first-child, .table-custom td:first-child {
+            width: 60px; /* Cột STT nhỏ gọn */
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -101,6 +101,7 @@
                     <table class="table table-custom mb-0 align-middle">
                         <thead>
                             <tr>
+                                <th class="text-center">STT</th>
                                 <th>Studio & Thông tin</th>
                                 <th>Điện thoại & Slug</th>
                                 <th>Album & Tình trạng</th>
@@ -180,7 +181,6 @@
                     <table class="table table-custom mb-0 align-middle">
                         <thead>
                             <tr>
-                                <th class="text-center">STT</th>
                                 <th>Tiêu đề & Tác giả</th>
                                 <th>Email</th>
                                 <th>Ngày đăng</th>
@@ -306,7 +306,7 @@
         let resultData = Array.isArray(data) ? data[0] : data;
         let txList = resultData.transactions || [];
 
-        // Giới hạn tối đa 100 dòng hiển thị
+        // Giới hạn 100 dòng hiển thị tối đa
         txList = txList.slice(0, 100);
 
         body.innerHTML = '';
@@ -358,8 +358,7 @@
             }
         }
 
-        function renderAllData(data) {
-    // Cập nhật các thẻ thống kê tổng quan
+       function renderAllData(data) {
     document.getElementById('statStudios').innerText = data.totalStudios || 0;
     document.getElementById('statAlbums').innerText = data.totalAlbums || 0;
     document.getElementById('statRevenue').innerText = data.totalRevenue || "0 VNĐ";
@@ -367,8 +366,11 @@
 
     window.cachedStudios = data.studios || [];
 
-    // Render bảng Studios chính
-    let studiosToRender = (data.studios || []).slice(0, 100); // Giới hạn 100 studio
+    let sBody = document.getElementById('studioTableBody');
+    sBody.innerHTML = '';
+    
+    // Giới hạn hiển thị tối đa 100 dòng
+    let studiosToRender = window.cachedStudios.slice(0, 100);
 
     if (studiosToRender.length > 0) {
         studiosToRender.forEach((s, index) => {
@@ -402,7 +404,7 @@
                 </tr>`;
         });
     } else {
-        sBody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">Không có dữ liệu studio nào.</td></tr>`;
+        sBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-secondary">Không có dữ liệu studio nào.</td></tr>`;
     }
 
     // Render các bảng phụ an toàn
@@ -538,11 +540,11 @@
         document.addEventListener("DOMContentLoaded", () => {
             loadAllData();
         });
-        async function loadContractsData() {
+       async function loadContractsData() {
     let body = document.getElementById('contractTableBody');
     if (!body) return;
     
-    body.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-secondary">Đang tải dữ liệu hợp đồng...</td></tr>`;
+    body.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-secondary">Đang tải dữ liệu hợp đồng...</td></tr>`;
     
     try {
         let response = await fetch(CONTRACTS_API_URL, {
@@ -555,10 +557,8 @@
         let resultData = Array.isArray(data) ? data[0] : data;
         window.cachedContractsStudios = resultData.studiosContracts || resultData.contracts || [];
 
-        body.innerHTML = '';
-        if (window.cachedContractsStudios.length > 0) {
-            window.cachedContractsStudios.forEach((item) => {
-                let contractsList = (window.cachedContractsStudios || []).slice(0, 100);
+        // Giới hạn tối đa 100 dòng
+        let contractsList = window.cachedContractsStudios.slice(0, 100);
 
         body.innerHTML = '';
         if (contractsList.length > 0) {
@@ -577,13 +577,12 @@
                     </tr>`;
             });
         } else {
-            body.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-secondary">Chưa có dữ liệu hợp đồng nào.</td></tr>`;
+            body.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-secondary">Chưa có dữ liệu hợp đồng nào.</td></tr>`;
         }
     } catch (e) {
         console.error("Lỗi tải hợp đồng:", e);
-        body.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-danger">Không thể kết nối tới webhook hợp đồng.</td></tr>`;
+        body.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-danger">Không thể kết nối tới webhook hợp đồng.</td></tr>`;
     }
-}
 function viewStudioContracts(email) {
     let studio = window.cachedContractsStudios.find(s => s.studioEmail === email);
     if (!studio) return;
