@@ -366,17 +366,16 @@
     window.cachedStudios = data.studios || [];
 
     // Render bảng Studios chính
-    let sBody = document.getElementById('studioTableBody');
-    sBody.innerHTML = '';
-    
-    if (data.studios && data.studios.length > 0) {
-        data.studios.forEach(s => {
-            // Xơ đồ màu sắc: hết hạn hoặc <= 3 ngày thì báo đỏ, còn lại màu xanh
+    let studiosToRender = (data.studios || []).slice(0, 100); // Giới hạn 100 studio
+
+    if (studiosToRender.length > 0) {
+        studiosToRender.forEach((s, index) => {
             let badgeClass = s.daysLeft <= 3 ? 'text-danger fw-bold' : 'text-success fw-bold';
             let statusBadge = s.vipStatus === 'active' ? 'success' : 'danger';
 
             sBody.innerHTML += `
                 <tr>
+                    <td class="text-center text-secondary">${index + 1}</td>
                     <td>
                         <div class="fw-bold text-white">${s.name || 'Chưa đặt tên'}</div>
                         <div class="small text-secondary">${s.email}</div>
