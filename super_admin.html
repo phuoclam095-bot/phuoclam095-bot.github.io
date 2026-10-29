@@ -280,49 +280,55 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ action: 'get_all_stats' })
         });
-        
-        let rawData = await response.json();
-        
-        // Tự động xử lý dù n8n trả về mảng hay object đơn lẻ
-        let data = Array.isArray(rawData) ? rawData[0] : rawData;
-        console.log("Dữ liệu đã chuẩn hóa cho HTML:", data);
 
-        // 1. Gán số liệu tổng quan lên giao diện (Kiểm tra tồn tại ID để tránh lỗi null)
-        if (document.getElementById('totalStudiosCount')) {
-            document.getElementById('totalStudiosCountinnerText = data.totalStudios || 0;
-        }
-        if (document.getElementById('totalAlbumsCount')) {
-            document.getElementById('totalAlbumsCount').innerText = data.totalAlbums || 0;
-        }
-        if (document.getElementById('totalRevenueCount')) {
-            document.getElementById('totalRevenueCount').innerText = data.totalRevenue || "0 VNĐ";
-        }
-        if (document.getElementById('pendingBlogsCount')) {
-            document.getElementById('pendingBlogsCount').innerText = data.pendingBlogs || 0;
+        // Kiểm tra trạng thái HTTP trả về từ n8n
+        console.log("HTTP Status:", response.status);
+        if (!response.ok) {
+            throw new Error(`Server n8n phản hồi lỗi HTTP: ${response.status}`);
         }
 
-        // 2. Đổ danh sách studio ra bảng quản lý
+        let responseText = await response.text();
+        if (!responseText || responseText.trim() === "") {
+            throw new Error("Phản hồi từ n8n bị rỗng (Không có dữ liệu JSON trả về). Vui lòng kiểm tra lại node 'Respond to Webhook'.");
+        }
+
+        let responseJson = JSON.parse(responseText);
+        
+        // Tự động bóc tách dù n8n trả về mảng hay object đơn lẻ
+        let data = Array.isArray(responseJson) ? responseJson[0] : responseJson;
+        console.log("Dữ liệu nhận được:", data);
+
+        // 1. Cập nhật các ô hiển thị thống kê tổng quan (nếu có tồn tại ID trên HTML của anh)
+        if (document.getElementById('totalStudios')) {
+            document.getElementById('totalStudios').innerText = data.totalStudios || 0;
+        }
+        if (document.getElementById('totalAlbums')) {
+            document.getElementById('totalAlbums').innerText = data.totalAlbums || 0;
+        }
+        if (document.getElementById('totalRevenue')) {
+            document.getElementById('totalRevenue').innerText = data.totalRevenue || "0 VNĐ";
+        }
+        if (document.getElementById('pendingBlogs')) {
+            document.getElementById('pendingBlogs').innerText = data.pendingBlogs || 0;
+        }
+
+        // 2. Đổ dữ liệu vào bảng quản lý studio (giữ nguyên cấu trúc bảng cũ của anh)
         let tbody = document.getElementById('studioTableBody');
-        if (!tbody) {
-            console.error("Không tìm thấy thẻ có ID là 'studioTableBody' trong file HTML!");
-            return;
-        }
+        if (!tbody) return;
         
-        tbody.innerHTML = ''; // Xóa dữ liệu cũ
+        tbody.innerHTML = '';
 
         if (data.studios && data.studios.length > 0) {
             data.studios.forEach(s => {
                 let tr = document.createElement('tr');
                 
-                // Gom danh sách album của studio
+                // Gom nhóm hiển thị danh sách album kèm số lượng ảnh
                 let albumsHtml = '';
                 if (s.albums && s.albums.length > 0) {
                     albumsHtml = s.albums.map(a => `
-                        <div class="mb-1">
-                            <a href="${a.driveLink}" target="_blank" class="text-decoration-none text-primary">
-                                📁 ${a.albumName}
-                            </a> 
-                            <span class="badge bg-light text-dark border">(${a.totalPhotos} ảnh - Chọn: ${a.selectedCount})</span>
+                        <div style="font-size: 13px; margin-bottom: 2px;">
+                            <a href="${a.driveLink}" target="_blank" style="text-decoration: none;">📁 ${a.albumName}</a>
+                            <span class="text-muted">(${a.totalPhotos} ảnh - Chọn: ${a.selectedCount})</span>
                         </div>
                     `).join('');
                 } else {
@@ -339,19 +345,16 @@
                         <small class="text-muted">slug: ${s.slug || 'chưa có'}</small>
                     </td>
                     <td>
-                        <div style="max-height: 120px; overflow-y: auto;">
-                            <span class="badge bg-secondary mb-1">${s.albumsCount || s.albums.length} Album</span>
+                        <span class="badge bg-secondary">${s.albumsCount || s.albums.length} Album</span>
+                        <div style="max-height: 100px; overflow-y: auto; margin-top: 4px;">
                             ${albumsHtml}
                         </div>
                     </td>
                     <td><span class="text-success fw-bold">${s.daysLeft} ngày</span></td>
+                    <td><span class="badge bg-success">${s.vipStatus}</span></td>
                     <td>
-                        <span class="badge bg-${s.vipStatus === 'active' ? 'success' : 'danger'}">
-                            ${s.vipStatus}
-                        </span>
-                    </td>
-                    <td>
-                        <button class="btn btn-sm btn-primary mb-1" onclick="openActivateModal('${s.email}')">Gia hạn</button>
+                        <button class="btn btn-sm btn-warning" onclick="openAlbumModal('${s.email}')">Xem Album</button>
+                        <button class="btn btn-sm btn-primary" onclick="openActivateModal('${s.email}')">Gia hạn</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -361,10 +364,9 @@
         }
 
     } catch (e) {
-        console.error("Lỗi khi fetch dữ liệu:", e);
+        console.error("Lỗi tải dữ liệu:", e);
     }
 }
-
 // Gọi tự động khi tải trang xong
 document.addEventListener("DOMContentLoaded", () => {
     loadAllData();
