@@ -128,6 +128,7 @@
             <table class="table table-custom mb-0 align-middle">
                 <thead>
                     <tr>
+                        <th class="text-center">STT</th>
                         <th>Studio Email</th>
                         <th>Slug</th>
                         <th>Tổng Số Hợp Đồng / Lịch Chụp</th>
@@ -179,6 +180,7 @@
                     <table class="table table-custom mb-0 align-middle">
                         <thead>
                             <tr>
+                                <th class="text-center">STT</th>
                                 <th>Tiêu đề & Tác giả</th>
                                 <th>Email</th>
                                 <th>Ngày đăng</th>
@@ -556,8 +558,14 @@
         body.innerHTML = '';
         if (window.cachedContractsStudios.length > 0) {
             window.cachedContractsStudios.forEach((item) => {
+                let contractsList = (window.cachedContractsStudios || []).slice(0, 100);
+
+        body.innerHTML = '';
+        if (contractsList.length > 0) {
+            contractsList.forEach((item, index) => {
                 body.innerHTML += `
                     <tr>
+                        <td class="text-center text-secondary">${index + 1}</td>
                         <td><div class="fw-bold text-white">${item.studioEmail || 'Chưa có email'}</div></td>
                         <td><span class="text-secondary">${item.studioSlug || 'N/A'}</span></td>
                         <td><span class="badge bg-primary">${item.contractsCount || (item.contracts ? item.contracts.length : 0)} Lịch / Hợp đồng</span></td>
