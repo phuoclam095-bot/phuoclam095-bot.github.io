@@ -259,20 +259,23 @@
         const ADMIN_API_URL = "https://wsm.congtubaclieu.com.vn/webhook/super-admin-data";
         const CONTRACTS_API_URL = "https://wsm.congtubaclieu.com.vn/webhook/super-admin-contracts";
         function switchTab(tabId) {
-            document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
-            document.getElementById('tab-' + tabId).classList.add('active');
-            if (tabId === 'contracts') {
-                loadContractsData(); // Gọi riêng webhook tải hợp đồng khi bấm vào tab này
-            }
-            let titles = {
-                'studios': 'Quản Lý Studio & Cấu Hình Album',
-                'contracts': 'Trung Tâm Lịch Trình & Hợp Đồng CRM',
-                'transactions': 'Lịch Sử Giao Dịch & Nạp Tiền VIP',
-                'blogs': 'Kiểm Duyệt Bài Viết Cộng Đồng (Blog)',
-                'feedbacks': 'Hòm Thư Tiếp Nhận Góp Ý & Báo Lỗi'
-            };
-            document.getElementById('currentTitle').innerText = titles[tabId];
-        }
+    document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + tabId).classList.add('active');
+    
+    let titles = {
+        'studios': 'Quản Lý Studio & Cấu Hình Album',
+        'contracts': 'Trung Tâm Lịch Trình & Hợp Đồng CRM',
+        'transactions': 'Lịch Sử Giao Dịch & Nạp Tiền VIP',
+        'blogs': 'Kiểm Duyệt Bài Viết Cộng Đồng (Blog)',
+        'feedbacks': 'Hòm Thư Tiếp Nhận Góp Ý & Báo Lỗi'
+    };
+    document.getElementById('currentTitle').innerText = titles[tabId];
+
+    // Gọi riêng webhook tải hợp đồng khi bấm vào tab contracts
+    if (tabId === 'contracts') {
+        loadContractsData();
+    }
+}
 
         async function loadAllData() {
             try {
@@ -481,7 +484,46 @@
         document.addEventListener("DOMContentLoaded", () => {
             loadAllData();
         });
+        async function loadContractsData() {
+    let body = document.getElementById('contractTableBody');
+    if (!body) return;
+    
+    body.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-secondary">Đang tải dữ liệu hợp đồng...</td></tr>`;
+    
+    try {
+        let response = await fetch(CONTRACTS_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'get_contracts' })
+        });
+        let data = await response.json();
         
+        let resultData = Array.isArray(data) ? data[0] : data;
+        window.cachedContractsStudios = resultData.studiosContracts || resultData.contracts || [];
+
+        body.innerHTML = '';
+        if (window.cachedContractsStudios.length > 0) {
+            window.cachedContractsStudios.forEach((item) => {
+                body.innerHTML += `
+                    <tr>
+                        <td><div class="fw-bold text-white">${item.studioEmail || 'Chưa có email'}</div></td>
+                        <td><span class="text-secondary">${item.studioSlug || 'N/A'}</span></td>
+                        <td><span class="badge bg-primary">${item.contractsCount || (item.contracts ? item.contracts.length : 0)} Lịch / Hợp đồng</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-outline-warning" onclick="viewStudioContracts('${item.studioEmail}')">
+                                <i class="fas fa-eye"></i> Xem Chi Tiết Lịch
+                            </button>
+                        </td>
+                    </tr>`;
+            });
+        } else {
+            body.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-secondary">Chưa có dữ liệu hợp đồng nào.</td></tr>`;
+        }
+    } catch (e) {
+        console.error("Lỗi tải hợp đồng:", e);
+        body.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-danger">Không thể kết nối tới webhook hợp đồng.</td></tr>`;
+    }
+}
 function viewStudioContracts(email) {
     let studio = window.cachedContractsStudios.find(s => s.studioEmail === email);
     if (!studio) return;
@@ -494,7 +536,6 @@ function viewStudioContracts(email) {
         container.innerHTML = `<p class="text-center text-secondary py-4">Studio này chưa có lịch hẹn hoặc hợp đồng nào.</p>`;
     } else {
         studio.contracts.forEach(c => {
-            // Kiểm tra trạng thái thanh toán để đổi màu badge cho trực quan
             let badgeBg = (c.paymentStatus && c.paymentStatus.toLowerCase().includes('tất toán')) ? 'success' : 'warning';
             
             container.innerHTML += `
