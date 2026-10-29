@@ -299,15 +299,15 @@
         body.innerHTML = '';
         if (txList.length > 0) {
             txList.forEach(tx => {
-                let statusBadge = (tx.status.toLowerCase() === 'success' || tx.status.toLowerCase() === 'completed') ? 'success' : 'warning';
+                let statusBadge = (tx.status && tx.status.toLowerCase() === 'active') ? 'success' : 'warning';
                 body.innerHTML += `
                     <tr>
-                        <td><b class="text-primary">${tx.transactionCode}</b></td>
+                        <td><b class="text-primary">${tx.paymentCode}</b></td>
                         <td><div class="text-white">${tx.email}</div></td>
                         <td><b class="text-success">${tx.amount}</b></td>
-                        <td><span class="badge bg-dark border border-secondary text-info">${tx.packageName}</span></td>
+                        <td><span class="badge bg-dark border border-secondary text-info">${tx.months}</span></td>
                         <td><span class="badge bg-${statusBadge}">${tx.status}</span></td>
-                        <td><small class="text-secondary">${tx.createdAt}</small></td>
+                        <td><small class="text-secondary">${tx.timestamp}</small></td>
                     </tr>`;
             });
         } else {
@@ -318,7 +318,6 @@
         body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-danger">Không thể kết nối tới webhook giao dịch.</td></tr>`;
     }
 }
-
         async function loadAllData() {
             try {
                 let response = await fetch(ADMIN_API_URL, {
