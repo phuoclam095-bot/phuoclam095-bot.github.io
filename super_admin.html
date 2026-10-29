@@ -281,17 +281,26 @@
             body: JSON.stringify({ action: 'get_all_stats' })
         });
         
-        // In ra để kiểm tra response thô từ n8n
-        let data = await response.json();
-        console.log("Dữ liệu nhận từ n8n:", data); 
+        let responseJson = await response.json();
+        
+        // n8n trả về mảng bọc ngoài nên ta lấy phần tử đầu tiên responseJson[0] hoặc trực tiếp nếu trả object
+        let data = Array.isArray(responseJson) ? responseJson[0] : responseJson;
 
-        // Cập nhật số liệu lên các thẻ thống kê tổng quan
-        document.getElementById('totalStudiosCount').innerText = data.totalStudios || 0;
-        document.getElementById('totalAlbumsCount').innerText = data.totalAlbums || 0;
-        document.getElementById('totalRevenueCount').innerText = data.totalRevenue || "0 VNĐ";
-        document.getElementById('pendingBlogsCount').innerText = data.pendingBlogs || 0;
+        // 1. Cập nhật các thẻ thống kê tổng quan lên giao diện
+        if (document.getElementById('totalStudiosCount')) {
+            document.getElementById('totalStudiosCount').innerText = data.totalStudios || 0;
+        }
+        if (document.getElementById('totalAlbumsCount')) {
+            document.getElementById('totalAlbumsCount').innerText = data.totalAlbums || 0;
+        }
+        if (document.getElementById('totalRevenueCount')) {
+            document.getElementById('totalRevenueCount').innerText = data.totalRevenue || "0 VNĐ";
+        }
+        if (document.getElementById('pendingBlogsCount')) {
+            document.getElementById('pendingBlogsCount').innerText = data.pendingBlogs || 0;
+        }
 
-        // Render danh sách studio ra bảng
+        // 2. Render danh sách studio ra bảng chính
         let tbody = document.getElementById('studioTableBody');
         if (!tbody) return;
         tbody.innerHTML = '';
@@ -299,6 +308,17 @@
         if (data.studios && data.studios.length > 0) {
             data.studios.forEach(s => {
                 let tr = document.createElement('tr');
+                
+                // Liệt kê tên các album của studio này để hiển thị trực quan
+                let albumsHtml = s.albums.map(a => `
+                    <div class="mb-1">
+                        <a href="${a.driveLink}" target="_blank" class="text-decoration-none text-primary">
+                            📁 ${a.albumName}
+                        </a> 
+                        <span class="badge bg-light text-dark border">(${a.totalPhotos} ảnh - Chọn: ${a.selectedCount})</span>
+                    </div>
+                `).join('');
+
                 tr.innerHTML = `
                     <td>
                         <strong>${s.name}</strong><br>
@@ -308,12 +328,20 @@
                         ${s.phone}<br>
                         <small class="text-muted">slug: ${s.slug || 'chưa có'}</small>
                     </td>
-                    <td><span class="badge bg-secondary">${s.albumsCount || s.albums.length} Album</span></td>
-                    <td><span class="text-success fw-bold">${s.daysLeft} ngày</span></td>
-                    <td><span class="badge bg-success">${s.vipStatus}</span></td>
                     <td>
-                        <button class="btn btn-sm btn-warning" onclick="openAlbumModal('${s.email}')">Xem Album</button>
-                        <button class="btn btn-sm btn-primary" onclick="openActivateModal('${s.email}')">Gia hạn</button>
+                        <div style="max-height: 120px; overflow-y: auto;">
+                            <span class="badge bg-secondary mb-1">${s.albumsCount} Album</span>
+                            ${albumsHtml}
+                        </div>
+                    </td>
+                    <td><span class="text-success fw-bold">${s.daysLeft} ngày</span></td>
+                    <td>
+                        <span class="badge bg-${s.vipStatus === 'active' ? 'success' : 'danger'}">
+                            ${s.vipStatus}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-primary mb-1" onclick="openActivateModal('${s.email}')">Gia hạn</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -324,9 +352,11 @@
 
     } catch (e) {
         console.error("Lỗi tải dữ liệu:", e);
-        alert("Có lỗi xảy ra khi kết nối tới n8n. Vui lòng kiểm tra Console (F12).");
     }
 }
+
+// Gọi hàm chạy ngay khi mở trang
+loadAllData();
 
         function renderMockData() {
             let mock = {
