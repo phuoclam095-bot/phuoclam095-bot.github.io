@@ -380,13 +380,12 @@
             let notesHtml = '';
             if (album.clientNotes && album.clientNotes.length > 0) {
                 album.clientNotes.forEach(n => {
-                    notesHtml += `<div class="small bg-black p-2 rounded mb-1 border border-secondary text-light"><i class="fas fa-comment-dots text-primary me-2"></i><b>${n.photoId}:</b> ${n.noteText}</div>`;
+                    notesHtml += `<div class="small bg-black p-2 rounded mb-1 border border-secondary text-light"><i class="fas fa-comment-dots text-primary me-2"></i><b>${n.photoName || 'Ảnh'}:</b> ${n.noteText}</div>`;
                 });
             } else {
                 notesHtml = `<span class="text-secondary small italic">Chưa có ghi chú trên ảnh.</span>`;
             }
 
-            // Ép cứng tạo link chuẩn bằng folderId của album, đảm bảo mở ra đúng thư mục folder gốc
             let folderId = album.folderId;
             let folderUrl = folderId ? `https://drive.google.com/drive/folders/${folderId}` : '#';
 
@@ -397,10 +396,9 @@
                             <h5 class="text-primary fw-bold mb-1"><i class="fas fa-folder-open me-2"></i>${album.albumName}</h5>
                             <a href="${folderUrl}" target="_blank" class="small text-info text-decoration-none fw-bold"><i class="fab fa-google-drive me-1"></i>Mở thư mục Google Drive gốc (Folder)</a>
                         </div>
-                        <span class="badge bg-secondary text-light">ID: ${folderId || 'N/A'}</span>
                     </div>
                     <div class="row g-3 my-2">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="p-2 bg-dark rounded border border-secondary h-100 text-light">
                                 <span class="text-warning small d-block mb-1 fw-bold"><i class="fas fa-cog me-1"></i>Cấu hình Album (Setting):</span>
                                 <span class="small text-light">• Watermark: <b class="text-white">${album.config?.watermark ? 'Bật (Có)' : 'Tắt (Không)'}</b></span><br>
@@ -409,18 +407,19 @@
                                 <span class="small text-light">• Bình luận: <b class="text-white">${album.config?.allowComment ? 'Bật' : 'Tắt'}</b></span>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="p-2 bg-dark rounded border border-secondary h-100 text-light">
-                                <span class="text-warning small d-block mb-1 fw-bold"><i class="fas fa-chart-pie me-1"></i>Tiến độ & Ghi chú chung:</span>
+                                <span class="text-warning small d-block mb-1 fw-bold"><i class="fas fa-chart-pie me-1"></i>Tiến độ thực tế:</span>
                                 <span class="small text-light">Tổng số ảnh: <b class="text-white">${album.totalPhotos} ảnh</b></span><br>
-                                <span class="small text-light">Khách đã chọn: <b class="text-success">${album.selectedCount} ảnh</b></span><br>
-                                <span class="small text-secondary mt-1 d-block">Ghi chú: ${album.notes || 'Không có'}</span>
+                                <span class="small text-light">Khách đã chọn: <b class="text-success">${album.selectedCount} ảnh</b></span>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="p-2 bg-dark rounded border border-secondary h-100 text-light">
-                                <span class="text-warning small d-block mb-1 fw-bold"><i class="fas fa-comments me-1"></i>Ghi chú của khách hàng:</span>
-                                <div style="max-height: 100px; overflow-y: auto;">${notesHtml}</div>
+                    </div>
+                    <div class="row g-3 mt-1">
+                        <div class="col-12">
+                            <div class="p-2 bg-dark rounded border border-secondary text-light">
+                                <span class="text-warning small d-block mb-1 fw-bold"><i class="fas fa-comments me-1"></i>Ghi chú của khách hàng theo tên ảnh:</span>
+                                <div style="max-height: 120px; overflow-y: auto;">${notesHtml}</div>
                             </div>
                         </div>
                     </div>
