@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hệ Thống Quản Trị Tổng - ChonAnhNhanh.vn</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root { --primary: #00ebb0; --bg-dark: #070e17; --card-bg: rgba(255, 255, 255, 0.03); --border-color: rgba(255, 255, 255, 0.08); }
@@ -19,13 +20,6 @@
         .nav-link:hover, .nav-link.active { background: var(--primary); color: #000; font-weight: 700; }
         .tab-pane { display: none; }
         .tab-pane.active { display: block; }
-        .table-custom th, .table-custom td {
-        white-space: nowrap; /* Tránh ngắt dòng làm chìm chữ */
-            }
-        .table-custom th:first-child, .table-custom td:first-child {
-            width: 60px; /* Cột STT nhỏ gọn */
-            text-align: center;
-        }
     </style>
 </head>
 <body>
@@ -100,7 +94,6 @@
                     <table class="table table-custom mb-0 align-middle">
                         <thead>
                             <tr>
-                                <th class="text-center">STT</th>
                                 <th>Studio & Thông tin</th>
                                 <th>Điện thoại & Slug</th>
                                 <th>Album & Tình trạng</th>
@@ -117,22 +110,6 @@
             </div>
         </div>
 
-        <!-- MODAL XEM CHI TIẾT LỊCH & HỢP ĐỒNG CỦA STUDIO -->
-<div class="modal fade" id="contractDetailModal" tabindex="-1">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content bg-dark text-white border-secondary">
-            <div class="modal-header border-secondary">
-                <h5 class="modal-title"><i class="fas fa-calendar-alt text-primary me-2"></i>Danh Sách Lịch Chụp & Hợp Đồng: <span id="contractStudioEmailTitle" class="text-warning">--</span></h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body" style="max-height: 75vh; overflow-y: auto;" id="contractDetailContent"></div>
-            <div class="modal-footer border-secondary">
-                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Đóng</button>
-            </div>
-        </div>
-    </div>
-</div>
-        
         <!-- TAB 2: LỊCH TRÌNH & HỢP ĐỒNG CRM -->
         <div id="tab-contracts" class="tab-pane">
     <div class="card card-stat p-0 overflow-hidden">
@@ -144,7 +121,6 @@
             <table class="table table-custom mb-0 align-middle">
                 <thead>
                     <tr>
-                        <th class="text-center">STT</th>
                         <th>Studio Email</th>
                         <th>Slug</th>
                         <th>Tổng Số Hợp Đồng / Lịch Chụp</th>
@@ -163,13 +139,12 @@
         <div id="tab-transactions" class="tab-pane">
             <div class="card card-stat p-0 overflow-hidden">
                 <div class="p-3 border-bottom border-secondary">
-                    <h5 class="mb-0 text-primary"><i class="fas fa-wallet me-2"></i>Lịch Sử Giao Dịch Nạp Tiền Gia Hạn</h5>
+                    <h5 class="mb-0 text-primary"><i class="fas fa-wallet me-2"></i>Lịch Sử Giao Dịch Nạp Tiền Gia Hạn (Bảng `payment_transactions`)</h5>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-custom mb-0 align-middle">
                         <thead>
                             <tr>
-                                <th class="text-center">STT</th>
                                 <th>Mã Giao Dịch (Code)</th>
                                 <th>Studio Email</th>
                                 <th>Số Tiền</th>
@@ -251,7 +226,7 @@
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <!-- MODAL KÍCH HOẠT / GIA HẠN THỦ CÔNG -->
     <div class="modal fade" id="activateModal" tabindex="-1">
         <div class="modal-dialog">
@@ -281,7 +256,6 @@
     </div>
 
     <script>
-        
         const TRANSACTIONS_API_URL = "https://wsm.congtubaclieu.com.vn/webhook/super-admin-transactions";
         const ADMIN_API_URL = "https://wsm.congtubaclieu.com.vn/webhook/super-admin-data";
         const CONTRACTS_API_URL = "https://wsm.congtubaclieu.com.vn/webhook/super-admin-contracts";
@@ -309,7 +283,7 @@
     let body = document.getElementById('transactionTableBody');
     if (!body) return;
     
-    body.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-secondary">Đang tải lịch sử giao dịch...</td></tr>`;
+    body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">Đang tải lịch sử giao dịch...</td></tr>`;
     
     try {
         let response = await fetch(TRANSACTIONS_API_URL, {
@@ -322,16 +296,12 @@
         let resultData = Array.isArray(data) ? data[0] : data;
         let txList = resultData.transactions || [];
 
-        // Giới hạn 100 dòng hiển thị tối đa
-        txList = txList.slice(0, 100);
-
         body.innerHTML = '';
         if (txList.length > 0) {
-            txList.forEach((tx, index) => {
+            txList.forEach(tx => {
                 let statusBadge = (tx.status && tx.status.toLowerCase() === 'active') ? 'success' : 'warning';
                 body.innerHTML += `
                     <tr>
-                        <td class="text-center text-secondary">${index + 1}</td>
                         <td><b class="text-primary">${tx.paymentCode}</b></td>
                         <td><div class="text-white">${tx.email}</div></td>
                         <td><b class="text-success">${tx.amount}</b></td>
@@ -341,11 +311,11 @@
                     </tr>`;
             });
         } else {
-            body.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-secondary">Chưa có lịch sử giao dịch nào.</td></tr>`;
+            body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">Chưa có lịch sử giao dịch nào.</td></tr>`;
         }
     } catch (e) {
         console.error("Lỗi tải giao dịch:", e);
-        body.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-danger">Không thể kết nối tới webhook giao dịch.</td></tr>`;
+        body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-danger">Không thể kết nối tới webhook giao dịch.</td></tr>`;
     }
 }
         async function loadAllData() {
@@ -374,7 +344,8 @@
             }
         }
 
-       function renderAllData(data) {
+        function renderAllData(data) {
+    // Cập nhật các thẻ thống kê tổng quan
     document.getElementById('statStudios').innerText = data.totalStudios || 0;
     document.getElementById('statAlbums').innerText = data.totalAlbums || 0;
     document.getElementById('statRevenue').innerText = data.totalRevenue || "0 VNĐ";
@@ -382,20 +353,18 @@
 
     window.cachedStudios = data.studios || [];
 
+    // Render bảng Studios chính
     let sBody = document.getElementById('studioTableBody');
     sBody.innerHTML = '';
     
-    // Giới hạn hiển thị tối đa 100 dòng
-    let studiosToRender = window.cachedStudios.slice(0, 100);
-
-    if (studiosToRender.length > 0) {
-        studiosToRender.forEach((s, index) => {
+    if (data.studios && data.studios.length > 0) {
+        data.studios.forEach(s => {
+            // Xơ đồ màu sắc: hết hạn hoặc <= 3 ngày thì báo đỏ, còn lại màu xanh
             let badgeClass = s.daysLeft <= 3 ? 'text-danger fw-bold' : 'text-success fw-bold';
             let statusBadge = s.vipStatus === 'active' ? 'success' : 'danger';
 
             sBody.innerHTML += `
                 <tr>
-                    <td class="text-center text-secondary">${index + 1}</td>
                     <td>
                         <div class="fw-bold text-white">${s.name || 'Chưa đặt tên'}</div>
                         <div class="small text-secondary">${s.email}</div>
@@ -420,7 +389,7 @@
                 </tr>`;
         });
     } else {
-        sBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-secondary">Không có dữ liệu studio nào.</td></tr>`;
+        sBody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">Không có dữ liệu studio nào.</td></tr>`;
     }
 
     // Render các bảng phụ an toàn
@@ -556,11 +525,11 @@
         document.addEventListener("DOMContentLoaded", () => {
             loadAllData();
         });
-       async function loadContractsData() {
+        async function loadContractsData() {
     let body = document.getElementById('contractTableBody');
     if (!body) return;
     
-    body.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-secondary">Đang tải dữ liệu hợp đồng...</td></tr>`;
+    body.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-secondary">Đang tải dữ liệu hợp đồng...</td></tr>`;
     
     try {
         let response = await fetch(CONTRACTS_API_URL, {
@@ -573,15 +542,11 @@
         let resultData = Array.isArray(data) ? data[0] : data;
         window.cachedContractsStudios = resultData.studiosContracts || resultData.contracts || [];
 
-        // Giới hạn tối đa 100 dòng
-        let contractsList = window.cachedContractsStudios.slice(0, 100);
-
         body.innerHTML = '';
-        if (contractsList.length > 0) {
-            contractsList.forEach((item, index) => {
+        if (window.cachedContractsStudios.length > 0) {
+            window.cachedContractsStudios.forEach((item) => {
                 body.innerHTML += `
                     <tr>
-                        <td class="text-center text-secondary">${index + 1}</td>
                         <td><div class="fw-bold text-white">${item.studioEmail || 'Chưa có email'}</div></td>
                         <td><span class="text-secondary">${item.studioSlug || 'N/A'}</span></td>
                         <td><span class="badge bg-primary">${item.contractsCount || (item.contracts ? item.contracts.length : 0)} Lịch / Hợp đồng</span></td>
@@ -593,12 +558,13 @@
                     </tr>`;
             });
         } else {
-            body.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-secondary">Chưa có dữ liệu hợp đồng nào.</td></tr>`;
+            body.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-secondary">Chưa có dữ liệu hợp đồng nào.</td></tr>`;
         }
     } catch (e) {
         console.error("Lỗi tải hợp đồng:", e);
-        body.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-danger">Không thể kết nối tới webhook hợp đồng.</td></tr>`;
+        body.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-danger">Không thể kết nối tới webhook hợp đồng.</td></tr>`;
     }
+}
 function viewStudioContracts(email) {
     let studio = window.cachedContractsStudios.find(s => s.studioEmail === email);
     if (!studio) return;
@@ -655,9 +621,22 @@ function viewStudioContracts(email) {
     }
     new bootstrap.Modal(document.getElementById('contractDetailModal')).show();
 }
-    
-    
     </script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- MODAL XEM CHI TIẾT LỊCH & HỢP ĐỒNG CỦA STUDIO -->
+<div class="modal fade" id="contractDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content bg-dark text-white border-secondary">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title"><i class="fas fa-calendar-alt text-primary me-2"></i>Danh Sách Lịch Chụp & Hợp Đồng: <span id="contractStudioEmailTitle" class="text-warning">--</span></h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" style="max-height: 75vh; overflow-y: auto;" id="contractDetailContent"></div>
+            <div class="modal-footer border-secondary">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
