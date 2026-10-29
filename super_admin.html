@@ -532,35 +532,46 @@ function viewStudioContracts(email) {
         container.innerHTML = `<p class="text-center text-secondary py-4">Studio này chưa có lịch hẹn hoặc hợp đồng nào.</p>`;
     } else {
         studio.contracts.forEach(c => {
-            let badgeBg = c.paymentStatus.includes('tất toán') || c.paymentStatus.includes('Đã tất toán') ? 'success' : 'warning';
+            // Kiểm tra trạng thái thanh toán để đổi màu badge cho trực quan
+            let badgeBg = (c.paymentStatus && c.paymentStatus.toLowerCase().includes('tất toán')) ? 'success' : 'warning';
+            
             container.innerHTML += `
                 <div class="card bg-black border border-secondary p-3 mb-3 rounded-4 text-white">
                     <div class="d-flex justify-content-between align-items-center mb-2 border-bottom border-secondary pb-2">
                         <div>
-                            <h5 class="text-primary fw-bold mb-1"><i class="fas fa-user me-2"></i>${c.customerName} <span class="small text-info">(${c.customerPhone})</span></h5>
-                            <span class="small text-secondary"><i class="fas fa-tag me-1"></i>Gói: <b>${c.servicePackage}</b></span>
+                            <h5 class="text-primary fw-bold mb-1">
+                                <i class="fas fa-user me-2"></i>${c.customerName || 'Khách lẻ'} 
+                                <span class="small text-info">(${c.customerPhone || 'Không có SĐT'})</span>
+                            </h5>
+                            <span class="small text-warning"><i class="fas fa-tag me-1"></i>Gói dịch vụ: <b>${c.servicePackage || 'Gói tiêu chuẩn'}</b></span>
                         </div>
-                        <span class="badge bg-${badgeBg} px-3 py-2">${c.paymentStatus}</span>
+                        <span class="badge bg-${badgeBg} px-3 py-2">${c.paymentStatus || 'Chưa cọc'}</span>
                     </div>
+                    
                     <div class="row g-3 my-1">
                         <div class="col-md-6">
-                            <div class="p-2 bg-dark rounded border border-secondary text-light">
+                            <div class="p-2 bg-dark rounded border border-secondary text-light h-100">
                                 <span class="text-warning small d-block mb-1 fw-bold"><i class="fas fa-clock me-1"></i>Thời gian & Địa điểm:</span>
                                 <span class="small text-light">• Ngày sự kiện (Dương): <b class="text-white">${c.eventDate}</b></span><br>
                                 <span class="small text-light">• Ngày Âm lịch: <b class="text-info">${c.lunarDate}</b></span><br>
-                                <span class="small text-light">• Địa điểm: <b class="text-white">${c.eventLocation || 'Chưa cập nhật'}</b></span>
+                                <span class="small text-light">• Địa điểm: <b class="text-white">${c.eventLocation || 'Tại studio'}</b></span>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="p-2 bg-dark rounded border border-secondary text-light">
-                                <span class="text-warning small d-block mb-1 fw-bold"><i class="fas fa-money-bill-wave me-1"></i>Tài chính:</span>
+                            <div class="p-2 bg-dark rounded border border-secondary text-light h-100">
+                                <span class="text-warning small d-block mb-1 fw-bold"><i class="fas fa-money-bill-wave me-1"></i>Tài chính & Thanh toán:</span>
                                 <span class="small text-light">• Tổng tiền: <b class="text-white">${c.totalAmount}</b></span><br>
                                 <span class="small text-light">• Đã cọc: <b class="text-success">${c.depositAmount}</b></span><br>
                                 <span class="small text-light">• Còn lại: <b class="text-danger">${c.remainingAmount}</b></span>
                             </div>
                         </div>
                     </div>
-                    ${c.note ? `<div class="mt-2 p-2 bg-dark rounded border border-secondary small text-light"><i class="fas fa-sticky-note text-warning me-1"></i><b>Ghi chú:</b> ${c.note}</div>` : ''}
+
+                    ${c.note ? `
+                        <div class="mt-2 p-2 bg-dark rounded border border-secondary small text-light">
+                            <i class="fas fa-sticky-note text-warning me-1"></i><b>Ghi chú:</b> <span class="text-white">${c.note}</span>
+                        </div>
+                    ` : ''}
                 </div>`;
         });
     }
