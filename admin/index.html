@@ -196,6 +196,41 @@
     z-index: 10;
     white-space: nowrap;
 }
+
+
+        /* Tinh chỉnh lại dải nút gợi ý trong khung chat để không bị tràn viền */
+.chat-suggestions {
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.2);
+    display: flex;
+    gap: 6px;
+    overflow-x: auto; /* Cho phép lướt ngang nếu màn hình nhỏ */
+    white-space: nowrap;
+    width: 100%;
+    box-sizing: border-box; /* Đảm bảo padding không bị đẩy tràn viền */
+}
+
+/* Ẩn thanh cuộn ngang đi nhưng vẫn vuốt được trên điện thoại / chuột lăn trên PC */
+.chat-suggestions::-webkit-scrollbar {
+    display: none; /* Đối với Chrome, Safari, Edge */
+}
+.chat-suggestions {
+    -ms-overflow-style: none;  /* Đối với IE và Edge cũ */
+    scrollbar-width: none;  /* Đối với Firefox */
+}
+
+/* Tinh chỉnh lại kiểu dáng các nút bấm gợi ý cho gọn gàng */
+.chat-suggestions span {
+    background: rgba(0, 235, 176, 0.1);
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    padding: 4px 10px;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    cursor: pointer;
+    flex-shrink: 0; /* Không bị bóp méo nút khi khung chat hẹp */
+}
     </style>
 </head>
 <body>
