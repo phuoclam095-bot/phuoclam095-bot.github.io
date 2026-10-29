@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Quản Trị Tổng - ChonAnhNhanh.vn</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary: #00ebb0; --bg-dark: #070e17; --card-bg: rgba(255, 255, 255, 0.03); --border-color: rgba(255, 255, 255, 0.08); }
+        body { background: var(--bg-dark); color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .sidebar { width: 260px; height: 100vh; position: fixed; background: rgba(0,0,0,0.65); border-right: 1px solid var(--border-color); padding: 25px 20px; z-index: 100; }
+        .main-content { margin-left: 260px; padding: 35px; }
+        .card-stat { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 22px; backdrop-filter: blur(10px); }
+        .table-custom { background: transparent; color: #fff; vertical-align: middle; }
+        .table-custom th { background: rgba(0, 235, 176, 0.1); color: var(--primary); border: none; padding: 14px; font-weight: 600; }
+        .table-custom td { background: rgba(255,255,255,0.015); border-color: var(--border-color); color: #ccc; padding: 14px; }
+        .badge-vip { background: rgba(0, 235, 176, 0.15); color: var(--primary); border: 1px solid var(--primary); }
+        .nav-link { color: #8a9ba8; border-radius: 10px; padding: 12px 18px; transition: all 0.2s; margin-bottom: 5px; }
+        .nav-link:hover, .nav-link.active { background: var(--primary); color: #000; font-weight: 700; }
+        .tab-pane { display: none; }
+        .tab-pane.active { display: block; }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR NAVIGATION -->
+    <div class="sidebar d-flex flex-column justify-content-between">
+        <div>
+            <div class="d-flex align-items-center mb-4 pb-3 border-bottom border-secondary">
+                <i class="fas fa-shield-alt text-primary fa-2x me-3"></i>
+                <div>
+                    <h5 class="text-white fw-bold mb-0">SUPER ADMIN</h5>
+                    <small class="text-secondary">chonanhnhanh.vn</small>
+                </div>
+            </div>
+            <ul class="nav flex-column gap-1" id="adminTabs" role="tablist">
+                <li class="nav-item"><a href="#studios" class="nav-link active" data-bs-toggle="tab" onclick="switchTab('studios')"><i class="fas fa-users me-2"></i> Quản lý Studio</a></li>
+                <li class="nav-item"><a href="#contracts" class="nav-link" data-bs-toggle="tab" onclick="switchTab('contracts')"><i class="fas fa-file-contract me-2"></i> Lịch & Hợp đồng CRM</a></li>
+                <li class="nav-item"><a href="#transactions" class="nav-link" data-bs-toggle="tab" onclick="switchTab('transactions')"><i class="fas fa-wallet me-2"></i> Giao dịch & Nạp tiền</a></li>
+                <li class="nav-item"><a href="#blogs" class="nav-link" data-bs-toggle="tab" onclick="switchTab('blogs')"><i class="fas fa-newspaper me-2"></i> Duyệt Bài Viết Blog</a></li>
+                <li class="nav-item"><a href="#feedbacks" class="nav-link" data-bs-toggle="tab" onclick="switchTab('feedbacks')"><i class="fas fa-headset me-2"></i> Góp ý & Báo lỗi</a></li>
+            </ul>
+        </div>
+        <div>
+            <button onclick="loadAllData()" class="btn btn-outline-primary w-100 rounded-pill btn-sm mb-2"><i class="fas fa-sync-alt me-2"></i> Đồng bộ dữ liệu</button>
+            <button onclick="alert('Đã đăng xuất phiên quản trị tổng!')" class="btn btn-outline-danger w-100 rounded-pill btn-sm"><i class="fas fa-sign-out-alt me-2"></i> Đăng xuất</button>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <div class="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 id="currentTitle" class="fw-bold">Trung Tâm Quản Lý Studio & Hệ Thống</h3>
+            <span class="badge bg-secondary px-3 py-2 text-white"><i class="fas fa-circle text-success me-1"></i> Trạng thái: Hoạt động trực tuyến</span>
+        </div>
+
+        <!-- QUICK STATS OVERVIEW -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="card-stat">
+                    <span class="text-secondary small">Tổng số Studio</span>
+                    <h3 class="fw-bold text-primary mt-2" id="statStudios">--</h3>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card-stat">
+                    <span class="text-secondary small">Tổng Album Khởi Tạo</span>
+                    <h3 class="fw-bold text-info mt-2" id="statAlbums">--</h3>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card-stat">
+                    <span class="text-secondary small">Tổng Doanh Thu Nạp VIP</span>
+                    <h3 class="fw-bold text-warning mt-2" id="statRevenue">--</h3>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card-stat">
+                    <span class="text-secondary small">Bài Viết Blog Chờ Duyệt</span>
+                    <h3 class="fw-bold text-danger mt-2" id="statPendingBlogs">--</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 1: QUẢN LÝ STUDIO & ALBUM -->
+        <div id="tab-studios" class="tab-pane active">
+            <div class="card card-stat p-0 overflow-hidden">
+                <div class="p-3 border-bottom border-secondary d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-primary"><i class="fas fa-server me-2"></i>Danh Sách Studio & Cấu Hình Hạn Sử Dụng</h5>
+                    <input type="text" id="searchStudio" class="form-control form-control-sm bg-dark text-white border-secondary w-25" placeholder="Tìm theo tên/email studio..." onkeyup="filterStudios()">
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-custom mb-0 align-middle">
+                        <thead>
+                            <tr>
+                                <th>Studio & Thông tin</th>
+                                <th>Điện thoại & Slug</th>
+                                <th>Album & Tình trạng</th>
+                                <th>Hạn sử dụng</th>
+                                <th>Trạng thái</th>
+                                <th class="text-end">Hành động quản lý</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studioTableBody">
+                            <tr><td colspan="6" class="text-center py-4 text-secondary">Đang tải dữ liệu bảng User & Albums...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: LỊCH TRÌNH & HỢP ĐỒNG CRM -->
+        <div id="tab-contracts" class="tab-pane">
+            <div class="card card-stat p-0 overflow-hidden">
+                <div class="p-3 border-bottom border-secondary">
+                    <h5 class="mb-0 text-primary"><i class="fas fa-file-contract me-2"></i>Quản Lý Lịch Chụp, Hợp Đồng & Công Nợ (Bảng `studio_contracts`)</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-custom mb-0 align-middle">
+                        <thead>
+                            <tr>
+                                <th>Studio Email</th>
+                                <th>Khách Hàng</th>
+                                <th>Gói Dịch Vụ</th>
+                                <th>Ngày Sự Kiện (Âm/Dương)</th>
+                                <th>Tổng Tiền / Còn Lại</th>
+                                <th>Trạng Thái Thanh Toán</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contractTableBody">
+                            <tr><td colspan="6" class="text-center py-4 text-secondary">Đang tải dữ liệu hợp đồng...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: GIAO DỊCH & NẠP TIỀN VIP -->
+        <div id="tab-transactions" class="tab-pane">
+            <div class="card card-stat p-0 overflow-hidden">
+                <div class="p-3 border-bottom border-secondary">
+                    <h5 class="mb-0 text-primary"><i class="fas fa-wallet me-2"></i>Lịch Sử Giao Dịch Nạp Tiền Gia Hạn (Bảng `payment_transactions`)</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-custom mb-0 align-middle">
+                        <thead>
+                            <tr>
+                                <th>Mã Giao Dịch (Code)</th>
+                                <th>Studio Email</th>
+                                <th>Số Tiền</th>
+                                <th>Gói Thời Gian</th>
+                                <th>Trạng Thái</th>
+                                <th>Thời Gian</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionTableBody">
+                            <tr><td colspan="6" class="text-center py-4 text-secondary">Đang tải dữ liệu giao dịch...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: DUYỆT BÀI VIẾT BLOG -->
+        <div id="tab-blogs" class="tab-pane">
+            <div class="card card-stat p-0 overflow-hidden">
+                <div class="p-3 border-bottom border-secondary">
+                    <h5 class="mb-0 text-primary"><i class="fas fa-newspaper me-2"></i>Kiểm Duyệt Bài Viết Cộng Đồng (Bảng `Blog_Data`)</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-custom mb-0 align-middle">
+                        <thead>
+                            <tr>
+                                <th>Tiêu đề & Tác giả</th>
+                                <th>Email</th>
+                                <th>Ngày đăng</th>
+                                <th>Trạng thái</th>
+                                <th class="text-end">Phê duyệt / Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="blogTableBody">
+                            <tr><td colspan="5" class="text-center py-4 text-secondary">Đang tải danh sách bài viết...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 5: GÓP Ý & BÁO LỖI -->
+        <div id="tab-feedbacks" class="tab-pane">
+            <div class="card card-stat p-0 overflow-hidden">
+                <div class="p-3 border-bottom border-secondary">
+                    <h5 class="mb-0 text-primary"><i class="fas fa-headset me-2"></i>Hòm Thư Góp Ý & Báo Lỗi Kỹ Thuật (Bảng `fedback`)</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-custom mb-0 align-middle">
+                        <thead>
+                            <tr>
+                                <th>Người gửi</th>
+                                <th>Email</th>
+                                <th>Nội dung phản hồi</th>
+                                <th>Thời gian gửi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="feedbackTableBody">
+                            <tr><td colspan="4" class="text-center py-4 text-secondary">Đang tải hòm thư góp ý...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL XEM CHI TIẾT ALBUM & CẤU HÌNH -->
+    <div class="modal fade" id="albumDetailModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content bg-dark text-white border-secondary">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title"><i class="fas fa-images text-primary me-2"></i>Chi Tiết Album & Ghi Chú Khách: <span id="detailStudioName" class="text-warning">--</span></h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" style="max-height: 75vh; overflow-y: auto;" id="albumDetailContent"></div>
+                <div class="modal-footer border-secondary">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL KÍCH HOẠT / GIA HẠN THỦ CÔNG -->
+    <div class="modal fade" id="activateModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-white border-secondary">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title">Kích Hoạt & Gia Hạn Gói Cước VIP</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="modalStudioEmail">
+                    <p class="mb-3">Studio: <b id="modalStudioDisplay" class="text-primary"></b></p>
+                    <label class="form-label small text-secondary">Chọn thời gian cộng dồn:</label>
+                    <select id="durationSelect" class="form-select bg-black text-white border-secondary mb-3">
+                        <option value="15">Nửa tháng (15 ngày)</option>
+                        <option value="30" selected>1 tháng (30 ngày)</option>
+                        <option value="90">3 tháng (90 ngày)</option>
+                        <option value="365">1 năm (365 ngày)</option>
+                        <option value="unlimited">Vĩnh viễn / Không giới hạn</option>
+                    </select>
+                </div>
+                <div class="modal-footer border-secondary justify-content-end gap-2">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary btn-sm fw-bold" onclick="submitActivation()">Xác nhận gia hạn</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ADMIN_API_URL = "https://wsm.congtubaclieu.com.vn/webhook/super-admin-data";
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            
+            let titles = {
+                'studios': 'Quản Lý Studio & Cấu Hình Album',
+                'contracts': 'Trung Tâm Lịch Trình & Hợp Đồng CRM',
+                'transactions': 'Lịch Sử Giao Dịch & Nạp Tiền VIP',
+                'blogs': 'Kiểm Duyệt Bài Viết Cộng Đồng (Blog)',
+                'feedbacks': 'Hòm Thư Tiếp Nhận Góp Ý & Báo Lỗi'
+            };
+            document.getElementById('currentTitle').innerText = titles[tabId];
+        }
+
+        async function loadAllData() {
+            try {
+                let res = await fetch(ADMIN_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'get_all_data' })
+                });
+                let data = await res.json();
+                renderAllData(data);
+            } catch(e) {
+                console.warn("Chưa kết nối Webhook thật, hiển thị dữ liệu mẫu kiểm tra giao diện!");
+                renderMockData();
+            }
+        }
+
+        function renderMockData() {
+            let mock = {
+                totalStudios: 2,
+                totalAlbums: 3,
+                totalRevenue: "1,500,000 VNĐ",
+                pendingBlogsCount: 1,
+                studios: [
+                    {
+                        email: "maybridal@gmail.com",
+                        name: "Studio Mây Bridal",
+                        studio_phone: "0909123456",
+                        studio_slug: "may-bridal",
+                        expiry_timestamp: "2026-05-15",
+                        status: "active",
+                        daysLeft: 16,
+                        vipStatus: "VIP Standard",
+                        albums: [
+                            {
+                                id: 1,
+                                name: "Wedding Anh Tuấn & Lan Hương",
+                                webviewlink: "https://drive.google.com/drive/folders/example1",
+                                selected: 45,
+                                limit_photos: 50,
+                                allow_download: false,
+                                allow_comment: true,
+                                watermark_enabled: true,
+                                note: "Giao gấp trước ngày cưới.",
+                                clientNotes: [{ photoId: "IMG_102.jpg", noteText: "Sửa màu sáng hơn giúp em!" }]
+                            }
+                        ]
+                    },
+                    {
+                        email: "blwedding@gmail.com",
+                        name: "Bạc Liêu Wedding Art",
+                        studio_phone: "0879029170",
+                        studio_slug: "bac-lieu-wedding",
+                        expiry_timestamp: "2026-03-02",
+                        status: "active",
+                        daysLeft: 2,
+                        vipStatus: "VIP Pro",
+                        albums: [
+                            {
+                                id: 2,
+                                name: "Pre-Wedding Hoàng Nam",
+                                webviewlink: "https://drive.google.com/drive/folders/example2",
+                                selected: 10,
+                                limit_photos: 30,
+                                allow_download: true,
+                                allow_comment: true,
+                                watermark_enabled: false,
+                                note: "",
+                                clientNotes: []
+                            }
+                        ]
+                    }
+                ],
+                contracts: [
+                    { studio_email: "maybridal@gmail.com", customer_name: "Nguyễn Anh Tuấn", service_package: "Trọn gói ngày cưới", event_date: "2026-05-10", lunar_date: "24/03 Âm lịch", total_amount: "15,000,000", remaining_amount: "3,000,000", payment_status: "Đã cọc" }
+                ],
+                transactions: [
+                    { payment_code: "CNN9921", email: "maybridal@gmail.com", amount: "500,000 VNĐ", months: "1 tháng", status: "success", timestamp: "2026-04-01 10:20" }
+                ],
+                blogs: [
+                    { id: 1, post_id: "post_01", email: "maybridal@gmail.com", author: "Mây Bridal", title: "Kinh nghiệm chụp ảnh cưới ngoại cảnh Hồ Tràm", date: "2026-04-15", status: "pending" }
+                ],
+                feedbacks: [
+                    { name: "Lâm Nam Phước", email: "phuoc@gmail.com", conten: "Hệ thống chạy mượt mà, AI Agent phản hồi rất tốt.", ttime: "2026-04-18" }
+                ]
+            };
+            renderAllData(mock);
+        }
+
+        function renderAllData(data) {
+            document.getElementById('statStudios').innerText = data.totalStudios || 0;
+            document.getElementById('statAlbums').innerText = data.totalAlbums || 0;
+            document.getElementById('statRevenue').innerText = data.totalRevenue || "0 VNĐ";
+            document.getElementById('statPendingBlogs').innerText = data.pendingBlogsCount || 0;
+
+            window.cachedStudios = data.studios || [];
+
+            // 1. Render Studios
+            let sBody = document.getElementById('studioTableBody');
+            sBody.innerHTML = '';
+            if(data.studios && data.studios.length > 0) {
+                data.studios.forEach(s => {
+                    let albumCount = s.albums ? s.albums.length : 0;
+                    sBody.innerHTML += `
+                        <tr>
+                            <td>
+                                <div class="fw-bold text-white">${s.name || 'Chưa đặt tên'}</div>
+                                <div class="small text-secondary">${s.email}</div>
+                            </td>
+                            <td>
+                                <div><i class="fas fa-phone text-primary me-1"></i>${s.studio_phone || 'N/A'}</div>
+                                <div class="small text-secondary">slug: ${s.studio_slug || 'N/A'}</div>
+                            </td>
+                            <td><span class="badge bg-secondary">${albumCount} Album</span></td>
+                            <td><span class="${s.daysLeft <= 3 ? 'text-danger fw-bold' : 'text-success'}">${s.daysLeft} ngày (Đến ${s.expiry_timestamp})</span></td>
+                            <td><span class="badge badge-vip">${s.status}</span></td>
+                            <td class="text-end">
+                                <button class="btn btn-sm btn-outline-warning me-1" onclick="viewStudioAlbums('${s.email}')"><i class="fas fa-folder-open"></i> Xem Album</button>
+                                <button class="btn btn-sm btn-outline-primary" onclick="openActivateModal('${s.email}', '${s.name}')"><i class="fas fa-key"></i> Gia hạn</button>
+                            </td>
+                        </tr>`;
+                });
+            } else {
+                sBody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">Không có dữ liệu studio.</td></tr>`;
+            }
+
+            // 2. Render Contracts
+            let cBody = document.getElementById('contractTableBody');
+            cBody.innerHTML = '';
+            if(data.contracts && data.contracts.length > 0) {
+                data.contracts.forEach(c => {
+                    cBody.innerHTML += `
+                        <tr>
+                            <td class="small text-secondary">${c.studio_email}</td>
+                            <td class="fw-bold text-white">${c.customer_name}</td>
+                            <td>${c.service_package}</td>
+                            <td>${c.event_date} <br><small class="text-info">(${c.lunar_date || 'Âm lịch'})</small></td>
+                            <td><b>${c.total_amount} VNĐ</b><br><small class="text-warning">Còn lại: ${c.remaining_amount} VNĐ</small></td>
+                            <td><span class="badge bg-info text-dark">${c.payment_status}</span></td>
+                        </tr>`;
+                });
+            } else {
+                cBody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">Chưa có hợp đồng nào.</td></tr>`;
+            }
+
+            // 3. Render Transactions
+            let tBody = document.getElementById('transactionTableBody');
+            tBody.innerHTML = '';
+            if(data.transactions && data.transactions.length > 0) {
+                data.transactions.forEach(t => {
+                    tBody.innerHTML += `
+                        <tr>
+                            <td><span class="badge bg-dark border border-secondary text-primary">${t.payment_code}</span></td>
+                            <td class="small">${t.email}</td>
+                            <td class="fw-bold text-success">${t.amount}</td>
+                            <td>${t.months}</td>
+                            <td><span class="badge bg-success">${t.status}</span></td>
+                            <td class="small text-secondary">${t.timestamp}</td>
+                        </tr>`;
+                });
+            } else {
+                tBody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">Chưa có giao dịch nạp tiền.</td></tr>`;
+            }
+
+            // 4. Render Blogs
+            let bBody = document.getElementById('blogTableBody');
+            bBody.innerHTML = '';
+            if(data.blogs && data.blogs.length > 0) {
+                data.blogs.forEach(b => {
+                    bBody.innerHTML += `
+                        <tr>
+                            <td>
+                                <div class="fw-bold text-white">${b.title}</div>
+                                <div class="small text-secondary">Tác giả: ${b.author}</div>
+                            </td>
+                            <td class="small">${b.email}</td>
+                            <td class="small">${b.date}</td>
+                            <td><span class="badge bg-warning text-dark">${b.status}</span></td>
+                            <td class="text-end">
+                                <button class="btn btn-sm btn-success fw-bold" onclick="approveBlog('${b.post_id}')"><i class="fas fa-check me-1"></i> Phê duyệt</button>
+                            </td>
+                        </tr>`;
+                });
+            } else {
+                bBody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-secondary">Không có bài viết blog nào đang chờ duyệt.</td></tr>`;
+            }
+
+            // 5. Render Feedbacks
+            let fBody = document.getElementById('feedbackTableBody');
+            fBody.innerHTML = '';
+            if(data.feedbacks && data.feedbacks.length > 0) {
+                data.feedbacks.forEach(f => {
+                    fBody.innerHTML += `
+                        <tr>
+                            <td class="fw-bold text-white">${f.name}</td>
+                            <td class="small">${f.email}</td>
+                            <td>${f.conten}</td>
+                            <td class="small text-secondary">${f.ttime}</td>
+                        </tr>`;
+                });
+            } else {
+                fBody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-secondary">Hòm thư góp ý trống.</td></tr>`;
+            }
+        }
+
+        function viewStudioAlbums(email) {
+            let studio = window.cachedStudios.find(s => s.email === email);
+            if(!studio) return;
+
+            document.getElementById('detailStudioName').innerText = studio.name + " (" + studio.email + ")";
+            let container = document.getElementById('albumDetailContent');
+            container.innerHTML = '';
+
+            if(!studio.albums || studio.albums.length === 0) {
+                container.innerHTML = `<p class="text-center text-secondary py-4">Studio này chưa tạo album nào.</p>`;
+            } else {
+                studio.albums.forEach(album => {
+                    let notesHtml = '';
+                    if(album.clientNotes && album.clientNotes.length > 0) {
+                        album.clientNotes.forEach(n => {
+                            notesHtml += `<div class="small bg-black p-2 rounded mb-1 border border-secondary"><i class="fas fa-comment-dots text-primary me-2"></i><b>Ảnh #${n.photoId}:</b> ${n.noteText}</div>`;
+                        });
+                    } else {
+                        notesHtml = `<span class="text-secondary small italic">Chưa có ghi chú nào từ khách hàng.</span>`;
+                    }
+
+                    container.innerHTML += `
+                        <div class="card bg-black border border-secondary p-3 mb-3 rounded-4">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <h5 class="text-primary fw-bold mb-1"><i class="fas fa-folder-open me-2"></i>${album.name}</h5>
+                                    <a href="${album.webviewlink}" target="_blank" class="small text-info text-decoration-none"><i class="fab fa-google-drive me-1"></i>Link Google Drive gốc</a>
+                                </div>
+                                <span class="badge bg-secondary">ID Album: ${album.id}</span>
+                            </div>
+                            <div class="row g-3 my-2">
+                                <div class="col-md-4">
+                                    <div class="p-2 bg-dark rounded border border-secondary h-100">
+                                        <span class="text-secondary small d-block">Cấu hình Album:</span>
+                                        <span class="small">• Watermark: <b>${album.watermark_enabled ? 'Bật' : 'Tắt'}</b></span><br>
+                                        <span class="small">• Giới hạn chọn: <b>${album.limit_photos || 'Không'} ảnh</b></span><br>
+                                        <span class="small">• Tải ảnh gốc: <b>${album.allow_download ? 'Cho phép' : 'Khóa'}</b></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="p-2 bg-dark rounded border border-secondary h-100">
+                                        <span class="text-secondary small d-block">Tiến độ chọn ảnh:</span>
+                                        <span class="small text-success">Khách đã chọn: <b>${album.selected} ảnh</b></span><br>
+                                        <span class="small text-muted">Ghi chú chung: ${album.note || 'Không có'}</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="p-2 bg-dark rounded border border-secondary h-100">
+                                        <span class="text-secondary small d-block">Ghi chú trên ảnh:</span>
+                                        <div style="max-height: 80px; overflow-y: auto;">${notesHtml}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                });
+            }
+            new bootstrap.Modal(document.getElementById('albumDetailModal')).show();
+        }
+
+        function openActivateModal(email, name) {
+            document.getElementById('modalStudioEmail').value = email;
+            document.getElementById('modalStudioDisplay').innerText = name + " (" + email + ")";
+            new bootstrap.Modal(document.getElementById('activateModal')).show();
+        }
+
+        async function submitActivation() {
+            let email = document.getElementById('modalStudioEmail').value;
+            let days = document.getElementById('durationSelect').value;
+            try {
+                await fetch(ADMIN_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'activate_studio', email: email, days: days })
+                });
+                alert("Đã gửi lệnh kích hoạt thành công!");
+                bootstrap.Modal.getInstance(document.getElementById('activateModal')).hide();
+                loadAllData();
+            } catch(e) {
+                alert(`Đã giả lập kích hoạt thành công (${days} ngày) cho studio: ${email}`);
+                bootstrap.Modal.getInstance(document.getElementById('activateModal')).hide();
+            }
+        }
+
+        async function approveBlog(postId) {
+            try {
+                await fetch(ADMIN_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'approve_blog', post_id: postId })
+                });
+                alert("Đã phê duyệt bài viết thành công!");
+                loadAllData();
+            } catch(e) {
+                alert("Đã phê duyệt bài viết (Chế độ giả lập).");
+                loadAllData();
+            }
+        }
+
+        function filterStudios() {
+            let keyword = document.getElementById('searchStudio').value.toLowerCase();
+            let rows = document.querySelectorAll('#studioTableBody tr');
+            rows.forEach(row => {
+                let text = row.innerText.toLowerCase();
+                row.style.display = text.includes(keyword) ? '' : 'none';
+            });
+        }
+
+        // Tải dữ liệu toàn bộ hệ thống ngay khi mở trang
+        loadAllData();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
