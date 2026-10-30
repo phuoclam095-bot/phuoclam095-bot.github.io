@@ -650,26 +650,26 @@
         }
 
         async function approveBlog(postId) {
-            if (!confirm("Bạn có chắc chắn muốn phê duyệt bài viết này không?")) return;
+    if (!confirm("Bạn có chắc chắn muốn phê duyệt bài viết này không?")) return;
 
-            try {
-                await fetch(BLOGS_API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'approve_blog', post_id: postId })
-                });
-                
-                alert("Đã phê duyệt bài viết thành công!");
-                loadBlogsData();
-            } catch(e) {
-                console.error("Lỗi duyệt bài:", e);
-                alert("Không thể kết nối tới máy chủ để duyệt bài viết.");
-            }
-        }
-
-        document.addEventListener("DOMContentLoaded", () => {
-            loadAllData();
+    try {
+        let response = await fetch(BLOGS_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                action: 'approve_blog', 
+                post_id: postId // Gửi id bài viết lên n8n để update trạng thái thành 'Approved'
+            })
         });
+        
+        let result = await response.json();
+        alert("Đã phê duyệt bài viết thành công!");
+        loadBlogsData(); // Tải lại bảng blog trong Super Admin
+    } catch(e) {
+        console.error("Lỗi duyệt bài:", e);
+        alert("Không thể kết nối tới máy chủ để duyệt bài viết.");
+    }
+}
     </script>
 </body>
 </html>
