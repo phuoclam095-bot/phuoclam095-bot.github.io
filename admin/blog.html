@@ -291,7 +291,12 @@
     carouselInner.innerHTML = slides.join('');
     new bootstrap.Carousel(document.getElementById('mainCarousel'), { interval: 6000, ride: 'carousel' });
 }
-
+function stripHtml(html) {
+    if (!html) return '';
+    let tmp = document.createElement('DIV');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
+}
         async function loadBlogs() {
     try {
         const response = await fetch(N8N_GET_BLOGS);
