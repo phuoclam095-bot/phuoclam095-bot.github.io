@@ -566,63 +566,76 @@
         }
 
         // --- CÁC HÀM XỬ LÝ DUYỆT BÀI BLOG ---
-        async function loadBlogsData() {
-            let body = document.getElementById('blogTableBody');
-            if (!body) return;
-            
-            body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">Đang tải danh sách bài viết...</td></tr>`;
-            
-            try {
-                let response = await fetch(BLOGS_API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'get_blogs' })
-                });
-                let data = await response.json();
-                
-                let resultData = Array.isArray(data) ? data[0] : data;
-                window.cachedBlogs = resultData.blogs || [];
-                let blogList = window.cachedBlogs.slice(0, 100);
+       async function loadBlogsData() {
+    let body = document.getElementById('blogTableBody');
+    if (!body) return;
+    
+    body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">Đang tải danh sách bài viết...</td></tr>`;
+    
+    try {
+        let response = await fetch(BLOGS_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'get_blogs' })
+        });
+        let data = await response.json();
+        
+        let resultData = Array.isArray(data) ? data[0] : data;
+        window.cachedBlogs = resultData.blogs || [];
+        let blogList = window.cachedBlogs.slice(0, 100);
 
-                body.innerHTML = '';
-                if (blogList.length > 0) {
-                    blogList.forEach((b, index) => {
-                        let statusBadge = (b.status && b.status.toLowerCase() === 'approved') ? 'success' : 'warning';
-                        let thumbHtml = b.image ? `<img src="${b.image}" width="40" height="40" class="rounded me-2 object-fit-cover">` : `<i class="fas fa-newspaper text-secondary fa-2x me-2"></i>`;
-                        
-                        body.innerHTML += `
-                            <tr>
-                                <td class="text-center text-secondary">${index + 1}</td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        ${thumbHtml}
-                                        <div>
-                                            <div class="fw-bold text-white">${b.title}</div>
-                                            <div class="small text-secondary">Tác giả: ${b.author}</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td><div class="text-white">${b.email}</div></td>
-                                <td><small class="text-secondary">${b.date}</small></td>
-                                <td><span class="badge bg-${statusBadge}">${b.status}</span></td>
-                                <td class="text-end">
-                                    <button class="btn btn-sm btn-outline-info me-1" onclick="viewBlogDetail('${b.id}')">
-                                        <i class="fas fa-eye"></i> Xem
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-success fw-bold" onclick="approveBlog('${b.id}')">
-                                        <i class="fas fa-check me-1"></i> Phê Duyệt
-                                    </button>
-                                </td>
-                            </tr>`;
-                    });
-                } else {
-                    body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">Không có bài viết blog nào đang chờ duyệt.</td></tr>`;
+        body.innerHTML = '';
+        if (blogList.length > 0) {
+            blogList.forEach((b, index) => {
+                let statusBadge = (b.status && b.status.toLowerCase() === 'approved') ? 'success' : 'warning';
+                
+                // Xử lý link ảnh thu nhỏ Google Drive chuẩn xác
+                let imageUrl = b.image || '';
+                if (imageUrl.includes('drive.google.com')) {
+                    let match = imageUrl.match(/(?:id=|[\/]?d\/)([a-zA-Z0-9_-]{25,})/);
+                    if (match && match[1]) {
+                        imageUrl = `https://drive.google.com/thumbnail?id=${match[1]}&sz=w200`;
+                    }
                 }
-            } catch (e) {
-                console.error("Lỗi tải bài viết blog:", e);
-                body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-danger">Không thể kết nối tới webhook blog.</td></tr>`;
-            }
+
+                let thumbHtml = imageUrl ? `<img src="${imageUrl}" width="40" height="40" class="rounded me-2 object-fit-cover" onerror="this.src='https://via.placeholder.com/40'">` : `<i class="fas fa-newspaper text-secondary fa-2x me-2"></i>`;
+                
+                // Hiển thị trực tiếp chuỗi ngày tháng dạng text, không dùng new Date() để tránh Invalid Date
+                let displayDate = b.date ? String(b.date) : 'Chưa rõ';
+
+                body.innerHTML += `
+                    <tr>
+                        <td class="text-center text-secondary">${index + 1}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                ${thumbHtml}
+                                <div>
+                                    <div class="fw-bold text-white">${b.title || ''}</div>
+                                    <div class="small text-secondary">Tác giả: ${b.author || ''}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><div class="text-white">${b.email || ''}</div></td>
+                        <td><small class="text-secondary">${displayDate}</small></td>
+                        <td><span class="badge bg-${statusBadge}">${b.status || 'pending'}</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-outline-info me-1" onclick="viewBlogDetail('${b.id}')">
+                                <i class="fas fa-eye"></i> Xem
+                            </button>
+                            <button class="btn btn-sm btn-outline-success fw-bold" onclick="approveBlog('${b.id}')">
+                                <i class="fas fa-check me-1"></i> Phê Duyệt
+                            </button>
+                        </td>
+                    </tr>`;
+            });
+        } else {
+            body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">Không có bài viết blog nào đang chờ duyệt.</td></tr>`;
         }
+    } catch (e) {
+        console.error("Lỗi tải bài viết blog:", e);
+        body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-danger">Không thể kết nối tới webhook blog.</td></tr>`;
+    }
+}
 
         function viewBlogDetail(blogId) {
             let blog = window.cachedBlogs.find(b => b.id == blogId);
