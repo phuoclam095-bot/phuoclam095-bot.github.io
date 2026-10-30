@@ -94,6 +94,7 @@
                     <table class="table table-custom mb-0 align-middle">
                         <thead>
                             <tr>
+                                <th class="text-center">STT</th>
                                 <th>Studio & Thông tin</th>
                                 <th>Điện thoại & Slug</th>
                                 <th>Album & Tình trạng</th>
@@ -121,6 +122,7 @@
             <table class="table table-custom mb-0 align-middle">
                 <thead>
                     <tr>
+                        <th class="text-center">STT</th>
                         <th>Studio Email</th>
                         <th>Slug</th>
                         <th>Tổng Số Hợp Đồng / Lịch Chụp</th>
@@ -145,6 +147,7 @@
                     <table class="table table-custom mb-0 align-middle">
                         <thead>
                             <tr>
+                                <th class="text-center">STT</th>
                                 <th>Mã Giao Dịch (Code)</th>
                                 <th>Studio Email</th>
                                 <th>Số Tiền</th>
@@ -171,6 +174,7 @@
                     <table class="table table-custom mb-0 align-middle">
                         <thead>
                             <tr>
+                                <th class="text-center">STT</th>
                                 <th>Tiêu đề & Tác giả</th>
                                 <th>Email</th>
                                 <th>Ngày đăng</th>
@@ -196,6 +200,7 @@
                     <table class="table table-custom mb-0 align-middle">
                         <thead>
                             <tr>
+                                <th class="text-center">STT</th>
                                 <th>Người gửi</th>
                                 <th>Email</th>
                                 <th>Nội dung phản hồi</th>
@@ -294,7 +299,7 @@
         let data = await response.json();
         
         let resultData = Array.isArray(data) ? data[0] : data;
-        let txList = resultData.transactions || [];
+        let txList = (resultData.transactions || []).slice(0, 100);
 
         body.innerHTML = '';
         if (txList.length > 0) {
@@ -302,6 +307,7 @@
                 let statusBadge = (tx.status && tx.status.toLowerCase() === 'active') ? 'success' : 'warning';
                 body.innerHTML += `
                     <tr>
+                        <td class="text-center text-secondary">${index + 1}</td>
                         <td><b class="text-primary">${tx.paymentCode}</b></td>
                         <td><div class="text-white">${tx.email}</div></td>
                         <td><b class="text-success">${tx.amount}</b></td>
@@ -356,7 +362,7 @@
     // Render bảng Studios chính
     let sBody = document.getElementById('studioTableBody');
     sBody.innerHTML = '';
-    
+    let studiosToRender = window.cachedStudios.slice(0, 100);
     if (data.studios && data.studios.length > 0) {
         data.studios.forEach(s => {
             // Xơ đồ màu sắc: hết hạn hoặc <= 3 ngày thì báo đỏ, còn lại màu xanh
@@ -365,6 +371,7 @@
 
             sBody.innerHTML += `
                 <tr>
+                    <td class="text-center text-secondary">${index + 1}</td>
                     <td>
                         <div class="fw-bold text-white">${s.name || 'Chưa đặt tên'}</div>
                         <div class="small text-secondary">${s.email}</div>
@@ -541,12 +548,14 @@
         
         let resultData = Array.isArray(data) ? data[0] : data;
         window.cachedContractsStudios = resultData.studiosContracts || resultData.contracts || [];
+        let contractsList = window.cachedContractsStudios.slice(0, 100);
 
         body.innerHTML = '';
         if (window.cachedContractsStudios.length > 0) {
             window.cachedContractsStudios.forEach((item) => {
                 body.innerHTML += `
                     <tr>
+                        <td class="text-center text-secondary">${index + 1}</td>
                         <td><div class="fw-bold text-white">${item.studioEmail || 'Chưa có email'}</div></td>
                         <td><span class="text-secondary">${item.studioSlug || 'N/A'}</span></td>
                         <td><span class="badge bg-primary">${item.contractsCount || (item.contracts ? item.contracts.length : 0)} Lịch / Hợp đồng</span></td>
