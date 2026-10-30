@@ -276,15 +276,32 @@
         </div>
     </div>
 
-    <!-- TẢI THƯ VIỆN BOOTSTRAP TRƯỚC -->
+    <!-- MODAL XEM CHI TIẾT BÀI VIẾT BLOG -->
+    <div class="modal fade" id="blogDetailModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content bg-dark text-white border-secondary">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title"><i class="fas fa-newspaper text-primary me-2"></i>Chi Tiết Bài Viết Blog</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" style="max-height: 75vh; overflow-y: auto;" id="blogDetailContent"></div>
+                <div class="modal-footer border-secondary">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-success btn-sm fw-bold" id="modalApproveBtn">Phê Duyệt Bài Viết</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TẢI THƯ VIỆN BOOTSTRAP -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- KHỐI MÃ JAVASCRIPT CHÍNH -->
     <script>
-        const BLOGS_API_URL = "https://wsm.congtubaclieu.com.vn/webhook/super-admin-blogs";
+        const TRANSACTIONS_API_URL = "https://wsm.congtubaclieu.com.vn/webhook/super-admin-transactions";
         const ADMIN_API_URL = "https://wsm.congtubaclieu.com.vn/webhook/super-admin-data";
         const CONTRACTS_API_URL = "https://wsm.congtubaclieu.com.vn/webhook/super-admin-contracts";
-        const TRANSACTIONS_API_URL = "https://wsm.congtubaclieu.com.vn/webhook/super-admin-transactions";
+        const BLOGS_API_URL = "https://wsm.congtubaclieu.com.vn/webhook/super-admin-blogs";
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
@@ -303,9 +320,8 @@
                 loadContractsData();
             } else if (tabId === 'transactions') {
                 loadTransactionsData();
-
             } else if (tabId === 'blogs') {
-                loadBlogsData(); // Gọi hàm tải danh sách bài viết blog
+                loadBlogsData();
             }
         }
 
@@ -349,76 +365,7 @@
                 body.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-danger">Không thể kết nối tới webhook giao dịch.</td></tr>`;
             }
         }
-        // Hàm tải danh sách bài viết blog chờ duyệt
-async function loadBlogsData() {
-    let body = document.getElementById('blogTableBody');
-    if (!body) return;
-    
-    body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">Đang tải danh sách bài viết...</td></tr>`;
-    
-    try {
-        let response = await fetch(BLOGS_API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'get_blogs' })
-        });
-        let data = await response.json();
-        
-        let resultData = Array.isArray(data) ? data[0] : data;
-        let blogList = (resultData.blogs || []).slice(0, 100); // Giới hạn 100 dòng
 
-        body.innerHTML = '';
-        if (blogList.length > 0) {
-            blogList.forEach((b, index) => {
-                let statusBadge = (b.status && b.status.toLowerCase() === 'approved') ? 'success' : 'warning';
-                body.innerHTML += `
-                    <tr>
-                        <td class="text-center text-secondary">${index + 1}</td>
-                        <td>
-                            <div class="fw-bold text-white">${b.title}</div>
-                            <div class="small text-secondary">Tác giả: ${b.author}</div>
-                        </td>
-                        <td><div class="text-white">${b.email}</div></td>
-                        <td><small class="text-secondary">${b.createdAt}</small></td>
-                        <td><span class="badge bg-${statusBadge}">${b.status}</span></td>
-                        <td class="text-end">
-                            <button class="btn btn-sm btn-outline-success fw-bold" onclick="approveBlog('${b.id}')">
-                                <i class="fas fa-check me-1"></i> Phê Duyệt
-                            </button>
-                        </td>
-                    </tr>`;
-            });
-        } else {
-            body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">Không có bài viết blog nào đang chờ duyệt.</td></tr>`;
-        }
-    } catch (e) {
-        console.error("Lỗi tải bài viết blog:", e);
-        body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-danger">Không thể kết nối tới webhook blog.</td></tr>`;
-    }
-}
-
-// Hàm gửi yêu cầu phê duyệt bài viết lên n8n
-async function approveBlog(postId) {
-    if (!confirm("Bạn có chắc chắn muốn phê duyệt bài viết này không?")) return;
-
-    try {
-        let response = await fetch(BLOGS_API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                action: 'approve_blog', 
-                post_id: postId // Đảm bảo có dòng này để gửi id bài viết lên n8n
-            })
-        });
-        
-        let result = await response.json();
-        alert("Đã phê duyệt bài viết thành công!");
-        loadBlogsData(); // Tải lại bảng blog
-    } catch(e) {
-        console.error("Lỗi duyệt bài:", e);
-        alert("Không thể kết nối tới máy chủ để duyệt bài viết.");
-    }
-}
         async function loadAllData() {
             try {
                 let response = await fetch(ADMIN_API_URL, {
@@ -435,12 +382,10 @@ async function approveBlog(postId) {
 
                 let responseJson = JSON.parse(responseText);
                 let data = Array.isArray(responseJson) ? responseJson[0] : responseJson;
-                
-                console.log("Dữ liệu nhận từ n8n:", data);
                 renderAllData(data);
 
             } catch (e) {
-                console.error("Lỗi tải dữ liệu từ n8n, chuyển sang dữ liệu mẫu:", e);
+                console.error("Lỗi tải dữ liệu từ n8n:", e);
             }
         }
 
@@ -501,9 +446,7 @@ async function approveBlog(postId) {
             if (!body) return;
             body.innerHTML = '';
             if (items && items.length > 0) {
-                items.forEach((item, index) => {
-                    // Render an toàn các bảng phụ nếu có dữ liệu truyền vào trực tiếp từ tổng
-                });
+                items.forEach((item, index) => {});
             } else {
                 body.innerHTML = `<tr><td colspan="${colSpan}" class="text-center py-4 text-secondary">${emptyText}</td></tr>`;
             }
@@ -541,32 +484,6 @@ async function approveBlog(postId) {
                                     <a href="${folderUrl}" target="_blank" class="small text-info text-decoration-none fw-bold"><i class="fab fa-google-drive me-1"></i>Mở thư mục Google Drive gốc (Folder)</a>
                                 </div>
                             </div>
-                            <div class="row g-3 my-2">
-                                <div class="col-md-6">
-                                    <div class="p-2 bg-dark rounded border border-secondary h-100 text-light">
-                                        <span class="text-warning small d-block mb-1 fw-bold"><i class="fas fa-cog me-1"></i>Cấu hình Album (Setting):</span>
-                                        <span class="small text-light">• Watermark: <b class="text-white">${album.config?.watermark ? 'Bật (Có)' : 'Tắt (Không)'}</b></span><br>
-                                        <span class="small text-light">• Giới hạn chọn: <b class="text-white">${album.config?.maxSelect > 0 ? album.config.maxSelect + ' ảnh' : 'Không giới hạn'}</b></span><br>
-                                        <span class="small text-light">• Tải ảnh gốc: <b class="text-white">${album.config?.allowDownload ? 'Cho phép' : 'Khóa'}</b></span><br>
-                                        <span class="small text-light">• Bình luận: <b class="text-white">${album.config?.allowComment ? 'Bật' : 'Tắt'}</b></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="p-2 bg-dark rounded border border-secondary h-100 text-light">
-                                        <span class="text-warning small d-block mb-1 fw-bold"><i class="fas fa-chart-pie me-1"></i>Tiến độ thực tế:</span>
-                                        <span class="small text-light">Tổng số ảnh: <b class="text-white">${album.totalPhotos} ảnh</b></span><br>
-                                        <span class="small text-light">Khách đã chọn: <b class="text-success">${album.selectedCount} ảnh</b></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row g-3 mt-1">
-                                <div class="col-12">
-                                    <div class="p-2 bg-dark rounded border border-secondary text-light">
-                                        <span class="text-warning small d-block mb-1 fw-bold"><i class="fas fa-comments me-1"></i>Ghi chú của khách hàng theo tên ảnh:</span>
-                                        <div style="max-height: 120px; overflow-y: auto;">${notesHtml}</div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>`;
                 });
             }
@@ -594,21 +511,6 @@ async function approveBlog(postId) {
             } catch(e) {
                 alert(`Đã giả lập kích hoạt thành công (${days} ngày) cho studio: ${email}`);
                 bootstrap.Modal.getInstance(document.getElementById('activateModal')).hide();
-            }
-        }
-
-        async function approveBlog(postId) {
-            try {
-                await fetch(ADMIN_API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'approve_blog', post_id: postId })
-                });
-                alert("Đã phê duyệt bài viết thành công!");
-                loadAllData();
-            } catch(e) {
-                alert("Đã phê duyệt bài viết (Chế độ giả lập).");
-                loadAllData();
             }
         }
 
@@ -663,61 +565,106 @@ async function approveBlog(postId) {
             }
         }
 
-        function viewStudioContracts(email) {
-            let studio = window.cachedContractsStudios.find(s => s.studioEmail === email);
-            if (!studio) return;
-
-            document.getElementById('contractStudioEmailTitle').innerText = studio.studioEmail;
-            let container = document.getElementById('contractDetailContent');
-            container.innerHTML = '';
-
-            if (!studio.contracts || studio.contracts.length === 0) {
-                container.innerHTML = `<p class="text-center text-secondary py-4">Studio này chưa có lịch hẹn hoặc hợp đồng nào.</p>`;
-            } else {
-                studio.contracts.forEach(c => {
-                    let badgeBg = (c.paymentStatus && c.paymentStatus.toLowerCase().includes('tất toán')) ? 'success' : 'warning';
-                    
-                    container.innerHTML += `
-                        <div class="card bg-black border border-secondary p-3 mb-3 rounded-4 text-white">
-                            <div class="d-flex justify-content-between align-items-center mb-2 border-bottom border-secondary pb-2">
-                                <div>
-                                    <h5 class="text-primary fw-bold mb-1">
-                                        <i class="fas fa-user me-2"></i>${c.customerName || 'Khách lẻ'} 
-                                        <span class="small text-info">(${c.customerPhone || 'Không có SĐT'})</span>
-                                    </h5>
-                                    <span class="small text-warning"><i class="fas fa-tag me-1"></i>Gói dịch vụ: <b>${c.servicePackage || 'Gói tiêu chuẩn'}</b></span>
-                                </div>
-                                <span class="badge bg-${badgeBg} px-3 py-2">${c.paymentStatus || 'Chưa cọc'}</span>
-                            </div>
-                            
-                            <div class="row g-3 my-1">
-                                <div class="col-md-6">
-                                    <div class="p-2 bg-dark rounded border border-secondary text-light h-100">
-                                        <span class="text-warning small d-block mb-1 fw-bold"><i class="fas fa-clock me-1"></i>Thời gian & Địa điểm:</span>
-                                        <span class="small text-light">• Ngày sự kiện (Dương): <b class="text-white">${c.eventDate}</b></span><br>
-                                        <span class="small text-light">• Ngày Âm lịch: <b class="text-info">${c.lunarDate}</b></span><br>
-                                        <span class="small text-light">• Địa điểm: <b class="text-white">${c.eventLocation || 'Tại studio'}</b></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="p-2 bg-dark rounded border border-secondary text-light h-100">
-                                        <span class="text-warning small d-block mb-1 fw-bold"><i class="fas fa-money-bill-wave me-1"></i>Tài chính & Thanh toán:</span>
-                                        <span class="small text-light">• Tổng tiền: <b class="text-white">${c.totalAmount}</b></span><br>
-                                        <span class="small text-light">• Đã cọc: <b class="text-success">${c.depositAmount}</b></span><br>
-                                        <span class="small text-light">• Còn lại: <b class="text-danger">${c.remainingAmount}</b></span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            ${c.note ? `
-                                <div class="mt-2 p-2 bg-dark rounded border border-secondary small text-light">
-                                    <i class="fas fa-sticky-note text-warning me-1"></i><b>Ghi chú:</b> <span class="text-white">${c.note}</span>
-                                </div>
-                            ` : ''}
-                        </div>`;
+        // --- CÁC HÀM XỬ LÝ DUYỆT BÀI BLOG ---
+        async function loadBlogsData() {
+            let body = document.getElementById('blogTableBody');
+            if (!body) return;
+            
+            body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">Đang tải danh sách bài viết...</td></tr>`;
+            
+            try {
+                let response = await fetch(BLOGS_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'get_blogs' })
                 });
+                let data = await response.json();
+                
+                let resultData = Array.isArray(data) ? data[0] : data;
+                window.cachedBlogs = resultData.blogs || [];
+                let blogList = window.cachedBlogs.slice(0, 100);
+
+                body.innerHTML = '';
+                if (blogList.length > 0) {
+                    blogList.forEach((b, index) => {
+                        let statusBadge = (b.status && b.status.toLowerCase() === 'approved') ? 'success' : 'warning';
+                        let thumbHtml = b.image ? `<img src="${b.image}" width="40" height="40" class="rounded me-2 object-fit-cover">` : `<i class="fas fa-newspaper text-secondary fa-2x me-2"></i>`;
+                        
+                        body.innerHTML += `
+                            <tr>
+                                <td class="text-center text-secondary">${index + 1}</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        ${thumbHtml}
+                                        <div>
+                                            <div class="fw-bold text-white">${b.title}</div>
+                                            <div class="small text-secondary">Tác giả: ${b.author}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><div class="text-white">${b.email}</div></td>
+                                <td><small class="text-secondary">${b.date}</small></td>
+                                <td><span class="badge bg-${statusBadge}">${b.status}</span></td>
+                                <td class="text-end">
+                                    <button class="btn btn-sm btn-outline-info me-1" onclick="viewBlogDetail('${b.id}')">
+                                        <i class="fas fa-eye"></i> Xem
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success fw-bold" onclick="approveBlog('${b.id}')">
+                                        <i class="fas fa-check me-1"></i> Phê Duyệt
+                                    </button>
+                                </td>
+                            </tr>`;
+                    });
+                } else {
+                    body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">Không có bài viết blog nào đang chờ duyệt.</td></tr>`;
+                }
+            } catch (e) {
+                console.error("Lỗi tải bài viết blog:", e);
+                body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-danger">Không thể kết nối tới webhook blog.</td></tr>`;
             }
-            new bootstrap.Modal(document.getElementById('contractDetailModal')).show();
+        }
+
+        function viewBlogDetail(blogId) {
+            let blog = window.cachedBlogs.find(b => b.id == blogId);
+            if (!blog) return;
+
+            let container = document.getElementById('blogDetailContent');
+            container.innerHTML = `
+                <h4 class="text-primary fw-bold mb-3">${blog.title}</h4>
+                <div class="d-flex justify-content-between text-secondary small mb-3 pb-2 border-bottom border-secondary">
+                    <span><i class="fas fa-user me-1"></i> Tác giả: <b>${blog.author}</b> (${blog.email})</span>
+                    <span><i class="fas fa-calendar me-1"></i> Ngày: ${blog.date}</span>
+                </div>
+                ${blog.image ? `<div class="mb-3 text-center"><img src="${blog.image}" class="img-fluid rounded border border-secondary" style="max-height: 350px; object-fit: cover;"></div>` : ''}
+                <div class="p-3 bg-black rounded border border-secondary text-light" style="white-space: pre-line;">
+                    ${blog.content}
+                </div>
+            `;
+
+            document.getElementById('modalApproveBtn').onclick = function() {
+                bootstrap.Modal.getInstance(document.getElementById('blogDetailModal')).hide();
+                approveBlog(blog.id);
+            };
+
+            new bootstrap.Modal(document.getElementById('blogDetailModal')).show();
+        }
+
+        async function approveBlog(postId) {
+            if (!confirm("Bạn có chắc chắn muốn phê duyệt bài viết này không?")) return;
+
+            try {
+                await fetch(BLOGS_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'approve_blog', post_id: postId })
+                });
+                
+                alert("Đã phê duyệt bài viết thành công!");
+                loadBlogsData();
+            } catch(e) {
+                console.error("Lỗi duyệt bài:", e);
+                alert("Không thể kết nối tới máy chủ để duyệt bài viết.");
+            }
         }
 
         document.addEventListener("DOMContentLoaded", () => {
