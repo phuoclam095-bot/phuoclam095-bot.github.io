@@ -308,10 +308,7 @@
         }
 
         // Lọc chuẩn xác chỉ lấy những bài có status là 'Approved' (A viết hoa)
-        const approvedBlogs = realBlogs.filter(b => {
-            let stt = String(b.status || '').trim();
-            return stt === 'Approved';
-        });
+        const approvedBlogs = realBlogs;
 
         console.log("Danh sách bài viết hiển thị:", approvedBlogs);
 
