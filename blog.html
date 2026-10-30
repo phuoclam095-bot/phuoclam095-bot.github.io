@@ -241,14 +241,18 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         
-        const N8N_SUBMIT_BLOG = 'https://wsm.congtubaclieu.com.vn/webhook/submit-blog';  
-        let currentBlogs = [];
+       function stripHtml(html) {
+        let tmp = document.createElement("DIV");
+        tmp.innerHTML = html;
+        return tmp.textContent || tmp.innerText || "";
+    }
 
         function renderMainCarousel(blogs) {
             const carouselInner = document.getElementById('carouselInner');
             if (!carouselInner) return;
             document.getElementById('initialLoading')?.remove();
             let slides = [];
+            
             for (let i = 0; i < blogs.length; i += 3) {
                 const group = blogs.slice(i, i + 3);
                 let groupHtml = group.map((blog) => {
