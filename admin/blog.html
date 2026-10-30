@@ -247,23 +247,50 @@
         let currentBlogs = [];
 
         function renderMainCarousel(blogs) {
-            const carouselInner = document.getElementById('carouselInner');
-            if (!carouselInner) return;
-            document.getElementById('initialLoading')?.remove();
-            let slides = [];
-            for (let i = 0; i < blogs.length; i += 3) {
-                const group = blogs.slice(i, i + 3);
-                let groupHtml = group.map((blog) => {
-                    if (!blog.id) return '<div class="col-md-4"></div>';
-                    const driveId = blog.image?.includes('id=') ? blog.image.split('id=')[1].split('&')[0] : blog.image;
-                    const imageUrl = blog.id?.startsWith('DEMO') ? blog.image : `https://drive.google.com/thumbnail?id=${driveId}&sz=w600`;
-                    return `<div class="col-md-4"><div class="blog-card" onclick="window.location.href='post?id=${blog.id}'"><img src="${imageUrl}" class="blog-img" onerror="this.src='https://via.placeholder.com/500x300'"><div class="blog-body"><div class="blog-title">${blog.title}</div><div class="blog-desc">${blog.content}</div><button class="btn-read">Xem thêm <i class="fas fa-arrow-right ms-2"></i></button></div></div></div>`;
-                }).join('');
-                slides.push(`<div class="carousel-item ${i === 0 ? 'active' : ''}"><div class="row g-4">${groupHtml}</div></div>`);
+    const carouselInner = document.getElementById('carouselInner');
+    if (!carouselInner) return;
+    document.getElementById('initialLoading')?.remove();
+    
+    let slides = [];
+    for (let i = 0; i < blogs.length; i += 3) {
+        const group = blogs.slice(i, i + 3);
+        let groupHtml = group.map((blog) => {
+            // Ưu tiên lấy post_id làm mã định danh đường dẫn, nếu không có mới lấy id
+            const uniqueId = blog.post_id || blog.id;
+            if (!uniqueId && uniqueId !== 0) return '<div class="col-md-4"></div>';
+
+            // Xử lý link ảnh an toàn cho cả Google Drive và link ngoài
+            let imageUrl = blog.image || 'https://via.placeholder.com/500x300';
+            if (imageUrl.includes('drive.google.com')) {
+                let match = imageUrl.match(/(?:id=|[\/]?d\/)([a-zA-Z0-9_-]{25,})/);
+                if (match && match[1]) {
+                    imageUrl = `https://drive.google.com/thumbnail?id=${match[1]}&sz=w800`;
+                }
             }
-            carouselInner.innerHTML = slides.join('');
-            new bootstrap.Carousel(document.getElementById('mainCarousel'), { interval: 6000, ride: 'carousel' });
-        }
+
+            let cleanTitle = stripHtml(blog.title || '');
+            let cleanContent = stripHtml(blog.content || '');
+            let shortDesc = cleanContent.length > 110 ? cleanContent.substring(0, 110) + '...' : cleanContent;
+
+            return `
+                <div class="col-md-4">
+                    <div class="blog-card h-100" onclick="window.location.href='post?id=${uniqueId}'">
+                        <img src="${imageUrl}" class="blog-img" onerror="this.src='https://via.placeholder.com/500x300'">
+                        <div class="blog-body">
+                            <div class="blog-title">${cleanTitle}</div>
+                            <div class="blog-desc">${shortDesc}</div>
+                            <button class="btn-read">Xem thêm <i class="fas fa-arrow-right ms-2"></i></button>
+                        </div>
+                    </div>
+                </div>`;
+        }).join('');
+        
+        slides.push(`<div class="carousel-item ${i === 0 ? 'active' : ''}"><div class="row g-4">${groupHtml}</div></div>`);
+    }
+    
+    carouselInner.innerHTML = slides.join('');
+    new bootstrap.Carousel(document.getElementById('mainCarousel'), { interval: 6000, ride: 'carousel' });
+}
 
         async function loadBlogs() {
     try {
