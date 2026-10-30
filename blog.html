@@ -268,16 +268,31 @@
         const response = await fetch(N8N_GET_BLOGS);
         const data = await response.json();
         
-        // Bóc tách đúng lớp dữ liệu 'blogs' trả về từ n8n
-        let resultData = Array.isArray(data) ? data[0] : data;
-        const realBlogs = resultData.blogs || [];
-        
-        // Lọc chỉ lấy những bài có đúng status là 'Approved' (Chữ A viết hoa)
-        const approvedBlogs = realBlogs.filter(b => b.status === 'Approved');
+        // Hỗ trợ linh hoạt mọi định dạng trả về từ n8n (Dạng mảng trực tiếp hoặc dạng { blogs: [...] })
+        let realBlogs = [];
+        if (Array.isArray(data)) {
+            realBlogs = data;
+        } else if (data.blogs && Array.isArray(data.blogs)) {
+            realBlogs = data.blogs;
+        } else if (data.data && Array.isArray(data.data)) {
+            realBlogs = data.data;
+        }
 
-        currentBlogs = [...approvedBlogs.sort((a,b) => new Date(b.date)-new Date(a.date))];
-        if(currentBlogs.length < 3) currentBlogs = [...currentBlogs, ...demoBlogs];
-        renderMainCarousel(currentBlogs);
+        // Lọc linh hoạt: Không phân biệt hoa thường hoặc kiểm tra chính xác chữ Approved
+        const approvedBlogs = realBlogs.filter(b => {
+            let stt = String(b.status || '').trim().toLowerCase();
+            return stt === 'approved' || stt === 'Approved';
+        });
+
+        console.h("Bài viết sau khi lọc:", approvedBlogs); // Kiểm tra qua F12 -> Console
+
+        if (approvedBlogs.length > 0) {
+            currentBlogs = [...approvedBlogs.sort((a,b) => new Date(b.date)-new Date(a.date))];
+            renderMainCarousel(currentBlogs);
+        } else {
+            // Nếu không có bài nào đã duyệt, hiển thị demo hoặc để trống
+            renderMainCarousel(demoBlogs);
+        }
     } catch (e) { 
         console.error("Lỗi tải blog:", e);
         renderMainCarousel(demoBlogs); 
