@@ -263,27 +263,26 @@
             new bootstrap.Carousel(document.getElementById('mainCarousel'), { interval: 6000, ride: 'carousel' });
         }
 
-        async function loadBlogs() {
-            try {
-                const response = await fetch('https://wsm.congtubaclieu.com.vn/webhook/get-blogs');
-                const data = await response.json();
-                
-                // Nhận mảng dữ liệu trả về từ n8n
-                const realBlogs = Array.isArray(data) ? data : (data.data || []);
-                
-                // Đảm bảo chỉ lọc những bài đúng chuẩn 'Approved'
-                const approvedBlogs = realBlogs.filter(b => b.status === 'Approved');
+       async function loadBlogs() {
+    try {
+        const response = await fetch(N8N_GET_BLOGS);
+        const data = await response.json();
         
-                currentBlogs = [...approvedBlogs.sort((a,b) => new Date(b.date)-new Date(a.date))];
-                if(currentBlogs.length < 3) currentBlogs = [...currentBlogs, ...demoBlogs];
-                
-                // Hiển thị ra màn hình trang Blog
-                renderMainCarousel(currentBlogs);
-            } catch (e) { 
-                console.error("Lỗi tải blog:", e);
-                renderMainCarousel(demoBlogs); 
-            }
-        }
+        // Bóc tách đúng lớp dữ liệu 'blogs' trả về từ n8n
+        let resultData = Array.isArray(data) ? data[0] : data;
+        const realBlogs = resultData.blogs || [];
+        
+        // Lọc chỉ lấy những bài có đúng status là 'Approved' (Chữ A viết hoa)
+        const approvedBlogs = realBlogs.filter(b => b.status === 'Approved');
+
+        currentBlogs = [...approvedBlogs.sort((a,b) => new Date(b.date)-new Date(a.date))];
+        if(currentBlogs.length < 3) currentBlogs = [...currentBlogs, ...demoBlogs];
+        renderMainCarousel(currentBlogs);
+    } catch (e) { 
+        console.error("Lỗi tải blog:", e);
+        renderMainCarousel(demoBlogs); 
+    }
+}
 
         const demoBlogs = [
             { id: "DEMO1", title: "Cẩm nang chụp ảnh cưới Bạc Liêu 2025", content: "Chia sẻ những địa điểm check-in cực chất dành cho các cặp đôi muốn lưu giữ khoảnh khắc hạnh phúc nhất...", image: "https://images.unsplash.com/photo-1519741497674-611481863552?w=600" },
