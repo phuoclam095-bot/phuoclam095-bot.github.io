@@ -94,7 +94,7 @@
                     <table class="table table-custom mb-0 align-middle">
                         <thead>
                             <tr>
-                                <th class="text-center">STT</th>
+                                <th class="text-center" style="width: 60px;">STT</th>
                                 <th>Studio & Thông tin</th>
                                 <th>Điện thoại & Slug</th>
                                 <th>Album & Tình trạng</th>
@@ -104,7 +104,7 @@
                             </tr>
                         </thead>
                         <tbody id="studioTableBody">
-                            <tr><td colspan="6" class="text-center py-4 text-secondary">Đang tải dữ liệu bảng User & Albums...</td></tr>
+                            <tr><td colspan="7" class="text-center py-4 text-secondary">Đang tải dữ liệu bảng User & Albums...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -113,29 +113,29 @@
 
         <!-- TAB 2: LỊCH TRÌNH & HỢP ĐỒNG CRM -->
         <div id="tab-contracts" class="tab-pane">
-    <div class="card card-stat p-0 overflow-hidden">
-        <div class="p-3 border-bottom border-secondary d-flex justify-content-between align-items-center">
-            <h5 class="mb-0 text-primary"><i class="fas fa-file-contract me-2"></i>Quản Lý Lịch Chụp & Hợp Đồng Theo Studio</h5>
-            <input type="text" id="searchContract" class="form-control form-control-sm bg-dark text-white border-secondary w-25" placeholder="Tìm theo email studio..." onkeyup="filterContracts()">
+            <div class="card card-stat p-0 overflow-hidden">
+                <div class="p-3 border-bottom border-secondary d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-primary"><i class="fas fa-file-contract me-2"></i>Quản Lý Lịch Chụp & Hợp Đồng Theo Studio</h5>
+                    <input type="text" id="searchContract" class="form-control form-control-sm bg-dark text-white border-secondary w-25" placeholder="Tìm theo email studio..." onkeyup="filterContracts()">
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-custom mb-0 align-middle">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width: 60px;">STT</th>
+                                <th>Studio Email</th>
+                                <th>Slug</th>
+                                <th>Tổng Số Hợp Đồng / Lịch Chụp</th>
+                                <th class="text-end">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contractTableBody">
+                            <tr><td colspan="5" class="text-center py-4 text-secondary">Đang tải dữ liệu hợp đồng...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-        <div class="table-responsive">
-            <table class="table table-custom mb-0 align-middle">
-                <thead>
-                    <tr>
-                        <th class="text-center">STT</th>
-                        <th>Studio Email</th>
-                        <th>Slug</th>
-                        <th>Tổng Số Hợp Đồng / Lịch Chụp</th>
-                        <th class="text-end">Hành động</th>
-                    </tr>
-                </thead>
-                <tbody id="contractTableBody">
-                    <tr><td colspan="4" class="text-center py-4 text-secondary">Đang tải dữ liệu hợp đồng...</td></tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
 
         <!-- TAB 3: GIAO DỊCH & NẠP TIỀN VIP -->
         <div id="tab-transactions" class="tab-pane">
@@ -147,7 +147,7 @@
                     <table class="table table-custom mb-0 align-middle">
                         <thead>
                             <tr>
-                                <th class="text-center">STT</th>
+                                <th class="text-center" style="width: 60px;">STT</th>
                                 <th>Mã Giao Dịch (Code)</th>
                                 <th>Studio Email</th>
                                 <th>Số Tiền</th>
@@ -157,7 +157,7 @@
                             </tr>
                         </thead>
                         <tbody id="transactionTableBody">
-                            <tr><td colspan="6" class="text-center py-4 text-secondary">Đang tải dữ liệu giao dịch...</td></tr>
+                            <tr><td colspan="7" class="text-center py-4 text-secondary">Đang tải dữ liệu giao dịch...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -174,7 +174,7 @@
                     <table class="table table-custom mb-0 align-middle">
                         <thead>
                             <tr>
-                                <th class="text-center">STT</th>
+                                <th class="text-center" style="width: 60px;">STT</th>
                                 <th>Tiêu đề & Tác giả</th>
                                 <th>Email</th>
                                 <th>Ngày đăng</th>
@@ -183,7 +183,7 @@
                             </tr>
                         </thead>
                         <tbody id="blogTableBody">
-                            <tr><td colspan="5" class="text-center py-4 text-secondary">Đang tải danh sách bài viết...</td></tr>
+                            <tr><td colspan="6" class="text-center py-4 text-secondary">Đang tải danh sách bài viết...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -200,7 +200,7 @@
                     <table class="table table-custom mb-0 align-middle">
                         <thead>
                             <tr>
-                                <th class="text-center">STT</th>
+                                <th class="text-center" style="width: 60px;">STT</th>
                                 <th>Người gửi</th>
                                 <th>Email</th>
                                 <th>Nội dung phản hồi</th>
@@ -208,7 +208,7 @@
                             </tr>
                         </thead>
                         <tbody id="feedbackTableBody">
-                            <tr><td colspan="4" class="text-center py-4 text-secondary">Đang tải hòm thư góp ý...</td></tr>
+                            <tr><td colspan="5" class="text-center py-4 text-secondary">Đang tải hòm thư góp ý...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -260,70 +260,92 @@
         </div>
     </div>
 
+    <!-- MODAL XEM CHI TIẾT LỊCH & HỢP ĐỒNG CỦA STUDIO -->
+    <div class="modal fade" id="contractDetailModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content bg-dark text-white border-secondary">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title"><i class="fas fa-calendar-alt text-primary me-2"></i>Danh Sách Lịch Chụp & Hợp Đồng: <span id="contractStudioEmailTitle" class="text-warning">--</span></h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" style="max-height: 75vh; overflow-y: auto;" id="contractDetailContent"></div>
+                <div class="modal-footer border-secondary">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TẢI THƯ VIỆN BOOTSTRAP TRƯỚC -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- KHỐI MÃ JAVASCRIPT CHÍNH -->
     <script>
-        const TRANSACTIONS_API_URL = "https://wsm.congtubaclieu.com.vn/webhook/super-admin-transactions";
         const ADMIN_API_URL = "https://wsm.congtubaclieu.com.vn/webhook/super-admin-data";
         const CONTRACTS_API_URL = "https://wsm.congtubaclieu.com.vn/webhook/super-admin-contracts";
-       function switchTab(tabId) {
-    document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
-    document.getElementById('tab-' + tabId).classList.add('active');
-    
-    let titles = {
-        'studios': 'Quản Lý Studio & Cấu Hình Album',
-        'contracts': 'Trung Tâm Lịch Trình & Hợp Đồng CRM',
-        'transactions': 'Lịch Sử Giao Dịch & Nạp Tiền VIP',
-        'blogs': 'Kiểm Duyệt Bài Viết Cộng Đồng (Blog)',
-        'feedbacks': 'Hòm Thư Tiếp Nhận Góp Ý & Báo Lỗi'
-    };
-    document.getElementById('currentTitle').innerText = titles[tabId];
+        const TRANSACTIONS_API_URL = "https://wsm.congtubaclieu.com.vn/webhook/super-admin-transactions";
 
-    if (tabId === 'contracts') {
-        loadContractsData();
-    } else if (tabId === 'transactions') {
-        loadTransactionsData(); // Gọi webhook tải lịch sử giao dịch khi bấm vào tab này
-    }
-}
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            
+            let titles = {
+                'studios': 'Quản Lý Studio & Cấu Hình Album',
+                'contracts': 'Trung Tâm Lịch Trình & Hợp Đồng CRM',
+                'transactions': 'Lịch Sử Giao Dịch & Nạp Tiền VIP',
+                'blogs': 'Kiểm Duyệt Bài Viết Cộng Đồng (Blog)',
+                'feedbacks': 'Hòm Thư Tiếp Nhận Góp Ý & Báo Lỗi'
+            };
+            document.getElementById('currentTitle').innerText = titles[tabId];
+
+            if (tabId === 'contracts') {
+                loadContractsData();
+            } else if (tabId === 'transactions') {
+                loadTransactionsData();
+            }
+        }
 
         async function loadTransactionsData() {
-    let body = document.getElementById('transactionTableBody');
-    if (!body) return;
-    
-    body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">Đang tải lịch sử giao dịch...</td></tr>`;
-    
-    try {
-        let response = await fetch(TRANSACTIONS_API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'get_transactions' })
-        });
-        let data = await response.json();
-        
-        let resultData = Array.isArray(data) ? data[0] : data;
-        let txList = (resultData.transactions || []).slice(0, 100);
+            let body = document.getElementById('transactionTableBody');
+            if (!body) return;
+            
+            body.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-secondary">Đang tải lịch sử giao dịch...</td></tr>`;
+            
+            try {
+                let response = await fetch(TRANSACTIONS_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'get_transactions' })
+                });
+                let data = await response.json();
+                
+                let resultData = Array.isArray(data) ? data[0] : data;
+                let txList = resultData.transactions || [];
 
-        body.innerHTML = '';
-        if (txList.length > 0) {
-            txList.forEach(tx => {
-                let statusBadge = (tx.status && tx.status.toLowerCase() === 'active') ? 'success' : 'warning';
-                body.innerHTML += `
-                    <tr>
-                        <td class="text-center text-secondary">${index + 1}</td>
-                        <td><b class="text-primary">${tx.paymentCode}</b></td>
-                        <td><div class="text-white">${tx.email}</div></td>
-                        <td><b class="text-success">${tx.amount}</b></td>
-                        <td><span class="badge bg-dark border border-secondary text-info">${tx.months}</span></td>
-                        <td><span class="badge bg-${statusBadge}">${tx.status}</span></td>
-                        <td><small class="text-secondary">${tx.timestamp}</small></td>
-                    </tr>`;
-            });
-        } else {
-            body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">Chưa có lịch sử giao dịch nào.</td></tr>`;
+                body.innerHTML = '';
+                if (txList.length > 0) {
+                    txList.forEach((tx, index) => {
+                        let statusBadge = (tx.status && tx.status.toLowerCase() === 'active') ? 'success' : 'warning';
+                        body.innerHTML += `
+                            <tr>
+                                <td class="text-center text-secondary">${index + 1}</td>
+                                <td><b class="text-primary">${tx.paymentCode}</b></td>
+                                <td><div class="text-white">${tx.email}</div></td>
+                                <td><b class="text-success">${tx.amount}</b></td>
+                                <td><span class="badge bg-dark border border-secondary text-info">${tx.months}</span></td>
+                                <td><span class="badge bg-${statusBadge}">${tx.status}</span></td>
+                                <td><small class="text-secondary">${tx.timestamp}</small></td>
+                            </tr>`;
+                    });
+                } else {
+                    body.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-secondary">Chưa có lịch sử giao dịch nào.</td></tr>`;
+                }
+            } catch (e) {
+                console.error("Lỗi tải giao dịch:", e);
+                body.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-danger">Không thể kết nối tới webhook giao dịch.</td></tr>`;
+            }
         }
-    } catch (e) {
-        console.error("Lỗi tải giao dịch:", e);
-        body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-danger">Không thể kết nối tới webhook giao dịch.</td></tr>`;
-    }
-}
+
         async function loadAllData() {
             try {
                 let response = await fetch(ADMIN_API_URL, {
@@ -346,140 +368,138 @@
 
             } catch (e) {
                 console.error("Lỗi tải dữ liệu từ n8n, chuyển sang dữ liệu mẫu:", e);
-                renderMockData();
             }
         }
 
         function renderAllData(data) {
-    // Cập nhật các thẻ thống kê tổng quan
-    document.getElementById('statStudios').innerText = data.totalStudios || 0;
-    document.getElementById('statAlbums').innerText = data.totalAlbums || 0;
-    document.getElementById('statRevenue').innerText = data.totalRevenue || "0 VNĐ";
-    document.getElementById('statPendingBlogs').innerText = data.pendingBlogs || data.pendingBlogsCount || 0;
+            document.getElementById('statStudios').innerText = data.totalStudios || 0;
+            document.getElementById('statAlbums').innerText = data.totalAlbums || 0;
+            document.getElementById('statRevenue').innerText = data.totalRevenue || "0 VNĐ";
+            document.getElementById('statPendingBlogs').innerText = data.pendingBlogs || data.pendingBlogsCount || 0;
 
-    window.cachedStudios = data.studios || [];
+            window.cachedStudios = data.studios || [];
 
-    // Render bảng Studios chính
-    let sBody = document.getElementById('studioTableBody');
-    sBody.innerHTML = '';
-    let studiosToRender = window.cachedStudios.slice(0, 100);
-    if (data.studios && data.studios.length > 0) {
-        data.studios.forEach(s => {
-            // Xơ đồ màu sắc: hết hạn hoặc <= 3 ngày thì báo đỏ, còn lại màu xanh
-            let badgeClass = s.daysLeft <= 3 ? 'text-danger fw-bold' : 'text-success fw-bold';
-            let statusBadge = s.vipStatus === 'active' ? 'success' : 'danger';
+            let sBody = document.getElementById('studioTableBody');
+            sBody.innerHTML = '';
+            
+            if (data.studios && data.studios.length > 0) {
+                data.studios.forEach((s, index) => {
+                    let badgeClass = s.daysLeft <= 3 ? 'text-danger fw-bold' : 'text-success fw-bold';
+                    let statusBadge = s.vipStatus === 'active' ? 'success' : 'danger';
 
-            sBody.innerHTML += `
-                <tr>
-                    <td class="text-center text-secondary">${index + 1}</td>
-                    <td>
-                        <div class="fw-bold text-white">${s.name || 'Chưa đặt tên'}</div>
-                        <div class="small text-secondary">${s.email}</div>
-                    </td>
-                    <td>
-                        <div><i class="fas fa-phone text-primary me-1"></i>${s.phone || 'Chưa cập nhật'}</div>
-                        <div class="small text-secondary">slug: ${s.slug || 'N/A'}</div>
-                    </td>
-                    <td>
-                        <span class="badge bg-secondary">${s.albumsCount || (s.albums ? s.albums.length : 0)} Album</span> 
-                        <span class="badge bg-dark border border-secondary text-info">(${s.totalPhotosCount || 0} ảnh)</span>
-                    </td>
-                    <td>
-                        <span class="${badgeClass}">${s.daysLeft} ngày</span><br>
-                        <small class="text-secondary">Đến: ${s.expiry_date || 'Chưa rõ'}</small>
-                    </td>
-                    <td><span class="badge bg-${statusBadge}">${s.vipStatus || 'expired'}</span></td>
-                    <td class="text-end">
-                        <button class="btn btn-sm btn-outline-warning me-1" onclick="viewStudioAlbums('${s.email}')"><i class="fas fa-folder-open"></i> Xem Album</button>
-                        <button class="btn btn-sm btn-outline-primary" onclick="openActivateModal('${s.email}', '${s.name}')"><i class="fas fa-key"></i> Gia hạn</button>
-                    </td>
-                </tr>`;
-        });
-    } else {
-        sBody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">Không có dữ liệu studio nào.</td></tr>`;
-    }
+                    sBody.innerHTML += `
+                        <tr>
+                            <td class="text-center text-secondary">${index + 1}</td>
+                            <td>
+                                <div class="fw-bold text-white">${s.name || 'Chưa đặt tên'}</div>
+                                <div class="small text-secondary">${s.email}</div>
+                            </td>
+                            <td>
+                                <div><i class="fas fa-phone text-primary me-1"></i>${s.phone || 'Chưa cập nhật'}</div>
+                                <div class="small text-secondary">slug: ${s.slug || 'N/A'}</div>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary">${s.albumsCount || (s.albums ? s.albums.length : 0)} Album</span> 
+                                <span class="badge bg-dark border border-secondary text-info">(${s.totalPhotosCount || 0} ảnh)</span>
+                            </td>
+                            <td>
+                                <span class="${badgeClass}">${s.daysLeft} ngày</span><br>
+                                <small class="text-secondary">Đến: ${s.expiry_date || 'Chưa rõ'}</small>
+                            </td>
+                            <td><span class="badge bg-${statusBadge}">${s.vipStatus || 'expired'}</span></td>
+                            <td class="text-end">
+                                <button class="btn btn-sm btn-outline-warning me-1" onclick="viewStudioAlbums('${s.email}')"><i class="fas fa-folder-open"></i> Xem Album</button>
+                                <button class="btn btn-sm btn-outline-primary" onclick="openActivateModal('${s.email}', '${s.name}')"><i class="fas fa-key"></i> Gia hạn</button>
+                            </td>
+                        </tr>`;
+                });
+            } else {
+                sBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-secondary">Không có dữ liệu studio nào.</td></tr>`;
+            }
 
-    // Render các bảng phụ an toàn
-    renderTableSafely('contractTableBody', data.contracts, 6, 'Chưa có hợp đồng nào.');
-    renderTableSafely('transactionTableBody', data.transactions, 6, 'Chưa có giao dịch nạp tiền.');
-    renderTableSafely('blogTableBody', data.blogs, 5, 'Không có bài viết blog nào đang chờ duyệt.');
-    renderTableSafely('feedbackTableBody', data.feedbacks, 4, 'Hòm thư góp ý trống.');
-}
+            renderTableSafely('contractTableBody', data.contracts, 5, 'Chưa có hợp đồng nào.');
+            renderTableSafely('transactionTableBody', data.transactions, 7, 'Chưa có giao dịch nạp tiền.');
+            renderTableSafely('blogTableBody', data.blogs, 6, 'Không có bài viết blog nào đang chờ duyệt.');
+            renderTableSafely('feedbackTableBody', data.feedbacks, 5, 'Hòm thư góp ý trống.');
+        }
 
         function renderTableSafely(elementId, items, colSpan, emptyText) {
             let body = document.getElementById(elementId);
             if (!body) return;
             body.innerHTML = '';
             if (items && items.length > 0) {
-                // Giữ nguyên logic hiển thị dữ liệu phụ nếu có
+                items.forEach((item, index) => {
+                    // Render an toàn các bảng phụ nếu có dữ liệu truyền vào trực tiếp từ tổng
+                });
             } else {
                 body.innerHTML = `<tr><td colspan="${colSpan}" class="text-center py-4 text-secondary">${emptyText}</td></tr>`;
             }
         }
 
-       function viewStudioAlbums(email) {
-    let studio = window.cachedStudios.find(s => s.email === email);
-    if(!studio) return;
+        function viewStudioAlbums(email) {
+            let studio = window.cachedStudios.find(s => s.email === email);
+            if(!studio) return;
 
-    document.getElementById('detailStudioName').innerText = studio.name + " (" + studio.email + ")";
-    let container = document.getElementById('albumDetailContent');
-    container.innerHTML = '';
+            document.getElementById('detailStudioName').innerText = studio.name + " (" + studio.email + ")";
+            let container = document.getElementById('albumDetailContent');
+            container.innerHTML = '';
 
-    if(!studio.albums || studio.albums.length === 0) {
-        container.innerHTML = `<p class="text-center text-secondary py-4">Studio này chưa có album thực tế nào.</p>`;
-    } else {
-        studio.albums.forEach(album => {
-            let notesHtml = '';
-            if (album.clientNotes && album.clientNotes.length > 0) {
-                album.clientNotes.forEach(n => {
-                    notesHtml += `<div class="small bg-black p-2 rounded mb-1 border border-secondary text-light"><i class="fas fa-comment-dots text-primary me-2"></i><b>${n.photoName || 'Ảnh'}:</b> ${n.noteText}</div>`;
-                });
+            if(!studio.albums || studio.albums.length === 0) {
+                container.innerHTML = `<p class="text-center text-secondary py-4">Studio này chưa có album thực tế nào.</p>`;
             } else {
-                notesHtml = `<span class="text-secondary small italic">Chưa có ghi chú trên ảnh.</span>`;
+                studio.albums.forEach(album => {
+                    let notesHtml = '';
+                    if (album.clientNotes && album.clientNotes.length > 0) {
+                        album.clientNotes.forEach(n => {
+                            notesHtml += `<div class="small bg-black p-2 rounded mb-1 border border-secondary text-light"><i class="fas fa-comment-dots text-primary me-2"></i><b>${n.photoName || 'Ảnh'}:</b> ${n.noteText}</div>`;
+                        });
+                    } else {
+                        notesHtml = `<span class="text-secondary small italic">Chưa có ghi chú trên ảnh.</span>`;
+                    }
+
+                    let folderId = album.folderId;
+                    let folderUrl = folderId ? `https://drive.google.com/drive/folders/${folderId}` : '#';
+
+                    container.innerHTML += `
+                        <div class="card bg-black border border-secondary p-3 mb-3 rounded-4 text-white">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <h5 class="text-primary fw-bold mb-1"><i class="fas fa-folder-open me-2"></i>${album.albumName}</h5>
+                                    <a href="${folderUrl}" target="_blank" class="small text-info text-decoration-none fw-bold"><i class="fab fa-google-drive me-1"></i>Mở thư mục Google Drive gốc (Folder)</a>
+                                </div>
+                            </div>
+                            <div class="row g-3 my-2">
+                                <div class="col-md-6">
+                                    <div class="p-2 bg-dark rounded border border-secondary h-100 text-light">
+                                        <span class="text-warning small d-block mb-1 fw-bold"><i class="fas fa-cog me-1"></i>Cấu hình Album (Setting):</span>
+                                        <span class="small text-light">• Watermark: <b class="text-white">${album.config?.watermark ? 'Bật (Có)' : 'Tắt (Không)'}</b></span><br>
+                                        <span class="small text-light">• Giới hạn chọn: <b class="text-white">${album.config?.maxSelect > 0 ? album.config.maxSelect + ' ảnh' : 'Không giới hạn'}</b></span><br>
+                                        <span class="small text-light">• Tải ảnh gốc: <b class="text-white">${album.config?.allowDownload ? 'Cho phép' : 'Khóa'}</b></span><br>
+                                        <span class="small text-light">• Bình luận: <b class="text-white">${album.config?.allowComment ? 'Bật' : 'Tắt'}</b></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-2 bg-dark rounded border border-secondary h-100 text-light">
+                                        <span class="text-warning small d-block mb-1 fw-bold"><i class="fas fa-chart-pie me-1"></i>Tiến độ thực tế:</span>
+                                        <span class="small text-light">Tổng số ảnh: <b class="text-white">${album.totalPhotos} ảnh</b></span><br>
+                                        <span class="small text-light">Khách đã chọn: <b class="text-success">${album.selectedCount} ảnh</b></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row g-3 mt-1">
+                                <div class="col-12">
+                                    <div class="p-2 bg-dark rounded border border-secondary text-light">
+                                        <span class="text-warning small d-block mb-1 fw-bold"><i class="fas fa-comments me-1"></i>Ghi chú của khách hàng theo tên ảnh:</span>
+                                        <div style="max-height: 120px; overflow-y: auto;">${notesHtml}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                });
             }
+            new bootstrap.Modal(document.getElementById('albumDetailModal')).show();
+        }
 
-            let folderId = album.folderId;
-            let folderUrl = folderId ? `https://drive.google.com/drive/folders/${folderId}` : '#';
-
-            container.innerHTML += `
-                <div class="card bg-black border border-secondary p-3 mb-3 rounded-4 text-white">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <div>
-                            <h5 class="text-primary fw-bold mb-1"><i class="fas fa-folder-open me-2"></i>${album.albumName}</h5>
-                            <a href="${folderUrl}" target="_blank" class="small text-info text-decoration-none fw-bold"><i class="fab fa-google-drive me-1"></i>Mở thư mục Google Drive gốc (Folder)</a>
-                        </div>
-                    </div>
-                    <div class="row g-3 my-2">
-                        <div class="col-md-6">
-                            <div class="p-2 bg-dark rounded border border-secondary h-100 text-light">
-                                <span class="text-warning small d-block mb-1 fw-bold"><i class="fas fa-cog me-1"></i>Cấu hình Album (Setting):</span>
-                                <span class="small text-light">• Watermark: <b class="text-white">${album.config?.watermark ? 'Bật (Có)' : 'Tắt (Không)'}</b></span><br>
-                                <span class="small text-light">• Giới hạn chọn: <b class="text-white">${album.config?.maxSelect > 0 ? album.config.maxSelect + ' ảnh' : 'Không giới hạn'}</b></span><br>
-                                <span class="small text-light">• Tải ảnh gốc: <b class="text-white">${album.config?.allowDownload ? 'Cho phép' : 'Khóa'}</b></span><br>
-                                <span class="small text-light">• Bình luận: <b class="text-white">${album.config?.allowComment ? 'Bật' : 'Tắt'}</b></span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="p-2 bg-dark rounded border border-secondary h-100 text-light">
-                                <span class="text-warning small d-block mb-1 fw-bold"><i class="fas fa-chart-pie me-1"></i>Tiến độ thực tế:</span>
-                                <span class="small text-light">Tổng số ảnh: <b class="text-white">${album.totalPhotos} ảnh</b></span><br>
-                                <span class="small text-light">Khách đã chọn: <b class="text-success">${album.selectedCount} ảnh</b></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row g-3 mt-1">
-                        <div class="col-12">
-                            <div class="p-2 bg-dark rounded border border-secondary text-light">
-                                <span class="text-warning small d-block mb-1 fw-bold"><i class="fas fa-comments me-1"></i>Ghi chú của khách hàng theo tên ảnh:</span>
-                                <div style="max-height: 120px; overflow-y: auto;">${notesHtml}</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>`;
-        });
-    }
-    new bootstrap.Modal(document.getElementById('albumDetailModal')).show();
-}
         function openActivateModal(email, name) {
             document.getElementById('modalStudioEmail').value = email;
             document.getElementById('modalStudioDisplay').innerText = name + " (" + email + ")";
@@ -528,124 +548,108 @@
             });
         }
 
-        // Tải dữ liệu toàn bộ hệ thống ngay khi mở trang
+        async function loadContractsData() {
+            let body = document.getElementById('contractTableBody');
+            if (!body) return;
+            
+            body.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-secondary">Đang tải dữ liệu hợp đồng...</td></tr>`;
+            
+            try {
+                let response = await fetch(CONTRACTS_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'get_contracts' })
+                });
+                let data = await response.json();
+                
+                let resultData = Array.isArray(data) ? data[0] : data;
+                window.cachedContractsStudios = resultData.studiosContracts || resultData.contracts || [];
+
+                body.innerHTML = '';
+                if (window.cachedContractsStudios.length > 0) {
+                    window.cachedContractsStudios.forEach((item, index) => {
+                        body.innerHTML += `
+                            <tr>
+                                <td class="text-center text-secondary">${index + 1}</td>
+                                <td><div class="fw-bold text-white">${item.studioEmail || 'Chưa có email'}</div></td>
+                                <td><span class="text-secondary">${item.studioSlug || 'N/A'}</span></td>
+                                <td><span class="badge bg-primary">${item.contractsCount || (item.contracts ? item.contracts.length : 0)} Lịch / Hợp đồng</span></td>
+                                <td class="text-end">
+                                    <button class="btn btn-sm btn-outline-warning" onclick="viewStudioContracts('${item.studioEmail}')">
+                                        <i class="fas fa-eye"></i> Xem Chi Tiết Lịch
+                                    </button>
+                                </td>
+                            </tr>`;
+                    });
+                } else {
+                    body.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-secondary">Chưa có dữ liệu hợp đồng nào.</td></tr>`;
+                }
+            } catch (e) {
+                console.error("Lỗi tải hợp đồng:", e);
+                body.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-danger">Không thể kết nối tới webhook hợp đồng.</td></tr>`;
+            }
+        }
+
+        function viewStudioContracts(email) {
+            let studio = window.cachedContractsStudios.find(s => s.studioEmail === email);
+            if (!studio) return;
+
+            document.getElementById('contractStudioEmailTitle').innerText = studio.studioEmail;
+            let container = document.getElementById('contractDetailContent');
+            container.innerHTML = '';
+
+            if (!studio.contracts || studio.contracts.length === 0) {
+                container.innerHTML = `<p class="text-center text-secondary py-4">Studio này chưa có lịch hẹn hoặc hợp đồng nào.</p>`;
+            } else {
+                studio.contracts.forEach(c => {
+                    let badgeBg = (c.paymentStatus && c.paymentStatus.toLowerCase().includes('tất toán')) ? 'success' : 'warning';
+                    
+                    container.innerHTML += `
+                        <div class="card bg-black border border-secondary p-3 mb-3 rounded-4 text-white">
+                            <div class="d-flex justify-content-between align-items-center mb-2 border-bottom border-secondary pb-2">
+                                <div>
+                                    <h5 class="text-primary fw-bold mb-1">
+                                        <i class="fas fa-user me-2"></i>${c.customerName || 'Khách lẻ'} 
+                                        <span class="small text-info">(${c.customerPhone || 'Không có SĐT'})</span>
+                                    </h5>
+                                    <span class="small text-warning"><i class="fas fa-tag me-1"></i>Gói dịch vụ: <b>${c.servicePackage || 'Gói tiêu chuẩn'}</b></span>
+                                </div>
+                                <span class="badge bg-${badgeBg} px-3 py-2">${c.paymentStatus || 'Chưa cọc'}</span>
+                            </div>
+                            
+                            <div class="row g-3 my-1">
+                                <div class="col-md-6">
+                                    <div class="p-2 bg-dark rounded border border-secondary text-light h-100">
+                                        <span class="text-warning small d-block mb-1 fw-bold"><i class="fas fa-clock me-1"></i>Thời gian & Địa điểm:</span>
+                                        <span class="small text-light">• Ngày sự kiện (Dương): <b class="text-white">${c.eventDate}</b></span><br>
+                                        <span class="small text-light">• Ngày Âm lịch: <b class="text-info">${c.lunarDate}</b></span><br>
+                                        <span class="small text-light">• Địa điểm: <b class="text-white">${c.eventLocation || 'Tại studio'}</b></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-2 bg-dark rounded border border-secondary text-light h-100">
+                                        <span class="text-warning small d-block mb-1 fw-bold"><i class="fas fa-money-bill-wave me-1"></i>Tài chính & Thanh toán:</span>
+                                        <span class="small text-light">• Tổng tiền: <b class="text-white">${c.totalAmount}</b></span><br>
+                                        <span class="small text-light">• Đã cọc: <b class="text-success">${c.depositAmount}</b></span><br>
+                                        <span class="small text-light">• Còn lại: <b class="text-danger">${c.remainingAmount}</b></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            ${c.note ? `
+                                <div class="mt-2 p-2 bg-dark rounded border border-secondary small text-light">
+                                    <i class="fas fa-sticky-note text-warning me-1"></i><b>Ghi chú:</b> <span class="text-white">${c.note}</span>
+                                </div>
+                            ` : ''}
+                        </div>`;
+                });
+            }
+            new bootstrap.Modal(document.getElementById('contractDetailModal')).show();
+        }
+
         document.addEventListener("DOMContentLoaded", () => {
             loadAllData();
         });
-        async function loadContractsData() {
-    let body = document.getElementById('contractTableBody');
-    if (!body) return;
-    
-    body.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-secondary">Đang tải dữ liệu hợp đồng...</td></tr>`;
-    
-    try {
-        let response = await fetch(CONTRACTS_API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'get_contracts' })
-        });
-        let data = await response.json();
-        
-        let resultData = Array.isArray(data) ? data[0] : data;
-        window.cachedContractsStudios = resultData.studiosContracts || resultData.contracts || [];
-        let contractsList = window.cachedContractsStudios.slice(0, 100);
-
-        body.innerHTML = '';
-        if (window.cachedContractsStudios.length > 0) {
-            window.cachedContractsStudios.forEach((item) => {
-                body.innerHTML += `
-                    <tr>
-                        <td class="text-center text-secondary">${index + 1}</td>
-                        <td><div class="fw-bold text-white">${item.studioEmail || 'Chưa có email'}</div></td>
-                        <td><span class="text-secondary">${item.studioSlug || 'N/A'}</span></td>
-                        <td><span class="badge bg-primary">${item.contractsCount || (item.contracts ? item.contracts.length : 0)} Lịch / Hợp đồng</span></td>
-                        <td class="text-end">
-                            <button class="btn btn-sm btn-outline-warning" onclick="viewStudioContracts('${item.studioEmail}')">
-                                <i class="fas fa-eye"></i> Xem Chi Tiết Lịch
-                            </button>
-                        </td>
-                    </tr>`;
-            });
-        } else {
-            body.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-secondary">Chưa có dữ liệu hợp đồng nào.</td></tr>`;
-        }
-    } catch (e) {
-        console.error("Lỗi tải hợp đồng:", e);
-        body.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-danger">Không thể kết nối tới webhook hợp đồng.</td></tr>`;
-    }
-}
-function viewStudioContracts(email) {
-    let studio = window.cachedContractsStudios.find(s => s.studioEmail === email);
-    if (!studio) return;
-
-    document.getElementById('contractStudioEmailTitle').innerText = studio.studioEmail;
-    let container = document.getElementById('contractDetailContent');
-    container.innerHTML = '';
-
-    if (!studio.contracts || studio.contracts.length === 0) {
-        container.innerHTML = `<p class="text-center text-secondary py-4">Studio này chưa có lịch hẹn hoặc hợp đồng nào.</p>`;
-    } else {
-        studio.contracts.forEach(c => {
-            let badgeBg = (c.paymentStatus && c.paymentStatus.toLowerCase().includes('tất toán')) ? 'success' : 'warning';
-            
-            container.innerHTML += `
-                <div class="card bg-black border border-secondary p-3 mb-3 rounded-4 text-white">
-                    <div class="d-flex justify-content-between align-items-center mb-2 border-bottom border-secondary pb-2">
-                        <div>
-                            <h5 class="text-primary fw-bold mb-1">
-                                <i class="fas fa-user me-2"></i>${c.customerName || 'Khách lẻ'} 
-                                <span class="small text-info">(${c.customerPhone || 'Không có SĐT'})</span>
-                            </h5>
-                            <span class="small text-warning"><i class="fas fa-tag me-1"></i>Gói dịch vụ: <b>${c.servicePackage || 'Gói tiêu chuẩn'}</b></span>
-                        </div>
-                        <span class="badge bg-${badgeBg} px-3 py-2">${c.paymentStatus || 'Chưa cọc'}</span>
-                    </div>
-                    
-                    <div class="row g-3 my-1">
-                        <div class="col-md-6">
-                            <div class="p-2 bg-dark rounded border border-secondary text-light h-100">
-                                <span class="text-warning small d-block mb-1 fw-bold"><i class="fas fa-clock me-1"></i>Thời gian & Địa điểm:</span>
-                                <span class="small text-light">• Ngày sự kiện (Dương): <b class="text-white">${c.eventDate}</b></span><br>
-                                <span class="small text-light">• Ngày Âm lịch: <b class="text-info">${c.lunarDate}</b></span><br>
-                                <span class="small text-light">• Địa điểm: <b class="text-white">${c.eventLocation || 'Tại studio'}</b></span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="p-2 bg-dark rounded border border-secondary text-light h-100">
-                                <span class="text-warning small d-block mb-1 fw-bold"><i class="fas fa-money-bill-wave me-1"></i>Tài chính & Thanh toán:</span>
-                                <span class="small text-light">• Tổng tiền: <b class="text-white">${c.totalAmount}</b></span><br>
-                                <span class="small text-light">• Đã cọc: <b class="text-success">${c.depositAmount}</b></span><br>
-                                <span class="small text-light">• Còn lại: <b class="text-danger">${c.remainingAmount}</b></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    ${c.note ? `
-                        <div class="mt-2 p-2 bg-dark rounded border border-secondary small text-light">
-                            <i class="fas fa-sticky-note text-warning me-1"></i><b>Ghi chú:</b> <span class="text-white">${c.note}</span>
-                        </div>
-                    ` : ''}
-                </div>`;
-        });
-    }
-    new bootstrap.Modal(document.getElementById('contractDetailModal')).show();
-}
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- MODAL XEM CHI TIẾT LỊCH & HỢP ĐỒNG CỦA STUDIO -->
-<div class="modal fade" id="contractDetailModal" tabindex="-1">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content bg-dark text-white border-secondary">
-            <div class="modal-header border-secondary">
-                <h5 class="modal-title"><i class="fas fa-calendar-alt text-primary me-2"></i>Danh Sách Lịch Chụp & Hợp Đồng: <span id="contractStudioEmailTitle" class="text-warning">--</span></h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body" style="max-height: 75vh; overflow-y: auto;" id="contractDetailContent"></div>
-            <div class="modal-footer border-secondary">
-                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Đóng</button>
-            </div>
-        </div>
-    </div>
-</div>
 </body>
 </html>
