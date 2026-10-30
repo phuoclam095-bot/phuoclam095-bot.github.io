@@ -405,11 +405,15 @@ async function approveBlog(postId) {
         let response = await fetch(BLOGS_API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'approve_blog', post_id: postId })
+            body: JSON.stringify({ 
+                action: 'approve_blog', 
+                post_id: postId // Đảm bảo có dòng này để gửi id bài viết lên n8n
+            })
         });
         
+        let result = await response.json();
         alert("Đã phê duyệt bài viết thành công!");
-        loadBlogsData(); // Tải lại danh sách sau khi duyệt
+        loadBlogsData(); // Tải lại bảng blog
     } catch(e) {
         console.error("Lỗi duyệt bài:", e);
         alert("Không thể kết nối tới máy chủ để duyệt bài viết.");
