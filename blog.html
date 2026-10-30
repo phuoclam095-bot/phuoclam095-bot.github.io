@@ -256,12 +256,18 @@
     for (let i = 0; i < blogs.length; i += 3) {
         const group = blogs.slice(i, i + 3);
         let groupHtml = group.map((blog) => {
-            // Lấy linh hoạt id hoặc post_id để không bao giờ bị lệch dữ liệu khi bấm xem chi tiết
             const uniqueId = blog.id !== undefined ? blog.id : (blog.postId || '');
             if (!uniqueId) return '<div class="col-md-4"></div>';
 
-            const driveId = blog.image?.includes('id=') ? blog.image.split('id=')[1].split('&')[0] : blog.image;
-            let imageUrl = blog.id?.toString().startsWith('DEMO') ? blog.image : (driveId ? `https://drive.google.com/thumbnail?id=${driveId}&sz=w600` : blog.image);
+            // Xử lý thông minh mọi định dạng link ảnh (Drive trực tiếp, thumbnail hoặc Unsplash)
+            let imageUrl = blog.image || 'https://via.placeholder.com/500x300';
+            if (imageUrl.includes('drive.google.com')) {
+                // Tự động quét lấy ID file Google Drive bất kể là dạng uc?export=view hay file/d/
+                let match = imageUrl.match(/(?:id=|[\/]?d\/)([a-zA-Z0-9_-]{25,})/);
+                if (match && match[1]) {
+                    imageUrl = `https://drive.google.com/thumbnail?id=${match[1]}&sz=w800`;
+                }
+            }
 
             let cleanTitle = stripHtml(blog.title || '');
             let cleanContent = stripHtml(blog.content || '');
