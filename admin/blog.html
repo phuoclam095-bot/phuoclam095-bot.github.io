@@ -266,15 +266,40 @@
         }
 
         async function loadBlogs() {
-            try {
-                const response = await fetch(N8N_GET_BLOGS);
-                const data = await response.json();
-                const realBlogs = Array.isArray(data) ? data : (data.data || []);
-                currentBlogs = [...realBlogs.sort((a,b) => new Date(b.date)-new Date(a.date))];
-                if(currentBlogs.length < 3) currentBlogs = [...currentBlogs, ...demoBlogs];
-                renderMainCarousel(currentBlogs);
-            } catch (e) { renderMainCarousel(demoBlogs); }
+    try {
+        const response = await fetch(N8N_GET_BLOGS);
+        const data = await response.json();
+        
+        // Bóc tách linh hoạt mọi dạng trả về từ n8n (dạng mảng, dạng {blogs: [...]}, hoặc {data: [...]})
+        let realBlogs = [];
+        if (Array.isArray(data)) {
+            realBlogs = data;
+        } else if (data.blogs && Array.isArray(data.blogs)) {
+            realBlogs = data.blogs;
+        } else if (data.data && Array.isArray(data.data)) {
+            realBlogs = data.data;
         }
+
+        // Lọc chuẩn xác chỉ lấy những bài có trạng thái là 'Approved' (A viết hoa)
+        const approvedBlogs = realBlogs.filter(b => {
+            let stt = String(b.status || '').trim();
+            return stt === 'Approved';
+        });
+
+        console.log("Danh sách bài viết duyệt hiển thị:", approvedBlogs);
+
+        // Hiển thị bài viết thực tế nếu có, nếu không mới dùng demo
+        if (approvedBlogs.length > 0) {
+            currentBlogs = [...approvedBlogs.sort((a,b) => new Date(b.date)-new Date(a.date))];
+            renderMainCarousel(currentBlogs);
+        } else {
+            renderMainCarousel(demoBlogs);
+        }
+    } catch (e) { 
+        console.error("Lỗi tải blog:", e);
+        renderMainCarousel(demoBlogs); 
+    }
+}
 
         const demoBlogs = [
             { id: "DEMO1", title: "Cẩm nang chụp ảnh cưới Bạc Liêu 2025", content: "Chia sẻ những địa điểm check-in cực chất dành cho các cặp đôi muốn lưu giữ khoảnh khắc hạnh phúc nhất...", image: "https://images.unsplash.com/photo-1519741497674-611481863552?w=600" },
