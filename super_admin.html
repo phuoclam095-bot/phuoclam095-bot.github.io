@@ -281,6 +281,7 @@
 
     <!-- KHỐI MÃ JAVASCRIPT CHÍNH -->
     <script>
+        const BLOGS_API_URL = "https://wsm.congtubaclieu.com.vn/webhook/super-admin-blogs";
         const ADMIN_API_URL = "https://wsm.congtubaclieu.com.vn/webhook/super-admin-data";
         const CONTRACTS_API_URL = "https://wsm.congtubaclieu.com.vn/webhook/super-admin-contracts";
         const TRANSACTIONS_API_URL = "https://wsm.congtubaclieu.com.vn/webhook/super-admin-transactions";
@@ -302,6 +303,9 @@
                 loadContractsData();
             } else if (tabId === 'transactions') {
                 loadTransactionsData();
+            }
+            } else if (tabId === 'blogs') {
+                loadBlogsData(); // Gọi hàm tải danh sách bài viết blog
             }
         }
 
@@ -345,7 +349,72 @@
                 body.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-danger">Không thể kết nối tới webhook giao dịch.</td></tr>`;
             }
         }
+        // Hàm tải danh sách bài viết blog chờ duyệt
+async function loadBlogsData() {
+    let body = document.getElementById('blogTableBody');
+    if (!body) return;
+    
+    body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">Đang tải danh sách bài viết...</td></tr>`;
+    
+    try {
+        let response = await fetch(BLOGS_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'get_blogs' })
+        });
+        let data = await response.json();
+        
+        let resultData = Array.isArray(data) ? data[0] : data;
+        let blogList = (resultData.blogs || []).slice(0, 100); // Giới hạn 100 dòng
 
+        body.innerHTML = '';
+        if (blogList.length > 0) {
+            blogList.forEach((b, index) => {
+                let statusBadge = (b.status && b.status.toLowerCase() === 'approved') ? 'success' : 'warning';
+                body.innerHTML += `
+                    <tr>
+                        <td class="text-center text-secondary">${index + 1}</td>
+                        <td>
+                            <div class="fw-bold text-white">${b.title}</div>
+                            <div class="small text-secondary">Tác giả: ${b.author}</div>
+                        </td>
+                        <td><div class="text-white">${b.email}</div></td>
+                        <td><small class="text-secondary">${b.createdAt}</small></td>
+                        <td><span class="badge bg-${statusBadge}">${b.status}</span></td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-outline-success fw-bold" onclick="approveBlog('${b.id}')">
+                                <i class="fas fa-check me-1"></i> Phê Duyệt
+                            </button>
+                        </td>
+                    </tr>`;
+            });
+        } else {
+            body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">Không có bài viết blog nào đang chờ duyệt.</td></tr>`;
+        }
+    } catch (e) {
+        console.error("Lỗi tải bài viết blog:", e);
+        body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-danger">Không thể kết nối tới webhook blog.</td></tr>`;
+    }
+}
+
+// Hàm gửi yêu cầu phê duyệt bài viết lên n8n
+async function approveBlog(postId) {
+    if (!confirm("Bạn có chắc chắn muốn phê duyệt bài viết này không?")) return;
+
+    try {
+        let response = await fetch(BLOGS_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'approve_blog', post_id: postId })
+        });
+        
+        alert("Đã phê duyệt bài viết thành công!");
+        loadBlogsData(); // Tải lại danh sách sau khi duyệt
+    } catch(e) {
+        console.error("Lỗi duyệt bài:", e);
+        alert("Không thể kết nối tới máy chủ để duyệt bài viết.");
+    }
+}
         async function loadAllData() {
             try {
                 let response = await fetch(ADMIN_API_URL, {
