@@ -393,8 +393,14 @@
             document.getElementById('statStudios').innerText = data.totalStudios || 0;
             document.getElementById('statAlbums').innerText = data.totalAlbums || 0;
             document.getElementById('statRevenue').innerText = data.totalRevenue || "0 VNĐ";
-            document.getElementById('statPendingBlogs').innerText = data.pendingBlogs || data.pendingBlogsCount || 0;
-
+            let blogsList = data.blogs || [];
+            let realPendingCount = blogsList.filter(b => {
+                let stt = String(b.status || '').trim();
+                return stt !== 'Approved';
+            }).length;
+        
+            // Hiển thị con số đếm thực tế lên giao diện
+            document.getElementById('statPendingBlogs').innerText = realPendingCount;
             window.cachedStudios = data.studios || [];
 
             let sBody = document.getElementById('studioTableBody');
