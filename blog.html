@@ -242,55 +242,56 @@
     <script>
         
        function stripHtml(html) {
-        let tmp = document.createElement("DIV");
-        tmp.innerHTML = html;
-        return tmp.textContent || tmp.innerText || "";
-    }
+    let tmp = document.createElement("DIV");
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || "";
+}
 
-        function renderMainCarousel(blogs) {
-        const carouselInner = document.getElementById('carouselInner');
-        if (!carouselInner) return;
-        document.getElementById('initialLoading')?.remove();
-        let slides = [];
-        
-        for (let i = 0; i < blogs.length; i += 3) {
-            const group = blogs.slice(i, i + 3);
-            let groupHtml = group.map((blog) => {
-                if (!blog.id) return '<div class="col-md-4"></div>';
-                const driveId = blog.image?.includes('id=') ? blog.image.split('id=')[1].split('&')[0] : blog.image;
-                const imageUrl = blog.id?.startsWith('DEMO') ? blog.image : `https://drive.google.com/thumbnail?id=${driveId}&sz=w600`;
-                
-                // Lọc bỏ thẻ HTML ở tiêu đề và nội dung để hiển thị chuẩn chỉnh dạng text
-                let cleanTitle = stripHtml(blog.title || '');
-                let cleanContent = stripHtml(blog.content || '');
-                let shortDesc = cleanContent.length > 110 ? cleanContent.substring(0, 110) + '...' : cleanContent;
+       function renderMainCarousel(blogs) {
+    const carouselInner = document.getElementById('carouselInner');
+    if (!carouselInner) return;
+    document.getElementById('initialLoading')?.remove();
+    let slides = [];
+    
+    for (let i = 0; i < blogs.length; i += 3) {
+        const group = blogs.slice(i, i + 3);
+        let groupHtml = group.map((blog) => {
+            // Lấy linh hoạt id hoặc post_id để không bao giờ bị lệch dữ liệu khi bấm xem chi tiết
+            const uniqueId = blog.id !== undefined ? blog.id : (blog.postId || '');
+            if (!uniqueId) return '<div class="col-md-4"></div>';
 
-                return `
-                    <div class="col-md-4">
-                        <div class="blog-card h-100" onclick="window.location.href='post.html?id=${blog.id}'">
-                            <img src="${imageUrl}" class="blog-img" onerror="this.src='https://via.placeholder.com/500x300'">
-                            <div class="blog-body">
-                                <div class="blog-title">${cleanTitle}</div>
-                                <div class="blog-desc">${shortDesc}</div>
-                                <button class="btn-read">Xem thêm <i class="fas fa-arrow-right ms-2"></i></button>
-                            </div>
+            const driveId = blog.image?.includes('id=') ? blog.image.split('id=')[1].split('&')[0] : blog.image;
+            let imageUrl = blog.id?.toString().startsWith('DEMO') ? blog.image : (driveId ? `https://drive.google.com/thumbnail?id=${driveId}&sz=w600` : blog.image);
+
+            let cleanTitle = stripHtml(blog.title || '');
+            let cleanContent = stripHtml(blog.content || '');
+            let shortDesc = cleanContent.length > 110 ? cleanContent.substring(0, 110) + '...' : cleanContent;
+
+            return `
+                <div class="col-md-4">
+                    <div class="blog-card h-100" onclick="window.location.href='post.html?id=${uniqueId}'">
+                        <img src="${imageUrl}" class="blog-img" onerror="this.src='https://via.placeholder.com/500x300'">
+                        <div class="blog-body">
+                            <div class="blog-title">${cleanTitle}</div>
+                            <div class="blog-desc">${shortDesc}</div>
+                            <button class="btn-read">Xem thêm <i class="fas fa-arrow-right ms-2"></i></button>
                         </div>
-                    </div>`;
-            }).join('');
-            
-            slides.push(`<div class="carousel-item ${i === 0 ? 'active' : ''}"><div class="row g-4">${groupHtml}</div></div>`);
-        }
+                    </div>
+                </div>`;
+        }).join('');
         
-        carouselInner.innerHTML = slides.join('');
-        new bootstrap.Carousel(document.getElementById('mainCarousel'), { interval: 6000, ride: 'carousel' });
+        slides.push(`<div class="carousel-item ${i === 0 ? 'active' : ''}"><div class="row g-4">${groupHtml}</div></div>`);
     }
-
+    
+    carouselInner.innerHTML = slides.join('');
+    new bootstrap.Carousel(document.getElementById('mainCarousel'), { interval: 6000, ride: 'carousel' });
+}
        async function loadBlogs() {
     try {
         const response = await fetch(N8N_GET_BLOGS);
         const data = await response.json();
         
-        // Hỗ trợ linh hoạt mọi định dạng trả về từ n8n (Dạng mảng trực tiếp hoặc dạng { blogs: [...] })
+        // Bóc tách linh hoạt dữ liệu trả về từ n8n (dù là mảng trực tiếp hay bọc trong { blogs: [...] })
         let realBlogs = [];
         if (Array.isArray(data)) {
             realBlogs = data;
@@ -300,21 +301,15 @@
             realBlogs = data.data;
         }
 
-        // Lọc linh hoạt: Không phân biệt hoa thường hoặc kiểm tra chính xác chữ Approved
+        // Lọc chuẩn xác chỉ lấy bài viết có status là 'Approved' (Chữ A viết hoa)
         const approvedBlogs = realBlogs.filter(b => {
-            let stt = String(b.status || '').trim().toLowerCase();
-            return stt === 'approved' || stt === 'Approved';
+            let stt = String(b.status || '').trim();
+            return stt === 'Approved';
         });
 
-        console.h("Bài viết sau khi lọc:", approvedBlogs); // Kiểm tra qua F12 -> Console
-
-        if (approvedBlogs.length > 0) {
-            currentBlogs = [...approvedBlogs.sort((a,b) => new Date(b.date)-new Date(a.date))];
-            renderMainCarousel(currentBlogs);
-        } else {
-            // Nếu không có bài nào đã duyệt, hiển thị demo hoặc để trống
-            renderMainCarousel(demoBlogs);
-        }
+        currentBlogs = [...approvedBlogs.sort((a,b) => new Date(b.date)-new Date(a.date))];
+        if(currentBlogs.length < 3) currentBlogs = [...currentBlogs, ...demoBlogs];
+        renderMainCarousel(currentBlogs);
     } catch (e) { 
         console.error("Lỗi tải blog:", e);
         renderMainCarousel(demoBlogs); 
