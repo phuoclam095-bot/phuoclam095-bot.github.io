@@ -466,6 +466,7 @@
                 <p class="mb-0">Studio này chưa có album thực tế nào được kích hoạt.</p>
             </div>`;
     } else {
+        // Tạo bố cục lưới (Grid) cho các album nếu studio có nhiều album
         let albumsHtml = '<div class="row g-3">';
         
         studio.albums.forEach(album => {
@@ -473,7 +474,7 @@
             if (album.clientNotes && album.clientNotes.length > 0) {
                 album.clientNotes.forEach(n => {
                     notesHtml += `
-                        <div class="d-flex align-items-start p-2.5 rounded-3 mb-2 border border-secondary border-opacity-25" style="background: rgba(0, 0, 0, 0.3);">
+                        <div class="d-flex align-items-start bg-dark bg-opacity-50 p-2 rounded-3 mb-2 border border-secondary border-opacity-25">
                             <i class="fas fa-comment-alt text-primary mt-1 me-2 flex-shrink-0"></i>
                             <div class="small">
                                 <span class="text-warning fw-bold">${n.photoName || 'Ảnh'}:</span> 
@@ -488,18 +489,17 @@
             let folderId = album.folderId;
             let folderUrl = folderId ? `https://drive.google.com/drive/folders/${folderId}` : '#';
 
-            let watermarkBadge = album.config?.watermark ? '<span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2.5 py-1">Bật</span>' : '<span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2.5 py-1">Tắt</span>';
-            let downloadBadge = album.config?.allowDownload ? '<span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2.5 py-1">Cho phép</span>' : '<span class="badge bg-secondary bg-opacity-25 text-secondary px-2.5 py-1">Khóa</span>';
+            let watermarkBadge = album.config?.watermark ? '<span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1">Bật</span>' : '<span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2 py-1">Tắt</span>';
+            let downloadBadge = album.config?.allowDownload ? '<span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1">Cho phép</span>' : '<span class="badge bg-secondary bg-opacity-25 text-secondary px-2 py-1">Khóa</span>';
             let maxSelectText = album.config?.maxSelect ? `<span class="text-info fw-bold">${album.config.maxSelect} ảnh</span>` : '<span class="text-light">Không giới hạn</span>';
 
-            // 🌟 Thay thế nền đen đặc bằng màu xanh đen khói (Slate/Dark Blue) #0e1626 sang trọng hơn
             albumsHtml += `
                 <div class="col-12">
                     <div class="card border border-secondary border-opacity-25 p-3.5 rounded-4 text-white shadow-sm position-relative overflow-hidden" style="background: #0e1626;">
-                        <!-- Viền sáng điểm nhấn bên trái -->
+                        <!-- Đường viền sáng trang trí bên trái card -->
                         <div style="position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--primary);"></div>
                         
-                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3 pb-2.5 border-bottom border-secondary border-opacity-25">
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3 pb-2 border-bottom border-secondary border-opacity-25">
                             <div>
                                 <h5 class="text-white fw-bold mb-1 d-flex align-items-center">
                                     <i class="fas fa-images text-primary me-2"></i>${album.albumName}
@@ -514,8 +514,8 @@
                             </div>
                         </div>
 
-                        <!-- Khung thông số cấu hình -->
-                        <div class="row g-2 mb-3 p-2.5 rounded-3 border border-secondary border-opacity-20" style="background: rgba(255, 255, 255, 0.03);">
+                        <!-- Khung cấu hình Album dạng thẻ thông số hiện đại -->
+                        <div class="row g-2 mb-3 p-2.5 rounded-3 border border-secondary border-opacity-25" style="background: rgba(255, 255, 255, 0.02);">
                             <div class="col-md-4 d-flex align-items-center justify-content-between justify-content-md-start gap-2">
                                 <span class="text-secondary small">Watermark:</span>
                                 <div>${watermarkBadge}</div>
@@ -530,12 +530,12 @@
                             </div>
                         </div>
 
-                        <!-- Khu vực ghi chú -->
+                        <!-- Khu vực ghi chú của khách -->
                         <div>
                             <div class="small fw-bold text-uppercase text-secondary mb-2" style="font-size: 0.7rem; letter-spacing: 1px;">
                                 <i class="fas fa-clipboard-list text-warning me-1"></i> Ghi chú & Yêu cầu của khách trên ảnh:
                             </div>
-                            <div class="p-2.5 rounded-3 border border-secondary border-opacity-15" style="background: rgba(0, 0, 0, 0.25); max-height: 160px; overflow-y: auto;">
+                            <div class="p-2 rounded-3 bg-black bg-opacity-70 border border-secondary border-opacity-10" style="max-height: 150px; overflow-y: auto;">
                                 ${notesHtml}
                             </div>
                         </div>
