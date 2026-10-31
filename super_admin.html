@@ -335,7 +335,7 @@
                 let response = await fetch(TRANSACTIONS_API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'get_transactions' })
+                    body: JSON.stringify({email: localStorage.getItem('admin_email'), action: 'get_transactions' })
                 });
                 let data = await response.json();
                 
@@ -371,7 +371,7 @@
                 let response = await fetch(ADMIN_API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'get_all_stats' })
+                    body: JSON.stringify({email: localStorage.getItem('admin_email'), action: 'get_all_stats' })
                 });
 
                 let responseText = await response.text();
@@ -562,7 +562,7 @@
                 await fetch(ADMIN_API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'activate_studio', email: email, days: days })
+                    body: JSON.stringify({ email: localStorage.getItem('admin_email'),action: 'activate_studio', email: email, days: days })
                 });
                 alert("Đã gửi lệnh kích hoạt thành công!");
                 bootstrap.Modal.getInstance(document.getElementById('activateModal')).hide();
@@ -592,7 +592,7 @@
                 let response = await fetch(CONTRACTS_API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'get_contracts' })
+                    body: JSON.stringify({email: localStorage.getItem('admin_email'), action: 'get_contracts' })
                 });
                 let data = await response.json();
                 
@@ -689,7 +689,7 @@
         let response = await fetch(BLOGS_API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'get_blogs' })
+            body: JSON.stringify({email: localStorage.getItem('admin_email'), action: 'get_blogs' })
         });
         let data = await response.json();
         
@@ -783,6 +783,7 @@
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
+                email: localStorage.getItem('admin_email'),
                 action: 'approve_blog', 
                 post_id: postId // Gửi id bài viết lên n8n để update trạng thái thành 'Approved'
             })
