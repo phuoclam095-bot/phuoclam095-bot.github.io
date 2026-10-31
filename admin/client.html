@@ -511,10 +511,23 @@
             if (albumSettings.comment) document.getElementById('btnComment').style.display = 'flex';
 
             let folderName = photos[0].folderName || "VIP ALBUM";
-            document.title = folderName;
-            if(studioSlug) {
-                document.getElementById('albumTitle').innerText = `${studioSlug.toUpperCase()} - ${folderName}`;
+            
+            // 🌟 Lấy tên đầy đủ của studio từ dữ liệu trả về (hỗ trợ các tên trường phổ biến: studioName, name, hoặc studio_name)
+            let studioFullName = data.studioName || data.name || data.studio_name || "";
+
+            // Nếu dữ liệu trả về chưa có sẵn tên studio, anh có thể ánh xạ dựa trên studioSlug hoặc để dự phòng
+            if (!studioFullName && studioSlug) {
+                // Tạm thời viết hoa hoặc xử lý chuỗi nếu chưa map kịp ở n8n, 
+                // nhưng tốt nhất là cấu hình webhook n8n trả về thêm trường `studioName`.
+                studioFullName = studioSlug; 
+            }
+
+            // Gán tiêu đề trình duyệt và hiển thị lên giao diện Navbar
+            if (studioFullName) {
+                document.title = `${studioFullName} - ${folderName}`;
+                document.getElementById('albumTitle').innerText = `${studioFullName.toUpperCase()} - ${folderName}`;
             } else {
+                document.title = folderName;
                 document.getElementById('albumTitle').innerText = folderName;
             }
 
