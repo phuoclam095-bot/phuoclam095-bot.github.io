@@ -333,14 +333,14 @@
             const albumTitle = folderName.replace(/'/g, "\\'");
             
             // 🌟 CHỈ LẤY ĐÚNG SLUG CỦA ALBUM ĐÓ, KHÔNG DÙNG localStorage CỦA ADMIN NỮA ĐỂ TRÁNH BỊ ĐÈ LINK
-            let rawStudio = album.studio_slug || album.studioSlug || album.studio_name || 'studio';
+            let rawStudio = album.studio_slug || album.studioSlug || 'studio';
             const sSlug = rawStudio.replace(/-+/g, '-').replace(/^-|-$/g, '') || 'studio';
             
             // Tạo slug không có dấu gạch ngang cho tên album
             const aSlug = album.album_slug || album.albumSlug || createSlug(folderName);
             
             // 🌟 Đường link chuẩn xác theo đúng cấu hình album ban đầu
-            const clientPageUrl = `${PATHS.CLIENT}${sSlug}/${aSlug}`;
+            const clientPageUrl = `${PATHS.CLIENT}${aSlug}/${sSlug}`;
 
             card.innerHTML = `<div class="card-img-header" style="background-image: url('${img}');"><div class="album-vip-title">${folderName}</div></div>
                 <div class="stats-grid">
