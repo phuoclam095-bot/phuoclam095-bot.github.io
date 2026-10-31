@@ -473,8 +473,8 @@
             if (album.clientNotes && album.clientNotes.length > 0) {
                 album.clientNotes.forEach(n => {
                     notesHtml += `
-                        <div class="d-flex align-items-start p-2.5 rounded-3 mb-2 border border-secondary border-opacity-50" style="background: rgba(0, 0, 0, 0.4);">
-                            <i class="fas fa-comment-alt text-primary mt-1 me-2 flex-shrink-0"></i>
+                        <div class="d-flex align-items-start p-2 rounded-2 mb-1.5 border border-secondary border-opacity-25" style="background: rgba(0, 0, 0, 0.3);">
+                            <i class="fas fa-comment-alt text-primary mt-1 me-2 flex-shrink-0 small"></i>
                             <div class="small" style="word-break: break-word;">
                                 <span class="text-warning fw-bold">${n.photoName || 'Ảnh'}:</span> 
                                 <span class="text-white">${n.noteText}</span>
@@ -482,60 +482,60 @@
                         </div>`;
                 });
             } else {
-                // Đổi thành chữ trắng sáng rõ
-                notesHtml = `<div class="text-white small py-1"><i class="fas fa-info-circle text-info me-1"></i>Chưa có ghi chú nào từ khách hàng.</div>`;
+                notesHtml = `<div class="text-white opacity-75 small italic py-1"><i class="fas fa-info-circle text-info me-1"></i>Chưa có ghi chú nào từ khách hàng.</div>`;
             }
 
             let folderId = album.folderId;
             let folderUrl = folderId ? `https://drive.google.com/drive/folders/${folderId}` : '#';
 
-            let watermarkBadge = album.config?.watermark ? '<span class="badge bg-success bg-opacity-25 text-success border border-success px-2.5 py-1 fw-bold">Bật</span>' : '<span class="badge bg-danger bg-opacity-25 text-danger border border-danger px-2.5 py-1 fw-bold">Tắt</span>';
-            let downloadBadge = album.config?.allowDownload ? '<span class="badge bg-success bg-opacity-25 text-success border border-success px-2.5 py-1 fw-bold">Cho phép</span>' : '<span class="badge bg-secondary bg-opacity-50 text-light border border-secondary px-2.5 py-1 fw-bold">Khóa</span>';
+            let watermarkBadge = album.config?.watermark ? '<span class="text-success fw-bold"><i class="fas fa-check me-1"></i>Bật</span>' : '<span class="text-danger fw-bold"><i class="fas fa-times me-1"></i>Tắt</span>';
+            let downloadBadge = album.config?.allowDownload ? '<span class="text-success fw-bold"><i class="fas fa-check me-1"></i>Cho phép</span>' : '<span class="text-light fw-bold opacity-75"><i class="fas fa-lock me-1"></i>Khóa</span>';
             let maxSelectText = album.config?.maxSelect ? `<span class="text-info fw-bold">${album.config.maxSelect} ảnh</span>` : '<span class="text-white fw-bold">Không giới hạn</span>';
 
             albumsHtml += `
                 <div class="col-12">
-                    <div class="card border border-secondary border-opacity-50 p-3.5 ps-4 rounded-4 text-white shadow position-relative overflow-hidden" style="background: #111c2e;">
+                    <div class="card border border-secondary border-opacity-50 p-3 ps-4 rounded-3 text-white shadow-sm position-relative overflow-hidden" style="background: #111c2e;">
                         <!-- Viền sáng điểm nhấn bên trái -->
-                        <div style="position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--primary);"></div>
+                        <div style="position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--primary);"></div>
                         
-                        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-start gap-3 mb-3 pb-2.5 border-bottom border-secondary border-opacity-50">
+                        <!-- Header: Tên album & Badge số lượng -->
+                        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-2 mb-2.5 pb-2 border-bottom border-secondary border-opacity-25">
                             <div style="min-width: 0; flex: 1;">
-                                <h5 class="text-white fw-bold mb-1 text-break d-flex align-items-center">
+                                <h6 class="text-white fw-bold mb-1 text-break d-flex align-items-center" style="font-size: 1.05rem;">
                                     <i class="fas fa-images text-primary me-2 flex-shrink-0"></i><span>${album.albumName}</span>
-                                </h5>
-                                <a href="${folderUrl}" target="_blank" class="small text-info text-decoration-none fw-bold d-inline-flex align-items-center mt-1 text-break">
-                                    <i class="fab fa-google-drive me-1.5 fa-lg flex-shrink-0"></i> <span>Mở thư mục gốc trên Google Drive</span> <i class="fas fa-external-link-alt ms-1 small"></i>
+                                </h6>
+                                <a href="${folderUrl}" target="_blank" class="small text-info text-decoration-none fw-semibold d-inline-flex align-items-center text-break" style="font-size: 0.8rem;">
+                                    <i class="fab fa-google-drive me-1.5"></i> <span>Mở thư mục gốc trên Google Drive</span> <i class="fas fa-external-link-alt ms-1 small opacity-75"></i>
                                 </a>
                             </div>
                             <div class="d-flex align-items-center gap-2 flex-shrink-0">
-                                <span class="badge bg-secondary bg-opacity-50 text-white border border-secondary px-2.5 py-1.5 fw-bold"><i class="fas fa-photo-video me-1 text-info"></i> Tổng: ${album.totalPhotos || 0} ảnh</span>
-                                <span class="badge bg-primary bg-opacity-25 text-primary border border-primary px-2.5 py-1.5 fw-bold"><i class="fas fa-check-circle me-1"></i> Đã chọn: ${album.selectedCount || 0}</span>
+                                <span class="badge bg-secondary bg-opacity-40 text-white border border-secondary px-2 py-1" style="font-size: 0.75rem;"><i class="fas fa-photo-video me-1 text-info"></i> Tổng: ${album.totalPhotos || 0}</span>
+                                <span class="badge bg-primary bg-opacity-25 text-primary border border-primary px-2 py-1" style="font-size: 0.75rem;"><i class="fas fa-check-circle me-1"></i> Đã chọn: ${album.selectedCount || 0}</span>
                             </div>
                         </div>
 
-                        <!-- Khung thông số cấu hình: Đổi nhãn thành text-white cho rõ -->
-                        <div class="row g-2 mb-3 p-3 rounded-3 border border-secondary border-opacity-40" style="background: rgba(255, 255, 255, 0.05);">
-                            <div class="col-md-4 d-flex align-items-center justify-content-between justify-content-md-start gap-2">
-                                <span class="text-white small fw-semibold">Watermark:</span>
-                                <div>${watermarkBadge}</div>
+                        <!-- Khung cấu hình Album dạng thanh ngang nhỏ gọn, tinh tế -->
+                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 px-3 py-2 rounded-2 mb-2.5 border border-secondary border-opacity-30" style="background: rgba(255, 255, 255, 0.03); font-size: 0.85rem;">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="text-white opacity-75">Watermark:</span>
+                                <span>${watermarkBadge}</span>
                             </div>
-                            <div class="col-md-4 d-flex align-items-center justify-content-between justify-content-md-start gap-2">
-                                <span class="text-white small fw-semibold">Giới hạn chọn:</span>
-                                <div>${maxSelectText}</div>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="text-white opacity-75">Giới hạn chọn:</span>
+                                <span>${maxSelectText}</span>
                             </div>
-                            <div class="col-md-4 d-flex align-items-center justify-content-between justify-content-md-start gap-2">
-                                <span class="text-white small fw-semibold">Tải ảnh gốc:</span>
-                                <div>${downloadBadge}</div>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="text-white opacity-75">Tải ảnh gốc:</span>
+                                <span>${downloadBadge}</span>
                             </div>
                         </div>
 
                         <!-- Khu vực ghi chú -->
                         <div>
-                            <div class="small fw-bold text-uppercase text-white mb-2" style="font-size: 0.75rem; letter-spacing: 1px;">
+                            <div class="fw-bold text-uppercase text-white mb-1.5" style="font-size: 0.65rem; letter-spacing: 0.8px; opacity: 0.8;">
                                 <i class="fas fa-clipboard-list text-warning me-1"></i> Ghi chú & Yêu cầu của khách trên ảnh:
                             </div>
-                            <div class="p-2.5 rounded-3 border border-secondary border-opacity-30" style="background: rgba(0, 0, 0, 0.35); max-height: 160px; overflow-y: auto;">
+                            <div class="p-2 rounded-2 border border-secondary border-opacity-20" style="background: rgba(0, 0, 0, 0.25); max-height: 140px; overflow-y: auto;">
                                 ${notesHtml}
                             </div>
                         </div>
