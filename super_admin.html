@@ -451,65 +451,102 @@
             }
         }
 
-        function viewStudioAlbums(email) {
+       function viewStudioAlbums(email) {
     let studio = window.cachedStudios.find(s => s.email === email);
     if(!studio) return;
 
-    document.getElementById('detailStudioName').innerText = studio.name + " (" + studio.email + ")";
+    document.getElementById('detailStudioName').innerText = `${studio.name} (${studio.email})`;
     let container = document.getElementById('albumDetailContent');
     container.innerHTML = '';
 
     if(!studio.albums || studio.albums.length === 0) {
-        container.innerHTML = `<p class="text-center text-secondary py-4">Studio này chưa có album thực tế nào.</p>`;
+        container.innerHTML = `
+            <div class="text-center py-5 text-secondary">
+                <i class="fas fa-folder-open fa-3x mb-3 opacity-50"></i>
+                <p class="mb-0">Studio này chưa có album thực tế nào được kích hoạt.</p>
+            </div>`;
     } else {
+        // Tạo bố cục lưới (Grid) cho các album nếu studio có nhiều album
+        let albumsHtml = '<div class="row g-3">';
+        
         studio.albums.forEach(album => {
             let notesHtml = '';
             if (album.clientNotes && album.clientNotes.length > 0) {
                 album.clientNotes.forEach(n => {
-                    notesHtml += `<div class="small bg-black p-2 rounded mb-1 border border-secondary text-light"><i class="fas fa-comment-dots text-primary me-2"></i><b>${n.photoName || 'Ảnh'}:</b> ${n.noteText}</div>`;
+                    notesHtml += `
+                        <div class="d-flex align-items-start bg-dark bg-opacity-50 p-2 rounded-3 mb-2 border border-secondary border-opacity-25">
+                            <i class="fas fa-comment-alt text-primary mt-1 me-2 flex-shrink-0"></i>
+                            <div class="small">
+                                <span class="text-warning fw-bold">${n.photoName || 'Ảnh'}:</span> 
+                                <span class="text-light">${n.noteText}</span>
+                            </div>
+                        </div>`;
                 });
             } else {
-                notesHtml = `<span class="text-secondary small italic">Chưa có ghi chú trên ảnh.</span>`;
+                notesHtml = `<div class="text-secondary small italic py-1"><i class="fas fa-info-circle me-1"></i>Chưa có ghi chú nào từ khách hàng.</div>`;
             }
 
             let folderId = album.folderId;
             let folderUrl = folderId ? `https://drive.google.com/drive/folders/${folderId}` : '#';
 
-            // 🌟 Tinh chỉnh phần setting thành một khung thẻ (Box) nhỏ gọn, nổi bật
-            let watermarkStatus = album.config?.watermark ? '<span class="text-success fw-bold">Bật</span>' : '<span class="text-danger fw-bold">Tắt</span>';
+            let watermarkBadge = album.config?.watermark ? '<span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1">Bật</span>' : '<span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2 py-1">Tắt</span>';
+            let downloadBadge = album.config?.allowDownload ? '<span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1">Cho phép</span>' : '<span class="badge bg-secondary bg-opacity-25 text-secondary px-2 py-1">Khóa</span>';
             let maxSelectText = album.config?.maxSelect ? `<span class="text-info fw-bold">${album.config.maxSelect} ảnh</span>` : '<span class="text-light">Không giới hạn</span>';
-            let downloadStatus = album.config?.allowDownload ? '<span class="text-success fw-bold">Có</span>' : '<span class="text-danger fw-bold">Không</span>';
 
-            container.innerHTML += `
-                <div class="card bg-black border border-secondary p-3 mb-3 rounded-4 text-white">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
+            albumsHtml += `
+                <div class="col-12">
+                    <div class="card bg-black border border-secondary border-opacity-50 p-3 rounded-4 text-white shadow-sm position-relative overflow-hidden">
+                        <!-- Đường viền sáng trang trí bên trái card -->
+                        <div style="position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--primary);"></div>
+                        
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3 pb-2 border-bottom border-secondary border-opacity-25">
+                            <div>
+                                <h5 class="text-white fw-bold mb-1 d-flex align-items-center">
+                                    <i class="fas fa-images text-primary me-2"></i>${album.albumName}
+                                </h5>
+                                <a href="${folderUrl}" target="_blank" class="small text-info text-decoration-none fw-bold d-inline-flex align-items-center mt-1">
+                                    <i class="fab fa-google-drive me-1.5 fa-lg"></i> Mở thư mục gốc trên Google Drive <i class="fas fa-external-link-alt ms-1 small"></i>
+                                </a>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge bg-secondary bg-opacity-25 text-light border border-secondary border-opacity-50 px-2.5 py-1.5"><i class="fas fa-photo-video me-1 text-info"></i> Tổng: ${album.totalPhotos || 0} ảnh</span>
+                                <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2.5 py-1.5"><i class="fas fa-check-circle me-1"></i> Đã chọn: ${album.selectedCount || 0}</span>
+                            </div>
+                        </div>
+
+                        <!-- Khung cấu hình Album dạng thẻ thông số hiện đại -->
+                        <div class="row g-2 mb-3 p-2.5 rounded-3 border border-secondary border-opacity-25" style="background: rgba(255, 255, 255, 0.02);">
+                            <div class="col-md-4 d-flex align-items-center justify-content-between justify-content-md-start gap-2">
+                                <span class="text-secondary small">Watermark:</span>
+                                <div>${watermarkBadge}</div>
+                            </div>
+                            <div class="col-md-4 d-flex align-items-center justify-content-between justify-content-md-start gap-2">
+                                <span class="text-secondary small">Giới hạn chọn:</span>
+                                <div>${maxSelectText}</div>
+                            </div>
+                            <div class="col-md-4 d-flex align-items-center justify-content-between justify-content-md-start gap-2">
+                                <span class="text-secondary small">Tải ảnh gốc:</span>
+                                <div>${downloadBadge}</div>
+                            </div>
+                        </div>
+
+                        <!-- Khu vực ghi chú của khách -->
                         <div>
-                            <h5 class="text-primary fw-bold mb-1"><i class="fas fa-folder-open me-2"></i>${album.albumName}</h5>
-                            <a href="${folderUrl}" target="_blank" class="small text-info text-decoration-none fw-bold"><i class="fab fa-google-drive me-1"></i>Mở thư mục Google Drive gốc (Folder)</a>
+                            <div class="small fw-bold text-uppercase text-secondary mb-2" style="font-size: 0.7rem; letter-spacing: 1px;">
+                                <i class="fas fa-clipboard-list text-warning me-1"></i> Ghi chú & Yêu cầu của khách trên ảnh:
+                            </div>
+                            <div class="p-2 rounded-3 bg-black bg-opacity-70 border border-secondary border-opacity-10" style="max-height: 150px; overflow-y: auto;">
+                                ${notesHtml}
+                            </div>
                         </div>
-                        <div class="text-end">
-                            <span class="badge bg-secondary">Tổng: ${album.totalPhotos || 0} ảnh</span>
-                            <span class="badge bg-success">Đã chọn: ${album.selectedCount || 0} ảnh</span>
-                        </div>
-                    </div>
-
-                    <!-- 🌟 Khung Setting được đóng hộp riêng, có nền và viền sáng rõ hơn -->
-                    <div class="p-2.5 mb-3 rounded-3 border border-secondary" style="background: rgba(255, 255, 255, 0.04); font-size: 0.85rem;">
-                        <div class="text-uppercase text-secondary fw-bold mb-1" style="font-size: 0.7rem; letter-spacing: 1px;"><i class="fas fa-sliders-h me-1 text-primary"></i> Cấu hình Album:</div>
-                        <div class="d-flex flex-wrap gap-3 text-light">
-                            <span>🛡️ Watermark: ${watermarkStatus}</span>
-                            <span>🎯 Giới hạn: ${maxSelectText}</span>
-                            <span>📥 Cho phép tải: ${downloadStatus}</span>
-                        </div>
-                    </div>
-
-                    <div class="pt-2 border-top border-secondary">
-                        <div class="small fw-bold text-warning mb-1"><i class="fas fa-comments me-1"></i> Ghi chú của khách hàng:</div>
-                        ${notesHtml}
                     </div>
                 </div>`;
         });
+        
+        albumsHtml += '</div>';
+        container.innerHTML = albumsHtml;
     }
+    
     new bootstrap.Modal(document.getElementById('albumDetailModal')).show();
 }
         function openActivateModal(email, name) {
