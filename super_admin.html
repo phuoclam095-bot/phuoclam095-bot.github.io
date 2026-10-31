@@ -451,7 +451,7 @@
             }
         }
 
-    function viewStudioAlbums(email) {
+   function viewStudioAlbums(email) {
     let studio = window.cachedStudios.find(s => s.email === email);
     if(!studio) return;
 
@@ -482,7 +482,8 @@
                         </div>`;
                 });
             } else {
-                notesHtml = `<div class="text-light opacity-75 small italic py-1"><i class="fas fa-info-circle me-1"></i>Chưa có ghi chú nào từ khách hàng.</div>`;
+                // Đổi thành chữ trắng sáng rõ
+                notesHtml = `<div class="text-white small py-1"><i class="fas fa-info-circle text-info me-1"></i>Chưa có ghi chú nào từ khách hàng.</div>`;
             }
 
             let folderId = album.folderId;
@@ -513,25 +514,25 @@
                             </div>
                         </div>
 
-                        <!-- Khung thông số cấu hình đổi sang màu nền nổi hơn -->
+                        <!-- Khung thông số cấu hình: Đổi nhãn thành text-white cho rõ -->
                         <div class="row g-2 mb-3 p-3 rounded-3 border border-secondary border-opacity-40" style="background: rgba(255, 255, 255, 0.05);">
                             <div class="col-md-4 d-flex align-items-center justify-content-between justify-content-md-start gap-2">
-                                <span class="text-light opacity-75 small">Watermark:</span>
+                                <span class="text-white small fw-semibold">Watermark:</span>
                                 <div>${watermarkBadge}</div>
                             </div>
                             <div class="col-md-4 d-flex align-items-center justify-content-between justify-content-md-start gap-2">
-                                <span class="text-light opacity-75 small">Giới hạn chọn:</span>
+                                <span class="text-white small fw-semibold">Giới hạn chọn:</span>
                                 <div>${maxSelectText}</div>
                             </div>
                             <div class="col-md-4 d-flex align-items-center justify-content-between justify-content-md-start gap-2">
-                                <span class="text-light opacity-75 small">Tải ảnh gốc:</span>
+                                <span class="text-white small fw-semibold">Tải ảnh gốc:</span>
                                 <div>${downloadBadge}</div>
                             </div>
                         </div>
 
                         <!-- Khu vực ghi chú -->
                         <div>
-                            <div class="small fw-bold text-uppercase text-light opacity-75 mb-2" style="font-size: 0.75rem; letter-spacing: 1px;">
+                            <div class="small fw-bold text-uppercase text-white mb-2" style="font-size: 0.75rem; letter-spacing: 1px;">
                                 <i class="fas fa-clipboard-list text-warning me-1"></i> Ghi chú & Yêu cầu của khách trên ảnh:
                             </div>
                             <div class="p-2.5 rounded-3 border border-secondary border-opacity-30" style="background: rgba(0, 0, 0, 0.35); max-height: 160px; overflow-y: auto;">
