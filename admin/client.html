@@ -512,19 +512,17 @@
 
             let folderName = photos[0].folderName || "VIP ALBUM";
             
-            // 🌟 Lấy tên đầy đủ của studio từ dữ liệu trả về (hỗ trợ các tên trường phổ biến: studioName, name, hoặc studio_name)
-            let studioFullName = data.studioName || data.name || data.studio_name || "";
+            // 🌟 SỬA TẠI ĐÂY: Ưu tiên lấy studio_slug từ response của n8n (chính là "pla")
+            let studioFullName = data.studioName || data.name || data.studio_name || data.studio_slug || "";
 
-            // Nếu dữ liệu trả về chưa có sẵn tên studio, anh có thể ánh xạ dựa trên studioSlug hoặc để dự phòng
-            if (!studioFullName && studioSlug) {
-                // Tạm thời viết hoa hoặc xử lý chuỗi nếu chưa map kịp ở n8n, 
-                // nhưng tốt nhất là cấu hình webhook n8n trả về thêm trường `studioName`.
-                studioFullName = studioSlug; 
+            // Nếu dữ liệu trả về không có, mới dùng tham số trên URL nhưng loại bỏ chữ "studio" mặc định
+            if ((!studioFullName || studioFullName.toLowerCase() === 'studio') && studioSlug && studioSlug.toLowerCase() !== 'studio') {
+                studioFullName = studioSlug;
             }
 
             // Gán tiêu đề trình duyệt và hiển thị lên giao diện Navbar
-            if (studioFullName) {
-                document.title = `${studioFullName} - ${folderName}`;
+            if (studioFullName && studioFullName.toLowerCase() !== 'studio') {
+                document.title = `${studioFullName.toUpperCase()} - ${folderName}`;
                 document.getElementById('albumTitle').innerText = `${studioFullName.toUpperCase()} - ${folderName}`;
             } else {
                 document.title = folderName;
