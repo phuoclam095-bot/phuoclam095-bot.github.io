@@ -340,7 +340,7 @@
             const aSlug = album.album_slug || album.albumSlug || createSlug(folderName);
             
             // 🌟 Đường link chuẩn xác theo đúng cấu hình album ban đầu
-            const clientPageUrl = `${PATHS.CLIENT}${sSlug}/${aSlug}`;
+            const clientPageUrl = `${PATHS.CLIENT}${rawStudio}/${aSlug}`;
 
             card.innerHTML = `<div class="card-img-header" style="background-image: url('${img}');"><div class="album-vip-title">${folderName}</div></div>
                 <div class="stats-grid">
