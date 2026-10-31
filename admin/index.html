@@ -769,13 +769,12 @@ async function activateFreeTrial() {
             // Xóa sạch khoảng trắng và toàn bộ ký tự đặc biệt, ép viết liền sát nhau không dấu không gạch ngang
             return str.replace(/[^0-9a-z]/g, '');
         }
-        async function handleCreateAlbum() {
-    // 1. Kiểm tra trạng thái cục bộ (Chỉ để chặn nhanh trên giao diện)
+       async function handleCreateAlbum() {
     const status = localStorage.getItem('admin_status');
     const expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
     
     if (status !== 'active' || expiry <= Date.now()) {
-        alert("Tài khoản của bạn chưa được kích hoạt hoặc đã hết hạn!");
+        showInlineMessage("Tài khoản của bạn chưa được kích hoạt hoặc đã hết hạn!", "error");
         return; 
     }
 
@@ -784,7 +783,7 @@ async function activateFreeTrial() {
     const fId = fIdMatch ? fIdMatch[1] : (driveLink.length > 20 ? driveLink : null);
     
     if (!fId) {
-        alert("Vui lòng nhập link thư mục Google Drive hợp lệ!");
+        showInlineMessage("Vui lòng nhập link thư mục Google Drive hợp lệ!", "error");
         return;
     }
 
@@ -801,7 +800,6 @@ async function activateFreeTrial() {
     let albumSlug = "album";
 
     try {
-        // 2. Gọi webhook lấy thông tin tên thư mục Google Drive
         const infoRes = await fetch(`${PATHS.INFO}?id=${fId}`);
         if (!infoRes.ok) {
             throw new Error("Không thể lấy thông tin thư mục từ Google Drive. Vui lòng kiểm tra lại đường dẫn!");
@@ -814,7 +812,6 @@ async function activateFreeTrial() {
             albumSlug = createSlug(folderTitle); 
         }
 
-        // 3. Gửi dữ liệu tạo album lên n8n
         const createRes = await fetch(`${PATHS.CREATE}?folderId=${fId}`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -833,12 +830,10 @@ async function activateFreeTrial() {
             })
         });
 
-        // Kiểm tra xem n8n có trả về lỗi hay không
         if (!createRes.ok) {
-            throw new Error("Máy chủ n8n từ chối lưu dữ liệu. Vui lòng thử lại sau!");
+            throw new Error("Máy chủ từ chối lưu dữ liệu. Vui lòng thử lại sau!");
         }
 
-        // 4. Nếu mọi thứ thành công mỹ mãn mới hiển thị kết quả
         const clientLink = `https://chonanhnhanh.vn/${studioSlug}/${albumSlug}`;
 
         document.getElementById('resFolderName').innerText = folderTitle;
@@ -846,18 +841,50 @@ async function activateFreeTrial() {
         document.getElementById('resClientLink').innerText = clientLink;
         document.getElementById('resultBox').style.display = 'block';
 
-        alert("Khởi tạo Album thành công!");
+        showInlineMessage("Khởi tạo Album thành công!", "success");
 
     } catch (err) {
-        // Bắt mọi lỗi xảy ra ở trên (mất mạng, sai link drive, lỗi n8n) và thông báo cho user
         console.error("Lỗi tạo album:", err);
-        alert(err.message || "Đã xảy ra lỗi kết nối máy chủ khi tạo album!");
-        document.getElementById('resultBox').style.display = 'none'; // Ẩn khung kết quả đi nếu lỗi
+        showInlineMessage(err.message || "Đã xảy ra lỗi kết nối máy chủ!", "error");
+        document.getElementById('resultBox').style.display = 'none';
     } finally {
-        // Luôn trả lại trạng thái nút bấm dù thành công hay thất bại
         btn.innerHTML = "KHỞI TẠO ALBUM NGAY";
         btn.disabled = false;
     }
+}
+
+// Hàm hiển thị thông báo trực tiếp trên trang (Không dùng popup)
+function showInlineMessage(text, type) {
+    let msgBox = document.getElementById('inlineSystemNotice');
+    if (!msgBox) {
+        msgBox = document.createElement('div');
+        msgBox.id = 'inlineSystemNotice';
+        msgBox.style.cssText = 'margin-top: 15px; padding: 10px 15px; border-radius: 6px; font-size: 0.85rem; font-weight: 700; text-align: center; transition: all 0.3s ease; display: none;';
+        
+        // Chèn khung thông báo ngay dưới nút bấm khởi tạo album
+        const btn = document.getElementById('btnCreate');
+        if (btn && btn.parentNode) {
+            btn.parentNode.insertAdjacentElement('afterend', msgBox);
+        }
+    }
+
+    msgBox.innerText = text;
+    msgBox.style.display = 'block';
+    
+    if (type === 'error') {
+        msgBox.style.backgroundColor = '#ffe5e8';
+        msgBox.style.color = '#ff4757';
+        msgBox.style.border = '1px solid #ff4757';
+    } else {
+        msgBox.style.backgroundColor = '#e8f8f0';
+        msgBox.style.color = '#2ed573';
+        msgBox.style.border = '1px solid #2ed573';
+    }
+
+    // Tự động ẩn sau 4 giây
+    setTimeout(() => {
+        if (msgBox) msgBox.style.display = 'none';
+    }, 4000);
 }
         function toggleLimitInput() {
             const isChecked = document.getElementById('limitPhotos').checked;
