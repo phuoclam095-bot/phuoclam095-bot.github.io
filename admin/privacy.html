@@ -84,15 +84,15 @@
         }
 
         /* --- CONTAINER NỘI DUNG CHÍNH --- */
-        .container-custom { 
-            max-width: 900px; 
-            margin: 0 auto 50px auto; 
-            padding: 40px; 
-            background: rgba(10, 20, 40, 0.85); 
+        .container-custom, .container {  
+            max-width: 900px;  
+            margin: 0 auto 50px auto;  
+            padding: 40px;  
+            background: rgba(10, 20, 40, 0.85);  
             backdrop-filter: blur(15px);
-            border-radius: 20px; 
-            border: 1px solid rgba(255,255,255,0.08); 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            border-radius: 20px;  
+            border: 1px solid rgba(255,255,255,0.08);  
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);  
         }
         h1 { color: #fff; font-size: 2rem; font-weight: 900; margin-bottom: 10px; text-transform: uppercase; }
         h2 { color: var(--primary); font-size: 1.2rem; font-weight: 700; margin-top: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; }
@@ -162,6 +162,13 @@
             <li>Email hỗ trợ: <span class="highlight">support@chonanhnhanh.vn</span></li>
             <li>Hotline / Zalo: <span class="highlight">0879029170</span></li>
             <li>Địa chỉ hoạt động: Bạc Liêu - Cà Mau, Việt Nam</li>
+        </ul>
+
+        <h2>6. Tuân Thủ Chính Sách API Của Google & Sử Dụng Hạn Chế (Google API Services & Limited Use)</h2>
+        <p>Việc sử dụng và truyền tải thông tin nhận được từ Google APIs sang bất kỳ ứng dụng nào khác sẽ tuân thủ nghiêm ngặt <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank">Chính sách về Dữ liệu Người dùng Dịch vụ API Google</a>, bao gồm cả các yêu cầu về <strong>Sử dụng Hạn chế (Limited Use requirements)</strong>.</p>
+        <ul>
+            <li><strong>Phạm vi sử dụng dữ liệu lịch:</strong> Quyền truy cập sự kiện (<code>calendar.events</code>) chỉ được sử dụng với mục đích duy nhất là đồng bộ lịch trình, thời gian chụp ảnh và lịch hẹn từ CRM vào Google Calendar cá nhân của quản trị viên studio nhằm hỗ trợ quản lý công việc tốt hơn.</li>
+            <li><strong>Bảo mật & Không lạm dụng dữ liệu:</strong> Dữ liệu lịch trình được mã hóa an toàn qua giao thức HTTPS và lưu trữ trên cơ sở dữ liệu Supabase. Chúng tôi tuyệt đối không sử dụng dữ liệu này cho mục đích quảng cáo, không chia sẻ cho bên thứ ba, và không dùng để huấn luyện các mô hình trí tuệ nhân tạo (AI/ML).</li>
         </ul>
 
         <div class="footer-note">
