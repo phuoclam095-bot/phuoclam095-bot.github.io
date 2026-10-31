@@ -858,21 +858,15 @@ function showInlineMessage(text, type) {
     if (!msgBox) {
         msgBox = document.createElement('div');
         msgBox.id = 'inlineSystemNotice';
-
         msgBox.style.cssText = 'margin-top: 8px; font-size: 0.8rem; font-weight: 700; text-align: center; transition: all 0.3s ease; display: none;';
-
-        let targetElement = null;
-        const allElements = document.querySelectorAll('div');
-        for (let el of allElements) {
-            if (el.innerText && el.innerText.includes('Tốc độ cực nhanh')) {
-                targetElement = el;
-                break;
-            }
-        }
-
+        
+        // Tìm thẳng vào phần tử hiển thị tốc độ cực nhanh trong card
+        let targetElement = document.getElementById('vipSpeedNotice');
+        
         if (targetElement) {
             targetElement.insertAdjacentElement('afterend', msgBox);
         } else {
+            // Fallback phòng hờ nếu chưa có id thì chèn ngay dưới nút tạo
             const btn = document.getElementById('btnCreate');
             if (btn && btn.parentNode) {
                 btn.parentNode.insertAdjacentElement('afterend', msgBox);
@@ -882,12 +876,13 @@ function showInlineMessage(text, type) {
 
     msgBox.innerText = text;
     msgBox.style.display = 'block';
-
+    
     if (type === 'error') {
         msgBox.style.color = '#ff4757';
     } else {
         msgBox.style.color = 'var(--primary)';
     }
+
     setTimeout(() => {
         if (msgBox) msgBox.style.display = 'none';
     }, 4000);
