@@ -770,79 +770,95 @@ async function activateFreeTrial() {
             return str.replace(/[^0-9a-z]/g, '');
         }
         async function handleCreateAlbum() {
-            const status = localStorage.getItem('admin_status');
-            const expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
-            
-            if (status !== 'active' || expiry <= Date.now()) {
-                alert("Tài khoản của bạn chưa được kích hoạt hoặc đã hết hạn!");
-                return; 
-            }
-        
-            const driveLink = document.getElementById('driveLink').value.trim();
-            const fIdMatch = driveLink.match(/folders\/([^/?]+)/);
-            const fId = fIdMatch ? fIdMatch[1] : (driveLink.length > 20 ? driveLink : null);
-            
-            if (!fId) {
-                alert("Vui lòng nhập link thư mục Google Drive hợp lệ!");
-                return;
-            }
-        
-            let rawStudio = localStorage.getItem('admin_studio_slug') || 'studio';
-            let studioSlug = rawStudio.replace(/[^0-9a-z]/g, '');
-            let currentLogo = localStorage.getItem('studio_watermark_logo') || '';
-            let isWatermarkChecked = document.getElementById('enableWatermark').checked;
-        
-            const btn = document.getElementById('btnCreate');
-            btn.innerHTML = 'ĐANG XỬ LÝ...';
-            btn.disabled = true;
-        
-            let folderTitle = "Album VIP";
-            let albumSlug = "album";
-        
-            try {
-                // 1. Gọi webhook lấy thông tin tên thư mục Google Drive chính xác
-                const infoRes = await fetch(`${PATHS.INFO}?id=${fId}`);
-                const infoData = await infoRes.json();
-                const folderObj = Array.isArray(infoData) ? infoData[0] : infoData;
-                
-                if (folderObj && (folderObj.folderName || folderObj.name)) {
-                    folderTitle = folderObj.folderName || folderObj.name;
-                    albumSlug = createSlug(folderTitle); // Tự động tạo slug sạch sẽ từ tên thật
-                }
-        
-                // 2. Gửi dữ liệu tạo album lên n8n (phải truyền kèm folderName và albumSlug)
-                await fetch(`${PATHS.CREATE}?folderId=${fId}`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        adminEmail: localStorage.getItem('admin_email'),
-                        studioSlug: studioSlug,
-                        albumSlug: albumSlug,
-                        folderName: folderTitle, // <--- BẮT BUỘC PHẢI CÓ DÒNG NÀY ĐỂ LƯU VÀO SUPABASE
-                        settings: {
-                            download: document.getElementById('allowDownload').checked,
-                            comment: document.getElementById('allowComment').checked,
-                            limitPhotos: document.getElementById('limitPhotos').checked,
-                            watermarkEnabled: isWatermarkChecked,
-                            watermarkLogo: currentLogo
-                        }
-                    })
-                });
-            } catch (err) {
-                console.log("Xử lý tạo album hoàn tất");
-            }
-        
-            // Hiển thị kết quả đường dẫn thân thiện
-            const clientLink = `https://chonanhnhanh.vn/${studioSlug}/${albumSlug}`;
-        
-            document.getElementById('resFolderName').innerText = folderTitle;
-            document.getElementById('resClientLink').href = clientLink;
-            document.getElementById('resClientLink').innerText = clientLink;
-            document.getElementById('resultBox').style.display = 'block';
-        
-            btn.innerHTML = "KHỞI TẠO ALBUM NGAY";
-            btn.disabled = false;
+    // 1. Kiểm tra trạng thái cục bộ (Chỉ để chặn nhanh trên giao diện)
+    const status = localStorage.getItem('admin_status');
+    const expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
+    
+    if (status !== 'active' || expiry <= Date.now()) {
+        alert("Tài khoản của bạn chưa được kích hoạt hoặc đã hết hạn!");
+        return; 
+    }
+
+    const driveLink = document.getElementById('driveLink').value.trim();
+    const fIdMatch = driveLink.match(/folders\/([^/?]+)/);
+    const fId = fIdMatch ? fIdMatch[1] : (driveLink.length > 20 ? driveLink : null);
+    
+    if (!fId) {
+        alert("Vui lòng nhập link thư mục Google Drive hợp lệ!");
+        return;
+    }
+
+    let rawStudio = localStorage.getItem('admin_studio_slug') || 'studio';
+    let studioSlug = rawStudio.replace(/[^0-9a-z]/g, '');
+    let currentLogo = localStorage.getItem('studio_watermark_logo') || '';
+    let isWatermarkChecked = document.getElementById('enableWatermark').checked;
+
+    const btn = document.getElementById('btnCreate');
+    btn.innerHTML = 'ĐANG XỬ LÝ...';
+    btn.disabled = true;
+
+    let folderTitle = "Album VIP";
+    let albumSlug = "album";
+
+    try {
+        // 2. Gọi webhook lấy thông tin tên thư mục Google Drive
+        const infoRes = await fetch(`${PATHS.INFO}?id=${fId}`);
+        if (!infoRes.ok) {
+            throw new Error("Không thể lấy thông tin thư mục từ Google Drive. Vui lòng kiểm tra lại đường dẫn!");
         }
+        const infoData = await infoRes.json();
+        const folderObj = Array.isArray(infoData) ? infoData[0] : infoData;
+        
+        if (folderObj && (folderObj.folderName || folderObj.name)) {
+            folderTitle = folderObj.folderName || folderObj.name;
+            albumSlug = createSlug(folderTitle); 
+        }
+
+        // 3. Gửi dữ liệu tạo album lên n8n
+        const createRes = await fetch(`${PATHS.CREATE}?folderId=${fId}`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                adminEmail: localStorage.getItem('admin_email'),
+                studioSlug: studioSlug,
+                albumSlug: albumSlug,
+                folderName: folderTitle, 
+                settings: {
+                    download: document.getElementById('allowDownload').checked,
+                    comment: document.getElementById('allowComment').checked,
+                    limitPhotos: document.getElementById('limitPhotos').checked,
+                    watermarkEnabled: isWatermarkChecked,
+                    watermarkLogo: currentLogo
+                }
+            })
+        });
+
+        // Kiểm tra xem n8n có trả về lỗi hay không
+        if (!createRes.ok) {
+            throw new Error("Máy chủ n8n từ chối lưu dữ liệu. Vui lòng thử lại sau!");
+        }
+
+        // 4. Nếu mọi thứ thành công mỹ mãn mới hiển thị kết quả
+        const clientLink = `https://chonanhnhanh.vn/${studioSlug}/${albumSlug}`;
+
+        document.getElementById('resFolderName').innerText = folderTitle;
+        document.getElementById('resClientLink').href = clientLink;
+        document.getElementById('resClientLink').innerText = clientLink;
+        document.getElementById('resultBox').style.display = 'block';
+
+        alert("Khởi tạo Album thành công!");
+
+    } catch (err) {
+        // Bắt mọi lỗi xảy ra ở trên (mất mạng, sai link drive, lỗi n8n) và thông báo cho user
+        console.error("Lỗi tạo album:", err);
+        alert(err.message || "Đã xảy ra lỗi kết nối máy chủ khi tạo album!");
+        document.getElementById('resultBox').style.display = 'none'; // Ẩn khung kết quả đi nếu lỗi
+    } finally {
+        // Luôn trả lại trạng thái nút bấm dù thành công hay thất bại
+        btn.innerHTML = "KHỞI TẠO ALBUM NGAY";
+        btn.disabled = false;
+    }
+}
         function toggleLimitInput() {
             const isChecked = document.getElementById('limitPhotos').checked;
             document.getElementById('limitNumberContainer').style.display = isChecked ? 'block' : 'none';
