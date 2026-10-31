@@ -326,19 +326,20 @@
             const limitVal = album.limit_photos ?? album.limitPhotos ?? 0;
             const downloadVal = album.allow_download ?? album.allowDownload ?? false;
             const commentVal = album.allow_comment ?? album.allowComment ?? false;
-            const rawWatermark = album.watermark_enabled ?? album.watermarkEnabled;
             const watermarkEnabledVal = album.watermark_enabled ?? album.watermarkEnabled ?? false;
             const watermarkLogoVal = album.watermark_logo ?? album.watermarkLogo ?? '';
-            // 🌟 Khai báo folderName trước tiên
+            
             const folderName = album.folderName || album.name || 'VIP Album';
             const albumTitle = folderName.replace(/'/g, "\\'");
-            let rawStudio = localStorage.getItem('admin_studio_slug') || album.studio_slug || album.studioSlug || 'studio';
+            
+            // 🌟 CHỈ LẤY ĐÚNG SLUG CỦA ALBUM ĐÓ, KHÔNG DÙNG localStorage CỦA ADMIN NỮA ĐỂ TRÁNH BỊ ĐÈ LINK
+            let rawStudio = album.studio_slug || album.studioSlug || album.studio_name || 'studio';
             const sSlug = rawStudio.replace(/-+/g, '-').replace(/^-|-$/g, '') || 'studio';
             
-            // Tạo slug không có dấu gạch ngang (viết liền)
+            // Tạo slug không có dấu gạch ngang cho tên album
             const aSlug = album.album_slug || album.albumSlug || createSlug(folderName);
             
-            // Link client dạng URL thân thiện
+            // 🌟 Đường link chuẩn xác theo đúng cấu hình album ban đầu
             const clientPageUrl = `${PATHS.CLIENT}${sSlug}/${aSlug}`;
 
             card.innerHTML = `<div class="card-img-header" style="background-image: url('${img}');"><div class="album-vip-title">${folderName}</div></div>
