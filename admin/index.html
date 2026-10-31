@@ -859,12 +859,12 @@ function showInlineMessage(text, type) {
     if (!msgBox) {
         msgBox = document.createElement('div');
         msgBox.id = 'inlineSystemNotice';
-        msgBox.style.cssText = 'margin-top: 15px; padding: 10px 15px; border-radius: 6px; font-size: 0.85rem; font-weight: 700; text-align: center; transition: all 0.3s ease; display: none;';
+        msgBox.style.cssText = 'margin: 10px auto 0 auto; width: 90%; padding: 8px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; text-align: center; transition: all 0.3s ease; display: none;';
         
-        // Chèn khung thông báo ngay dưới nút bấm khởi tạo album
-        const btn = document.getElementById('btnCreate');
-        if (btn && btn.parentNode) {
-            btn.parentNode.insertAdjacentElement('afterend', msgBox);
+        let targetElement = document.querySelector('.fa-bolt') ? document.querySelector('.fa-bolt').parentNode : document.getElementById('btnCreate');
+        
+        if (targetElement) {
+            targetElement.insertAdjacentElement('afterend', msgBox);
         }
     }
 
