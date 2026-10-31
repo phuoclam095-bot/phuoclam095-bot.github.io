@@ -623,7 +623,46 @@
                 body.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-danger">Không thể kết nối tới webhook hợp đồng.</td></tr>`;
             }
         }
+        // --- HÀM XEM CHI TIẾT HỢP ĐỒNG & LỊCH CHỤP CỦA STUDIO ---
+        function viewStudioContracts(email) {
+            // Tìm kiếm thông tin studio trong danh sách contracts đã cache
+            let studioItem = window.cachedContractsStudios.find(item => item.studioEmail === email);
+            
+            // Cập nhật tiêu đề modal
+            document.getElementById('contractStudioEmailTitle').innerText = email;
+            let container = document.getElementById('contractDetailContent');
+            container.innerHTML = '';
 
+            if (!studioItem || !studioItem.contracts || studioItem.contracts.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-5 text-secondary">
+                        <i class="fas fa-file-contract fa-3x mb-3 opacity-50"></i>
+                        <p class="mb-0">Studio này chưa có lịch chụp hoặc hợp đồng nào.</p>
+                    </div>`;
+            } else {
+                let contractsHtml = '<div class="table-responsive"><table class="table table-custom mb-0 align-middle"><thead><tr><th>STT</th><th>Tên khách hàng / Tiêu đề</th><th>Ngày chụp</th><th>Trạng thái</th><th>Tổng tiền</th></tr></thead><tbody>';
+                
+                studioItem.contracts.forEach((c, idx) => {
+                    contractsHtml += `
+                        <tr>
+                            <td class="text-center text-secondary">${idx + 1}</td>
+                            <td><b class="text-white">${c.clientName || c.title || 'Hợp đồng #' + (idx + 1)}</b></td>
+                            <td><span class="text-info">${c.date || c.shootDate || 'Chưa rõ'}</span></td>
+                            <td><span class="badge bg-dark border border-secondary text-light">${c.status || 'Đang xử lý'}</span></td>
+                            <td><b class="text-success">${c.totalAmount || c.amount || '0 VNĐ'}</b></td>
+                        </tr>`;
+                });
+                
+                contractsHtml += '</tbody></table></div>';
+                container.innerHTML = contractsHtml;
+            }
+
+            // Hiển thị Modal Bootstrap tương ứng
+            let modalEl = document.getElementById('contractDetailModal');
+            if (modalEl) {
+                new bootstrap.Modal(modalEl).show();
+            }
+        }
         // --- CÁC HÀM XỬ LÝ DUYỆT BÀI BLOG ---
        async function loadBlogsData() {
     let body = document.getElementById('blogTableBody');
