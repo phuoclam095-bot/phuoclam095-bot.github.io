@@ -780,7 +780,7 @@ async function activateFreeTrial() {
 
     const driveLink = document.getElementById('driveLink').value.trim();
     if (!driveLink.includes('drive.google.com') || (!driveLink.includes('folders/') && !driveLink.includes('drive/u/'))) {
-        showInlineMessage("Vui lòng dán LINK THƯ MỤC Google Drive (Không dùng link ảnh lẻ hoặc file đơn)!", "error");
+        showInlineMessage("Link thư mực drive không hợp lệ. (Lưu ý link phải công khai)!", "error");
         return;
     }
 
