@@ -452,43 +452,66 @@
         }
 
         function viewStudioAlbums(email) {
-            let studio = window.cachedStudios.find(s => s.email === email);
-            if(!studio) return;
+    let studio = window.cachedStudios.find(s => s.email === email);
+    if(!studio) return;
 
-            document.getElementById('detailStudioName').innerText = studio.name + " (" + studio.email + ")";
-            let container = document.getElementById('albumDetailContent');
-            container.innerHTML = '';
+    document.getElementById('detailStudioName').innerText = studio.name + " (" + studio.email + ")";
+    let container = document.getElementById('albumDetailContent');
+    container.innerHTML = '';
 
-            if(!studio.albums || studio.albums.length === 0) {
-                container.innerHTML = `<p class="text-center text-secondary py-4">Studio này chưa có album thực tế nào.</p>`;
-            } else {
-                studio.albums.forEach(album => {
-                    let notesHtml = '';
-                    if (album.clientNotes && album.clientNotes.length > 0) {
-                        album.clientNotes.forEach(n => {
-                            notesHtml += `<div class="small bg-black p-2 rounded mb-1 border border-secondary text-light"><i class="fas fa-comment-dots text-primary me-2"></i><b>${n.photoName || 'Ảnh'}:</b> ${n.noteText}</div>`;
-                        });
-                    } else {
-                        notesHtml = `<span class="text-secondary small italic">Chưa có ghi chú trên ảnh.</span>`;
-                    }
-
-                    let folderId = album.folderId;
-                    let folderUrl = folderId ? `https://drive.google.com/drive/folders/${folderId}` : '#';
-
-                    container.innerHTML += `
-                        <div class="card bg-black border border-secondary p-3 mb-3 rounded-4 text-white">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <div>
-                                    <h5 class="text-primary fw-bold mb-1"><i class="fas fa-folder-open me-2"></i>${album.albumName}</h5>
-                                    <a href="${folderUrl}" target="_blank" class="small text-info text-decoration-none fw-bold"><i class="fab fa-google-drive me-1"></i>Mở thư mục Google Drive gốc (Folder)</a>
-                                </div>
-                            </div>
-                        </div>`;
+    if(!studio.albums || studio.albums.length === 0) {
+        container.innerHTML = `<p class="text-center text-secondary py-4">Studio này chưa có album thực tế nào.</p>`;
+    } else {
+        studio.albums.forEach(album => {
+            let notesHtml = '';
+            if (album.clientNotes && album.clientNotes.length > 0) {
+                album.clientNotes.forEach(n => {
+                    notesHtml += `<div class="small bg-black p-2 rounded mb-1 border border-secondary text-light"><i class="fas fa-comment-dots text-primary me-2"></i><b>${n.photoName || 'Ảnh'}:</b> ${n.noteText}</div>`;
                 });
+            } else {
+                notesHtml = `<span class="text-secondary small italic">Chưa có ghi chú trên ảnh.</span>`;
             }
-            new bootstrap.Modal(document.getElementById('albumDetailModal')).show();
-        }
 
+            let folderId = album.folderId;
+            let folderUrl = folderId ? `https://drive.google.com/drive/folders/${folderId}` : '#';
+
+            // 🌟 Tinh chỉnh phần setting thành một khung thẻ (Box) nhỏ gọn, nổi bật
+            let watermarkStatus = album.config?.watermark ? '<span class="text-success fw-bold">Bật</span>' : '<span class="text-danger fw-bold">Tắt</span>';
+            let maxSelectText = album.config?.maxSelect ? `<span class="text-info fw-bold">${album.config.maxSelect} ảnh</span>` : '<span class="text-light">Không giới hạn</span>';
+            let downloadStatus = album.config?.allowDownload ? '<span class="text-success fw-bold">Có</span>' : '<span class="text-danger fw-bold">Không</span>';
+
+            container.innerHTML += `
+                <div class="card bg-black border border-secondary p-3 mb-3 rounded-4 text-white">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h5 class="text-primary fw-bold mb-1"><i class="fas fa-folder-open me-2"></i>${album.albumName}</h5>
+                            <a href="${folderUrl}" target="_blank" class="small text-info text-decoration-none fw-bold"><i class="fab fa-google-drive me-1"></i>Mở thư mục Google Drive gốc (Folder)</a>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-secondary">Tổng: ${album.totalPhotos || 0} ảnh</span>
+                            <span class="badge bg-success">Đã chọn: ${album.selectedCount || 0} ảnh</span>
+                        </div>
+                    </div>
+
+                    <!-- 🌟 Khung Setting được đóng hộp riêng, có nền và viền sáng rõ hơn -->
+                    <div class="p-2.5 mb-3 rounded-3 border border-secondary" style="background: rgba(255, 255, 255, 0.04); font-size: 0.85rem;">
+                        <div class="text-uppercase text-secondary fw-bold mb-1" style="font-size: 0.7rem; letter-spacing: 1px;"><i class="fas fa-sliders-h me-1 text-primary"></i> Cấu hình Album:</div>
+                        <div class="d-flex flex-wrap gap-3 text-light">
+                            <span>🛡️ Watermark: ${watermarkStatus}</span>
+                            <span>🎯 Giới hạn: ${maxSelectText}</span>
+                            <span>📥 Cho phép tải: ${downloadStatus}</span>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 border-top border-secondary">
+                        <div class="small fw-bold text-warning mb-1"><i class="fas fa-comments me-1"></i> Ghi chú của khách hàng:</div>
+                        ${notesHtml}
+                    </div>
+                </div>`;
+        });
+    }
+    new bootstrap.Modal(document.getElementById('albumDetailModal')).show();
+}
         function openActivateModal(email, name) {
             document.getElementById('modalStudioEmail').value = email;
             document.getElementById('modalStudioDisplay').innerText = name + " (" + email + ")";
