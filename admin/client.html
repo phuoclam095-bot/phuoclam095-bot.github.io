@@ -511,6 +511,7 @@
             if (albumSettings.comment) document.getElementById('btnComment').style.display = 'flex';
 
             let folderName = photos[0].folderName || "VIP ALBUM";
+            document.title = folderName;
             if(studioSlug) {
                 document.getElementById('albumTitle').innerText = `${studioSlug.toUpperCase()} - ${folderName}`;
             } else {
