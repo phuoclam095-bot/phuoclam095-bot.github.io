@@ -779,11 +779,16 @@ async function activateFreeTrial() {
     }
 
     const driveLink = document.getElementById('driveLink').value.trim();
+    if (!driveLink.includes('drive.google.com') || (!driveLink.includes('folders/') && !driveLink.includes('drive/u/'))) {
+        showInlineMessage("Vui lòng dán LINK THƯ MỤC Google Drive (Không dùng link ảnh lẻ hoặc file đơn)!", "error");
+        return;
+    }
+
     const fIdMatch = driveLink.match(/folders\/([^/?]+)/);
-    const fId = fIdMatch ? fIdMatch[1] : (driveLink.length > 20 ? driveLink : null);
+    const fId = fIdMatch ? fIdMatch[1] : null;
     
     if (!fId) {
-        showInlineMessage("Vui lòng nhập link thư mục Google Drive hợp lệ!", "error");
+        showInlineMessage("Không tìm thấy mã thư mục hợp lệ trong đường dẫn này!", "error");
         return;
     }
 
@@ -858,9 +863,7 @@ function showInlineMessage(text, type) {
     if (!msgBox) {
         msgBox = document.createElement('div');
         msgBox.id = 'inlineSystemNotice';
-        msgBox.style.cssText = 'margin-top: 8px; font-size: 0.8rem; font-weight: 700; text-align: center; transition: all 0.3s ease; display: none;';
-        
-        // Tìm thẳng vào phần tử hiển thị tốc độ cực nhanh trong card
+        msgBox.style.cssText = 'margin-top: 6px; font-size: 0.8rem; font-weight: 700; text-align: center; transition: all 0.3s ease; display: none; min-height: 20px;';
         let targetElement = document.getElementById('vipSpeedNotice');
         
         if (targetElement) {
