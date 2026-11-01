@@ -53,7 +53,6 @@
         .btn-write-post span { background: #000; color: #fff; font-weight: 900; padding: 14px 45px; border-radius: 50px; display: block; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1.5px; }
         @keyframes breathing { 0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(0, 235, 176, 0.2); } 50% { transform: scale(1.05); box-shadow: 0 0 40px rgba(0, 235, 176, 0.5); } }
 
-        /* --- MARQUEE BOX STABLE --- */
         .marquee-container-bottom { width: 65%; margin: 20px auto 0; overflow: hidden; background: rgba(0, 235, 176, 0.08); padding: 8px 0; border-radius: 50px; border: 1px solid rgba(0, 235, 176, 0.2); }
         .marquee-container-bottom marquee { font-weight: 700; font-size: 0.85rem; text-transform: uppercase; color: var(--primary); letter-spacing: 1px; }
 
@@ -70,8 +69,6 @@
         .user-avatar { width: 55px; height: 55px; background: var(--primary); border-radius: 50%; color: #000; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.4rem; }
         .stars { color: var(--gold-vip); font-size: 0.9rem; }
         .review-text { font-style: italic; color: #f8fafc; line-height: 1.8; font-size: 0.95rem; }
-
-        /* --- BTN GÓP Ý --- */
         .btn-fedback-link { background: var(--gold-vip); color: #000; font-weight: 900; padding: 16px 45px; border-radius: 50px; text-transform: uppercase; text-decoration: none; display: inline-block; transition: 0.3s; box-shadow: 0 0 20px rgba(240, 195, 0, 0.3); font-size: 0.95rem; letter-spacing: 1px; border: none; }
         .btn-fedback-link:hover { transform: scale(1.05); background: #fff; }
 
@@ -87,7 +84,6 @@
             body { padding-top: 150px; }
             .navbar { padding: 10px 0; min-height: auto; }
             
-            /* Hiện nút Back bên góc trái thay cho Logo / Text rườm rà */
             .navbar-brand { display: none !important; }
             .btn-back-mobile { 
                 display: flex !important; 
@@ -103,8 +99,6 @@
                 font-size: 1rem;
                 transition: 0.2s;
             }
-
-            /* Đẩy menu lướt ngang ra chính giữa giao diện mobile */
             .nav-center-container {
                 position: static !important;
                 transform: none !important;
@@ -147,13 +141,8 @@
 <body>
 
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
-        <div class="container-fluid px-3 px-lg-5 d-flex flex-wrap align-items-center justify-content-between">
-            
-            <!-- Logo hiển thị trên PC -->
-            
-          
+        <div class="container-fluid px-3 px-lg-5 d-flex flex-wrap align-items-center justify-content-between">            
               <a class="navbar-brand m-0" href="index">CHONANHNHANH<span style="color:#f0c300">.VN</span></a>
-            <!-- Khung trung tâm menu chức năng (Căn giữa cả PC lẫn Mobile) -->
             <div class="nav-center-container" id="navCenterArea">
                 <ul class="navbar-nav" id="adminNavLinks">
                     <li><a href="index" class="nav-link">Tạo Album</a></li>
@@ -173,9 +162,6 @@
 
         </div>
     </nav>
-
-    
-
 
     <div class="hero-section">
         <div class="container">
@@ -258,11 +244,8 @@
     for (let i = 0; i < blogs.length; i += 3) {
         const group = blogs.slice(i, i + 3);
         let groupHtml = group.map((blog) => {
-            // Ưu tiên lấy post_id làm mã định danh đường dẫn, nếu không có mới lấy id
             const uniqueId = blog.post_id || blog.id;
             if (!uniqueId && uniqueId !== 0) return '<div class="col-md-4"></div>';
-
-            // Xử lý link ảnh an toàn cho cả Google Drive và link ngoài
             let imageUrl = blog.image || 'https://via.placeholder.com/500x300';
             if (imageUrl.includes('drive.google.com')) {
                 let match = imageUrl.match(/(?:id=|[\/]?d\/)([a-zA-Z0-9_-]{25,})/);
@@ -305,7 +288,6 @@ function stripHtml(html) {
         const response = await fetch(N8N_GET_BLOGS);
         const data = await response.json();
         
-        // Bóc tách linh hoạt mọi dạng trả về từ n8n (dạng mảng, dạng {blogs: [...]}, hoặc {data: [...]})
         let realBlogs = [];
         if (Array.isArray(data)) {
             realBlogs = data;
@@ -315,15 +297,12 @@ function stripHtml(html) {
             realBlogs = data.data;
         }
 
-        // Lọc chuẩn xác chỉ lấy những bài có trạng thái là 'Approved' (A viết hoa)
         const approvedBlogs = realBlogs.filter(b => {
             let stt = String(b.status || '').trim();
             return stt === 'Approved';
         });
 
         console.log("Danh sách bài viết duyệt hiển thị:", approvedBlogs);
-
-        // Hiển thị bài viết thực tế nếu có, nếu không mới dùng demo
         if (approvedBlogs.length > 0) {
             currentBlogs = [...approvedBlogs.sort((a,b) => new Date(b.date)-new Date(a.date))];
             renderMainCarousel(currentBlogs);
