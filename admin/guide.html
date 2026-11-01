@@ -186,19 +186,42 @@
         function getExpiryTimestamp() {
             let raw = localStorage.getItem('admin_expiry');
             if (!raw || raw === '0' || raw === 'null' || raw === 'undefined') return 0;
-            
-            // Nếu là số dạng timestamp (miliseconds)
-            if (!isNaN(raw)) {
-                return parseInt(raw);
-            }
-            
-            // Nếu là định dạng chuỗi ngày tháng (ví dụ: DD/MM/YYYY hoặc ISO)
+            if (!isNaN(raw)) return parseInt(raw);
             let parsed = Date.parse(raw);
-            if (!isNaN(parsed)) {
-                return parsed;
+            return !isNaN(parsed) ? parsed : 0;
+        }
+        function updateUI() {
+            const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
+            const status = localStorage.getItem('admin_status') || 'new';
+            const expiry = getExpiryTimestamp();
+            const name = localStorage.getItem('admin_name') || 'Admin';
+            const av = localStorage.getItem('admin_avatar');
+
+            if (isLoggedIn) {
+                document.getElementById('loggedInNav').style.display = 'flex';
+                document.getElementById('loggedOutNav').style.display = 'none';
+                document.getElementById('userNameDisplay').innerText = name;
+                
+                const avatarPlaceholder = document.getElementById('avatarPlaceholder');
+                if (avatarPlaceholder) {
+                    avatarPlaceholder.innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:30px; color:var(--primary)"></i>`;
+                }
+
+                const statusEl = document.getElementById('userStatusDisplay');
+                const isVIP = (status === 'active' && expiry > Date.now());
+
+                if (isVIP) {
+                    if(statusEl) statusEl.innerHTML = `<span class="status-tag tag-active">ACTIVE - Hạn: ${new Date(expiry).toLocaleDateString('vi-VN')}</span>`;
+                } else if (status === 'new') {
+                    if(statusEl) statusEl.innerHTML = `<span class="status-tag tag-new">MỚI</span>`;
+                } else {
+                    if(statusEl) statusEl.innerHTML = `<span class="status-tag tag-expired">EXPIRED</span>`;
+                }
+
+            } else {
+                document.getElementById('loggedInNav').style.display = 'none';
+                document.getElementById('loggedOutNav').style.display = 'block';
             }
-            
-            return 0;
         }
         function startGoogleLogin() {
             const CLIENT_ID = '549408699768-0hhl7oc0sjhr1c9tsa1fo9ahv5apuecc.apps.googleusercontent.com';
@@ -210,6 +233,7 @@
             localStorage.clear();
             window.location.reload();
         }
+        document.addEventListener('DOMContentLoaded', updateUI);
     </script>
 </body>
 </html>
