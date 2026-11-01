@@ -223,6 +223,23 @@
         .tag-active { background: var(--primary); color: #000; }
         .tag-new { background: #ff9f43; color: #000; }
         .tag-expired { background: #ff4757; color: #fff; }
+        @keyframes rainbow-move {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.rainbow-border-wrapper {
+    position: relative;
+    padding: 3px; /* Độ dày của viền RGB */
+    border-radius: 35px;
+    background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000);
+    background-size: 300% 300%;
+    animation: rainbow-move 4s linear infinite;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
     </style>
 </head>
 <body>
@@ -270,19 +287,21 @@
     </nav>
 
     <div class="main-container">
-        <div class="supreme-card">
-            <h1 class="supreme-title">Hỗ Trợ Kỹ Thuật</h1>
-            <p class="supreme-subtitle mb-4">
-                Giải pháp chọn ảnh thông minh cho Studio chuyên nghiệp.<br>
-                Dịch vụ chính thức từ <span style="color: var(--primary);">chonanhnhanh.vn</span>
-            </p>
-            <div class="contact-grid">
-                <a href="https://m.me/lamnamphuoc95" target="_blank" class="contact-item"><div class="contact-icon" style="color: #0099ff; font-size: 22px;"><i class="fab fa-facebook-messenger"></i></div><div class="contact-info"><label>Messenger</label><span>Lâm Nam Phước</span></div></a>
-                <a href="https://zalo.me/0879029170" target="_blank" class="contact-item"><div class="contact-icon" style="color: #00ebb0; font-size: 22px;"><i class="fas fa-comment-dots"></i></div><div class="contact-info"><label>Zalo</label><span>0879 029 170</span></div></a>
-                <a href="https://t.me/david_coby" target="_blank" class="contact-item"><div class="contact-icon" style="color: #27A0DF; font-size: 22px;"><i class="fab fa-telegram-plane"></i></div><div class="contact-info"><label>Telegram</label><span>@david_coby</span></div></a>
-                <a href="mailto:support@chonanhnhanh.vn" class="contact-item"><div class="contact-icon" style="color: #ff4757; font-size: 22px;"><i class="fas fa-envelope-open-text"></i></div><div class="contact-info"><label>Email</label><span>support@chonanhnhanh.vn</span></div></a>
+        <div class="rainbow-border-wrapper" style="max-width: 100%; width: 100%;">
+            <div class="create-card" style="background: linear-gradient(135deg, rgba(8, 17, 35, 0.95) 0%, rgba(5, 10, 20, 0.9) 100%); border-radius: 28px; padding: 40px; text-align: center;">
+                <h1 class="supreme-title">Hỗ Trợ Kỹ Thuật</h1>
+                <p class="supreme-subtitle mb-4">
+                    Giải pháp chọn ảnh thông minh cho Studio chuyên nghiệp.<br>
+                    Dịch vụ chính thức từ <span style="color: var(--primary);">chonanhnhanh.vn</span>
+                </p>
+                <div class="contact-grid">
+                    <a href="https://m.me/lamnamphuoc95" target="_blank" class="contact-item"><div class="contact-icon" style="color: #0099ff; font-size: 22px;"><i class="fab fa-facebook-messenger"></i></div><div class="contact-info"><label>Messenger</label><span>Lâm Nam Phước</span></div></a>
+                    <a href="https://zalo.me/0879029170" target="_blank" class="contact-item"><div class="contact-icon" style="color: #00ebb0; font-size: 22px;"><i class="fas fa-comment-dots"></i></div><div class="contact-info"><label>Zalo</label><span>0879 029 170</span></div></a>
+                    <a href="https://t.me/david_coby" target="_blank" class="contact-item"><div class="contact-icon" style="color: #27A0DF; font-size: 22px;"><i class="fab fa-telegram-plane"></i></div><div class="contact-info"><label>Telegram</label><span>@david_coby</span></div></a>
+                    <a href="mailto:support@chonanhnhanh.vn" class="contact-item"><div class="contact-icon" style="color: #ff4757; font-size: 22px;"><i class="fas fa-envelope-open-text"></i></div><div class="contact-info"><label>Email</label><span>support@chonanhnhanh.vn</span></div></a>
+                </div>
+                <p class="mt-5 small fw-bold" style="color: #ffeb3b; text-align: center; text-shadow: 0 2px 4px rgba(0,0,0,0.8);"><i class="far fa-clock me-2"></i>GIỜ LÀM VIỆC: 08:00 AM - 10:00 PM HÀNG NGÀY</p>
             </div>
-            <p class="mt-5 small fw-bold" style="color: #ffeb3b; text-align: center; text-shadow: 0 2px 4px rgba(0,0,0,0.8);"><i class="far fa-clock me-2"></i>GIỜ LÀM VIỆC: 08:00 AM - 10:00 PM HÀNG NGÀY</p>
         </div>
 
         <div class="ai-box">
