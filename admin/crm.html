@@ -35,7 +35,7 @@
             z-index: 1000; 
         }
         .navbar-brand img { height: 42px; width: auto; cursor: pointer; }
-
+        
         @media (min-width: 992px) {
             .nav-center-container {  
                 position: absolute !important;  
@@ -318,7 +318,11 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 10px rgba(0,0,0,0.4);
         }   
-        
+        .custom-select-dark option {
+        background-color: #0c152a !important;
+        color: #ffffff !important;
+        padding: 8px !important;
+    }
             </style>
 </head>
 <body>
@@ -1586,7 +1590,6 @@ function createModalDayCell(day, month, year, isOtherMonth = false, isToday = fa
     return cell;
 }
 
-// Render dạng Danh sách: Màu chữ số điện thoại sáng rõ, hiển thị đầy đủ giá tiền và lịch Âm
 function renderModalAgendaList(year, month) {
     const listBody = document.getElementById('modalCalendarAgendaBody');
     if (!listBody) return;
@@ -1639,9 +1642,9 @@ function renderModalAgendaList(year, month) {
                     </div>
                     <div>
                         <div class="d-flex align-items-center gap-2 mb-1">
-                            <span class="badge bg-primary text-dark fw-bold" style="font-size: 0.72rem;"><i class="fas fa-clock me-1"></i> ${timePart}</span>
+                            <!-- Sửa badge giờ hiển thị màu sắc rõ nét, không bị chìm -->
+                            <span class="badge px-2 py-1 fw-bold text-black" style="background-color: var(--primary); font-size: 0.75rem;"><i class="fas fa-clock me-1"></i> ${timePart}</span>
                             <h6 class="m-0 text-white fw-bold" style="font-size: 0.95rem;">${c.customer_name || 'Khách lẻ'}</h6>
-                            <!-- Sửa màu chữ số điện thoại sáng rõ, không bị chìm -->
                             <span class="text-info fw-bold small" style="font-size: 0.8rem;"><i class="fas fa-phone-alt me-1"></i>${c.customer_phone || 'Chưa có SĐT'}</span>
                         </div>
                         <div class="text-light small mb-1" style="font-size: 0.78rem;">
@@ -1874,26 +1877,30 @@ async function triggerSyncAndCheckToken() {
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        initModalCalendarYears();
-        const modalEl = document.getElementById('lunarCalendarModal');
-        if (modalEl) {
-            modalEl.addEventListener('show.bs.modal', () => {
-                modalCurrentYear = modalToday.getFullYear();
-                modalCurrentMonth = modalToday.getMonth();
-                document.getElementById('viewModeGrid').checked = true;
-                switchCalendarView('grid');
-                renderModalCalendar(modalCurrentYear, modalCurrentMonth);
-                
-                // Set giá trị mặc định cho ô chuyển đổi nhanh là ngày hôm nay
-                let todayIsoStr = modalToday.toISOString().split('T')[0];
-                let convInput = document.getElementById('modalConvertDate');
-                if (convInput) {
-                    convInput.value = todayIsoStr;
-                    performModalConversion();
-                }
-            });
-        }
-    })
+    initModalCalendarYears();
+    const modalEl = document.getElementById('lunarCalendarModal');
+    if (modalEl) {
+        modalEl.addEventListener('show.bs.modal', () => {
+            modalCurrentYear = modalToday.getFullYear();
+            modalCurrentMonth = modalToday.getMonth();
+            document.getElementById('viewModeGrid').checked = true;
+            switchCalendarView('grid');
+            renderModalCalendar(modalCurrentYear, modalCurrentMonth);
+            
+            // Fix lỗi chọn sai ngày do lệch múi giờ ISO string bằng cách lấy local YYYY-MM-DD
+            let year = modalToday.getFullYear();
+            let month = String(modalToday.getMonth() + 1).padStart(2, '0');
+            let day = String(modalToday.getDate()).padStart(2, '0');
+            let todayLocalStr = `${year}-${month}-${day}`;
+
+            let convInput = document.getElementById('modalConvertDate');
+            if (convInput) {
+                convInput.value = todayLocalStr;
+                performModalConversion();
+            }
+        });
+    }
+});
         document.addEventListener('DOMContentLoaded', () => {
     const syncCheckbox = document.getElementById('syncGoogleCalendar');
     const syncStatusText = document.getElementById('syncStatusText');
@@ -1995,36 +2002,36 @@ async function triggerSyncAndCheckToken() {
             <!-- Modal Body -->
             <div class="modal-body p-4">
                 
-                <!-- Thanh công cụ tối ưu: Trái (Hôm nay, Mũi tên, Tháng/Năm), Giữa (Chuyển đổi Âm Dương nhanh), Phải (Lưới/Danh sách) -->
+                <!-- Thanh công cụ -->
                 <div class="cal-header d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2 p-3 rounded-4" style="background: rgba(13, 25, 48, 0.9); border: 1px solid rgba(0, 235, 176, 0.2);">
                     
-                    <!-- Nhóm Trái: Hôm nay, Mũi tên, Chọn Tháng/Năm phẳng -->
+                    <!-- Nhóm Trái: Hôm nay, Mũi tên, Tháng/Năm phẳng hoàn toàn, chữ trắng khi xổ -->
                     <div class="d-flex align-items-center gap-2 flex-wrap">
                         <button class="btn-today-quick px-3 py-1.5 fw-bold text-uppercase" onclick="jumpToToday()">Hôm nay</button>
                         
                         <div class="d-flex align-items-center gap-1">
-                            <button class="btn btn-sm btn-outline-light rounded-2 px-2 py-1" onclick="changeMonthModal(-1)" title="Tháng trước"><i class="fas fa-chevron-left text-primary"></i></button>
-                            <button class="btn btn-sm btn-outline-light rounded-2 px-2 py-1" onclick="changeMonthModal(1)" title="Tháng sau"><i class="fas fa-chevron-right text-primary"></i></button>
+                            <button class="btn btn-sm btn-outline-light rounded-2 px-2 py-1 border-0" onclick="changeMonthModal(-1)" title="Tháng trước"><i class="fas fa-chevron-left text-primary"></i></button>
+                            <button class="btn btn-sm btn-outline-light rounded-2 px-2 py-1 border-0" onclick="changeMonthModal(1)" title="Tháng sau"><i class="fas fa-chevron-right text-primary"></i></button>
                         </div>
                         
-                        <!-- Tháng / Năm phẳng, không khung rườm rà -->
-                        <div class="d-flex align-items-center gap-1 text-white ms-2">
+                        <!-- Chọn Tháng / Năm phẳng, style CSS option chữ trắng nền tối -->
+                        <div class="d-flex align-items-center gap-1 text-white ms-2 px-2 py-1 rounded-2" style="background: rgba(0,0,0,0.3);">
                             <i class="fas fa-calendar-alt text-primary me-1"></i>
-                            <select id="modalSelectMonth" class="form-select form-select-sm bg-transparent text-white border-0 fw-bold shadow-none p-0 pe-1 cursor-pointer" style="width: auto;" onchange="jumpToMonthModal()">
-                                <option value="0" class="bg-dark text-white">Tháng 1</option><option value="1" class="bg-dark text-white">Tháng 2</option>
-                                <option value="2" class="bg-dark text-white">Tháng 3</option><option value="3" class="bg-dark text-white">Tháng 4</option>
-                                <option value="4" class="bg-dark text-white">Tháng 5</option><option value="5" class="bg-dark text-white">Tháng 6</option>
-                                <option value="6" class="bg-dark text-white">Tháng 7</option><option value="7" class="bg-dark text-white">Tháng 8</option>
-                                <option value="8" class="bg-dark text-white">Tháng 9</option><option value="9" class="bg-dark text-white">Tháng 10</option>
-                                <option value="10" class="bg-dark text-white">Tháng 11</option><option value="11" class="bg-dark text-white">Tháng 12</option>
+                            <select id="modalSelectMonth" class="form-select form-select-sm bg-transparent text-white border-0 fw-bold shadow-none p-0 pe-1 cursor-pointer custom-select-dark" style="width: auto; outline: none;" onchange="jumpToMonthModal()">
+                                <option value="0">Tháng 1</option><option value="1">Tháng 2</option>
+                                <option value="2">Tháng 3</option><option value="3">Tháng 4</option>
+                                <option value="4">Tháng 5</option><option value="5">Tháng 6</option>
+                                <option value="6">Tháng 7</option><option value="7">Tháng 8</option>
+                                <option value="8">Tháng 9</option><option value="9">Tháng 10</option>
+                                <option value="10">Tháng 11</option><option value="11">Tháng 12</option>
                             </select>
                             <span class="text-primary mx-1">/</span>
-                            <select id="modalSelectYear" class="form-select form-select-sm bg-transparent text-primary border-0 fw-bold shadow-none p-0 cursor-pointer" style="width: auto;" onchange="jumpToMonthModal()">
+                            <select id="modalSelectYear" class="form-select form-select-sm bg-transparent text-primary border-0 fw-bold shadow-none p-0 cursor-pointer custom-select-dark" style="width: auto; outline: none;" onchange="jumpToMonthModal()">
                             </select>
                         </div>
                     </div>
 
-                    <!-- Nhóm Giữa: Chuyển đổi Âm Dương thu gọn lên thanh công cụ -->
+                    <!-- Nhóm Giữa: Chuyển đổi Âm Dương -->
                     <div class="d-flex align-items-center gap-2 bg-black bg-opacity-40 px-3 py-1.5 rounded-3 border border-secondary border-opacity-50">
                         <span class="text-white fw-bold" style="font-size: 0.72rem;"><i class="fas fa-exchange-alt text-primary me-1"></i> Âm ⇄ Dương:</span>
                         <div class="btn-group btn-group-sm" role="group">
@@ -2033,10 +2040,10 @@ async function triggerSyncAndCheckToken() {
                             <input type="radio" class="btn-check" name="convertType" id="typeLunarToSolar" onclick="switchConvertMode()">
                             <label class="btn btn-outline-primary py-0.5 px-2" style="font-size:0.65rem; font-weight:700;" for="typeLunarToSolar">Âm➔Dương</label>
                         </div>
-                        <div id="convertInputContainer" style="display: inline-block; width: 130px;">
-                            <input type="date" id="modalConvertDate" class="form-control form-control-sm text-center fw-bold py-0" style="font-size: 0.72rem; height: 26px;" onchange="performModalConversion()">
+                        <div id="convertInputContainer" style="display: inline-block; width: 135px;">
+                            <input type="date" id="modalConvertDate" class="form-control form-control-sm text-center fw-bold py-0" style="font-size: 0.72rem; height: 26px; background: #13223f; color: #fff; border: 1px solid rgba(255,255,255,0.2);" onchange="performModalConversion()">
                         </div>
-                        <div id="modalConversionResult" class="text-success fw-bold text-nowrap" style="font-size: 0.72rem; min-width: 110px;">
+                        <div id="modalConversionResult" class="text-success fw-bold text-nowrap" style="font-size: 0.72rem; min-width: 130px;">
                             Chọn ngày quy đổi
                         </div>
                     </div>
@@ -2063,7 +2070,6 @@ async function triggerSyncAndCheckToken() {
                         <div style="font-weight: 900; color: #f59e0b; font-size: 0.75rem;">Thứ 7</div>
                         <div style="font-weight: 900; color: #ff4757; font-size: 0.75rem;">Chủ Nhật</div>
                     </div>
-                    <!-- Container lưới ngày với chiều cao tối ưu không cần cuộn trang -->
                     <div id="modalCalendarDaysContainer" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; min-height: 620px;">
                     </div>
                 </div>
