@@ -8,22 +8,17 @@
             const pathSegments = window.location.pathname.split('/').filter(Boolean);
             
             if (pathSegments.length >= 1) {
-                // Lấy slug của album ở phân đoạn cuối cùng của đường dẫn (ví dụ: kimngan)
                 const albumSlug = pathSegments[pathSegments.length - 1].replace(/[^0-9a-z]/g, '');
                 
                 try {
-                    // Gọi ngầm webhook n8n để hỏi xem album này thuộc studio_slug nào trong Database
                     const res = await fetch(`https://wsm.congtubaclieu.com.vn/webhook/get-photos?album=${albumSlug}`);
                     const rawData = await res.json();
                     const data = Array.isArray(rawData) ? rawData[0] : rawData;
                     
-                    // Lấy chính xác studio_slug từ database (ví dụ: pla)
                     const realStudioSlug = data && data.studio_slug ? data.studio_slug : 'studio';
                     
-                    // Chuyển hướng chuẩn xác về client với đúng studio_slug tương ứng
                     window.location.replace(`/admin/client?album=${albumSlug}&studio=${realStudioSlug}`);
                 } catch (e) {
-                    // Dự phòng nếu lỗi mạng, tự động chuyển về trang chủ hoặc dùng tạm giá trị trên URL
                     let fallbackStudio = pathSegments.length >= 2 ? pathSegments[pathSegments.length - 2].replace(/[^0-9a-z]/g, '') : 'studio';
                     window.location.replace(`/admin/client?album=${albumSlug}&studio=${fallbackStudio}`);
                 }
