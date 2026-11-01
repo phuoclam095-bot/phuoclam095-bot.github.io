@@ -65,21 +65,54 @@
         #userExpiryText { font-size: 0.75rem !important; color: #fff !important; font-weight: 800 !important; } /* Phóng to hạn dùng */
 
         /* TITLE 11 SAO - TIẾT CHẾ ĐỘ LÓE */
-        .supreme-title { 
-            font-weight: 900; font-size: 2.5rem; text-transform: uppercase; letter-spacing: 10px; 
-            color: #fff; text-align: center; margin-bottom: 35px; 
-            text-shadow: 0px 2px 0px var(--primary), 0px 5px 15px rgba(0, 235, 176, 0.4); /* Giảm lóe */
+        supreme-title {  
+            font-weight: 900; 
+            font-size: 2.3rem; 
+            text-transform: uppercase; 
+            letter-spacing: 6px;  
+            color: #ffffff; 
+            text-align: center; 
+            margin-bottom: 20px;  
+            text-shadow: 0 0 10px rgba(0, 235, 176, 0.8), 0 0 25px rgba(0, 235, 176, 0.4); 
         }
-
+        .supreme-subtitle {
+            font-size: 0.95rem;
+            color: #e2e8f0 !important; /* Trắng sáng dễ đọc */
+            font-weight: 700;
+            line-height: 1.6;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            letter-spacing: 0.5px;
+        }
         .main-container { max-width: 1150px; margin: 0 auto; display: grid; grid-template-columns: 1fr 380px; gap: 25px; padding: 20px; }
         @media (max-width: 992px) { .main-container { grid-template-columns: 1fr; } }
 
-        .supreme-card { background: rgba(10, 20, 40, 0.75); backdrop-filter: blur(20px); border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.08); padding: 50px 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); text-align: center; }
+        .supreme-card { 
+            background: linear-gradient(135deg, rgba(8, 17, 35, 0.95) 0%, rgba(5, 10, 20, 0.9) 100%); 
+            backdrop-filter: blur(25px); 
+            border-radius: 30px; 
+            border: 2px solid rgba(0, 235, 176, 0.3); 
+            padding: 50px 30px; 
+            box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 30px rgba(0, 235, 176, 0.15); 
+            text-align: center; 
+        }
+
         .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 30px; }
-        .contact-item { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); padding: 20px; border-radius: 20px; display: flex; align-items: center; gap: 15px; transition: 0.3s; text-decoration: none; text-align: left; }
-        .contact-item:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: var(--neon); }
-        .contact-info label { display: block; font-size: 0.6rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; }
-        .contact-info span { display: block; font-weight: 900; font-size: 0.85rem; color: #fff; }
+        
+        .contact-item { 
+            background: rgba(0, 0, 0, 0.5); 
+            border: 1px solid rgba(0, 235, 176, 0.2); 
+            padding: 20px; 
+            border-radius: 20px; 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            transition: 0.3s; 
+            text-decoration: none; 
+            text-align: left; 
+        }
+        .contact-item:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: var(--neon); background: rgba(0, 235, 176, 0.05); }
+        .contact-info label { display: block; font-size: 0.65rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; }
+        .contact-info span { display: block; font-weight: 900; font-size: 0.9rem; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
 
         /* AI CHAT */
         .ai-box { background: rgba(10, 20, 40, 0.85); border: 1px solid var(--primary); border-radius: 30px; display: flex; flex-direction: column; height: 580px; overflow: hidden; box-shadow: var(--neon); }
@@ -246,14 +279,17 @@
     <div class="main-container">
         <div class="supreme-card">
             <h1 class="supreme-title">Hỗ Trợ Kỹ Thuật</h1>
-            <p class="text-secondary fw-bold small">Giải pháp chọn ảnh thông minh cho Studio chuyên nghiệp.<br>Dịch vụ từ <b>chonanhnhanh.vn</b>.</p>
+            <p class="supreme-subtitle mb-4">
+                Giải pháp chọn ảnh thông minh cho Studio chuyên nghiệp.<br>
+                Dịch vụ chính thức từ <span style="color: var(--primary);">chonanhnhanh.vn</span>
+            </p>
             <div class="contact-grid">
-                <a href="https://m.me/lamnamphuoc95" target="_blank" class="contact-item"><div class="contact-icon" style="color: #0099ff;"><i class="fab fa-facebook-messenger"></i></div><div class="contact-info"><label>Messenger</label><span>Lâm Nam Phước</span></div></a>
-                <a href="https://zalo.me/0879029170" target="_blank" class="contact-item"><div class="contact-icon" style="color: #00ebb0;"><i class="fas fa-comment-dots"></i></div><div class="contact-info"><label>Zalo</label><span>0879 029 170</span></div></a>
-                <a href="https://t.me/david_coby" target="_blank" class="contact-item"><div class="contact-icon" style="color: #27A0DF;"><i class="fab fa-telegram-plane"></i></div><div class="contact-info"><label>Telegram</label><span>@david_coby</span></div></a>
-                <a href="mailto:support@chonanhnhanh.vn" class="contact-item"><div class="contact-icon" style="color: #ff4757;"><i class="fas fa-envelope-open-text"></i></div><div class="contact-info"><label>Email</label><span>support@chonanhnhanh.vn</span></div></a>
+                <a href="https://m.me/lamnamphuoc95" target="_blank" class="contact-item"><div class="contact-icon" style="color: #0099ff; font-size: 22px;"><i class="fab fa-facebook-messenger"></i></div><div class="contact-info"><label>Messenger</label><span>Lâm Nam Phước</span></div></a>
+                <a href="https://zalo.me/0879029170" target="_blank" class="contact-item"><div class="contact-icon" style="color: #00ebb0; font-size: 22px;"><i class="fas fa-comment-dots"></i></div><div class="contact-info"><label>Zalo</label><span>0879 029 170</span></div></a>
+                <a href="https://t.me/david_coby" target="_blank" class="contact-item"><div class="contact-icon" style="color: #27A0DF; font-size: 22px;"><i class="fab fa-telegram-plane"></i></div><div class="contact-info"><label>Telegram</label><span>@david_coby</span></div></a>
+                <a href="mailto:support@chonanhnhanh.vn" class="contact-item"><div class="contact-icon" style="color: #ff4757; font-size: 22px;"><i class="fas fa-envelope-open-text"></i></div><div class="contact-info"><label>Email</label><span>support@chonanhnhanh.vn</span></div></a>
             </div>
-            <p class="mt-5 small fw-bold" style="color: #ffeb3b; text-align: center;"><i class="far fa-clock me-2"></i>GIỜ LÀM VIỆC: 08:00 AM - 10:00 PM HÀNG NGÀY</p>
+            <p class="mt-5 small fw-bold" style="color: #ffeb3b; text-align: center; text-shadow: 0 2px 4px rgba(0,0,0,0.8);"><i class="far fa-clock me-2"></i>GIỜ LÀM VIỆC: 08:00 AM - 10:00 PM HÀNG NGÀY</p>
         </div>
 
         <div class="ai-box">
