@@ -160,7 +160,7 @@
                 align-items: center;
             }
             input[type="date"]::-webkit-calendar-picker-indicator {
-                filter: invert(1); /* Đảo ngược màu icon từ đen sang trắng */
+                filter: invert(1); 
             }
 
         .form-check-input {
@@ -648,7 +648,7 @@ function getExpiryTimestamp() {
                 statusInput.value = "Đã cọc ";
             }
         }
-        let allContractsGlobal = []; // Lưu trữ danh sách gốc
+        let allContractsGlobal = []; 
 
         async function loadContracts() {
     const studioSlug = localStorage.getItem('admin_studio_slug') || 'studio';
@@ -705,7 +705,7 @@ function getExpiryTimestamp() {
             monthSelect.value = currentValue;
         }
         
-        let showHiddenMode = false; // Trạng thái có đang xem danh sách các lịch bị ẩn hay không
+        let showHiddenMode = false; 
 
         function toggleShowHidden() {
             showHiddenMode = !showHiddenMode;
@@ -1112,7 +1112,7 @@ async function printContract(c) {
         
             function filterContracts() {
                 const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
-                const selectedMonth = document.getElementById('monthFilter').value; // dạng "2026-10"
+                const selectedMonth = document.getElementById('monthFilter').value; 
             
                 let filtered = allContractsGlobal.filter(c => {
                     const name = (c.customer_name || '').toLowerCase();
@@ -1150,8 +1150,6 @@ async function printContract(c) {
             document.getElementById('editIsLunarEvent').checked = false;
             toggleEditEventDateInputMode();
             autoCalculateEdit();
-        
-            // Hiển thị Modal
             let modal = new bootstrap.Modal(document.getElementById('editContractModal'));
             modal.show();
         }
@@ -1349,7 +1347,7 @@ async function printContract(c) {
             customer_email: document.getElementById('custEmail').value,
             service_package: document.getElementById('servicePkg').value,
             event_date: finalEventDate,
-            lunar_date: lunarDateStr, // <--- Gửi thêm cột ngày âm lên n8n
+            lunar_date: lunarDateStr, 
             event_location: document.getElementById('eventLocation').value,
             total_amount: document.getElementById('totalAmt').value,
             deposit_amount: document.getElementById('depositAmt').value,
@@ -1389,10 +1387,7 @@ async function printContract(c) {
         });
         function connectGoogleCalendar() {
             const clientId = '549408699768-0hhl7oc0sjhr1c9tsa1fo9ahv5apuecc.apps.googleusercontent.com';
-            // Redirect về một webhook riêng trên n8n để chuyên lưu refresh_token calendar
             const redirectUri = 'https://wsm.congtubaclieu.com.vn/webhook/save-calendar-token'; 
-            
-            // Scope chuyên dụng để xin quyền quản lý lịch
             const scope = 'https://www.googleapis.com/auth/calendar.events';
             
             const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scope)}&access_type=offline&prompt=consent`;
@@ -1566,7 +1561,6 @@ async function printContract(c) {
 
         try {
             if (!isLunarToSolar) {
-                // Chiều Dương ➔ Âm
                 const dateInput = document.getElementById('modalConvertDate');
                 if(!dateInput || !dateInput.value) return;
                 let parts = dateInput.value.split('-');
