@@ -490,89 +490,80 @@
 
    function viewStudioAlbums(email) {
     let studio = window.cachedStudios.find(s => s.email === email);
-    if(!studio) return;
+    if (!studio) return;
 
-    document.getElementById('detailStudioName').innerText = `${studio.name} (${studio.email})`;
+    document.getElementById('detailStudioName').innerText = `${studio.name || 'Studio'} (${studio.email})`;
     let container = document.getElementById('albumDetailContent');
     container.innerHTML = '';
 
-    if(!studio.albums || studio.albums.length === 0) {
+    if (!studio.albums || studio.albums.length === 0) {
         container.innerHTML = `
             <div class="text-center py-5 text-secondary">
                 <i class="fas fa-folder-open fa-3x mb-3 opacity-50"></i>
                 <p class="mb-0">Studio này chưa có album thực tế nào được kích hoạt.</p>
             </div>`;
     } else {
-        let albumsHtml = '<div class="row g-3">';
+        let listHtml = '<div class="row g-3">';
         
         studio.albums.forEach(album => {
+            // 1. Xử lý phần hiển thị ghi chú của khách
             let notesHtml = '';
             if (album.clientNotes && album.clientNotes.length > 0) {
                 album.clientNotes.forEach(n => {
                     notesHtml += `
-                        <div class="d-flex align-items-start p-2 rounded-2 mb-1.5 border border-secondary border-opacity-25" style="background: rgba(0, 0, 0, 0.3);">
+                        <div class="d-flex align-items-start p-2 rounded mb-1 border border-secondary border-opacity-25 bg-black bg-opacity-50">
                             <i class="fas fa-comment-alt text-primary mt-1 me-2 flex-shrink-0 small"></i>
-                            <div class="small" style="word-break: break-word;">
+                            <div class="small text-break">
                                 <span class="text-warning fw-bold">${n.photoName || 'Ảnh'}:</span> 
                                 <span class="text-white">${n.noteText}</span>
                             </div>
                         </div>`;
                 });
             } else {
-                notesHtml = `<div class="text-white opacity-75 small italic py-1"><i class="fas fa-info-circle text-info me-1"></i>Chưa có ghi chú nào từ khách hàng.</div>`;
+                notesHtml = `<div class="text-white opacity-75 small py-1"><i class="fas fa-info-circle text-info me-1"></i>Chưa có ghi chú nào từ khách hàng.</div>`;
             }
 
-            let folderId = album.folderId;
-            let folderUrl = folderId ? `https://drive.google.com/drive/folders/${folderId}` : '#';
-
-            let watermarkBadge = album.config?.watermark ? '<span class="text-success fw-bold"><i class="fas fa-check me-1"></i>Bật</span>' : '<span class="text-danger fw-bold"><i class="fas fa-times me-1"></i>Tắt</span>';
-            let downloadBadge = album.config?.allowDownload ? '<span class="text-success fw-bold"><i class="fas fa-check me-1"></i>Cho phép</span>' : '<span class="text-light fw-bold opacity-75"><i class="fas fa-lock me-1"></i>Khóa</span>';
+            // 2. Các thông số cấu hình album
+            let folderUrl = album.folderId ? `https://drive.google.com/drive/folders/${album.folderId}` : '#';
+            let watermarkText = album.config?.watermark ? '<span class="text-success fw-bold">Bật</span>' : '<span class="text-danger fw-bold">Tắt</span>';
+            let downloadText = album.config?.allowDownload ? '<span class="text-success fw-bold">Cho phép</span>' : '<span class="text-light fw-bold opacity-75">Khóa</span>';
             let maxSelectText = album.config?.maxSelect ? `<span class="text-info fw-bold">${album.config.maxSelect} ảnh</span>` : '<span class="text-white fw-bold">Không giới hạn</span>';
 
-            albumsHtml += `
+            // 3. Khung HTML chính cho từng album
+            listHtml += `
                 <div class="col-12">
-                    <div class="card border border-secondary border-opacity-50 p-3 ps-4 rounded-3 text-white shadow-sm position-relative overflow-hidden" style="background: #111c2e;">
-                        <!-- Viền sáng điểm nhấn bên trái -->
+                    <div class="card border border-secondary border-opacity-50 p-3 rounded-3 text-white shadow-sm position-relative overflow-hidden" style="background: #111c2e;">
                         <div style="position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--primary);"></div>
                         
-                        <!-- Header: Tên album & Badge số lượng -->
-                        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-2 mb-2.5 pb-2 border-bottom border-secondary border-opacity-25">
-                            <div style="min-width: 0; flex: 1;">
-                                <h6 class="text-white fw-bold mb-1 text-break d-flex align-items-center" style="font-size: 1.05rem;">
-                                    <i class="fas fa-images text-primary me-2 flex-shrink-0"></i><span>${album.albumName}</span>
+                        <!-- Tên album & Link Drive -->
+                        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-2 mb-2 pb-2 border-bottom border-secondary border-opacity-25">
+                            <div>
+                                <h6 class="text-white fw-bold mb-1 text-break">
+                                    <i class="fas fa-images text-primary me-2"></i>${album.albumName}
                                 </h6>
-                                <a href="${folderUrl}" target="_blank" class="small text-info text-decoration-none fw-semibold d-inline-flex align-items-center text-break" style="font-size: 0.8rem;">
-                                    <i class="fab fa-google-drive me-1.5"></i> <span>Mở thư mục gốc trên Google Drive</span> <i class="fas fa-external-link-alt ms-1 small opacity-75"></i>
+                                <a href="${folderUrl}" target="_blank" class="small text-info text-decoration-none">
+                                    <i class="fab fa-google-drive me-1"></i> Mở thư mục gốc trên Google Drive <i class="fas fa-external-link-alt ms-1 small"></i>
                                 </a>
                             </div>
-                            <div class="d-flex align-items-center gap-2 flex-shrink-0">
-                                <span class="badge bg-secondary bg-opacity-40 text-white border border-secondary px-2 py-1" style="font-size: 0.75rem;"><i class="fas fa-photo-video me-1 text-info"></i> Tổng: ${album.totalPhotos || 0}</span>
-                                <span class="badge bg-primary bg-opacity-25 text-primary border border-primary px-2 py-1" style="font-size: 0.75rem;"><i class="fas fa-check-circle me-1"></i> Đã chọn: ${album.selectedCount || 0}</span>
+                            <div class="d-flex gap-2">
+                                <span class="badge bg-secondary bg-opacity-40 text-white border border-secondary">Tổng: ${album.totalPhotos || 0}</span>
+                                <span class="badge bg-primary bg-opacity-25 text-primary border border-primary">Đã chọn: ${album.selectedCount || 0}</span>
                             </div>
                         </div>
 
-                        <!-- Khung cấu hình Album dạng thanh ngang nhỏ gọn, tinh tế -->
-                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 px-3 py-2 rounded-2 mb-2.5 border border-secondary border-opacity-30" style="background: rgba(255, 255, 255, 0.03); font-size: 0.85rem;">
-                            <div class="d-flex align-items-center gap-2">
-                                <span class="text-white opacity-75">Watermark:</span>
-                                <span>${watermarkBadge}</span>
-                            </div>
-                            <div class="d-flex align-items-center gap-2">
-                                <span class="text-white opacity-75">Giới hạn chọn:</span>
-                                <span>${maxSelectText}</span>
-                            </div>
-                            <div class="d-flex align-items-center gap-2">
-                                <span class="text-white opacity-75">Tải ảnh gốc:</span>
-                                <span>${downloadBadge}</span>
-                            </div>
+                        <!-- Thanh thông số cấu hình -->
+                        <div class="d-flex flex-wrap justify-content-between gap-3 px-3 py-2 rounded mb-2 border border-secondary border-opacity-30 bg-black bg-opacity-25 small">
+                            <div>Watermark: ${watermarkText}</div>
+                            <div>Giới hạn chọn: ${maxSelectText}</div>
+                            <div>Tải ảnh gốc: ${downloadText}</div>
                         </div>
 
-                        <!-- Khu vực ghi chú -->
+                        <!-- Phần ghi chú -->
                         <div>
-                            <div class="fw-bold text-uppercase text-white mb-1.5" style="font-size: 0.65rem; letter-spacing: 0.8px; opacity: 0.8;">
-                                <i class="fas fa-clipboard-list text-warning me-1"></i> Ghi chú & Yêu cầu của khách trên ảnh:
+                            <div class="text-uppercase text-white mb-1 small fw-bold opacity-75" style="font-size: 0.7rem;">
+                                <i class="fas fa-clipboard-list text-warning me-1"></i> Ghi chú & Yêu cầu của khách:
                             </div>
-                            <div class="p-2 rounded-2 border border-secondary border-opacity-20" style="background: rgba(0, 0, 0, 0.25); max-height: 140px; overflow-y: auto;">
+                            <div class="p-2 rounded border border-secondary border-opacity-20 bg-black bg-opacity-40" style="max-height: 140px; overflow-y: auto;">
                                 ${notesHtml}
                             </div>
                         </div>
@@ -580,8 +571,8 @@
                 </div>`;
         });
         
-        albumsHtml += '</div>';
-        container.innerHTML = albumsHtml;
+        listHtml += '</div>';
+        container.innerHTML = listHtml;
     }
     
     new bootstrap.Modal(document.getElementById('albumDetailModal')).show();
