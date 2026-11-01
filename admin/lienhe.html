@@ -224,22 +224,27 @@
         .tag-new { background: #ff9f43; color: #000; }
         .tag-expired { background: #ff4757; color: #fff; }
         @keyframes rainbow-move {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
 
-.rainbow-border-wrapper {
-    position: relative;
-    padding: 3px; /* Độ dày của viền RGB */
-    border-radius: 35px;
-    background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000);
-    background-size: 300% 300%;
-    animation: rainbow-move 4s linear infinite;
-    max-width: 600px;
-    width: 100%;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-}
+        .rainbow-border-wrapper {
+            position: relative;
+            padding: 2.5px; 
+            border-radius: 32px;
+            background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000);
+            background-size: 300% 300%;
+            animation: rainbow-move 4s linear infinite;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+        }
+        .create-card-inner {
+            background: #080d1a !important; 
+            border-radius: 30px; 
+            padding: 40px;
+            height: 100%;
+        }
     </style>
 </head>
 <body>
