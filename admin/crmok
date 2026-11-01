@@ -1,0 +1,1933 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CHONANHNHANH.VN - QUẢN LÝ LỊCH TRÌNH </title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lunar-javascript/1.7.7/lunar.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {  
+            --primary: #00ebb0;  
+            --accent: #51ff7d;
+            --bg-deep: #050a14;  
+            --neon: 0 0 20px rgba(0, 235, 176, 0.4);
+            --rainbow: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000);
+        }
+        body {  
+            background-color: var(--bg-deep);  
+            background-image: linear-gradient(to bottom, rgba(5, 10, 20, 0.6) 0%, rgba(5, 10, 20, 0.8) 100%),  
+                              url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover; background-position: center; background-attachment: fixed;
+            color: #fff; font-family: 'Roboto', sans-serif; min-height: 100vh; padding-top: 130px; overflow-x: hidden;
+        }
+
+        .navbar { 
+            background: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.5) 100%); 
+            backdrop-filter: blur(25px); 
+            border-bottom: 1px solid rgba(255,255,255,0.05); 
+            min-height: 95px; 
+            position: fixed; 
+            width: 100%; 
+            top: 0; 
+            z-index: 1000; 
+        }
+        .navbar-brand img { height: 42px; width: auto; cursor: pointer; }
+
+        @media (min-width: 992px) {
+            .nav-center-container {  
+                position: absolute !important;  
+                left: 50% !important;  
+                top: 50% !important;
+                transform: translate(-50%, -50%) !important;  
+                display: flex !important;  
+                align-items: center !important;  
+                justify-content: center !important;  
+                width: max-content !important;  
+                z-index: 5;  
+            }
+            .nav-link.active::after {  
+                content: '';  
+                position: absolute;  
+                width: 30%;  
+                height: 2px;  
+                bottom: 5px;  
+                left: 35%;  
+                background: var(--primary);  
+                box-shadow: 0 0 10px var(--primary);  
+            }
+        }
+
+        .navbar-nav { display: flex; flex-direction: row; gap: 5px; list-style: none; margin: 0; padding: 0; }
+        .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.72rem; text-transform: uppercase; padding: 10px 12px !important; cursor: pointer; transition: 0.3s ease; position: relative; white-space: nowrap; }
+        .nav-link:hover, .nav-link.active { color: var(--primary) !important; }
+
+        .user-pill {  
+            background: rgba(255,255,255,0.05);  
+            padding: 5px 15px;  
+            border-radius: 50px;  
+            display: flex;  
+            align-items: center;  
+            gap: 10px;  
+            height: 48px;  
+            min-width: 180px;  
+        }
+        #avatarPlaceholder { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--primary); background: #000; flex-shrink: 0; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(0, 235, 176, 0.3); }
+        #avatarPlaceholder img { width: 100%; height: 100%; object-fit: cover; }
+        .status-tag { font-size: 0.55rem; padding: 2px 8px; border-radius: 4px; font-weight: 900; text-transform: uppercase; text-align: center; display: block; margin-top: 1px; line-height: 1.2; }
+        .tag-active { background: var(--primary); color: #000; }
+        .tag-new { background: #ff9f43; color: #000; }
+        .tag-expired { background: #ff4757; color: #fff; }
+
+        .btn-login-rainbow {  
+            cursor: pointer;  
+            background: var(--rainbow);  
+            background-size: 200% auto;  
+            padding: 2px;  
+            border-radius: 50px;  
+            animation: rainbow-move 3s linear infinite;  
+            transition: transform 0.2s;
+        }
+        #loggedInNav {
+            border: 1.5px solid var(--primary);
+            border-radius: 50px;
+            padding-right: 10px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        .btn-login-rainbow:hover { transform: scale(1.05); }
+        .btn-login-rainbow span { background: #fff; color: #000; font-weight: 900; padding: 8px 25px; border-radius: 50px; display: block; font-size: 0.85rem; }
+        @keyframes rainbow-move { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+
+        .card-custom { background: rgba(10, 20, 40, 0.7); backdrop-filter: blur(15px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        
+        
+
+        .text-bright-sub { color: #cbd5e1 !important; font-size: 0.8rem; font-weight: 600; }
+
+        .btn-primary-custom { background: var(--primary); color: #000; font-weight: 900; border: none; border-radius: 12px; padding: 12px 25px; text-transform: uppercase; font-size: 0.8rem; transition: 0.3s; cursor: pointer; }
+        .btn-primary-custom:hover { box-shadow: var(--neon); transform: translateY(-2px); }
+
+        .btn-settle { background: #10b981; color: #fff; font-weight: 800; font-size: 0.7rem; border: none; padding: 6px 12px; border-radius: 8px; text-transform: uppercase; transition: 0.2s; cursor: pointer; }
+        .btn-settle:hover { background: #059669; box-shadow: 0 0 10px rgba(16, 185, 129, 0.4); }
+
+         input[type="datetime-local"] { color-scheme: dark; }
+
+        .modal-content { background: #0c152a !important; border: 2px solid var(--primary) !important; border-radius: 24px !important; box-shadow: 0 0 50px rgba(0,0,0,0.9), 0 0 20px rgba(0, 235, 176, 0.2) !important; }
+        .form-control, .form-select { background: #13223f !important; border: 1.5px solid rgba(255,255,255,0.2) !important; color: #fff !important; border-radius: 12px; padding: 12px; font-size: 0.9rem; font-weight: 600; }
+        .form-control:focus, .form-select:focus { border-color: var(--primary) !important; box-shadow: 0 0 15px rgba(0, 235, 176, 0.3); background: #172a4d !important; color: #fff !important; }
+        .form-control::placeholder { color: #8fa3bf !important; opacity: 1; font-weight: 400; }
+        .form-label { color: #cbd5e1 !important; font-size: 0.75rem !important; letter-spacing: 0.5px; }
+
+        #toastNotice { position: fixed; top: 110px; right: 30px; background: var(--primary); color: #000; padding: 12px 30px; border-radius: 12px; z-index: 20000; font-weight: 900; display: none; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+
+        @media (max-width: 991.98px) {
+            body { padding-top: 150px; }
+            .navbar { min-height: auto; padding: 10px 0; }
+            .nav-center-container { 
+                position: static !important; transform: none !important; width: 100% !important; margin-top: 12px !important; order: 3; display: flex !important; overflow-x: auto !important; -webkit-overflow-scrolling: touch; justify-content: flex-start !important; padding: 0 15px !important; 
+            }
+            .nav-center-container::-webkit-scrollbar { display: none !important; }
+            .navbar-nav { display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; gap: 8px !important; width: max-content !important; justify-content: flex-start !important; margin: 0 !important; }
+            .nav-link { font-size: 0.72rem !important; padding: 8px 14px !important; background: rgba(255, 255, 255, 0.05) !important; border-radius: 10px !important; border: 1px solid rgba(0, 235, 176, 0.15) !important; }
+            .nav-link.active { background: rgba(0, 235, 176, 0.15) !important; border-color: var(--primary) !important; }
+            .nav-link.active::after { display: none !important; }
+            #loggedInNav { padding-right: 8px; }
+            .user-pill { min-width: auto; height: 42px; padding: 5px 8px; }
+        }
+
+        .btn-today-quick {
+                background: rgba(0, 235, 176, 0.15);
+                border: 1px solid var(--primary);
+                color: var(--primary);
+                font-weight: 800;
+                font-size: 0.7rem;
+                padding: 4px 10px;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: 0.2s;
+                text-transform: uppercase;
+            }
+            .btn-today-quick:hover {
+                background: var(--primary);
+                color: #000;
+            }
+
+            .convert-input-wrapper {
+                position: relative;
+                display: flex;
+                align-items: center;
+            }
+            input[type="date"]::-webkit-calendar-picker-indicator {
+                filter: invert(1); 
+            }
+
+        .form-check-input {
+        background-color: #1a2234 !important;
+        border-color: rgba(255, 255, 255, 0.3) !important;
+        opacity: 1 !important;
+    }
+    #isLunarEvent.form-check-input:checked,
+    #isLunarEvent.form-check-input[checked] {
+        background-color: var(--primary) !important;
+        border-color: var(--primary) !important;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23ffffff'/%3e%3c/svg%3e") !important;
+    }
+
+        .navbar-brand-left {
+    font-weight: 900;
+    color: var(--primary) !important;
+    font-size: 1.2rem;
+    text-decoration: none;
+    text-shadow: 0 0 20px rgba(0, 235, 176, 0.4);
+    z-index: 10;
+    white-space: nowrap;
+}
+
+        .table-responsive {
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 235, 176, 0.15);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+        }
+
+        .table-dark {
+            background-color: #081121 !important;
+            color: #f8fafc;
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .table-dark th {
+            background: linear-gradient(180deg, #101c33 0%, #0a1426 100%) !important;
+            color: var(--primary) !important;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            font-weight: 900;
+            padding: 16px 14px;
+            border-bottom: 2px solid var(--primary) !important;
+            border-top: none;
+            border-left: none;
+            border-right: 1px solid rgba(255, 255, 255, 0.04);
+            white-space: nowrap;
+        }
+
+        .table-dark tbody tr {
+            transition: all 0.25s ease;
+        }
+
+        .table-dark tbody tr:nth-child(odd) {
+            background-color: #0b1528 !important; 
+        }
+
+        .table-dark tbody tr:nth-child(even) {
+            background-color: #070e1b !important; 
+        }
+
+        .table-dark tbody tr:hover {
+            background-color: rgba(0, 235, 176, 0.08) !important;
+            box-shadow: inset 3px 0 0 var(--primary); 
+        }
+
+        .table-dark td {
+            border-top: none !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03) !important;
+            border-right: 1px solid rgba(255, 255, 255, 0.02);
+            vertical-align: middle;
+            font-size: 0.82rem;
+            padding: 16px 14px;
+            color: #e2e8f0;
+        }
+
+        .table-dark td .btn-sm {
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+        .table-dark td .btn-sm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }
+        .table-responsive {
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 235, 176, 0.15);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+        }
+
+        .table-dark {
+            background-color: #081121 !important;
+            color: #f8fafc;
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .table-dark th {
+            background: linear-gradient(180deg, #101c33 0%, #0a1426 100%) !important;
+            color: var(--primary) !important;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            font-weight: 900;
+            padding: 16px 14px;
+            border-bottom: 2px solid var(--primary) !important;
+            border-top: none;
+            border-left: none;
+            border-right: 1px solid rgba(255, 255, 255, 0.04);
+            white-space: nowrap;
+        }
+
+
+        .table-dark tbody tr {
+            transition: all 0.25s ease;
+        }
+
+        .table-dark tbody tr:nth-child(odd) {
+            background-color: #0b1528 !important;
+        }
+
+        .table-dark tbody tr:nth-child(even) {
+            background-color: #070e1b !important; 
+        }
+
+
+        .table-dark tbody tr:hover {
+            background-color: rgba(0, 235, 176, 0.08) !important;
+            box-shadow: inset 3px 0 0 var(--primary); 
+        }
+
+        .table-dark td {
+            border-top: none !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03) !important;
+            border-right: 1px solid rgba(255, 255, 255, 0.02);
+            vertical-align: middle;
+            font-size: 0.82rem;
+            padding: 16px 14px;
+            color: #e2e8f0;
+        }
+
+
+        .table-dark td .btn-sm {
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+        .table-dark td .btn-sm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }   
+        
+            </style>
+</head>
+<body>
+
+    <div id="toastNotice">Đang xử lý...</div>
+
+  <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
+        <div class="container-fluid px-3 px-lg-5 d-flex flex-wrap align-items-center justify-content-between">
+            
+            <a class="navbar-brand-left m-0" href="index">CHONANHNHANH<span style="color:#f0c300">.VN</span></a>
+            
+            <div class="d-flex align-items-center ms-auto order-lg-3">
+                <div id="loggedOutNav" style="display: none;">
+                    <div class="btn-login-rainbow" onclick="startGoogleLogin()">
+                        <span>LOGIN VIP</span>
+                    </div>
+                </div>
+                <div id="loggedInNav" class="d-flex align-items-center" style="display: none;">
+                    <div class="user-pill">
+                        <div id="avatarPlaceholder"></div>
+                        <div class="d-flex flex-column overflow-hidden">
+                            <span id="userNameDisplay" style="font-weight:900; font-size:0.75rem; line-height:1"></span>
+                            <div id="userStatusDisplay"></div>
+                        </div>
+                    </div>
+                    <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()" style="cursor:pointer" title="Đăng xuất">
+                        <i class="fas fa-power-off"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="nav-center-container" id="navCenterArea">
+                <ul class="navbar-nav" id="adminNavLinks">
+                    <li><a href="index" class="nav-link">Tạo Album</a></li>
+                    <li><a href="managa" class="nav-link">Quản Lý</a></li>
+                    <li><a href="crm" class="nav-link active">Lịch</a></li>
+                    <li><a href="copy_local" class="nav-link">Sao Chép</a></li>
+                    <li><a href="blog" class="nav-link">Blog</a></li>
+                    <li><a href="alarm" class="nav-link">Báo Thức</a></li>
+                    <li><a href="payment" class="nav-link">Gia Hạn</a></li>
+                    <li><a href="lienhe" class="nav-link">Liên Hệ</a></li>
+                    <li><a href="guide" class="nav-link">Hướng Dẫn</a></li>
+                    <li><a href="fedback" class="nav-link">Góp Ý Và Báo Lỗi</a></li>
+                    <li><a href="privacy" class="nav-link">Chính Sách Bảo Mật</a></li>
+                </ul>
+            </div>
+
+        </div>
+    </nav>
+
+    <div class="container-fluid px-4 px-lg-5">
+        <div class="mt-5"><h1 class="supreme-title">QUẢN LÝ LỊCH TRÌNH</h1></div>
+        
+        <div id="vipExpiredBlockNotice" style="display: none; max-width: 500px; margin: 40px auto 0; background: rgba(255, 71, 87, 0.1); border: 1.5px dashed #ff4757; border-radius: 24px; padding: 40px 20px; text-align: center; box-shadow: 0 10px 30px rgba(255, 71, 87, 0.1);">
+            <i class="fas fa-lock fa-3x text-danger mb-3"></i>
+            <h4 class="fw-bold text-white mb-2">TÍNH NĂNG ĐANG BỊ KHÓA</h4>
+            <p class="text-secondary small mb-4" style="line-height: 1.6;">
+                Tài khoản của bạn đã hết hạn dùng thử hoặc chưa kích hoạt VIP. Vui lòng gia hạn để tiếp tục sử dụng tính năng quản lý lịch trình.
+            </p>
+            <a href="payment" class="btn fw-900 px-4 py-2 rounded-pill text-black text-uppercase" style="background: var(--primary); border: none; font-size: 0.85rem; text-decoration: none;">Gia Hạn VIP Ngay</a>
+        </div>
+
+        <div id="mainWorkGrid">
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <div class="card-custom">
+                        <span class="text-secondary small fw-bold text-uppercase">Tổng Doanh Thu Hợp Đồng</span>
+                        <h3 class="fw-900 text-white mt-2 mb-0" id="statTotalRevenue">0 VNĐ</h3>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card-custom">
+                        <span class="text-secondary small fw-bold text-uppercase">Tiền Cọc Thực Nhận</span>
+                        <h3 class="fw-900 text-info mt-2 mb-0" id="statTotalDeposit">0 VNĐ</h3>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card-custom">
+                        <span class="text-secondary small fw-bold text-uppercase">Công Nợ Phải Thu</span>
+                        <h3 class="fw-900 text-warning mt-2 mb-0" id="statTotalRemaining">0 VNĐ</h3>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="card-custom">
+                <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
+                    <h5 class="fw-900 text-white mb-0">QUẢN LÝ HỢP ĐỒNG & LỊCH TRÌNH STUDIO</h5>
+                    <div class="d-flex align-items-center flex-wrap gap-2">
+                        <button class="btn btn-sm btn-outline-info fw-bold  text-uppercase" data-bs-toggle="modal" data-bs-target="#lunarCalendarModal">
+                            <i class="fas fa-calendar-alt me-1"></i> Lịch Vạn Niên
+                        </button>
+                        <input type="text" id="searchInput" class="form-control form-control-sm" placeholder="🔍 Tìm tên, SĐT, ngày..." style="width: 220px;" oninput="filterContracts()">
+                        
+                        <select id="monthFilter" class="form-select form-select-sm" style="width: 160px;" onchange="filterContracts()">
+                            <option value="">Tất cả các tháng</option>
+                        </select>
+                        <button class="btn btn-sm btn-outline-warning fw-bold text-uppercase" id="btnToggleHidden" onclick="toggleShowHidden()">
+                            <i class="fas fa-eye-slash me-1"></i> Xem ẩn (<span id="hiddenCount">0</span>)
+                        </button>
+                        <button class="btn btn-outline-light fw-bold px-3 py-2 rounded-3 text-uppercase" style="font-size: 0.75rem; border-color: rgba(255,255,255,0.2);" onclick="triggerSyncAndCheckToken()">
+                            <i class="fab fa-google text-primary me-2"></i> Kết nối Lịch & Đồng bộ
+                        </button>
+                        <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#addContractModal">
+                            <i class="fas fa-plus me-2"></i> Thêm Hợp Đồng Mới
+                        </button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Khách Hàng & Liên Hệ</th>
+                                <th>Gói Dịch Vụ & Địa Điểm</th>
+                                <th>Ngày Giờ Diễn Ra</th>
+                                <th>Tổng Tiền</th>
+                                <th>Đã Cọc</th>
+                                <th>Còn Lại</th>
+                                <th>Phát Sinh</th>
+                                <th>Trạng Thái</th>
+                                <th class="text-end">Hành Động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contractsTableBody">
+                            <tr>
+                                <td colspan="9" class="text-center text-secondary py-5">Đang tải dữ liệu thực tế từ hệ thống...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    <div class="modal fade" id="addContractModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-900 text-primary">THÊM HỢP ĐỒNG & LỊCH TRÌNH MỚI</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="contractForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-bold text-secondary">TÊN KHÁCH HÀNG <span class="text-danger">*</span></label>
+                                <input type="text" id="custName" class="form-control" placeholder="VD: Anh Minh & Chị Lan" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-bold text-secondary">SỐ ĐIỆN THOẠI</label>
+                                <input type="text" id="custPhone" class="form-control" placeholder="VD: 0912345678">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-bold text-secondary">EMAIL KHÁCH HÀNG (Nhận thông báo)</label>
+                                <input type="email" id="custEmail" class="form-control" placeholder="VD: customer@gmail.com (Không bắt buộc)">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-bold text-secondary">GÓI DỊCH VỤ</label>
+                                <input type="text" id="servicePkg" class="form-control" placeholder="VD: Cưới VIP Studio trọn gói">
+                            </div>
+                        </div>
+                        <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label class="form-label small fw-bold text-secondary m-0">NGÀY GIỜ SỰ KIỆN <span class="text-danger">*</span></label>
+                                <div class="form-check form-switch m-0" style="min-height: auto;">
+                                    <input class="form-check-input" type="checkbox" id="isLunarEvent" onchange="toggleEventDateInputMode()" style="cursor: pointer; background-color: #13223f; border-color: var(--primary); background-image: url(&quot;data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23ffffff'/%3e%3c/svg%3e&quot;);">
+                                    <label class="form-check-label text-warning small fw-bold ms-1" for="isLunarEvent" style="cursor: pointer; font-size: 0.7rem !important;">Nhập bằng Lịch Âm</label>
+                                </div>
+                            </div>
+                            
+                            <input type="datetime-local" id="eventDate" class="form-control" lang="vi" step="60" onchange="previewLunarSolarEventDate()" required>
+                            
+                            <div id="eventDateNotes" class="form-text text-info fw-bold mt-1" style="font-size: 0.72rem;">
+                                📅 Ngày Dương lịch chuẩn cho sự kiện.
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label small fw-bold text-secondary">ĐỊA ĐIỂM CHỤP / TỔ CHỨC</label>
+                            <input type="text" id="eventLocation" class="form-control" placeholder="VD: Phim trường Paris hoặc Khách sạn">
+                        </div>
+                    </div>
+                        
+                       
+                        <div class="row mb-4">
+                            <div class="col-md-12">
+                                <div class="p-3 rounded-4" style="background: rgba(0, 235, 176, 0.04); border: 1.5px solid rgba(0, 235, 176, 0.25); box-shadow: 0 4px 20px rgba(0,0,0,0.2);">
+                                    <div class="form-check d-flex align-items-center m-0 ps-0">
+                                        <input class="form-check-input mt-0" type="checkbox" id="syncGoogleCalendar" checked 
+                                               style="width: 24px; height: 24px; min-width: 24px; background-color: #13223f; border: 2px solid var(--primary); cursor: pointer; accent-color: var(--primary);">
+                                        
+                                        <label class="form-check-label text-white fw-bold ms-3" for="syncGoogleCalendar" style="cursor: pointer; font-size: 0.85rem; line-height: 1.4;">
+                                            <i class="fab fa-google text-primary me-1 fs-6"></i> 
+                                            <span style="color: var(--primary);">Tích vào nếu bạn muốn thêm lịch này vào lịch Google</span>
+                                            <!-- Phần chữ thay đổi động nằm ở đây -->
+                                            <div id="syncStatusText" class="text-success fw-bold mt-1" style="font-size: 0.75rem;">
+                                                ⚡ Trạng thái: Sẽ tự động đồng bộ lịch khi lưu.
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>  
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label small fw-bold text-secondary">TỔNG GIÁ TRỊ (VNĐ)</label>
+                                <input type="number" id="totalAmt" class="form-control" value="0" oninput="autoCalculate()">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label small fw-bold text-secondary">TIỀN ĐÃ CỌC (VNĐ)</label>
+                                <input type="number" id="depositAmt" class="form-control" value="0" oninput="autoCalculate()">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label small fw-bold text-secondary">CHI PHÍ PHÁT SINH (VNĐ)</label>
+                                <input type="number" id="extraFee" class="form-control" value="0" placeholder="VD: Thuê thêm váy, phụ phí..." oninput="autoCalculate()">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label small fw-bold text-secondary">TRẠNG THÁI THANH TOÁN (TỰ ĐỘNG CẬP NHẬT)</label>
+                                <input type="text" id="paymentStatus" class="form-control text-info fw-bold" readonly value="Chưa cọc">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-secondary">GHI CHÚ CHI PHÍ / YÊU CẦU PHÁT SINH</label>
+                            <textarea id="eventNote" class="form-control" rows="2" placeholder="Ghi chú chi tiết nội dung phát sinh hoặc yêu cầu của khách..."></textarea>
+                        </div>
+                        <div class="mb-4 p-3 rounded" style="background: rgba(0, 235, 176, 0.05); border: 1px dashed var(--primary);">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="small fw-bold text-secondary">CÔNG NỢ CÒN LẠI PHẢI THU:</span>
+                                <span id="remainingPreview" class="text-warning fw-900 fs-5">0 VNĐ</span>
+                            </div>
+                        </div>
+                        <button type="button" id="saveContractBtn" class="btn btn-primary-custom w-100 py-3" onclick="saveContract()">
+                            LƯU HỢP ĐỒNG & ĐỒNG BỘ LỊCH GOOGLE CALENDAR
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const PATHS = {
+            GET_CONTRACTS: 'https://wsm.congtubaclieu.com.vn/webhook/get-contracts',
+            SAVE_CONTRACT: 'https://wsm.congtubaclieu.com.vn/webhook/save-contract',
+            SETTLE_CONTRACT: 'https://wsm.congtubaclieu.com.vn/webhook/settle-contract'
+        };
+
+        function getExpiryTimestamp() {
+    let raw = localStorage.getItem('admin_expiry');
+    if (!raw) return 0;
+    if (raw.includes('/')) {
+        let parts = raw.split(/[\s/:]+/);
+        if (parts.length >= 3) {
+            return new Date(parts[2], parts[1] - 1, parts[0], parts[3] || 0, parts[4] || 0, parts[5] || 0).getTime();
+        }
+    }
+    return parseInt(raw) || 0;
+}
+function updateHeaderUI() {
+    const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
+    const status = localStorage.getItem('admin_status') || 'new';
+    const expiry = getExpiryTimestamp();
+    const name = localStorage.getItem('admin_name') || 'Anh/Chị';
+    const isVIP = (status === 'active' && expiry > Date.now());
+
+    const navLinks = document.getElementById('adminNavLinks');
+    const loggedInNav = document.getElementById('loggedInNav');
+    const loggedOutNav = document.getElementById('loggedOutNav');
+    const mainWorkGrid = document.getElementById('mainWorkGrid');
+    const vipExpiredBlockNotice = document.getElementById('vipExpiredBlockNotice');
+    if (isLoggedIn) {
+        if(navLinks) navLinks.style.setProperty('display', 'flex', 'important');
+        if(loggedInNav) loggedInNav.style.setProperty('display', 'flex', 'important');
+        if(loggedOutNav) loggedOutNav.style.setProperty('display', 'none', 'important');
+        
+        document.getElementById('userNameDisplay').innerText = name;
+        const av = localStorage.getItem('admin_avatar');
+        document.getElementById('avatarPlaceholder').innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:30px; color:var(--primary)"></i>`;
+        
+        const statusEl = document.getElementById('userStatusDisplay');
+        if (statusEl) {
+            if (isVIP) {
+                statusEl.innerHTML = `<span class="status-tag tag-active">ACTIVE - Hạn: ${new Date(expiry).toLocaleDateString('vi-VN')}</span>`;
+                if (mainWorkGrid) mainWorkGrid.style.setProperty('display', 'block', 'important');
+                if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'none', 'important');
+            } else {
+                statusEl.innerHTML = `<span class="status-tag ${status === 'new' ? 'tag-new' : 'tag-expired'}">${status === 'new' ? 'MỚI' : 'EXPIRED'}</span>`;
+                if (mainWorkGrid) mainWorkGrid.style.setProperty('display', 'none', 'important');
+                if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'block', 'important');
+            }
+        }
+    } else { 
+        if(navLinks) navLinks.style.setProperty('display', 'none', 'important');
+        if(loggedInNav) loggedInNav.style.setProperty('display', 'none', 'important');
+        if(loggedOutNav) loggedOutNav.style.setProperty('display', 'block', 'important');
+        if(mainWorkGrid) mainWorkGrid.style.setProperty('display', 'none', 'important');
+        if(vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'block', 'important');
+    }
+}
+function getExpiryTimestamp() {
+    let raw = localStorage.getItem('admin_expiry');
+    if (!raw) return 0;
+    if (raw.includes('/')) {
+        let parts = raw.split(/[\s/:]+/);
+        if (parts.length >= 3) {
+            return new Date(parts[2], parts[1] - 1, parts[0], parts[3] || 0, parts[4] || 0, parts[5] || 0).getTime();
+        }
+    }
+    return parseInt(raw) || 0;
+}
+
+        function logoutAdmin() { 
+            localStorage.clear(); 
+            window.location.href = 'index'; 
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toastNotice');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 2500);
+        }
+
+        function autoCalculate() {
+            const total = parseFloat(document.getElementById('totalAmt').value) || 0;
+            const deposit = parseFloat(document.getElementById('depositAmt').value) || 0;
+            const extra = parseFloat(document.getElementById('extraFee').value) || 0;
+            
+            const grandTotal = total + extra;
+            const remaining = grandTotal - deposit;
+            
+            document.getElementById('remainingPreview').innerText = remaining.toLocaleString('vi-VN') + ' VNĐ';
+
+            const statusInput = document.getElementById('paymentStatus');
+            if (deposit <= 0) {
+                statusInput.value = "Chưa cọc";
+            } else if (remaining <= 0) {
+                statusInput.value = "Đã tất toán";
+            } else {
+                statusInput.value = "Đã cọc ";
+            }
+        }
+        let allContractsGlobal = []; 
+
+        async function loadContracts() {
+    const studioSlug = localStorage.getItem('admin_studio_slug') || 'studio';
+    const adminEmail = localStorage.getItem('admin_email') || '';
+    try {
+        const res = await fetch(`${PATHS.GET_CONTRACTS}?studio_slug=${encodeURIComponent(studioSlug)}&admin_email=${encodeURIComponent(adminEmail)}`);
+        if (!res.ok) {
+            throw new Error("Lỗi máy chủ HTTP: " + res.status);
+        }
+
+        const textData = await res.text();
+
+        if (!textData || textData.trim() === "") {
+            allContractsGlobal = [];
+        } else {
+            const data = JSON.parse(textData);
+            allContractsGlobal = Array.isArray(data) ? data : (data.contracts || []);
+        }
+
+        allContractsGlobal.sort((a, b) => new Date(a.event_date) - new Date(b.event_date));
+        
+        populateMonthFilter(allContractsGlobal);
+        renderTable(allContractsGlobal);
+
+    } catch(e) {
+        console.error("Lỗi tải hợp đồng:", e);
+        document.getElementById('contractsTableBody').innerHTML = `<tr><td colspan="9" class="text-center text-danger py-4">Lỗi kết nối lấy dữ liệu từ máy chủ!</td></tr>`;
+    }
+}
+        
+        function populateMonthFilter(contracts) {
+            const monthSelect = document.getElementById('monthFilter');
+            const currentValue = monthSelect.value;
+            
+            const monthsSet = new Set();
+            contracts.forEach(c => {
+                if (c.event_date) {
+                    const cleanDate = c.event_date.replace('T', ' ');
+                    const ym = cleanDate.substring(0, 7); 
+                    if (ym.length === 7) monthsSet.add(ym);
+                }
+            });
+        
+            let optionsHTML = '<option value="">Tất cả các tháng</option>';
+            Array.from(monthsSet).sort().forEach(ym => {
+                let parts = ym.split('-');
+                optionsHTML += `<option value="${ym}">Tháng ${parts[1]} / ${parts[0]}</option>`;
+            });
+        
+            monthSelect.innerHTML = optionsHTML;
+            monthSelect.value = currentValue;
+        }
+        
+        let showHiddenMode = false; 
+
+        function toggleShowHidden() {
+            showHiddenMode = !showHiddenMode;
+            const btn = document.getElementById('btnToggleHidden');
+            if (showHiddenMode) {
+                btn.innerHTML = `<i class="fas fa-eye me-1"></i> Thoát xem ẩn`;
+                btn.className = "btn btn-sm btn-warning fw-bold text-uppercase";
+            } else {
+                btn.innerHTML = `<i class="fas fa-eye-slash me-1"></i> Xem ẩn (<span id="hiddenCount">0</span>)`;
+                btn.className = "btn btn-sm btn-outline-warning fw-bold text-uppercase";
+            }
+            filterContracts();
+        }
+
+        function renderTable(contracts) {
+            const tbody = document.getElementById('contractsTableBody');
+            tbody.innerHTML = '';
+            let displayedContracts = contracts.filter(c => showHiddenMode ? c.is_hidden === true : c.is_hidden !== true);
+            let totalHidden = contracts.filter(c => c.is_hidden === true).length;
+            if(document.getElementById('hiddenCount')) {
+                document.getElementById('hiddenCount').innerText = totalHidden;
+            }
+            if (displayedContracts.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="text-center text-secondary py-5">Chưa có hợp đồng nào.</td></tr>`;
+                return;
+            }
+            let totalRev = 0;
+            let totalDep = 0;
+            let totalRem = 0;
+            displayedContracts.forEach(c => {
+                const total = parseFloat(c.total_amount) || 0;
+                const deposit = parseFloat(c.deposit_amount) || 0;
+                const extra = parseFloat(c.extra_fee) || 0;
+                const grandTotal = total + extra;
+                const remaining = grandTotal - deposit;
+                totalRev += grandTotal;
+                totalDep += deposit;
+                if (c.payment_status !== 'Đã tất toán') {
+                    totalRem += remaining;
+                }
+                const formattedDate = c.event_date ? (() => {
+                    let cleanStr = c.event_date.replace('T', ' ');
+                    let datePart = cleanStr.split(' ')[0]; 
+                    let timePart = cleanStr.split(' ')[1];
+                    
+                    let [year, month, day] = datePart.split('-');
+                    let hourMin = timePart ? timePart.substring(0, 5) : '00:00'; 
+                    
+                    let solarStr = `${day}/${month}/${year} - ${hourMin}`;
+                    
+                    try {
+                        let solarObj = Solar.fromYmd(parseInt(year), parseInt(month), parseInt(day));
+                        let lunarObj = solarObj.getLunar();
+                        let lD = lunarObj.getDay();
+                        let lM = Math.abs(lunarObj.getMonth());
+                        let lY = lunarObj.getYear();
+                        let isLeap = lunarObj.getMonth() < 0;
+                        let leapStr = isLeap ? ' (nhuận)' : '';
+                        
+                        return `${solarStr}<br><span style="font-size:0.72rem; color: #f0c300; font-weight:700;"><i class="fas fa-moon me-1"></i>Âm: ${lD}/${lM}${leapStr}/${lY}</span>`;
+                    } catch(e) {
+                        return solarStr;
+                    }
+                })() : '';
+                let actionButtons = '';
+                if (c.payment_status !== 'Đã tất toán') {
+                    actionButtons += `<button class="btn-settle me-1" onclick="settleContract(${c.id})">Tất toán</button>`;
+                }
+        
+                if (c.is_hidden) {
+                    actionButtons += `<button class="btn btn-sm btn-outline-info p-1 px-2 me-1" style="font-size:0.65rem;" onclick="toggleHideContract(${c.id}, false)" title="Bỏ ẩn"><i class="fas fa-eye"></i></button>`;
+                } else {
+                    actionButtons += `<button class="btn btn-sm btn-outline-secondary p-1 px-2 me-1" style="font-size:0.65rem;" onclick="toggleHideContract(${c.id}, true)" title="Ẩn lịch"><i class="fas fa-eye-slash"></i></button>`;
+                }
+                actionButtons += `<button class="btn btn-sm btn-outline-info p-1 px-2 me-1" style="font-size:0.65rem;" onclick='openEditModal(${JSON.stringify(c)})' title="Chỉnh sửa thông tin"><i class="fas fa-pen"></i></button>`;
+                actionButtons += `<button class="btn btn-sm btn-outline-warning p-1 px-2 me-1" style="font-size:0.65rem;" onclick='printContract(${JSON.stringify(c)})' title="Xuất hợp đồng"><i class="fas fa-file-pdf"></i></button>`;
+                actionButtons += `<button class="btn btn-sm btn-outline-danger p-1 px-2" style="font-size:0.65rem;" onclick="deleteContract(${c.id})" title="Xóa vĩnh viễn"><i class="fas fa-trash"></i></button>`;
+        
+                tbody.innerHTML += `
+                    <tr>
+                        <td>
+                            <div class="fw-bold text-white">${c.customer_name || 'Khách lẻ'}</div>
+                            <div class="text-bright-sub"><i class="fas fa-phone-alt me-1 text-primary" style="font-size: 0.7rem;"></i>${c.customer_phone || 'Chưa có SĐT'}</div>
+                        </td>
+                        <td>
+                            <div class="fw-bold text-white">${c.service_package || 'Gói chụp'}</div>
+                            <div class="text-bright-sub"><i class="fas fa-map-marker-alt me-1 text-danger" style="font-size: 0.7rem;"></i>${c.event_location || 'Tại studio'}</div>
+                        </td>
+                        <td>${formattedDate}</td>
+                        <td>${grandTotal.toLocaleString('vi-VN')} ₫</td>
+                        <td>${deposit.toLocaleString('vi-VN')} ₫</td>
+                        <td class="text-warning fw-bold">${remaining > 0 ? remaining.toLocaleString('vi-VN') + ' ₫' : '0 ₫'}</td>
+                        <td>${extra > 0 ? extra.toLocaleString('vi-VN') + ' ₫' : '0 ₫'}</td>
+                        <td><span class="badge ${c.payment_status === 'Đã tất toán' ? 'bg-success' : 'bg-info'} text-dark">${c.payment_status || 'Đã cọc'}</span></td>
+                        <td class="text-end text-nowrap">
+                            ${actionButtons}
+                        </td>
+                    </tr>
+                `;
+            });
+        
+            document.getElementById('statTotalRevenue').innerText = totalRev.toLocaleString('vi-VN') + ' VNĐ';
+            document.getElementById('statTotalDeposit').innerText = totalDep.toLocaleString('vi-VN') + ' VNĐ';
+            document.getElementById('statTotalRemaining').innerText = totalRem.toLocaleString('vi-VN') + ' VNĐ';
+        }
+        
+        async function toggleHideContract(id, hideStatus) {
+            const currentSlug = localStorage.getItem('admin_studio_slug') || 'studio';
+            const currentEmail = localStorage.getItem('admin_email') || '';
+            try {
+                const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/hide-contract', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: id, is_hidden: hideStatus, studio_slug: currentSlug,admin_email: currentEmail })
+                });
+                if(res.ok) {
+                    showToast(hideStatus ? "Đã ẩn hợp đồng thành công!" : "Đã khôi phục hợp đồng!");
+                    loadContracts();
+                } else {
+                    alert("Lỗi cập nhật trên máy chủ!");
+                }
+            } catch(e) {
+                alert("Lỗi kết nối máy chủ!");
+            }
+        }
+async function printContract(c) {
+    let printWindow = window.open('', '_blank', 'width=950,height=850');
+    if (!printWindow) {
+        alert("Trình duyệt đã chặn cửa sổ popup! Vui lòng cho phép popup để xem hợp đồng.");
+        return;
+    }
+    function formatMoney(amount) {
+        let num = parseFloat(amount) || 0;
+        return Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
+    printWindow.document.write(`<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Hợp Đồng Dịch Vụ - ${c.customer_name || ''}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Montserrat', sans-serif; color: #111; margin: 0; padding: 40px; background: #f1f5f9; line-height: 1.5; }
+        .invoice-box { max-width: 800px; margin: auto; padding: 30px; background: #fff; border: 1px solid #cbd5e1; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); border-radius: 12px; position: relative; min-height: 500px; }    
+        #loadingOverlay { position: absolute; inset: 0; background: #ffffff; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; gap: 15px; }
+        .spinner { width: 45px; height: 45px; border: 4px solid #f3f3f3; border-top: 4px solid #00ebb0; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #00ebb0; padding-bottom: 20px; margin-bottom: 25px; }
+        .logo-area { display: flex; align-items: center; gap: 15px; }
+        .logo-area img { width: 70px; height: 70px; border-radius: 10px; object-fit: contain; background: #f8fafc; border: 1.5px solid #00ebb0; padding: 4px; flex-shrink: 0; }
+        .studio-title { font-weight: 900; font-size: 1.1rem; color: #050a14; text-transform: uppercase; }
+        .studio-contact { font-size: 0.75rem; color: #555; margin-top: 2px; }
+        .invoice-title { text-align: right; }
+        .invoice-title h2 { margin: 0; color: #050a14; font-size: 1.3rem; letter-spacing: 1px; }
+        .invoice-title p { margin: 3px 0 0; font-size: 0.78rem; color: #666; }
+        .section-title { font-weight: 700; font-size: 0.85rem; background: #f8fafc; padding: 6px 10px; border-left: 4px solid #00ebb0; margin: 18px 0 10px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 8px; }
+        .info-item { margin-bottom: 6px; font-size: 0.82rem; }
+        .info-item span { font-weight: 600; color: #555; display: block; margin-bottom: 2px; }
+        .editable-input { width: 100%; padding: 5px 8px; border: 1px dashed #cbd5e1; border-radius: 5px; font-family: 'Montserrat', sans-serif; font-size: 0.82rem; background: #fafafa; color: #111; box-sizing: border-box; }
+        .editable-input:focus { border: 1px solid #00ebb0; background: #fff; outline: none; box-shadow: 0 0 5px rgba(0,235,176,0.3); }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; table-layout: fixed; }
+        table th, table td { border: 1px solid #e2e8f0; padding: 8px 10px; font-size: 0.82rem; vertical-align: middle; }
+        table th { background: #050a14; color: #fff; text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.5px; }
+        .col-content { width: 55%; }
+        .col-price { width: 35%; text-align: right; }
+        .col-action { width: 10%; text-align: center; }
+        .total-section { margin-top: 15px; float: right; width: 320px; }
+        .total-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; font-size: 0.85rem; }
+        .total-row.grand { font-weight: 900; font-size: 1.05rem; border-top: 2px solid #111; border-bottom: 2px solid #111; padding: 8px 0; margin-top: 4px; color: #050a14; }
+        .signatures { display: flex; justify-content: space-between; margin-top: 70px; text-align: center; }
+        .sig-box { width: 45%; }
+        .sig-box p { margin: 4px 0; font-size: 0.82rem; }
+        .sig-space { height: 55px; }
+        .notice-bar { background: #00ebb0; color: #000; padding: 8px 12px; border-radius: 6px; font-weight: 700; font-size: 0.78rem; margin-bottom: 15px; text-align: center; line-height: 1.5; }
+        .btn-add-row { background: #10b981; color: #fff; border: none; padding: 4px 10px; font-size: 0.75rem; font-weight: 700; border-radius: 4px; cursor: pointer; text-transform: uppercase; }
+        .btn-del-row { background: #ef4444; color: #fff; border: none; padding: 4px 8px; font-size: 0.7rem; border-radius: 4px; cursor: pointer; }
+        .action-buttons { display: flex; justify-content: center; gap: 15px; margin-top: 35px; }
+        .action-btn { border: none; padding: 12px 25px; font-weight: 900; border-radius: 8px; cursor: pointer; text-transform: uppercase; font-size: 0.85rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .btn-print { background: #00ebb0; color: #000; }
+        .btn-pdf { background: #3b82f6; color: #fff; }
+        @media print {
+            body { padding: 0; background: #fff; }
+            .invoice-box { border: none; box-shadow: none; padding: 0; }
+            .no-print { display: none; }
+            .editable-input { border: none; background: transparent; padding: 0; font-weight: 600; }
+            .btn-del-row { display: none; }
+            #loadingOverlay { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-box">
+        <div id="loadingOverlay">
+            <div class="spinner"></div>
+            <div style="font-weight: 800; font-size: 1rem; color: #050a14;">Đang tải thông tin studio từ hệ thống...</div>
+            <div style="font-size: 0.8rem; color: #666;">Vui lòng đợi trong giây lát.</div>
+        </div>
+
+        <div class="no-print notice-bar">
+            💡 Chủ studio có thể chỉnh sửa trực tiếp thông tin, thêm bớt dòng dịch vụ và chọn In hoặc xuất PDF gửi khách!<br>
+            ⚠️ Nếu chưa có thông tin studio vui lòng cấu hình ở trang chủ.
+        </div>
+
+        <div class="header">
+            <div class="logo-area">
+                <img id="studioLogoImg" src="" alt="Logo Studio">
+                <div>
+                    <div class="studio-title" id="studioTitleText">CHONANHNHANH.VN</div>
+                    <div class="studio-contact"><i class="fas fa-phone-alt me-1 text-primary"></i> <span id="studioPhoneText">Đang cập nhật</span></div>
+                    <div class="studio-contact"><i class="fas fa-map-marker-alt me-1 text-danger"></i> <span id="studioAddressText">Đang cập nhật</span></div>
+                </div>
+            </div>
+            <div class="invoice-title">
+                <h2>HỢP ĐỒNG DỊCH VỤ</h2>
+                <p>Mã đơn: #${c.id || 'HD-00'}</p>
+                <p>Ngày lập: ${new Date().toLocaleDateString('vi-VN')}</p>
+            </div>
+        </div>
+
+        <div class="section-title">Thông tin khách hàng</div>
+        <div class="grid-2">
+            <div>
+                <div class="info-item">
+                    <span>Họ tên khách hàng:</span>
+                    <input type="text" class="editable-input" value="${c.customer_name || ''}">
+                </div>
+                <div class="info-item" style="margin-top: 8px;">
+                    <span>Số điện thoại:</span>
+                    <input type="text" class="editable-input" value="${c.customer_phone || ''}">
+                </div>
+            </div>
+            <div>
+                <div class="info-item">
+                    <span>Email liên hệ:</span>
+                    <input type="text" class="editable-input" value="${c.customer_email || ''}">
+                </div>
+                <div class="info-item" style="margin-top: 8px;">
+                    <span>Địa điểm tổ chức:</span>
+                    <input type="text" class="editable-input" value="${c.event_location || 'Tại Studio'}">
+                </div>
+            </div>
+        </div>
+
+        <div class="section-title">Chi tiết lịch trình & Sự kiện</div>
+        <div class="grid-2">
+            <div class="info-item">
+                <span>Thời gian diễn ra:</span>
+                <input type="text" class="editable-input" value="${c.event_date ? c.event_date.replace('T', ' ').substring(0, 16) : ''}">
+            </div>
+            <div class="info-item">
+                <span>Gói dịch vụ đăng ký:</span>
+                <input type="text" class="editable-input" value="${c.service_package || 'Gói tiêu chuẩn'}">
+            </div>
+        </div>
+        <div class="info-item" style="margin-top: 8px;">
+            <span>Ghi chú / Yêu cầu riêng:</span>
+            <input type="text" class="editable-input" value="${c.note || 'Không có ghi chú phát sinh.'}">
+        </div>
+
+        <div class="section-title">
+            <span>Bảng kê chi phí & Thanh toán</span>
+            <button class="btn-add-row no-print" id="btnAddRow"><i class="fas fa-plus me-1"></i> Thêm dòng</button>
+        </div>
+        <table id="priceTable">
+            <thead>
+                <tr>
+                    <th class="col-content">Nội dung dịch vụ</th>
+                    <th class="col-price">Thành tiền (VNĐ)</th>
+                    <th class="col-action no-print">Xóa</th>
+                </tr>
+            </thead>
+            <tbody id="priceTableBody">
+                <tr>
+                    <td class="col-content"><input type="text" class="editable-input" value="Gói dịch vụ chính: ${c.service_package || 'Gói tiêu chuẩn'}"></td>
+                    <td class="col-price"><input type="text" class="editable-input price-input" style="text-align: right;" value="${Math.round(parseFloat(c.total_amount) || 0)}"></td>
+                    <td class="col-action no-print"><button class="btn-del-row" onclick="this.closest('tr').remove(); calculateTotal();">X</button></td>
+                </tr>
+                <tr>
+                    <td class="col-content"><input type="text" class="editable-input" value="Chi phí phát sinh thêm (Trang phục, phụ phí...)"></td>
+                    <td class="col-price"><input type="text" class="editable-input price-input" style="text-align: right;" value="${Math.round(parseFloat(c.extra_fee) || 0)}"></td>
+                    <td class="col-action no-print"><button class="btn-del-row" onclick="this.closest('tr').remove(); calculateTotal();">X</button></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="total-section">
+            <div class="total-row"><span>Tổng giá trị:</span> <strong id="grandTotalDisplay">0 ₫</strong></div>
+            <div class="total-row" style="color: #059669;"><span>Đã đặt cọc:</span> <strong id="depositDisplay">- 0 ₫</strong></div>
+            <div class="total-row grand"><span>CÒN LẠI:</span> <span id="remainingDisplay" style="color: #d97706;">0 ₫</span></div>
+        </div>
+        <div style="clear: both;"></div>
+
+        <div class="signatures">
+            <div class="sig-box">
+                <p><strong>ĐẠI DIỆN STUDIO</strong></p>
+                <p style="font-size: 0.72rem; color: #666;">(Ký và ghi rõ họ tên)</p>
+                <div class="sig-space"></div>
+                <p><strong id="sigStudioName">CHONANHNHANH.VN</strong></p>
+            </div>
+            <div class="sig-box">
+                <p><strong>ĐẠI DIỆN KHÁCH HÀNG</strong></p>
+                <p style="font-size: 0.72rem; color: #666;">(Ký và ghi rõ họ tên)</p>
+                <div class="sig-space"></div>
+                <p><strong>${c.customer_name || ''}</strong></p>
+            </div>
+        </div>
+
+        <div class="action-buttons no-print">
+            <button class="action-btn btn-print" onclick="window.print()"><i class="fas fa-print me-2"></i> In Hợp Đồng</button>
+            <button class="action-btn btn-pdf" onclick="window.print()"><i class="fas fa-file-pdf me-2"></i> Xuất PDF Gửi Khách</button>
+        </div>
+    </div>
+</body>
+</html>`);
+    const studioSlug = localStorage.getItem('admin_studio_slug') || 'studio';
+    let sName = "CHONANHNHANH.VN";
+    let sPhone = "0879029170";
+    let sAddress = "Bạc Liêu";
+    let sLogo = localStorage.getItem('admin_avatar') || 'https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?auto=format&fit=crop&w=200&q=80';
+
+    try {
+        const adminEmail = localStorage.getItem('admin_email') || '';
+        const res = await fetch(`https://wsm.congtubaclieu.com.vn/webhook/get-studio-info?studio_slug=${studioSlug}&admin_email=${encodeURIComponent(adminEmail)}`);
+        let data = await res.json();
+        let info = Array.isArray(data) ? data[0] : (data.data || data);
+        
+        if (info) {
+            sName = info.studio_name || sName;
+            sPhone = info.studio_phone || sPhone;
+            sAddress = info.studio_address || sAddress;
+            sLogo = info.watermark_logo || info.logo || sLogo;
+        }
+    } catch (e) {
+        console.log("Lỗi tải thông tin studio từ n8n:", e);
+    }
+    let doc = printWindow.document;
+    doc.getElementById('studioTitleText').innerText = sName;
+    doc.getElementById('studioPhoneText').innerText = sPhone;
+    doc.getElementById('studioAddressText').innerText = sAddress;
+    doc.getElementById('studioLogoImg').src = sLogo;
+    doc.getElementById('sigStudioName').innerText = sName;
+    doc.getElementById('loadingOverlay').style.display = 'none';
+
+    const depositAmt = Math.round(parseFloat(c.deposit_amount) || 0);
+    doc.getElementById('depositDisplay').innerText = '- ' + formatMoney(depositAmt) + ' ₫';
+    function updateCalc() {
+        let inputs = doc.querySelectorAll('.price-input');
+        let sum = 0;
+        inputs.forEach(inp => {
+            let val = parseFloat(inp.value.replace(/[^0-9.-]+/g,"")) || 0;
+            sum += val;
+        });
+        let remaining = sum - depositAmt;
+        doc.getElementById('grandTotalDisplay').innerText = formatMoney(sum) + ' ₫';
+        doc.getElementById('remainingDisplay').innerText = (remaining > 0 ? formatMoney(remaining) : '0') + ' ₫';
+    }
+    doc.getElementById('btnAddRow').onclick = function() {
+        let tbody = doc.getElementById('priceTableBody');
+        let tr = doc.createElement('tr');
+        tr.innerHTML = `
+            <td class="col-content"><input type="text" class="editable-input" value="Nội dung dịch vụ mới..."></td>
+            <td class="col-price"><input type="text" class="editable-input price-input" style="text-align: right;" value="0"></td>
+            <td class="col-action no-print"><button class="btn-del-row" onclick="this.closest('tr').remove();">X</button></td>
+        `;
+        tbody.appendChild(tr);
+        tr.querySelector('.price-input').oninput = updateCalc;
+        updateCalc();
+    };
+    doc.querySelectorAll('.price-input').forEach(inp => {
+        inp.oninput = updateCalc;
+    });
+
+    updateCalc();
+    printWindow.document.close();
+}
+        async function deleteContract(id) {
+            if(!confirm("⚠️ Thao tác này sẽ xóa vĩnh viễn hợp đồng khỏi hệ thống và không thể hoàn tác.\n\nℹ️ Lưu ý: Lịch trên Google Calendar của bạn sẽ được giữ nguyên vì lý do bảo mật.\n\nBạn có chắc chắn muốn tiếp tục xóa?")) return;
+            const currentSlug = localStorage.getItem('admin_studio_slug') || 'studio';
+            const currentEmail = localStorage.getItem('admin_email') || '';
+            try {
+                const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/delete-contract', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        id: id, 
+                        studio_slug: currentSlug,
+                        admin_email: currentEmail
+                    })
+                    
+                });
+                if(res.ok) {
+                    showToast("Đã xóa vĩnh viễn hợp đồng!");
+                    loadContracts();
+                } else {
+                    alert("Lỗi xóa trên máy chủ!");
+                }
+            } catch(e) {
+                alert("Lỗi kết nối máy chủ!");
+            }
+        }
+        
+            function filterContracts() {
+                const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
+                const selectedMonth = document.getElementById('monthFilter').value; 
+            
+                let filtered = allContractsGlobal.filter(c => {
+                    const name = (c.customer_name || '').toLowerCase();
+                    const phone = (c.customer_phone || '').toLowerCase();
+                    const dateStr = (c.event_date || '').toLowerCase();
+                    const packageStr = (c.service_package || '').toLowerCase();
+                    const matchKeyword = name.includes(keyword) || phone.includes(keyword) || dateStr.includes(keyword) || packageStr.includes(keyword);
+                    let matchMonth = true;
+                    if (selectedMonth && c.event_date) {
+                        const cleanDate = c.event_date.replace('T', ' ');
+                        matchMonth = cleanDate.startsWith(selectedMonth);
+                    }
+            
+                    return matchKeyword && matchMonth;
+                });
+            
+                renderTable(filtered);
+            }
+            function openEditModal(c) {
+                document.getElementById('editContractId').value = c.id || '';
+                document.getElementById('editCustName').value = c.customer_name || '';
+                document.getElementById('editCustPhone').value = c.customer_phone || '';
+                document.getElementById('editCustEmail').value = c.customer_email || '';
+                document.getElementById('editServicePkg').value = c.service_package || '';
+                document.getElementById('editEventLocation').value = c.event_location || '';
+                document.getElementById('editTotalAmt').value = Math.round(parseFloat(c.total_amount) || 0);
+                document.getElementById('editDepositAmt').value = Math.round(parseFloat(c.deposit_amount) || 0);
+                document.getElementById('editExtraFee').value = Math.round(parseFloat(c.extra_fee) || 0);
+                document.getElementById('editEventNote').value = c.note || '';
+                
+                if (c.event_date) {
+                    let cleanDt = c.event_date.replace(' ', 'T').substring(0, 16);
+                    document.getElementById('editEventDate').value = cleanDt;
+                }
+            document.getElementById('editIsLunarEvent').checked = false;
+            toggleEditEventDateInputMode();
+            autoCalculateEdit();
+            let modal = new bootstrap.Modal(document.getElementById('editContractModal'));
+            modal.show();
+        }
+
+        function autoCalculateEdit() {
+            const total = parseFloat(document.getElementById('editTotalAmt').value) || 0;
+            const deposit = parseFloat(document.getElementById('editDepositAmt').value) || 0;
+            const extra = parseFloat(document.getElementById('editExtraFee').value) || 0;
+            
+            const grandTotal = total + extra;
+            const remaining = grandTotal - deposit;
+            
+            document.getElementById('editRemainingPreview').innerText = remaining.toLocaleString('vi-VN') + ' VNĐ';
+        
+            const statusInput = document.getElementById('editPaymentStatus');
+            if (deposit <= 0) {
+                statusInput.value = "Chưa cọc";
+            } else if (remaining <= 0) {
+                statusInput.value = "Đã tất toán";
+            } else {
+                statusInput.value = "Đã cọc ";
+            }
+        }
+    
+        function toggleEditEventDateInputMode() {
+            const isLunar = document.getElementById('editIsLunarEvent').checked;
+            const noteEl = document.getElementById('editEventDateNotes');
+            noteEl.innerHTML = isLunar ? `🌙 Nhập ngày Âm lịch, hệ thống sẽ tự quy đổi sang Dương.` : `📅 Ngày Dương lịch chuẩn cho sự kiện.`;
+            previewEditLunarSolarEventDate();
+        }
+
+        function previewEditLunarSolarEventDate() {
+            const val = document.getElementById('editEventDate').value;
+            const noteEl = document.getElementById('editEventDateNotes');
+            const isLunar = document.getElementById('editIsLunarEvent').checked;
+            if (!val) return;
+            try {
+                let parts = val.split('T');
+                let dateParts = parts[0].split('-');
+                let y = parseInt(dateParts[0]), m = parseInt(dateParts[1]), d = parseInt(dateParts[2]);
+                let timePart = parts[1] || '00:00';
+        
+                if (isLunar) {
+                    let lunarObj = Lunar.fromYmd(y, m, d);
+                    let solarObj = lunarObj.getSolar();
+                    let sY = solarObj.getYear();
+                    let sM = String(solarObj.getMonth()).padStart(2, '0');
+                    let sD = String(solarObj.getDay()).padStart(2, '0');
+                    noteEl.innerHTML = `✅ ÂL: <b>${d}/${m}/${y}</b> ➔ Dương lịch: <span class="text-success fw-bold">${sD}/${sM}/${sY} ${timePart}</span>`;
+                } else {
+                    let solarObj = Solar.fromYmd(y, m, d);
+                    let lunarObj = solarObj.getLunar();
+                    noteEl.innerHTML = `🌙 DL: <b>${d}/${m}/${y}</b> ➔ Âm lịch: <span class="text-warning fw-bold">Ngày ${lunarObj.getDay()} Tháng ${Math.abs(lunarObj.getMonth())} Năm ${lunarObj.getYear()}</span>`;
+                }
+            } catch (e) { console.error(e); }
+        }
+        async function updateContract() {
+            let rawDateVal = document.getElementById('editEventDate').value;
+            const isLunar = document.getElementById('editIsLunarEvent').checked;
+            let finalEventDate = rawDateVal;
+            let lunarDateStr = "";
+        
+            if (rawDateVal) {
+                try {
+                    let parts = rawDateVal.split('T');
+                    let dateParts = parts[0].split('-');
+                    let y = parseInt(dateParts[0]), m = parseInt(dateParts[1]), d = parseInt(dateParts[2]);
+                    let timePart = parts[1] || '00:00';
+        
+                    if (isLunar) {
+                        let lunarObj = Lunar.fromYmd(y, m, d);
+                        let solarObj = lunarObj.getSolar();
+                        finalEventDate = `${solarObj.getYear()}-${String(solarObj.getMonth()).padStart(2, '0')}-${String(solarObj.getDay()).padStart(2, '0')}T${timePart}`;
+                        lunarDateStr = `${d}/${m}/${y}`;
+                    } else {
+                        let solarObj = Solar.fromYmd(y, m, d);
+                        let lunarObj = solarObj.getLunar();
+                        lunarDateStr = `${lunarObj.getDay()}/${Math.abs(lunarObj.getMonth())}/${lunarObj.getYear()}`;
+                    }
+                } catch (e) { console.error(e); }
+            }
+        
+            const data = {
+                id: document.getElementById('editContractId').value,
+                studio_slug: localStorage.getItem('admin_studio_slug') || 'studio',
+                admin_email: localStorage.getItem('admin_email') || '',
+                customer_name: document.getElementById('editCustName').value,
+                customer_phone: document.getElementById('editCustPhone').value,
+                customer_email: document.getElementById('editCustEmail').value,
+                service_package: document.getElementById('editServicePkg').value,
+                event_date: finalEventDate,
+                lunar_date: lunarDateStr,
+                event_location: document.getElementById('editEventLocation').value,
+                total_amount: document.getElementById('editTotalAmt').value,
+                deposit_amount: document.getElementById('editDepositAmt').value,
+                extra_fee: document.getElementById('editExtraFee').value,
+                payment_status: document.getElementById('editPaymentStatus').value,
+                note: document.getElementById('editEventNote').value
+            };
+        
+            if(!data.customer_name || !data.event_date) {
+                return alert('Vui lòng nhập Tên khách hàng và Ngày giờ sự kiện!');
+            }
+        
+            showToast("Đang cập nhật hợp đồng...");
+        
+            try {
+                const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/update-contract', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                if(res.ok) {
+                    showToast("Đã cập nhật hợp đồng thành công!");
+                    setTimeout(() => location.reload(), 1200);
+                } else {
+                    alert('Lỗi cập nhật trên máy chủ!');
+                }
+            } catch(e) {
+                console.error(e);
+                alert('Lỗi kết nối webhook n8n!');
+            }
+        }
+        async function settleContract(contractId) {
+            if(!confirm("Xác nhận khách đã thanh toán toàn bộ phần còn lại (bao gồm tổng tiền và chi phí phát sinh) để tất toán hợp đồng?")) return;
+            const currentSlug = localStorage.getItem('admin_studio_slug') || 'studio';
+            const currentEmail = localStorage.getItem('admin_email') || '';
+            showToast("Đang cập nhật tất toán...");
+            try {
+                const res = await fetch(PATHS.SETTLE_CONTRACT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: contractId, studio_slug: currentSlug,
+                admin_email: currentEmail })
+                });
+                if(res.ok) {
+                    showToast("Đã tất toán thành công!");
+                    setTimeout(() => loadContracts(), 1000);
+                } else {
+                    alert("Lỗi cập nhật trên máy chủ!");
+                }
+            } catch(e) {
+                alert("Lỗi kết nối máy chủ!");
+            }
+        }
+
+        async function saveContract() {
+    const adminEmail = localStorage.getItem('admin_email') || "";
+    const syncChecked = document.getElementById('syncGoogleCalendar').checked;
+    
+    let rawDateVal = document.getElementById('eventDate').value;
+    const isLunar = document.getElementById('isLunarEvent').checked;
+    let finalEventDate = rawDateVal;
+    let lunarDateStr = "";
+
+    if (rawDateVal) {
+        try {
+            let parts = rawDateVal.split('T');
+            let dateParts = parts[0].split('-');
+            let y = parseInt(dateParts[0]), m = parseInt(dateParts[1]), d = parseInt(dateParts[2]);
+            let timePart = parts[1] || '00:00';
+
+            if (isLunar) {
+                let lunarObj = Lunar.fromYmd(y, m, d);
+                let solarObj = lunarObj.getSolar();
+                let sY = solarObj.getYear();
+                let sM = String(solarObj.getMonth()).padStart(2, '0');
+                let sD = String(solarObj.getDay()).padStart(2, '0');
+                finalEventDate = `${sY}-${sM}-${sD}T${timePart}`;
+                let isLeap = lunarObj.getMonth() < 0;
+                lunarDateStr = `${d}/${m}${isLeap ? 'n' : ''}/${y}`;
+            } else {
+                let solarObj = Solar.fromYmd(y, m, d);
+                let lunarObj = solarObj.getLunar();
+                let lD = lunarObj.getDay();
+                let lM = Math.abs(lunarObj.getMonth());
+                let lY = lunarObj.getYear();
+                let isLeap = lunarObj.getMonth() < 0;
+                lunarDateStr = `${lD}/${lM}${isLeap ? 'n' : ''}/${lY}`;
+            }
+        } catch (e) {
+            console.error("Lỗi quy đổi ngày:", e);
+        }
+    }
+
+    const data = {
+        studio_email: adminEmail,
+        studio_slug: localStorage.getItem('admin_studio_slug') || 'studio',
+        customer_name: document.getElementById('custName').value,
+        customer_phone: document.getElementById('custPhone').value,
+        customer_email: document.getElementById('custEmail').value,
+        service_package: document.getElementById('servicePkg').value,
+        event_date: finalEventDate,
+        lunar_date: lunarDateStr, 
+        event_location: document.getElementById('eventLocation').value,
+        total_amount: document.getElementById('totalAmt').value,
+        deposit_amount: document.getElementById('depositAmt').value,
+        extra_fee: document.getElementById('extraFee').value,
+        payment_status: document.getElementById('paymentStatus').value,
+        note: document.getElementById('eventNote').value,
+        sync_calendar: syncChecked
+    };
+    
+    if(!data.customer_name || !data.event_date) {
+        return alert('Vui lòng nhập Tên khách hàng và Ngày giờ sự kiện!');
+    }
+    
+    showToast("Đang lưu hợp đồng và đồng bộ lịch ngầm...");
+    
+    try {
+        const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/save-contract', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await res.json();
+        
+        if (result.status === 'token_expired' || result.error === 'invalid_grant') {
+            if (confirm("Quyền kết nối Google Calendar của bạn đã hết hạn.\n\nVui Lòng kết nối lại tài khoản để đồng bộ.")) {
+                requestCalendarPermission();
+            }
+            return;
+        }
+        
+        if(res.ok) {
+            showToast("Đã lưu hợp đồng và đồng bộ lịch thành công!");
+            setTimeout(() => location.reload(), 1200);
+        } else {
+            alert('Lỗi lưu hợp đồng trên máy chủ!');
+        }
+    } catch(e) {
+        console.error(e);
+        alert('Lỗi kết nối webhook!');
+    }
+}
+        document.addEventListener('DOMContentLoaded', () => {
+            updateHeaderUI();
+            loadContracts();
+        });
+        function connectGoogleCalendar() {
+            const clientId = '549408699768-0hhl7oc0sjhr1c9tsa1fo9ahv5apuecc.apps.googleusercontent.com';
+            const redirectUri = 'https://wsm.congtubaclieu.com.vn/webhook/save-calendar-token'; 
+            const scope = 'https://www.googleapis.com/auth/calendar.events';
+            
+            const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scope)}&access_type=offline&prompt=consent`;
+            window.location.href = authUrl;
+        }
+        function requestCalendarPermission() {
+            const clientId = '549408699768-0hhl7oc0sjhr1c9tsa1fo9ahv5apuecc.apps.googleusercontent.com';
+            const redirectUri = 'https://wsm.congtubaclieu.com.vn/webhook/save-calendar-token'; 
+            const scope = 'https://www.googleapis.com/auth/calendar.events';
+            const currentEmail = localStorage.getItem('admin_email') || '';
+            
+            let authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scope)}&access_type=offline&prompt=consent`;
+            
+            if (currentEmail) {
+                authUrl += `&login_hint=${encodeURIComponent(currentEmail)}`;
+                authUrl += `&state=${encodeURIComponent(currentEmail)}`;
+            }
+            
+            window.location.href = authUrl;
+        }
+       let modalToday = new Date();
+    let modalCurrentYear = modalToday.getFullYear();
+    let modalCurrentMonth = modalToday.getMonth();
+
+    function initModalCalendarYears() {
+        const yearSel = document.getElementById('modalSelectYear');
+        if (yearSel && yearSel.children.length === 0) {
+            for (let y = 2020; y <= 2050; y++) {
+                let opt = document.createElement('option');
+                opt.value = y;
+                opt.innerText = y;
+                if (y === modalCurrentYear) opt.selected = true;
+                yearSel.appendChild(opt);
+            }
+        }
+        document.getElementById('modalSelectMonth').value = modalCurrentMonth;
+    }
+
+    function renderModalCalendar(year, month) {
+        const container = document.getElementById('modalCalendarDaysContainer');
+        if (!container) return;
+        container.innerHTML = '';
+        
+        document.getElementById('modalSelectMonth').value = month;
+        document.getElementById('modalSelectYear').value = year;
+        document.getElementById('modalMonthYearLabel').innerText = `Tháng ${month + 1} / ${year}`;
+
+        let firstDayIndex = new Date(year, month, 1).getDay();
+        firstDayIndex = (firstDayIndex === 0) ? 6 : firstDayIndex - 1;
+
+        let totalDays = new Date(year, month + 1, 0).getDate();
+        let prevTotalDays = new Date(year, month, 0).getDate();
+
+        for (let i = firstDayIndex; i > 0; i--) {
+            let d = prevTotalDays - i + 1;
+            let prevM = month === 0 ? 11 : month - 1;
+            let prevY = month === 0 ? year - 1 : year;
+            container.appendChild(createModalDayCell(d, prevM + 1, prevY, true, false));
+        }
+
+        for (let d = 1; d <= totalDays; d++) {
+            let isToday = (d === modalToday.getDate() && month === modalToday.getMonth() && year === modalToday.getFullYear());
+            container.appendChild(createModalDayCell(d, month + 1, year, false, isToday));
+        }
+    }
+    function createModalDayCell(day, month, year, isOtherMonth = false, isToday = false) {
+        const cell = document.createElement('div');
+        
+        let lunarDay = 1;
+        let lunarMonth = 1;
+        let isLeap = false;
+
+        try {
+            let solar = Solar.fromYmd(year, month, day);
+            let lunar = solar.getLunar();
+            
+            lunarDay = lunar.getDay();
+            lunarMonth = Math.abs(lunar.getMonth());
+            isLeap = lunar.getMonth() < 0;
+        } catch (e) {
+            console.error("Lỗi thư viện lunar:", e);
+        }
+
+        let isFirstLunarDay = (lunarDay === 1);
+
+        let bgStyle = isToday ? 'rgba(0,235,176,0.15)' : 'rgba(255,255,255,0.02)';
+        let borderStyle = isToday ? '1.5px solid var(--primary)' : '1px solid rgba(255,255,255,0.04)';
+        
+        cell.style.cssText = `background: ${bgStyle}; border: ${borderStyle}; border-radius: 10px; min-height: 65px; padding: 6px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; opacity: ${isOtherMonth ? '0.3' : '1'};`;
+
+        let formattedLunarDay = String(lunarDay).padStart(2, '0');
+        let formattedLunarMonth = String(lunarMonth).padStart(2, '0') + (isLeap ? 'n' : '');
+        
+        let lunarText = isFirstLunarDay ? `01/${formattedLunarMonth}` : `${formattedLunarDay}/${formattedLunarMonth}`;
+
+        cell.innerHTML = `
+            <div style="font-size: 0.95rem; font-weight: 900; color: #fff;">${day}</div>
+            <div>
+                <div style="font-size: 0.68rem; color: ${isFirstLunarDay ? '#f0c300' : 'var(--primary)'}; font-weight: ${isFirstLunarDay ? '900' : '700'};">
+                    ${lunarText}
+                </div>
+            </div>
+        `;
+        return cell;
+    }
+
+    function changeMonthModal(direction) {
+        modalCurrentMonth += direction;
+        if (modalCurrentMonth > 11) {
+            modalCurrentMonth = 0;
+            modalCurrentYear++;
+        } else if (modalCurrentMonth < 0) {
+            modalCurrentMonth = 11;
+            modalCurrentYear--;
+        }
+        const yearSel = document.getElementById('modalSelectYear');
+        if (yearSel) {
+            yearSel.value = modalCurrentYear;
+        }
+        renderModalCalendar(modalCurrentYear, modalCurrentMonth);
+    }
+
+    function jumpToMonthModal() {
+        modalCurrentMonth = parseInt(document.getElementById('modalSelectMonth').value);
+        modalCurrentYear = parseInt(document.getElementById('modalSelectYear').value);
+        renderModalCalendar(modalCurrentYear, modalCurrentMonth);
+    }
+
+    function jumpToToday() {
+        modalCurrentYear = modalToday.getFullYear();
+        modalCurrentMonth = modalToday.getMonth();
+        renderModalCalendar(modalCurrentYear, modalCurrentMonth);
+    }
+
+  function switchConvertMode() {
+        const isLunarToSolar = document.getElementById('typeLunarToSolar').checked;
+        const container = document.getElementById('convertInputContainer');
+        
+        let today = new Date();
+        let y = today.getFullYear();
+        let m = today.getMonth() + 1;
+        let d = today.getDate();
+
+        if (!isLunarToSolar) {
+            container.innerHTML = `
+                <div class="convert-input-wrapper">
+                    <input type="date" id="modalConvertDate" class="form-control form-control-sm text-center fw-bold" onchange="performModalConversion()">
+                </div>`;
+            let todayStr = today.toISOString().split('T')[0];
+            let dateInput = document.getElementById('modalConvertDate');
+            if (dateInput) dateInput.value = todayStr;
+        } else {
+            let solarObj = Solar.fromYmd(y, m, d);
+            let lunarObj = solarObj.getLunar();
+            let lY = lunarObj.getYear();
+            let lM = Math.abs(lunarObj.getMonth());
+            let lD = lunarObj.getDay();
+            let lunarDateStr = `${lY}-${String(lM).padStart(2, '0')}-${String(lD).padStart(2, '0')}`;
+
+            container.innerHTML = `
+                <div class="convert-input-wrapper">
+                    <input type="date" id="modalConvertLunarInput" class="form-control form-control-sm text-center fw-bold" onchange="performModalConversion()">
+                </div>`;
+            let lunarInput = document.getElementById('modalConvertLunarInput');
+            if (lunarInput) lunarInput.value = lunarDateStr;
+        }
+        performModalConversion();
+    }
+function redirectToGoogleAuth() {
+    const clientId = '549408699768-0hhl7oc0sjhr1c9tsa1fo9ahv5apuecc.apps.googleusercontent.com';
+    const redirectUri = 'https://wsm.congtubaclieu.com.vn/webhook/save-calendar-token'; 
+    const scope = 'https://www.googleapis.com/auth/calendar.events';
+    const currentEmail = localStorage.getItem('admin_email') || '';
+    
+    let authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scope)}&access_type=offline&prompt=consent`;
+    
+    if (currentEmail) {
+        authUrl += `&login_hint=${encodeURIComponent(currentEmail)}`;
+        authUrl += `&state=${encodeURIComponent(currentEmail)}`;
+    }
+    
+    window.location.href = authUrl;
+}
+async function triggerSyncAndCheckToken() {
+    const adminEmail = localStorage.getItem('admin_email') || "";
+    if (!adminEmail) {
+        alert("Không tìm thấy thông tin email quản trị viên!");
+        return;
+    }
+
+    showToast("Đang kiểm tra và đồng bộ lịch ngầm...");
+
+    try {
+        const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/save-calendar-token', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ studio_email: adminEmail })
+        });
+        
+        const result = await res.json();
+
+        if (result.status === 'token_expired' || result.error === 'invalid_grant') {
+            if (confirm("Quyền kết nối Google Calendar của bạn đã hết hạn.\n\nVui Lòng kết nối lại tài khoản để đồng bộ.")) {
+                redirectToGoogleAuth();
+            }
+            return;
+        }
+
+        if (res.ok && result.status === 'success') {
+            showToast("Đồng bộ toàn bộ lịch thành công!");
+            setTimeout(() => {
+                if (typeof loadContracts === 'function') loadContracts();
+            }, 1000);
+        } else {
+            alert(result.message || "Lỗi đồng bộ lịch từ máy chủ!");
+        }
+
+    } catch (e) {
+        console.error(e);
+        alert("Lỗi kết nối máy chủ khi thực hiện đồng bộ lịch!");
+    }
+}
+    function performModalConversion() {
+        const isLunarToSolar = document.getElementById('typeLunarToSolar').checked;
+        const resultEl = document.getElementById('modalConversionResult');
+        if(!resultEl) return;
+
+        try {
+            if (!isLunarToSolar) {
+                const dateInput = document.getElementById('modalConvertDate');
+                if(!dateInput || !dateInput.value) return;
+                let parts = dateInput.value.split('-');
+                let y = parseInt(parts[0]), m = parseInt(parts[1]), d = parseInt(parts[2]);
+                
+                let solarObj = Solar.fromYmd(y, m, d);
+                let lunarObj = solarObj.getLunar();
+                let lDay = lunarObj.getDay();
+                let lMonth = Math.abs(lunarObj.getMonth());
+                let lYear = lunarObj.getYear();
+                let isLeap = lunarObj.getMonth() < 0;
+                let leapStr = isLeap ? ' (nhuận)' : '';
+
+                resultEl.innerHTML = 
+                    `📅 DL: <b>${d}/${m}/${y}</b> ➔ 🌙 ÂL: <span class="text-warning fw-bold">Ngày ${lDay} Tháng ${lMonth}${leapStr} Năm ${lYear}</span>`;
+            } else {
+                const inputEl = document.getElementById('modalConvertLunarInput');
+                if(!inputEl || !inputEl.value) return;
+                let parts = inputEl.value.split('-');
+                let y = parseInt(parts[0]), m = parseInt(parts[1]), d = parseInt(parts[2]);
+                let lunarObj = Lunar.fromYmd(y, m, d);
+                let solarObj = lunarObj.getSolar();
+                
+                let sDay = String(solarObj.getDay()).padStart(2, '0');
+                let sMonth = String(solarObj.getMonth()).padStart(2, '0');
+                let sYear = solarObj.getYear();
+
+                resultEl.innerHTML = 
+                    `🌙 ÂL (Chọn): <b>${d}/${m}/${y}</b> ➔ 📅 DL: <span class="text-info fw-bold">${sDay}/${sMonth}/${sYear}</span>`;
+            }
+        } catch(e) {
+            resultEl.innerHTML = `<span class="text-danger">Lỗi định dạng ngày quy đổi!</span>`;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        initModalCalendarYears();
+        const modalEl = document.getElementById('lunarCalendarModal');
+        if(modalEl) {
+            modalEl.addEventListener('show.bs.modal', () => {
+                modalCurrentYear = modalToday.getFullYear();
+                modalCurrentMonth = modalToday.getMonth();
+                renderModalCalendar(modalCurrentYear, modalCurrentMonth);
+                
+                const radioSolar = document.getElementById('typeLunarToSolar');
+                if(radioSolar) radioSolar.checked = true;
+                
+                switchConvertMode();
+            });
+        }
+    });
+        document.addEventListener('DOMContentLoaded', () => {
+    const syncCheckbox = document.getElementById('syncGoogleCalendar');
+    const syncStatusText = document.getElementById('syncStatusText');
+    const saveBtn = document.getElementById('saveContractBtn');
+
+    if (syncCheckbox) {
+        function updateSyncUI() {
+            if (syncCheckbox.checked) {
+                // 1. Hiển thị dòng chữ trạng thái phụ phía dưới
+                if (syncStatusText) {
+                    syncStatusText.style.display = 'block';
+                    syncStatusText.innerHTML = "⚡ Trạng thái: Sẽ tự động đồng bộ lịch khi lưu.";
+                }
+                // 2. Đổi tên nút bấm thành dài (có đồng bộ)
+                if (saveBtn) {
+                    saveBtn.innerText = "LƯU HỢP ĐỒNG & ĐỒNG BỘ LỊCH GOOGLE CALENDAR";
+                }
+            } else {
+                // 1. Ẩn dòng chữ trạng thái phụ
+                if (syncStatusText) {
+                    syncStatusText.style.display = 'none';
+                    syncStatusText.innerHTML = "";
+                }
+                // 2. Rút gọn tên nút bấm lại (chỉ lưu hợp đồng)
+                if (saveBtn) {
+                    saveBtn.innerText = "LƯU HỢP ĐỒNG";
+                }
+            }
+        }
+
+        // Chạy lần đầu khi load trang/modal
+        updateSyncUI();
+
+        // Lắng nghe sự kiện mỗi khi người dùng bấm tích / bỏ tích checkbox
+        syncCheckbox.addEventListener('change', updateSyncUI);
+    }
+});
+    function toggleEventDateInputMode() {
+        const isLunar = document.getElementById('isLunarEvent').checked;
+        const noteEl = document.getElementById('eventDateNotes');
+        if (isLunar) {
+            noteEl.innerHTML = `🌙 Bạn đang chọn chế độ <b>nhập ngày Âm lịch</b>. Hệ thống sẽ tự động quy đổi sang ngày Dương để lưu lịch trình.`;
+        } else {
+            noteEl.innerHTML = `📅 Ngày Dương lịch chuẩn cho sự kiện.`;
+        }
+        previewLunarSolarEventDate();
+    }
+    function previewLunarSolarEventDate() {
+        const val = document.getElementById('eventDate').value;
+        const noteEl = document.getElementById('eventDateNotes');
+        const isLunar = document.getElementById('isLunarEvent').checked;
+
+        if (!val) return;
+
+        try {
+            let parts = val.split('T');
+            let dateParts = parts[0].split('-');
+            let y = parseInt(dateParts[0]), m = parseInt(dateParts[1]), d = parseInt(dateParts[2]);
+            let timePart = parts[1] || '00:00';
+
+            if (isLunar) {
+                let lunarObj = Lunar.fromYmd(y, m, d);
+                let solarObj = lunarObj.getSolar();
+                
+                let sY = solarObj.getYear();
+                let sM = String(solarObj.getMonth()).padStart(2, '0');
+                let sD = String(solarObj.getDay()).padStart(2, '0');
+
+                noteEl.innerHTML = `✅ ÂL: <b>${d}/${m}/${y}</b> ➔ Tương ứng Dương lịch: <span class="text-success fw-bold">${sD}/${sM}/${sY} ${timePart}</span> (Sẽ lưu ngày này vào hệ thống)`;
+            } else {
+                let solarObj = Solar.fromYmd(y, m, d);
+                let lunarObj = solarObj.getLunar();
+                
+                let lD = lunarObj.getDay();
+                let lM = Math.abs(lunarObj.getMonth());
+                let lY = lunarObj.getYear();
+                let isLeap = lunarObj.getMonth() < 0;
+                let leapStr = isLeap ? ' (nhuận)' : '';
+
+                noteEl.innerHTML = `🌙 DL: <b>${d}/${m}/${y}</b> ➔ Tương ứng Âm lịch: <span class="text-warning fw-bold">Ngày ${lD} Tháng ${lM}${leapStr} Năm ${lY}</span>`;
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+            </script>
+<div class="modal fade" id="lunarCalendarModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content" style="background: rgba(10, 17, 36, 0.98) !important;">
+            <div class="modal-header border-bottom border-secondary justify-content-center position-relative py-3">
+                <h5 class="modal-title text-white fw-bold m-0" style="font-size: 1.1rem;">
+                    <i class="fas fa-calendar-alt text-primary me-2"></i> Lịch Vạn Niên & Âm Dương
+                </h5>
+                <button type="button" class="btn-close btn-close-white position-absolute end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="calendar-card p-3 p-md-4 mb-3" style="background: rgba(255,255,255,0.02); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08);">
+                   <div class="cal-header d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <button class="btn btn-sm btn-outline-light rounded-circle" onclick="changeMonthModal(-1)"><i class="fas fa-chevron-left"></i></button>
+                            <h4 id="modalMonthYearLabel" class="m-0 fw-bold text-white" style="min-width: 150px; text-align: center; font-size: 1.1rem;">Tháng 10/2026</h4>
+                            <button class="btn btn-sm btn-outline-light rounded-circle" onclick="changeMonthModal(1)"><i class="fas fa-chevron-right"></i></button>
+                            <button class="btn-today-quick ms-1" onclick="jumpToToday()">Hôm nay</button>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <select id="modalSelectMonth" class="form-select form-select-sm bg-dark text-primary border-secondary" style="width: 110px;" onchange="jumpToMonthModal()">
+                                <option value="0">Tháng 1</option><option value="1">Tháng 2</option><option value="2">Tháng 3</option><option value="3">Tháng 4</option>
+                                <option value="4">Tháng 5</option><option value="5">Tháng 6</option><option value="6">Tháng 7</option><option value="7">Tháng 8</option>
+                                <option value="8">Tháng 9</option><option value="9">Tháng 10</option><option value="10">Tháng 11</option><option value="11">Tháng 12</option>
+                            </select>
+                            <select id="modalSelectYear" class="form-select form-select-sm bg-dark text-primary border-secondary" style="width: 95px;" onchange="jumpToMonthModal()">
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; margin-bottom: 8px;">
+                        <div style="font-weight: 900; color: #94a3b8; font-size: 0.75rem;">Thứ 2</div>
+                        <div style="font-weight: 900; color: #94a3b8; font-size: 0.75rem;">Thứ 3</div>
+                        <div style="font-weight: 900; color: #94a3b8; font-size: 0.75rem;">Thứ 4</div>
+                        <div style="font-weight: 900; color: #94a3b8; font-size: 0.75rem;">Thứ 5</div>
+                        <div style="font-weight: 900; color: #94a3b8; font-size: 0.75rem;">Thứ 6</div>
+                        <div style="font-weight: 900; color: #f59e0b; font-size: 0.75rem;">Thứ 7</div>
+                        <div style="font-weight: 900; color: #ff4757; font-size: 0.75rem;">Chủ Nhật</div>
+                    </div>
+                    <div id="modalCalendarDaysContainer" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center;">
+                    </div>
+                </div>
+                <div class="convert-box p-3 rounded" style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08);">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="text-white fw-bold" style="font-size: 0.9rem;">
+                            <i class="fas fa-exchange-alt text-primary me-2"></i> Chuyển Đổi Lịch Âm ⇄ Dương
+                        </span>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <input type="radio" class="btn-check" name="convertType" id="typeSolarToLunar" checked onclick="switchConvertMode()">
+                            <label class="btn btn-outline-primary py-1 px-2" style="font-size:0.7rem; font-weight:700;" for="typeSolarToLunar">Dương ➔ Âm</label>
+                
+                            <input type="radio" class="btn-check" name="convertType" id="typeLunarToSolar" onclick="switchConvertMode()">
+                            <label class="btn btn-outline-primary py-1 px-2" style="font-size:0.7rem; font-weight:700;" for="typeLunarToSolar">Âm ➔ Dương</label>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-2 align-items-center">
+                        <div class="col-md-5" id="convertInputContainer">
+                            <input type="date" id="modalConvertDate" class="form-control form-control-sm text-center fw-bold" style="position: relative; z-index: 5;" onchange="performModalConversion()">
+                        </div>
+                        <div class="col-md-7">
+                            <div id="modalConversionResult" class="p-2 bg-black rounded border border-success text-success fw-bold text-center" style="font-size: 0.78rem;">
+                                Chọn ngày để quy đổi.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <div class="modal fade" id="editContractModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-900 text-info">CHỈNH SỬA HỢP ĐỒNG & LỊCH TRÌNH</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="editContractForm">
+                        <input type="hidden" id="editContractId">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-bold text-secondary">TÊN KHÁCH HÀNG <span class="text-danger">*</span></label>
+                                <input type="text" id="editCustName" class="form-control" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-bold text-secondary">SỐ ĐIỆN THOẠI</label>
+                                <input type="text" id="editCustPhone" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-bold text-secondary">EMAIL KHÁCH HÀNG</label>
+                                <input type="email" id="editCustEmail" class="form-control">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-bold text-secondary">GÓI DỊCH VỤ</label>
+                                <input type="text" id="editServicePkg" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <label class="form-label small fw-bold text-secondary m-0">NGÀY GIỜ SỰ KIỆN <span class="text-danger">*</span></label>
+                                    <div class="form-check form-switch m-0" style="min-height: auto;">
+                                        <input class="form-check-input" type="checkbox" id="editIsLunarEvent" onchange="toggleEditEventDateInputMode()" style="cursor: pointer; background-color: #13223f; border-color: var(--primary);">
+                                        <label class="form-check-label text-warning small fw-bold ms-1" for="editIsLunarEvent" style="cursor: pointer; font-size: 0.7rem !important;">Nhập bằng Lịch Âm</label>
+                                    </div>
+                                </div>
+                                <input type="datetime-local" id="editEventDate" class="form-control" lang="vi" step="60" onchange="previewEditLunarSolarEventDate()" required>
+                                <div id="editEventDateNotes" class="form-text text-info fw-bold mt-1" style="font-size: 0.72rem;">
+                                    📅 Ngày Dương lịch chuẩn cho sự kiện.
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label small fw-bold text-secondary">ĐỊA ĐIỂM CHỤP / TỔ CHỨC</label>
+                                <input type="text" id="editEventLocation" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label small fw-bold text-secondary">TỔNG GIÁ TRỊ (VNĐ)</label>
+                                <input type="number" id="editTotalAmt" class="form-control" value="0" oninput="autoCalculateEdit()">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label small fw-bold text-secondary">TIỀN ĐÃ CỌC (VNĐ)</label>
+                                <input type="number" id="editDepositAmt" class="form-control" value="0" oninput="autoCalculateEdit()">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label small fw-bold text-secondary">CHI PHÍ PHÁT SINH (VNĐ)</label>
+                                <input type="number" id="editExtraFee" class="form-control" value="0" oninput="autoCalculateEdit()">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label small fw-bold text-secondary">TRẠNG THÁI THANH TOÁN</label>
+                                <input type="text" id="editPaymentStatus" class="form-control text-info fw-bold" readonly value="Chưa cọc">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-secondary">GHI CHÚ / YÊU CẦU PHÁT SINH</label>
+                            <textarea id="editEventNote" class="form-control" rows="2"></textarea>
+                        </div>
+                        <div class="mb-4 p-3 rounded" style="background: rgba(0, 235, 176, 0.05); border: 1px dashed var(--primary);">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="small fw-bold text-secondary">CÔNG NỢ CÒN LẠI PHẢI THU:</span>
+                                <span id="editRemainingPreview" class="text-warning fw-900 fs-5">0 VNĐ</span>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-info w-100 py-3 fw-900 text-uppercase" style="border-radius: 12px;" onclick="updateContract()">LƯU CẬP NHẬT HỢP ĐỒNG</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
