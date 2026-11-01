@@ -333,7 +333,7 @@
                 .normalize('NFD')
                 .replace(/[\u0300-\u036f]/g, '')
                 .replace(/[đĐ]/g, 'd')
-                .replace(/([^0-9a-z])/g, '') // Xóa sạch khoảng trắng và ký tự đặc biệt, viết liền không dấu không gạch ngang
+                .replace(/([^0-9a-z])/g, '') 
                 .trim();
         }
        async function openNoteModal(folderId, albumName) {
@@ -450,7 +450,6 @@
                     if (isVIP) {
                         if (badge) {
                             badge.className = "status-tag tag-active";
-                            // Gộp chung cả ACTIVE và ngày tháng vào chung một thẻ mang nền xanh
                             badge.innerText = "ACTIVE - Hạn: " + new Date(expiry).toLocaleDateString('vi-VN');
                         }
                         if (expText) expText.innerText = "";
@@ -522,7 +521,7 @@
             const watermarkEnabled = document.getElementById('editWatermarkEnabled').checked; 
             const watermarkLogo = editStoredLogoBase64;
             
-            console.log("Trạng thái công tắc gửi đi:", watermarkEnabled); // Bật F12 xem console log này là true hay false
+            console.log("Trạng thái công tắc gửi đi:", watermarkEnabled); 
         
             showToast("Đang lưu cấu hình...");
             try {
