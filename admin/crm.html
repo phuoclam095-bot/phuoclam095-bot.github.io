@@ -1499,7 +1499,8 @@ function renderModalCalendar(year, month) {
         renderModalAgendaList(year, month);
     }
 }
-    function createModalDayCell(day, month, year, isOtherMonth = false, isToday = false) {
+    // Tạo ô ngày trên lưới: hiển thị Dương lịch, Lịch Âm nhỏ bên cạnh, sự kiện và hỗ trợ bấm vào để thêm hợp đồng mới
+function createModalDayCell(day, month, year, isOtherMonth = false, isToday = false) {
     const cell = document.createElement('div');
     
     let lunarDay = 1, lunarMonth = 1, isLeap = false;
@@ -1513,15 +1514,38 @@ function renderModalCalendar(year, month) {
 
     let isFirstLunarDay = (lunarDay === 1);
     let bgStyle = isToday ? 'rgba(0,235,176,0.15)' : 'rgba(255,255,255,0.02)';
-    let borderStyle = isToday ? '1.5px solid var(--primary)' : '1px solid rgba(255,255,255,0.04)';
+    let borderStyle = isToday ? '1.5px solid var(--primary)' : '1px solid rgba(255,255,255,0.05)';
     
-    cell.style.cssText = `background: ${bgStyle}; border: ${borderStyle}; border-radius: 10px; min-height: 90px; padding: 6px; display: flex; flex-direction: column; justify-content: flex-start; align-items: stretch; opacity: ${isOtherMonth ? '0.3' : '1'}; cursor: pointer; transition: 0.2s;`;
+    cell.style.cssText = `background: ${bgStyle}; border: ${borderStyle}; border-radius: 10px; min-height: 105px; padding: 6px; display: flex; flex-direction: column; justify-content: flex-start; align-items: stretch; opacity: ${isOtherMonth ? '0.3' : '1'}; cursor: pointer; transition: 0.2s;`;
+
+    // Hiệu ứng hover cho ô ngày
+    cell.onmouseover = () => { cell.style.background = 'rgba(0,235,176,0.08)'; };
+    cell.onmouseout = () => { cell.style.background = bgStyle; };
+
+    // Bấm vào ô ngày -> Tự động mở Modal Thêm Hợp Đồng mới với ngày đã chọn sẵn
+    cell.onclick = () => {
+        let bootstrapModalEl = bootstrap.Modal.getInstance(document.getElementById('lunarCalendarModal'));
+        if (bootstrapModalEl) bootstrapModalEl.hide();
+
+        // Điền ngày vào form thêm hợp đồng (định dạng YYYY-MM-DDTHH:00)
+        let formattedMonth = String(month).padStart(2, '0');
+        let formattedDay = String(day).padStart(2, '0');
+        let defaultTimeInput = `${year}-${formattedMonth}-${formattedDay}T08:00`;
+        
+        document.getElementById('eventDate').value = defaultTimeInput;
+        document.getElementById('isLunarEvent').checked = false;
+        toggleEventDateInputMode();
+
+        // Mở Modal Thêm Hợp Đồng
+        let addModal = new bootstrap.Modal(document.getElementById('addContractModal'));
+        addModal.show();
+    };
 
     let formattedLunarDay = String(lunarDay).padStart(2, '0');
     let formattedLunarMonth = String(lunarMonth).padStart(2, '0') + (isLeap ? 'n' : '');
     let lunarText = isFirstLunarDay ? `01/${formattedLunarMonth}` : `${formattedLunarDay}/${formattedLunarMonth}`;
 
-    // Lọc các hợp đồng diễn ra đúng ngày này để hiển thị trong ô
+    // Lọc sự kiện đúng ngày
     let dateStrFormatted = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     let matchingContracts = (allContractsGlobal || []).filter(c => {
         if (!c.event_date) return false;
@@ -1537,12 +1561,11 @@ function renderModalCalendar(year, month) {
             timePart = c.event_date.split(' ')[1].substring(0, 5);
         }
         let displayName = c.customer_name || 'Khách';
-        // Rút gọn tên nếu quá dài
-        if (displayName.length > 14) displayName = displayName.substring(0, 12) + '...';
+        if (displayName.length > 12) displayName = displayName.substring(0, 10) + '...';
 
         eventsHtml += `
             <div onclick='event.stopPropagation(); openEditModal(${JSON.stringify(c)})' 
-                 style="background: rgba(0, 235, 176, 0.2); border-left: 2px solid var(--primary); padding: 2px 4px; margin-top: 3px; border-radius: 4px; font-size: 0.65rem; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                 style="background: rgba(0, 235, 176, 0.25); border-left: 2px solid var(--primary); padding: 2px 5px; margin-bottom: 3px; border-radius: 4px; font-size: 0.65rem; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
                  title="${c.customer_name} - ${timePart} (${c.service_package || ''})">
                 <span class="text-warning fw-bold">${timePart}</span> <span class="text-white">${displayName}</span>
             </div>
@@ -1551,17 +1574,16 @@ function renderModalCalendar(year, month) {
 
     cell.innerHTML = `
         <div class="d-flex justify-content-between align-items-center w-100 mb-1">
-            <span style="font-size: 0.85rem; font-weight: 900; color: #fff;">${day}</span>
-            <span style="font-size: 0.62rem; color: ${isFirstLunarDay ? '#f0c300' : 'var(--primary)'}; font-weight: 700;">${lunarText}</span>
+            <span style="font-size: 0.9rem; font-weight: 900; color: #fff;">${day}</span>
+            <span style="font-size: 0.62rem; color: ${isFirstLunarDay ? '#f0c300' : 'var(--primary)'}; font-weight: 700; background: rgba(0,0,0,0.3); padding: 1px 4px; border-radius: 4px;">${lunarText}</span>
         </div>
-        <div class="flex-grow-1 overflow-hidden" style="max-height: 60px;">
+        <div class="flex-grow-1 overflow-y-auto" style="max-height: 70px;">
             ${eventsHtml}
         </div>
     `;
 
     return cell;
 }
-
         function renderModalAgendaList(year, month) {
     const listBody = document.getElementById('modalCalendarAgendaBody');
     if (!listBody) return;
@@ -1877,14 +1899,14 @@ async function triggerSyncAndCheckToken() {
             </script>
 <div class="modal fade" id="lunarCalendarModal" tabindex="-1">
     <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content" style="background: rgba(10, 17, 36, 0.98) !important;">
+        <div class="modal-content" style="background: rgba(10, 17, 36, 0.98) !important; border: 1.5px solid var(--primary) !important;">
             <div class="modal-header border-bottom border-secondary justify-content-between align-items-center py-3 px-4">
                 <h5 class="modal-title text-white fw-bold m-0" style="font-size: 1.1rem;">
                     <i class="fas fa-calendar-alt text-primary me-2"></i> Lịch Vạn Niên & Lịch Trình Studio
                 </h5>
-                <!-- Nút chuyển đổi giữa 2 dạng: Lưới (Grid) và Danh sách (List) -->
                 <div class="d-flex align-items-center gap-3">
-                    <div class="btn-group btn-group-sm" role="group" aria-label="View Mode">
+                    <!-- Nút chuyển đổi Lưới / Danh sách -->
+                    <div class="btn-group btn-group-sm" role="group">
                         <input type="radio" class="btn-check" name="calendarViewMode" id="viewModeGrid" checked onclick="switchCalendarView('grid')">
                         <label class="btn btn-outline-light px-3 py-1 fw-bold" for="viewModeGrid"><i class="fas fa-th me-1"></i> Lưới</label>
 
@@ -1896,26 +1918,33 @@ async function triggerSyncAndCheckToken() {
             </div>
 
             <div class="modal-body p-4">
-                <!-- Thanh điều hướng tháng / năm chung -->
+                <!-- Thanh điều hướng gọn gàng theo yêu cầu: [Hôm nay] [<] [Tháng/Năm] [>] -->
                 <div class="cal-header d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2 p-3 rounded-3" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
                     <div class="d-flex align-items-center gap-2">
-                        <button class="btn btn-sm btn-outline-light rounded-circle" onclick="changeMonthModal(-1)"><i class="fas fa-chevron-left"></i></button>
-                        <h4 id="modalMonthYearLabel" class="m-0 fw-bold text-white" style="min-width: 170px; text-align: center; font-size: 1.1rem;">Tháng 11/2026</h4>
-                        <button class="btn btn-sm btn-outline-light rounded-circle" onclick="changeMonthModal(1)"><i class="fas fa-chevron-right"></i></button>
-                        <button class="btn-today-quick ms-2" onclick="jumpToToday()">Hôm nay</button>
+                        <button class="btn-today-quick" onclick="jumpToToday()">Hôm nay</button>
+                        <button class="btn btn-sm btn-outline-light rounded-circle" onclick="changeMonthModal(-1)" title="Tháng trước"><i class="fas fa-chevron-left"></i></button>
+                        <h4 id="modalMonthYearLabel" class="m-0 fw-bold text-white text-center" style="min-width: 160px; font-size: 1.1rem; color: var(--primary) !important;">Tháng 11 / 2026</h4>
+                        <button class="btn btn-sm btn-outline-light rounded-circle" onclick="changeMonthModal(1)" title="Tháng sau"><i class="fas fa-chevron-right"></i></button>
                     </div>
-                    <div class="d-flex gap-2">
-                        <select id="modalSelectMonth" class="form-select form-select-sm bg-dark text-primary border-secondary" style="width: 110px;" onchange="jumpToMonthModal()">
-                            <option value="0">Tháng 1</option><option value="1">Tháng 2</option><option value="2">Tháng 3</option><option value="3">Tháng 4</option>
-                            <option value="4">Tháng 5</option><option value="5">Tháng 6</option><option value="6">Tháng 7</option><option value="7">Tháng 8</option>
-                            <option value="8">Tháng 9</option><option value="9">Tháng 10</option><option value="10">Tháng 11</option><option value="11">Tháng 12</option>
-                        </select>
-                        <select id="modalSelectYear" class="form-select form-select-sm bg-dark text-primary border-secondary" style="width: 95px;" onchange="jumpToMonthModal()">
-                        </select>
+                    
+                    <!-- Chọn nhanh Tháng / Năm bằng dropdown lịch -->
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="input-group input-group-sm" style="width: 180px;">
+                            <span class="input-group-text bg-dark text-primary border-secondary"><i class="fas fa-calendar-day"></i></span>
+                            <select id="modalSelectMonth" class="form-select form-select-sm bg-dark text-white border-secondary fw-bold" onchange="jumpToMonthModal()">
+                                <option value="0">Tháng 1</option><option value="1">Tháng 2</option><option value="2">Tháng 3</option><option value="3">Tháng 4</option>
+                                <option value="4">Tháng 5</option><option value="5">Tháng 6</option><option value="6">Tháng 7</option><option value="7">Tháng 8</option>
+                                <option value="8">Tháng 9</option><option value="9">Tháng 10</option><option value="10">Tháng 11</option><option value="11">Tháng 12</option>
+                            </select>
+                        </div>
+                        <div class="input-group input-group-sm" style="width: 110px;">
+                            <select id="modalSelectYear" class="form-select form-select-sm bg-dark text-white border-secondary fw-bold" onchange="jumpToMonthModal()">
+                            </select>
+                        </div>
                     </div>
                 </div>
 
-                <!-- DẠNG 1: LƯỚI THÁNG (GRID VIEW) -->
+                <!-- DẠNG 1: LƯỚI THÁNG -->
                 <div id="calendarGridViewContainer">
                     <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; margin-bottom: 8px;">
                         <div style="font-weight: 900; color: #94a3b8; font-size: 0.75rem;">Thứ 2</div>
@@ -1926,19 +1955,17 @@ async function triggerSyncAndCheckToken() {
                         <div style="font-weight: 900; color: #f59e0b; font-size: 0.75rem;">Thứ 7</div>
                         <div style="font-weight: 900; color: #ff4757; font-size: 0.75rem;">Chủ Nhật</div>
                     </div>
-                    <div id="modalCalendarDaysContainer" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px;">
-                        <!-- Các ô ngày sẽ được render tự động bằng JS -->
+                    <!-- Chiều cao cố định và thanh cuộn đẹp mắt khi có nhiều sự kiện -->
+                    <div id="modalCalendarDaysContainer" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; max-height: 480px; overflow-y: auto; padding-right: 4px;">
                     </div>
                 </div>
 
-                <!-- DẠNG 2: DANH SÁCH SỰ KIỆN (AGENDA LIST VIEW) -->
+                <!-- DẠNG 2: DANH SÁCH SỰ KIỆN -->
                 <div id="calendarListViewContainer" style="display: none; max-height: 480px; overflow-y: auto; padding-right: 5px;">
-                    <div id="modalCalendarAgendaBody">
-                        <!-- Danh sách hợp đồng trong tháng sẽ được render ở đây -->
-                    </div>
+                    <div id="modalCalendarAgendaBody"></div>
                 </div>
 
-                <!-- Phần chuyển đổi Âm - Dương ở dưới cùng -->
+                <!-- Phần chuyển đổi Âm - Dương nhanh ở dưới -->
                 <div class="convert-box p-3 rounded mt-4" style="background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08);">
                     <div class="d-flex align-items-center justify-content-between mb-2">
                         <span class="text-white fw-bold" style="font-size: 0.85rem;">
