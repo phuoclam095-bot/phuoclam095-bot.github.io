@@ -20,6 +20,42 @@
         .nav-link:hover, .nav-link.active { background: var(--primary); color: #000; font-weight: 700; }
         .tab-pane { display: none; }
         .tab-pane.active { display: block; }
+        /* --- CSS RESPONSIVE CHO ĐIỆN THOẠI & TABLET --- */
+    @media (max-width: 991.98px) {
+        .sidebar {
+            width: 100% !important;
+            height: auto !important;
+            position: relative !important;
+            border-right: none !important;
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px !important;
+        }
+        .main-content {
+            margin-left: 0 !important;
+            padding: 15px !important;
+        }
+        /* Biến thanh thống kê thành dạng lưới 2 cột trên di động cho gọn */
+        .row.g-4 > div {
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+    }
+
+    @media (max-width: 576px) {
+        /* Màn hình điện thoại nhỏ: Thu hẹp stat cards về 1 cột hoặc giữ 2 cột siêu gọn */
+        .row.g-4 > div {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+        .main-content h3 {
+            font-size: 1.3rem;
+        }
+        /* Thu nhỏ chữ trong bảng trên mobile để không bị tràn */
+        .table-custom th, .table-custom td {
+            padding: 10px 8px !important;
+            font-size: 0.8rem;
+        }
+    }
     </style>
 </head>
 <body>
@@ -55,30 +91,31 @@
             <span class="badge bg-secondary px-3 py-2 text-white"><i class="fas fa-circle text-success me-1"></i> Trạng thái: Hoạt động trực tuyến</span>
         </div>
 
+
         <!-- QUICK STATS OVERVIEW -->
-        <div class="row g-4 mb-4">
-            <div class="col-md-3">
-                <div class="card-stat">
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-md-3">
+                <div class="card-stat p-3">
                     <span class="text-secondary small">Tổng số Studio</span>
-                    <h3 class="fw-bold text-primary mt-2" id="statStudios">--</h3>
+                    <h4 class="fw-bold text-primary mt-2 mb-0" id="statStudios">--</h4>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card-stat">
-                    <span class="text-secondary small">Tổng Album Khởi Tạo</span>
-                    <h3 class="fw-bold text-info mt-2" id="statAlbums">--</h3>
+            <div class="col-6 col-md-3">
+                <div class="card-stat p-3">
+                    <span class="text-secondary small">Tổng Album</span>
+                    <h4 class="fw-bold text-info mt-2 mb-0" id="statAlbums">--</h4>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card-stat">
-                    <span class="text-secondary small">Tổng Doanh Thu Nạp VIP</span>
-                    <h3 class="fw-bold text-warning mt-2" id="statRevenue">--</h3>
+            <div class="col-6 col-md-3">
+                <div class="card-stat p-3">
+                    <span class="text-secondary small">Doanh Thu VIP</span>
+                    <h4 class="fw-bold text-warning mt-2 mb-0" id="statRevenue">--</h4>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card-stat">
-                    <span class="text-secondary small">Bài Viết Blog Chờ Duyệt</span>
-                    <h3 class="fw-bold text-danger mt-2" id="statPendingBlogs">--</h3>
+            <div class="col-6 col-md-3">
+                <div class="card-stat p-3">
+                    <span class="text-secondary small">Blog Chờ Duyệt</span>
+                    <h4 class="fw-bold text-danger mt-2 mb-0" id="statPendingBlogs">--</h4>
                 </div>
             </div>
         </div>
