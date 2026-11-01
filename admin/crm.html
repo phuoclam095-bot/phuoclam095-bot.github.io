@@ -1384,7 +1384,7 @@ async function printContract(c) {
         const result = await res.json();
         
         if (result.status === 'token_expired' || result.error === 'invalid_grant') {
-            if (confirm("Quyền kết nối Google Calendar của bạn đã hết hạn.\n\nVui Lòng kết nối lại tài khoản để đồng bộ")) {
+            if (confirm("Quyền kết nối Google Calendar của bạn đã hết hạn.\n\nVui Lòng kết nối lại tài khoản để đồng bộ.")) {
                 requestCalendarPermission();
             }
             return;
@@ -1610,7 +1610,7 @@ async function triggerSyncAndCheckToken() {
         const result = await res.json();
 
         if (result.status === 'token_expired' || result.error === 'invalid_grant') {
-            if (confirm("Quyền kết nối Google Calendar của bạn đã hết hạn hoặc bị thu hồi.\n\nBạn có muốn bấm để cấp quyền lại ngay không?")) {
+            if (confirm("Quyền kết nối Google Calendar của bạn đã hết hạn.\n\nVui Lòng kết nối lại tài khoản để đồng bộ.")) {
                 redirectToGoogleAuth();
             }
             return;
