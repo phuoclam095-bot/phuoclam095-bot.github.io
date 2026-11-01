@@ -573,15 +573,15 @@
 
 function updateHeaderUI() {
     const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
-    const status = localStorage.getItem('admin_status') || 'new';
-    const expiry = getExpiryTimestamp();
     const name = localStorage.getItem('admin_name') || 'Anh/Chị';
-    const isVIP = (status === 'active' && expiry > Date.now());
+
     const navLinks = document.getElementById('adminNavLinks');
     const loggedInNav = document.getElementById('loggedInNav');
     const loggedOutNav = document.getElementById('loggedOutNav');
     const mainWorkGrid = document.getElementById('mainWorkGrid');
     const vipExpiredBlockNotice = document.getElementById('vipExpiredBlockNotice');
+
+    // 🌟 Tạm thời cho phép hiển thị và truy cập toàn bộ hệ thống bất kể trạng thái VIP hay hết hạn
     if(navLinks) navLinks.style.setProperty('display', 'flex', 'important');
     if(loggedInNav) loggedInNav.style.setProperty('display', 'flex', 'important');
     if(loggedOutNav) loggedOutNav.style.setProperty('display', 'none', 'important');
@@ -589,40 +589,22 @@ function updateHeaderUI() {
     if(vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'none', 'important');
 
     if (isLoggedIn) {
-        if(navLinks) navLinks.style.setProperty('display', 'flex', 'important');
-        if(loggedInNav) loggedInNav.style.setProperty('display', 'flex', 'important');
-        if(loggedOutNav) loggedOutNav.style.setProperty('display', 'none', 'important');
-        
         document.getElementById('userNameDisplay').innerText = name;
         const av = localStorage.getItem('admin_avatar');
         document.getElementById('avatarPlaceholder').innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:30px; color:var(--primary)"></i>`;
-
+        
         const statusEl = document.getElementById('userStatusDisplay');
         if (statusEl) {
-            if (isVIP) {
-                statusEl.innerHTML = `<span class="status-tag tag-active">ACTIVE - Hạn: ${new Date(expiry).toLocaleDateString('vi-VN')}</span>`;
-                if (mainWorkGrid) mainWorkGrid.style.setProperty('display', 'block', 'important');
-                if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'none', 'important');
-            } else {
-                statusEl.innerHTML = `<span class="status-tag ${status === 'new' ? 'tag-new' : 'tag-expired'}">${status === 'new' ? 'MỚI' : 'EXPIRED'}</span>`;
-                if (mainWorkGrid) mainWorkGrid.style.setProperty('display', 'none', 'important');
-                if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'block', 'important');
-            }
             statusEl.innerHTML = `<span class="status-tag tag-active">TESTER - MIỄN PHÍ</span>`;
         }
     } else {
+        // Nếu chưa đăng nhập, hiển thị tên mặc định để nhân viên Google vẫn thấy giao diện mở
         document.getElementById('userNameDisplay').innerText = "Google Reviewer";
         document.getElementById('avatarPlaceholder').innerHTML = `<i class="fas fa-user-shield" style="font-size:30px; color:var(--primary)"></i>`;
         const statusEl = document.getElementById('userStatusDisplay');
         if (statusEl) {
             statusEl.innerHTML = `<span class="status-tag tag-active">REVIEW MODE</span>`;
         }
-    } else { 
-        if(navLinks) navLinks.style.setProperty('display', 'none', 'important');
-        if(loggedInNav) loggedInNav.style.setProperty('display', 'none', 'important');
-        if(loggedOutNav) loggedOutNav.style.setProperty('display', 'block', 'important');
-        if(mainWorkGrid) mainWorkGrid.style.setProperty('display', 'none', 'important');
-        if(vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'block', 'important');
     }
 }
 function getExpiryTimestamp() {
