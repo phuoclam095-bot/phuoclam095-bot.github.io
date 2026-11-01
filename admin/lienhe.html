@@ -175,6 +175,28 @@
             .supreme-title { font-size: 1.8rem; letter-spacing: 4px; }
             .contact-grid { grid-template-columns: 1fr; gap: 12px; }
         }
+        #loggedInNav {
+            border: 1.5px solid var(--primary);
+            border-radius: 50px;
+            padding-right: 10px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        .user-pill {  
+            background: rgba(255,255,255,0.05);  
+            padding: 5px 15px;  
+            border-radius: 50px;  
+            display: flex;  
+            align-items: center;  
+            gap: 10px;  
+            height: 48px;  
+            min-width: 180px;  
+        }
+        #avatarPlaceholder { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--primary); background: #000; flex-shrink: 0; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(0, 235, 176, 0.3); }
+        #avatarPlaceholder img { width: 100%; height: 100%; object-fit: cover; }
+        .status-tag { font-size: 0.55rem; padding: 2px 8px; border-radius: 4px; font-weight: 900; text-transform: uppercase; text-align: center; display: block; margin-top: 1px; line-height: 1.2; }
+        .tag-active { background: var(--primary); color: #000; }
+        .tag-new { background: #ff9f43; color: #000; }
+        .tag-expired { background: #ff4757; color: #fff; }
     </style>
 </head>
 <body>
@@ -186,18 +208,17 @@
             <a class="navbar-brand m-0" href="index">CHONANHNHANH<span style="color:#f0c300">.VN</span></a>
             
             <div class="d-flex align-items-center ms-auto order-lg-3">
-                <div id="authControl">
-                    <div class="user-status-box">
-                        <div id="avatarPlaceholder" class="avt-circle"></div>
-                        <div class="d-flex flex-column">
-                            <span id="userNameDisplay">...</span>
-                            <div class="d-flex align-items-center gap-2">
-                                <span id="badgeStatus" class="status-tag" style="background:var(--primary); color:#000;">...</span>
-                                <span id="userExpiryText"></span>
-                            </div>
+                <div id="loggedInNav" class="d-flex align-items-center">
+                    <div class="user-pill">
+                        <div id="avatarPlaceholder"></div>
+                        <div class="d-flex flex-column overflow-hidden">
+                            <span id="userNameDisplay" style="font-weight:900; font-size:0.75rem; line-height:1"></span>
+                            <div id="userStatusDisplay"></div>
                         </div>
                     </div>
-                    <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()"><i class="fas fa-power-off"></i></button>
+                    <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()" title="Đăng xuất" style="cursor:pointer">
+                        <i class="fas fa-power-off"></i>
+                    </button>
                 </div>
             </div>
 
@@ -262,23 +283,52 @@
             } catch (e) { typing.style.display = 'none'; }
             chat.scrollTop = chat.scrollHeight;
         }
-
+        function getExpiryTimestamp() {
+            let raw = localStorage.getItem('admin_expiry');
+            if (!raw || raw === '0' || raw === 'null' || raw === 'undefined') return 0;
+            if (!isNaN(raw)) return parseInt(raw);
+            let parsed = Date.parse(raw);
+            return !isNaN(parsed) ? parsed : 0;
+        }
         function updateHeaderUI() {
             if (localStorage.getItem('admin_is_logged_in') === 'true') {
-                const name = localStorage.getItem('admin_name'), av = localStorage.getItem('admin_avatar'), status = localStorage.getItem('admin_status') || 'new', expiry = parseInt(localStorage.getItem('admin_expiry')) || 0;
+                const name = localStorage.getItem('admin_name') || 'Admin';
+                const av = localStorage.getItem('admin_avatar');
+                const status = localStorage.getItem('admin_status') || 'new';
+                const expiry = getExpiryTimestamp();
+
                 document.getElementById('userNameDisplay').innerText = name;
                 document.getElementById('welcomeMsg').innerHTML = `Chào <b>${name}</b>! Tôi là trợ lý ảo của <b>chonanhnhanh.vn</b>. Rất vui được hỗ trợ bạn!`;
-                document.getElementById('avatarPlaceholder').innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:32px; color:var(--primary)"></i>`;
-                const badge = document.getElementById('badgeStatus'); const expText = document.getElementById('userExpiryText');
-                if (status === 'active' && expiry > Date.now()) { 
-                    badge.innerText = "ACTIVE"; 
-                    expText.innerText = "Hạn: " + new Date(expiry).toLocaleDateString('vi-VN'); 
-                } else { badge.innerText = "MỚI"; }
-                document.getElementById('authControl').style.setProperty('display', 'flex', 'important');
-            } else { window.location.href = 'index'; }
+                
+                const avatarPlaceholder = document.getElementById('avatarPlaceholder');
+                if (avatarPlaceholder) {
+                    avatarPlaceholder.innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:30px; color:var(--primary)"></i>`;
+                }
+
+                const statusEl = document.getElementById('userStatusDisplay');
+                const isVIP = (status === 'active' && expiry > Date.now());
+
+                if (isVIP) {
+                    if(statusEl) statusEl.innerHTML = `<span class="status-tag tag-active">ACTIVE - Hạn: ${new Date(expiry).toLocaleDateString('vi-VN')}</span>`;
+                } else if (status === 'new') {
+                    if(statusEl) statusEl.innerHTML = `<span class="status-tag tag-new">MỚI</span>`;
+                } else {
+                    if(statusEl) statusEl.innerHTML = `<span class="status-tag tag-expired">EXPIRED</span>`;
+                }
+
+                document.getElementById('loggedInNav').style.display = 'flex';
+            } else { 
+                window.location.href = 'index'; 
+            }
         }
-        document.addEventListener('DOMContentLoaded', () => { updateHeaderUI(); setTimeout(() => document.getElementById('loadOverlay').style.display = 'none', 500); });
-        function logoutAdmin() { localStorage.clear(); window.location.href = 'index'; }
+        document.addEventListener('DOMContentLoaded', () => { 
+            updateHeaderUI(); 
+            setTimeout(() => document.getElementById('loadOverlay').style.display = 'none', 500); 
+        });
+        document.addEventListener('DOMContentLoaded', () => { 
+            updateHeaderUI(); 
+            setTimeout(() => document.getElementById('loadOverlay').style.display = 'none', 500); 
+        });
     </script>
 </body>
 </html>
