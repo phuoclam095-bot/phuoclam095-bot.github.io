@@ -1325,6 +1325,9 @@ async function printContract(c) {
         } else {
             alert('Lỗi cập nhật trên máy chủ!');
         }
+    } catch(e) {
+        console.error(e);
+        alert('Lỗi kết nối webhook n8n!');
     }
 }
         async function settleContract(contractId) {
@@ -1449,8 +1452,7 @@ async function printContract(c) {
             } else {
                 renderModalAgendaList(modalCurrentYear, modalCurrentMonth);
             }
-        } 
-}
+        }
         document.addEventListener('DOMContentLoaded', () => {
             updateHeaderUI();
             loadContracts();
