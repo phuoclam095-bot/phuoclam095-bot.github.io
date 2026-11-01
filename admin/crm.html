@@ -677,15 +677,20 @@ function getExpiryTimestamp() {
             const grandTotal = total + extra;
             const remaining = grandTotal - deposit;
             
-            document.getElementById('remainingPreview').innerText = remaining.toLocaleString('vi-VN') + ' VNĐ';
-
+            // Nếu tất cả các ô đều bằng 0 thì ép hiển thị là 0 VNĐ rõ ràng
+            if (grandTotal === 0 && deposit === 0) {
+                document.getElementById('remainingPreview').innerText = '0 VNĐ';
+            } else {
+                document.getElementById('remainingPreview').innerText = remaining.toLocaleString('vi-VN') + ' VNĐ';
+            }
+        
             const statusInput = document.getElementById('paymentStatus');
             if (deposit <= 0) {
                 statusInput.value = "Chưa cọc";
             } else if (remaining <= 0) {
                 statusInput.value = "Đã tất toán";
             } else {
-                statusInput.value = "Đã cọc ";
+                statusInput.value = "Đã cọc";
             }
         }
         let allContractsGlobal = []; 
@@ -1201,7 +1206,11 @@ async function printContract(c) {
             const grandTotal = total + extra;
             const remaining = grandTotal - deposit;
             
-            document.getElementById('editRemainingPreview').innerText = remaining.toLocaleString('vi-VN') + ' VNĐ';
+            if (grandTotal === 0 && deposit === 0) {
+                document.getElementById('editRemainingPreview').innerText = '0 VNĐ';
+            } else {
+                document.getElementById('editRemainingPreview').innerText = remaining.toLocaleString('vi-VN') + ' VNĐ';
+            }
         
             const statusInput = document.getElementById('editPaymentStatus');
             if (deposit <= 0) {
@@ -1209,7 +1218,7 @@ async function printContract(c) {
             } else if (remaining <= 0) {
                 statusInput.value = "Đã tất toán";
             } else {
-                statusInput.value = "Đã cọc ";
+                statusInput.value = "Đã cọc";
             }
         }
     
@@ -1425,23 +1434,25 @@ async function printContract(c) {
         
         if(res.ok) {
             showToast("Đã lưu hợp đồng và đồng bộ thành công!");
+            
+            // Đóng modal thêm hợp đồng
             let addModalEl = bootstrap.Modal.getInstance(document.getElementById('addContractModal'));
             if(addModalEl) addModalEl.hide();
+
+            // Reset form và ép dòng công nợ còn lại về 0 VNĐ
             document.getElementById('contractForm').reset();
+            document.getElementById('remainingPreview').innerText = '0 VNĐ'; // <-- Thêm dòng này để xóa sạch số tiền sót lại
+            document.getElementById('paymentStatus').value = 'Chưa cọc';
+
+            // Tải lại ngầm danh sách hợp đồng
             await loadContracts();
+            
             if (currentCalendarView === 'grid') {
                 renderModalCalendar(modalCurrentYear, modalCurrentMonth);
             } else {
                 renderModalAgendaList(modalCurrentYear, modalCurrentMonth);
             }
-        } else {
-            alert('Lỗi lưu hợp đồng trên máy chủ!');
         }
-    } catch(e) {
-        console.error(e);
-        alert('Lỗi kết nối webhook!');
-    }
-}
         document.addEventListener('DOMContentLoaded', () => {
             updateHeaderUI();
             loadContracts();
