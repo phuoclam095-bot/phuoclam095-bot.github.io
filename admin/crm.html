@@ -655,8 +655,6 @@ function getExpiryTimestamp() {
     const adminEmail = localStorage.getItem('admin_email') || '';
     try {
         const res = await fetch(`${PATHS.GET_CONTRACTS}?studio_slug=${encodeURIComponent(studioSlug)}&admin_email=${encodeURIComponent(adminEmail)}`);
-        
-        // Nếu server trả về lỗi HTTP (ví dụ 404, 500)
         if (!res.ok) {
             throw new Error("Lỗi máy chủ HTTP: " + res.status);
         }
@@ -688,7 +686,6 @@ function getExpiryTimestamp() {
             const monthsSet = new Set();
             contracts.forEach(c => {
                 if (c.event_date) {
-                    // Lấy đúng 7 ký tự đầu tiên đại diện cho "YYYY-MM" (ví dụ: "2026-10")
                     const cleanDate = c.event_date.replace('T', ' ');
                     const ym = cleanDate.substring(0, 7); 
                     if (ym.length === 7) monthsSet.add(ym);
