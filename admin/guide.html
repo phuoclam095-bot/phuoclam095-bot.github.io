@@ -90,10 +90,7 @@
                             <div id="userStatusDisplay"></div>
                         </div>
                     </div>
-                    <button class="btn btn-link text-primary p-0 ms-2" onclick="openStudioConfigModal()" title="Cấu hình Studio" style="cursor:pointer">
-                        <i class="fas fa-cog"></i>
-                    </button>
-                    <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()" style="cursor:pointer">
+                    <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()" style="cursor:pointer" title="Đăng xuất">
                         <i class="fas fa-power-off"></i>
                     </button>
                 </div>
@@ -184,8 +181,25 @@
         } else {
             document.getElementById('loggedInNav').style.display = 'none';
             document.getElementById('loggedOutNav').style.display = 'block';
-        }
+        }    
 
+        function getExpiryTimestamp() {
+            let raw = localStorage.getItem('admin_expiry');
+            if (!raw || raw === '0' || raw === 'null' || raw === 'undefined') return 0;
+            
+            // Nếu là số dạng timestamp (miliseconds)
+            if (!isNaN(raw)) {
+                return parseInt(raw);
+            }
+            
+            // Nếu là định dạng chuỗi ngày tháng (ví dụ: DD/MM/YYYY hoặc ISO)
+            let parsed = Date.parse(raw);
+            if (!isNaN(parsed)) {
+                return parsed;
+            }
+            
+            return 0;
+        }
         function startGoogleLogin() {
             const CLIENT_ID = '549408699768-0hhl7oc0sjhr1c9tsa1fo9ahv5apuecc.apps.googleusercontent.com';
             const OAUTH = 'https://wsm.congtubaclieu.com.vn/webhook/google-oauth-callback';
