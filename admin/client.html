@@ -137,7 +137,6 @@
         <div id="photoViewer">
             <div class="stage">
                 <div id="photoInfoBadge">0/0</div>
-                <!-- Khung bọc chuẩn xác cho cả PC và Mobile -->
                 <div class="stage-inner">
                     <img id="mainImg" src="">
                     <div id="clientWatermarkContainer"></div>
@@ -172,7 +171,7 @@
         const studioSlug = urlParams.get('studio');
         let fid = '';
         let albumSettings = { download: false, comment: false, limitPhotos: 0, watermark_enabled: true, watermark_logo: '' };
-        let watermarkHTML = ''; // Biến chứa HTML của logo
+        let watermarkHTML = ''; 
         
         const PATHS = { GET: 'https://wsm.congtubaclieu.com.vn/webhook/get-photos', SAVE: 'https://wsm.congtubaclieu.com.vn/webhook/save-selection', DONE: 'https://wsm.congtubaclieu.com.vn/webhook/finish-selection' };
         let photos=[], cur=0, currentView='grid', selectedIds = [], isFiltering = false;
@@ -180,7 +179,6 @@
         if (studioSlug) {
             console.log("Đang xem album thuộc Studio: " + studioSlug);
         }
-        // ---------------------------------------
 
         function getLink(id, sz) { return `https://lh3.googleusercontent.com/d/${id}=${sz}`; }
         
@@ -199,32 +197,25 @@
             if(currentView !== 'grid') return;
             const pCurrent = photos[cur];
             if(pCurrent) document.getElementById('displayFileName').innerText = pCurrent.name || "UNNAMED";
-            
-            // Lấy danh sách ghi chú đang lưu trên trình duyệt của khách
             const notesMap = JSON.parse(localStorage.getItem('ghi_chu_anh_' + fid) || '{}');
-            
             photos.forEach((p, i) => {
                 const el = document.getElementById(`item-${i}`); if(!el) return;
                 const isSel = selectedIds.includes(p.id);
                 const hasNote = p.note && p.note.trim() !== '';
-                
                 el.classList.toggle('focused', i === cur);
                 el.classList.toggle('selected', isSel);
-                
                 let dot = el.querySelector('.vip-dot');
                 if(isSel) {
                     const num = selectedIds.indexOf(p.id) + 1;
                     if(!dot) el.insertAdjacentHTML('beforeend', `<div class="vip-dot">${num}</div>`);
                     else dot.innerText = num;
                 } else if(dot) dot.remove();
-
                 let noteIcon = el.querySelector('.note-badge');
                 if(hasNote) {
                     if(!noteIcon) el.insertAdjacentHTML('beforeend', `<div class="note-badge" title="Xem ghi chú" onclick="event.stopPropagation(); openViewNoteModal('${p.id}');"><i class="fas fa-comment-alt"></i></div>`);
                 } else if(noteIcon) {
                     noteIcon.remove();
                 }
-
                 el.style.display = (isFiltering && !isSel) ? 'none' : 'block';
             });
             updateInfo();
@@ -232,7 +223,6 @@
        function showViewer() {
             const p = photos[cur]; 
             if(!p) return;
-            
             document.getElementById('mainImg').src = getLink(p.id, 's800');
             document.getElementById('displayFileName').innerText = p.name || "UNNAMED";
             document.getElementById('photoInfoBadge').innerText = `${cur + 1} / ${photos.length}`;
@@ -242,17 +232,14 @@
                 watermarkContainer.innerHTML = watermarkHTML;
             }
             const strip = document.getElementById('strip'); 
-            strip.innerHTML = '';
-            
+            strip.innerHTML = '';    
             photos.forEach((photoItem, i) => {
                 const isSel = selectedIds.includes(photoItem.id);
                 const hasNote = photoItem.note && photoItem.note.trim() !== '';
                 if(isFiltering && !isSel) return;
-                
                 const th = document.createElement('div');
                 th.className = `th-vip ${i === cur ? 'act' : ''} ${isSel ? 'sel' : ''}`;
                 th.innerHTML = `<img src="${getLink(photoItem.id, 's100')}">`;
-                
                 if(isSel) {
                     const num = selectedIds.indexOf(photoItem.id) + 1;
                     th.insertAdjacentHTML('beforeend', `<div class="vip-dot" style="width:14px; height:14px; font-size:7px; top:2px; right:2px;">${num}</div>`);
@@ -396,10 +383,7 @@
             const p = photos[cur];
             if (!p) return;
             showToast("Đang tải ảnh gốc...");
-            
             const downloadUrl = `https://drive.google.com/uc?export=download&id=${p.id}`;
-            
-            // Mở tab ẩn hoặc tạo thẻ a tải trực tiếp
             const a = document.createElement('a');
             a.href = downloadUrl;
             a.download = p.name || `photo_${p.id}.jpg`;
@@ -407,8 +391,6 @@
             a.click();
             document.body.removeChild(a);
         }
-
-
         async function commentPhoto() {
             const p = photos[cur];
             if (!p) return;
