@@ -65,15 +65,11 @@
                 box-shadow: 0 0 10px var(--primary);  
             }
         }
-        
-        /* --- LOADING FLOATING & PULSE --- */
         #loadOverlay { position: fixed; inset: 0; background: #050a14; z-index: 20000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .load-logo { font-weight: 900; font-size: 2.5rem; color: var(--primary); text-shadow: var(--neon); letter-spacing: 5px; animation: floating 3s ease-in-out infinite; }
         @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
         .pulse-shadow { width: 100px; height: 10px; background: rgba(0,235,176,0.2); border-radius: 50%; margin-top: 20px; animation: shadow-pulse 3s ease-in-out infinite; }
         @keyframes shadow-pulse { 0%, 100% { transform: scale(1); opacity: 0.3; } 50% { transform: scale(1.5); opacity: 0.1; } }
-
-        /* --- NAVBAR ĐỒNG BỘ INDEX --- */
         .navbar { 
             background: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.5) 100%); 
             backdrop-filter: blur(25px); 
@@ -94,8 +90,6 @@
         .navbar-nav { display: flex; flex-direction: row; gap: 5px; list-style: none; margin: 0; padding: 0; }
         .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.72rem; text-transform: uppercase; padding: 10px 12px !important; cursor: pointer; transition: 0.3s ease; position: relative; white-space: nowrap; }
         .nav-link:hover, .nav-link.active { color: var(--primary) !important; }
-
-        /* --- USER CONTROL & PILL --- */
         .user-pill {  
             background: rgba(255,255,255,0.05);  
             padding: 5px 15px;  
@@ -130,8 +124,6 @@
         }
         .btn-login-rainbow:hover { transform: scale(1.05); }
         .btn-login-rainbow span { background: #fff; color: #000; font-weight: 900; padding: 8px 25px; border-radius: 50px; display: block; font-size: 0.85rem; }
-
-        /* --- TITLE --- */
         .supreme-title {  
             font-family: 'Montserrat', sans-serif;
             font-weight: 900; font-size: 2.5rem; text-transform: uppercase; letter-spacing: 10px; text-align: center; margin-bottom: 35px;
@@ -144,14 +136,10 @@
         }
         @keyframes text-shine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
         @keyframes rainbow-move { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
-
-        /* --- SEARCH --- */
         .search-wrapper { max-width: 500px; margin: 0 auto 40px; padding: 2px; border-radius: 50px; background: var(--rainbow); background-size: 200% auto; animation: rainbow-run 4s linear infinite; }
         @keyframes rainbow-run { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
         .search-inner { background: #080d1a; border-radius: 50px; display: flex; align-items: center; padding: 2px 20px; }
         .search-inner input { background: transparent; border: none; color: #fff !important; width: 100%; padding: 10px; font-weight: 700; outline: none; }
-
-        /* --- ALBUM GRID --- */
         #albumGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; padding: 0 20px; }
         .album-card-vip { background: rgba(10, 20, 40, 0.7); backdrop-filter: blur(15px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); transition: 0.3s; }
         .album-card-vip:hover { border-color: var(--primary); box-shadow: var(--neon); transform: translateY(-5px); }
@@ -167,8 +155,6 @@
         .btn-vip { height: 38px; border: none; border-radius: 10px; font-weight: 900; font-size: 0.65rem; text-transform: uppercase; color: #fff; }
         .v-view { background: #3b82f6; } .v-drive { background: #10b981; } .v-export { background: #f59e0b; color: #000; }
         .v-delete { background: rgba(255, 71, 87, 0.1); color: #ff4757; border: 1px solid #ff4757; grid-column: span 3; margin-top: 4px; height: 32px; }
-
-        /* --- MODAL XUẤT FILE --- */
         .modal-content { background: #0a0f1e !important; border: 2px solid var(--primary) !important; border-radius: 30px !important; box-shadow: 0 0 50px rgba(0, 235, 176, 0.15); }
         .modal-header { border-bottom: 1px solid rgba(255,255,255,0.05) !important; }
         .modal-title { color: var(--primary) !important; font-weight: 900 !important; font-size: 1.1rem; text-transform: uppercase; }
@@ -212,15 +198,10 @@
     </style>
 </head>
 <body>
-
-
     <div id="toastNotice"></div>
-
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
         <div class="container-fluid px-3 px-lg-5 d-flex flex-wrap align-items-center justify-content-between">
-            
             <a class="navbar-brand-left m-0" href="index">CHONANHNHANH<span style="color:#f0c300">.VN</span></a>
-            
             <div class="d-flex align-items-center ms-auto order-lg-3">
                 <div id="loggedOutNav" style="display: none;">
                     <div class="btn-login-rainbow" onclick="startGoogleLogin()">
@@ -264,7 +245,6 @@
 
     <div class="container-fluid">
         <div class="mt-5"><h1 class="supreme-title">Quản Lý Album</h1></div>
-        <!-- THÊM: Khung thông báo Khóa VIP (giống hệt trang copy) -->
         <div id="vipExpiredBlockNotice" style="display: none; max-width: 500px; margin: 40px auto 0; background: rgba(255, 71, 87, 0.1); border: 1.5px dashed #ff4757; border-radius: 24px; padding: 40px 20px; text-align: center; box-shadow: 0 10px 30px rgba(255, 71, 87, 0.1);">
             <i class="fas fa-lock fa-3x text-danger mb-3"></i>
             <h4 class="fw-bold text-white mb-2">TÍNH NĂNG ĐANG BỊ KHÓA</h4>
@@ -273,8 +253,6 @@
             </p>
             <a href="payment" class="btn fw-900 px-4 py-2 rounded-pill text-black text-uppercase" style="background: var(--primary); border: none; font-size: 0.85rem; text-decoration: none;">Gia Hạn VIP Ngay</a>
         </div>
-
-        <!-- THÊM: Bọc Thanh Tìm Kiếm và Grid vào thẻ div mainWorkGrid -->
         <div id="mainWorkGrid">
             <div class="search-wrapper">
                 <div class="search-inner">
@@ -286,8 +264,6 @@
             <div id="albumGrid"></div>
         </div>
     </div>
-
-    <!-- MODAL XEM GHI CHÚ CỦA KHÁCH -->
     <div class="modal fade" id="noteModal" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
@@ -296,11 +272,8 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
-                    <!-- THẺ NÀY ĐANG BỊ THIẾU NÊN GÂY RA LỖI NULL -->
                     <div class="alert alert-supreme text-center mb-3" id="noteModalInfo">Album: ...</div>
-                    
                     <div id="noteListContainer" style="max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;">
-                        <!-- Danh sách ghi chú sẽ đổ vào đây -->
                     </div>
                 </div>
             </div>
@@ -332,15 +305,9 @@
             
             const folderName = album.folderName || album.name || 'VIP Album';
             const albumTitle = folderName.replace(/'/g, "\\'");
-            
-            // 🌟 CHỈ LẤY ĐÚNG SLUG CỦA ALBUM ĐÓ, KHÔNG DÙNG localStorage CỦA ADMIN NỮA ĐỂ TRÁNH BỊ ĐÈ LINK
             let rawStudio = album.studio_slug || album.studioSlug || 'studio';
             const sSlug = rawStudio.replace(/-+/g, '-').replace(/^-|-$/g, '') || 'studio';
-            
-            // Tạo slug không có dấu gạch ngang cho tên album
             const aSlug = album.album_slug || album.albumSlug || createSlug(folderName);
-            
-            // 🌟 Đường link chuẩn xác theo đúng cấu hình album ban đầu
             const clientPageUrl = `${PATHS.CLIENT}${rawStudio}/${aSlug}`;
 
             card.innerHTML = `<div class="card-img-header" style="background-image: url('${img}');"><div class="album-vip-title">${folderName}</div></div>
@@ -372,7 +339,6 @@
        async function openNoteModal(folderId, albumName) {
             showToast("Đang tải ghi chú...");
             try {
-                // Gọi trực tiếp webhook mới bằng folderId, không lo lệch tham số slug nữa
                 const res = await fetch(`${PATHS.NOTES}?folderId=${folderId}`);
                 const data = await res.json();
                 const photos = data.photos || [];
@@ -435,11 +401,6 @@
                 showToast("Khách chưa chọn ảnh"); 
             }
         }
-
-        
-
-       
-        
         function getExpiryTimestamp() {
             let raw = localStorage.getItem('admin_expiry');
             if (!raw) return 0;
@@ -462,116 +423,102 @@
         }
 
         function updateHeaderUI() {
-    const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
-    const status = localStorage.getItem('admin_status') || 'new';
-    const expiry = getExpiryTimestamp();
-    const name = localStorage.getItem('admin_name') || 'Anh/Chị';
-    const isVIP = (status === 'active' && expiry > Date.now());
-
-    const navLinks = document.getElementById('adminNavLinks');
-    const loggedInNav = document.getElementById('loggedInNav');
-    const loggedOutNav = document.getElementById('loggedOutNav');
-    const mainWorkGrid = document.getElementById('mainWorkGrid');
-    const vipExpiredBlockNotice = document.getElementById('vipExpiredBlockNotice');
-
-    if (isLoggedIn) {
-        if(navLinks) navLinks.style.setProperty('display', 'flex', 'important');
-        if(loggedInNav) loggedInNav.style.setProperty('display', 'flex', 'important');
-        if(loggedOutNav) loggedOutNav.style.setProperty('display', 'none', 'important');
-        
-        const nameDisplay = document.getElementById('userNameDisplay');
-        if (nameDisplay) nameDisplay.innerText = name;
-
-        const avatarPlaceholder = document.getElementById('avatarPlaceholder');
-        const av = localStorage.getItem('admin_avatar');
-        if (avatarPlaceholder) {
-            avatarPlaceholder.innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:30px; color:var(--primary)"></i>`;
-        }
-        
-        const badge = document.getElementById('badgeStatus'); 
-        const expText = document.getElementById('userExpiryText');
-
-        if (isVIP) {
-            if (isVIP) {
-                if (badge) {
-                    badge.className = "status-tag tag-active";
-                    // Gộp chung cả ACTIVE và ngày tháng vào chung một thẻ mang nền xanh
-                    badge.innerText = "ACTIVE - Hạn: " + new Date(expiry).toLocaleDateString('vi-VN');
+            const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
+            const status = localStorage.getItem('admin_status') || 'new';
+            const expiry = getExpiryTimestamp();
+            const name = localStorage.getItem('admin_name') || 'Anh/Chị';
+            const isVIP = (status === 'active' && expiry > Date.now());
+            const navLinks = document.getElementById('adminNavLinks');
+            const loggedInNav = document.getElementById('loggedInNav');
+            const loggedOutNav = document.getElementById('loggedOutNav');
+            const mainWorkGrid = document.getElementById('mainWorkGrid');
+            const vipExpiredBlockNotice = document.getElementById('vipExpiredBlockNotice');
+            if (isLoggedIn) {
+                if(navLinks) navLinks.style.setProperty('display', 'flex', 'important');
+                if(loggedInNav) loggedInNav.style.setProperty('display', 'flex', 'important');
+                if(loggedOutNav) loggedOutNav.style.setProperty('display', 'none', 'important');
+                const nameDisplay = document.getElementById('userNameDisplay');
+                if (nameDisplay) nameDisplay.innerText = name;
+                const avatarPlaceholder = document.getElementById('avatarPlaceholder');
+                const av = localStorage.getItem('admin_avatar');
+                if (avatarPlaceholder) {
+                    avatarPlaceholder.innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:30px; color:var(--primary)"></i>`;
                 }
-                // Xóa hoặc để trống expText vì đã gộp chung vào badge rồi
-                if (expText) expText.innerText = "";
-                
-                if (mainWorkGrid) mainWorkGrid.style.setProperty('display', 'block', 'important');
-                if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'none', 'important');
-            }
+                const badge = document.getElementById('badgeStatus'); 
+                const expText = document.getElementById('userExpiryText');
+                if (isVIP) {
+                    if (isVIP) {
+                        if (badge) {
+                            badge.className = "status-tag tag-active";
+                            // Gộp chung cả ACTIVE và ngày tháng vào chung một thẻ mang nền xanh
+                            badge.innerText = "ACTIVE - Hạn: " + new Date(expiry).toLocaleDateString('vi-VN');
+                        }
+                        if (expText) expText.innerText = "";
                         
-            if (mainWorkGrid) mainWorkGrid.style.setProperty('display', 'block', 'important');
-            if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'none', 'important');
-        } else {
-            if (badge) {
-                badge.className = "status-tag tag-expired";
-                badge.innerText = status === 'new' ? "MỚI" : "EXPIRED";
+                        if (mainWorkGrid) mainWorkGrid.style.setProperty('display', 'block', 'important');
+                        if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'none', 'important');
+                    }           
+                    if (mainWorkGrid) mainWorkGrid.style.setProperty('display', 'block', 'important');
+                    if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'none', 'important');
+                } else {
+                    if (badge) {
+                        badge.className = "status-tag tag-expired";
+                        badge.innerText = status === 'new' ? "MỚI" : "EXPIRED";
+                    }
+                    if (expText) expText.innerText = expiry > 0 ? " - Hết hạn" : "";
+                    
+                    if (mainWorkGrid) mainWorkGrid.style.setProperty('display', 'none', 'important');
+                    if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'block', 'important');
+                }
+                } else { 
+                    if(navLinks) navLinks.style.setProperty('display', 'none', 'important');
+                    if(loggedInNav) loggedInNav.style.setProperty('display', 'none', 'important');
+                    if(loggedOutNav) loggedOutNav.style.setProperty('display', 'block', 'important');
+                    if(mainWorkGrid) mainWorkGrid.style.setProperty('display', 'none', 'important');
+                    if(vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'block', 'important');
+                }
             }
-            if (expText) expText.innerText = expiry > 0 ? " - Hết hạn" : "";
-            
-            if (mainWorkGrid) mainWorkGrid.style.setProperty('display', 'none', 'important');
-            if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'block', 'important');
-        }
-    } else { 
-        if(navLinks) navLinks.style.setProperty('display', 'none', 'important');
-        if(loggedInNav) loggedInNav.style.setProperty('display', 'none', 'important');
-        if(loggedOutNav) loggedOutNav.style.setProperty('display', 'block', 'important');
-        if(mainWorkGrid) mainWorkGrid.style.setProperty('display', 'none', 'important');
-        if(vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'block', 'important');
-    }
-}
-        function handleCopyTabClick(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            if (window.innerWidth <= 991.98) {
-                alert("Xin lỗi tính năng này không thể sử dụng trên điện thoại");
-            } else {
-                window.location.href = 'copy_local';
+            function handleCopyTabClick(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                if (window.innerWidth <= 991.98) {
+                    alert("Xin lỗi tính năng này không thể sử dụng trên điện thoại");
+                } else {
+                    window.location.href = 'copy_local';
+                }
             }
-        }
         function openSettingsModal(folderId, limitVal, downloadVal, commentVal, watermarkEnabledVal, watermarkLogoVal) {
-    document.getElementById('editFolderId').value = folderId;
-    document.getElementById('editLimitPhotos').value = (limitVal && limitVal > 0) ? limitVal : '';
-    
-    document.getElementById('editAllowDownload').checked = (downloadVal === true || downloadVal === 'true' || downloadVal === 1);
-    document.getElementById('editAllowComment').checked = (commentVal === true || commentVal === 'true' || commentVal === 1);
-    
-    // 🌟 Chuẩn hóa kiểm tra: chỉ khi nào thực sự là true hoặc 'TRUE' / 'true' / 1 thì mới bật, còn null, false hoặc bất kỳ giá trị nào khác đều là tắt
-    const isWatermarkOn = watermarkEnabledVal === true || 
-                          String(watermarkEnabledVal).toLowerCase() === 'true' || 
-                          watermarkEnabledVal === 1 || 
-                          watermarkEnabledVal === '1';
-                          
-    document.getElementById('editWatermarkEnabled').checked = isWatermarkOn;
-    
-    editStoredLogoBase64 = watermarkLogoVal || '';
-    const preview = document.getElementById('editLogoPreview');
-    if (editStoredLogoBase64 && editStoredLogoBase64 !== 'null' && editStoredLogoBase64 !== 'undefined') {
-        preview.src = editStoredLogoBase64;
-        preview.style.display = 'block';
-    } else {
-        editStoredLogoBase64 = '';
-        preview.src = '';
-        preview.style.display = 'none';
-    }
-    toggleEditWatermarkInput();
-
-    new bootstrap.Modal(document.getElementById('settingsModal')).show();
-}
-
+            document.getElementById('editFolderId').value = folderId;
+            document.getElementById('editLimitPhotos').value = (limitVal && limitVal > 0) ? limitVal : '';
+            
+            document.getElementById('editAllowDownload').checked = (downloadVal === true || downloadVal === 'true' || downloadVal === 1);
+            document.getElementById('editAllowComment').checked = (commentVal === true || commentVal === 'true' || commentVal === 1);
+            const isWatermarkOn = watermarkEnabledVal === true || 
+                                  String(watermarkEnabledVal).toLowerCase() === 'true' || 
+                                  watermarkEnabledVal === 1 || 
+                                  watermarkEnabledVal === '1';
+                                  
+            document.getElementById('editWatermarkEnabled').checked = isWatermarkOn;
+            editStoredLogoBase64 = watermarkLogoVal || '';
+            const preview = document.getElementById('editLogoPreview');
+            if (editStoredLogoBase64 && editStoredLogoBase64 !== 'null' && editStoredLogoBase64 !== 'undefined') {
+                preview.src = editStoredLogoBase64;
+                preview.style.display = 'block';
+            } else {
+                editStoredLogoBase64 = '';
+                preview.src = '';
+                preview.style.display = 'none';
+            }
+            toggleEditWatermarkInput();
+        
+            new bootstrap.Modal(document.getElementById('settingsModal')).show();
+        }
        async function saveAlbumSettings() {
             const folderId = document.getElementById('editFolderId').value;
             const limitPhotos = parseInt(document.getElementById('editLimitPhotos').value) || 0;
             const download = document.getElementById('editAllowDownload').checked;
             const comment = document.getElementById('editAllowComment').checked;
-            
-            // 🌟 Kiểm tra kỹ xem đúng ID của công tắc watermark chưa
             const watermarkEnabled = document.getElementById('editWatermarkEnabled').checked; 
             const watermarkLogo = editStoredLogoBase64;
             
@@ -603,15 +550,12 @@
                 alert("Lỗi kết nối máy chủ!");
             }
         }
-        let editStoredLogoBase64 = ''; // Biến lưu tạm base64 logo đang sửa
+        let editStoredLogoBase64 = ''; 
 
-        // 🌟 Hàm ẩn/hiện ô chọn file logo khi cấu hình album
         function toggleEditWatermarkInput() {
             const isChecked = document.getElementById('editWatermarkEnabled').checked;
             document.getElementById('editLogoUploadContainer').style.display = isChecked ? 'block' : 'none';
         }
-
-        // 🌟 Hàm xử lý đọc file logo tải lên từ máy tính cho album cụ thể
         function processEditLogoFile(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -651,7 +595,6 @@
         function logoutAdmin() { localStorage.clear(); window.location.href = 'index'; }
         document.addEventListener('DOMContentLoaded', init);
     </script>
-    <!-- MODAL CHỈNH SỬA CẤU HÌNH ALBUM -->
     <div class="modal fade" id="settingsModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -674,8 +617,6 @@
                         <input class="form-check-input" type="checkbox" id="editAllowComment">
                         <label class="form-check-label fw-bold text-white small" for="editAllowComment">Cho phép khách viết ghi chú / bình luận</label>
                     </div>
-
-                    <!-- 🌟 BỔ SUNG CÔNG TẮC ĐÓNG DẤU LOGO VÀ TẢI ẢNH LOGO -->
                     <div class="form-check form-switch mb-3">
                         <input class="form-check-input" type="checkbox" id="editWatermarkEnabled" onchange="toggleEditWatermarkInput()">
                         <label class="form-check-label fw-bold text-white small" for="editWatermarkEnabled">Đóng dấu bản quyền Logo</label>
@@ -689,8 +630,6 @@
                             <img id="editLogoPreview" src="" style="max-height: 40px; display: none; border-radius: 4px; border: 1px solid var(--primary);">
                         </div>
                     </div>
-                    <!-- 🌟 KẾT THÚC PHẦN BỔ SUNG GIAO DIỆN LOGO -->
-
                     <button type="button" class="btn btn-copy-action w-100" onclick="saveAlbumSettings()">LƯU THAY ĐỔI</button>
                 </div>
             </div>
