@@ -505,7 +505,10 @@
     } else {
         let listHtml = '<div class="row g-3">';
         
-        studio.albums.forEach(album => {
+        studio.albums.forEach((album, index) => {
+            // 🌟 Xen kẽ 2 màu nền: Ô chẵn màu tối (#111c2e), ô lẻ màu sáng hơn một chút (#1a2c4e)
+            let cardBgColor = (index % 2 === 0) ? '#111c2e' : '#1a2c4e';
+
             // 1. Xử lý phần hiển thị ghi chú của khách
             let notesHtml = '';
             if (album.clientNotes && album.clientNotes.length > 0) {
@@ -529,10 +532,10 @@
             let downloadText = album.config?.allowDownload ? '<span class="text-success fw-bold">Cho phép</span>' : '<span class="text-light fw-bold opacity-75">Khóa</span>';
             let maxSelectText = album.config?.maxSelect ? `<span class="text-info fw-bold">${album.config.maxSelect} ảnh</span>` : '<span class="text-white fw-bold">Không giới hạn</span>';
 
-            // 3. Khung HTML chính cho từng album (Cố định chung một màu nền #111c2e)
+            // 3. Khung HTML chính cho từng album với màu nền xen kẽ
             listHtml += `
                 <div class="col-12">
-                    <div class="card border border-secondary border-opacity-50 p-3 rounded-3 text-white shadow-sm position-relative overflow-hidden" style="background: #111c2e;">
+                    <div class="card border border-secondary border-opacity-50 p-3 rounded-3 text-white shadow-sm position-relative overflow-hidden" style="background: ${cardBgColor};">
                         <div style="position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--primary);"></div>
                         
                         <!-- Tên album & Link Drive -->
