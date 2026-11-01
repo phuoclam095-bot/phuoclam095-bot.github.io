@@ -340,7 +340,6 @@
 .modal {
     z-index: 1050 !important;
 }
-/* Tránh trường hợp bị dồn nhiều lớp backdrop gây mờ tối toàn trang */
 .modal-backdrop + .modal-backdrop {
     display: none;
 }
@@ -539,7 +538,6 @@
                                         <label class="form-check-label text-white fw-bold ms-3" for="syncGoogleCalendar" style="cursor: pointer; font-size: 0.85rem; line-height: 1.4;">
                                             <i class="fab fa-google text-primary me-1 fs-6"></i> 
                                             <span style="color: var(--primary);">Tích vào nếu bạn muốn thêm lịch này vào lịch Google</span>
-                                            <!-- Phần chữ thay đổi động nằm ở đây -->
                                             <div id="syncStatusText" class="text-success fw-bold mt-1" style="font-size: 0.75rem;">
                                                 ⚡ Trạng thái: Sẽ tự động đồng bộ lịch khi lưu.
                                             </div>
@@ -1171,31 +1169,29 @@ async function printContract(c) {
                 renderTable(filtered);
             }
             function openEditModal(c) {
-    document.getElementById('editContractId').value = c.id || '';
-    document.getElementById('editCustName').value = c.customer_name || '';
-    document.getElementById('editCustPhone').value = c.customer_phone || '';
-    document.getElementById('editCustEmail').value = c.customer_email || '';
-    document.getElementById('editServicePkg').value = c.service_package || '';
-    document.getElementById('editEventLocation').value = c.event_location || '';
-    document.getElementById('editTotalAmt').value = Math.round(parseFloat(c.total_amount) || 0);
-    document.getElementById('editDepositAmt').value = Math.round(parseFloat(c.deposit_amount) || 0);
-    document.getElementById('editExtraFee').value = Math.round(parseFloat(c.extra_fee) || 0);
-    document.getElementById('editEventNote').value = c.note || '';
-    
-    if (c.event_date) {
-        let cleanDt = c.event_date.replace(' ', 'T').substring(0, 16);
-        document.getElementById('editEventDate').value = cleanDt;
-    }
-    document.getElementById('editIsLunarEvent').checked = false;
-    toggleEditEventDateInputMode();
-    autoCalculateEdit();
-
-    // Mở modal chỉnh sửa đè lên trên lịch vạn niên mà không làm mất lịch
-    let editModal = new bootstrap.Modal(document.getElementById('editContractModal'), {
-        backdrop: 'static'
-    });
-    editModal.show();
-}
+                document.getElementById('editContractId').value = c.id || '';
+                document.getElementById('editCustName').value = c.customer_name || '';
+                document.getElementById('editCustPhone').value = c.customer_phone || '';
+                document.getElementById('editCustEmail').value = c.customer_email || '';
+                document.getElementById('editServicePkg').value = c.service_package || '';
+                document.getElementById('editEventLocation').value = c.event_location || '';
+                document.getElementById('editTotalAmt').value = Math.round(parseFloat(c.total_amount) || 0);
+                document.getElementById('editDepositAmt').value = Math.round(parseFloat(c.deposit_amount) || 0);
+                document.getElementById('editExtraFee').value = Math.round(parseFloat(c.extra_fee) || 0);
+                document.getElementById('editEventNote').value = c.note || '';
+                
+                if (c.event_date) {
+                    let cleanDt = c.event_date.replace(' ', 'T').substring(0, 16);
+                    document.getElementById('editEventDate').value = cleanDt;
+                }
+                document.getElementById('editIsLunarEvent').checked = false;
+                toggleEditEventDateInputMode();
+                autoCalculateEdit();
+                let editModal = new bootstrap.Modal(document.getElementById('editContractModal'), {
+                    backdrop: 'static'
+                });
+                editModal.show();
+            }
 
         function autoCalculateEdit() {
             const total = parseFloat(document.getElementById('editTotalAmt').value) || 0;
@@ -1308,12 +1304,9 @@ async function printContract(c) {
         
         if(res.ok) {
             showToast("Đã cập nhật hợp đồng thành công!");
-            
-            // Đóng modal sửa
+
             let editModalEl = bootstrap.Modal.getInstance(document.getElementById('editContractModal'));
             if(editModalEl) editModalEl.hide();
-
-            // Cập nhật ngầm dữ liệu bảng và lịch
             await loadContracts();
             if (currentCalendarView === 'grid') {
                 renderModalCalendar(modalCurrentYear, modalCurrentMonth);
@@ -1432,18 +1425,10 @@ async function printContract(c) {
         
         if(res.ok) {
             showToast("Đã lưu hợp đồng và đồng bộ thành công!");
-            
-            // Đóng modal thêm hợp đồng
             let addModalEl = bootstrap.Modal.getInstance(document.getElementById('addContractModal'));
             if(addModalEl) addModalEl.hide();
-
-            // Reset form
             document.getElementById('contractForm').reset();
-
-            // Tải lại ngầm danh sách hợp đồng và cập nhật giao diện ngay lập tức mà không reload trang
             await loadContracts();
-            
-            // Nếu modal lịch đang mở, vẽ lại lịch theo chế độ hiện tại
             if (currentCalendarView === 'grid') {
                 renderModalCalendar(modalCurrentYear, modalCurrentMonth);
             } else {
@@ -1504,7 +1489,7 @@ async function printContract(c) {
         if (monthSel) monthSel.value = modalCurrentMonth;
         if (yearSel) yearSel.value = modalCurrentYear;
     }
-    let currentCalendarView = 'grid'; // 'grid' hoặc 'list'
+    let currentCalendarView = 'grid'; 
 
 function switchCalendarView(viewType) {
     currentCalendarView = viewType;
@@ -1564,10 +1549,8 @@ function handleDayCellClick(year, month, day) {
     document.getElementById('eventDate').value = defaultTimeInput;
     document.getElementById('isLunarEvent').checked = false;
     if (typeof toggleEventDateInputMode === 'function') toggleEventDateInputMode();
-
-    // Mở modal thêm hợp đồng đè lên trên mà KHÔNG ẩn modal lịch vạn niên
     let addModal = new bootstrap.Modal(document.getElementById('addContractModal'), {
-        backdrop: 'static' // Giữ lịch ở dưới không bị click nhầm ra ngoài làm mất focus
+        backdrop: 'static' 
     });
     addModal.show();
 }
@@ -1630,7 +1613,6 @@ function createModalDayCell(day, month, year, isOtherMonth = false, isToday = fa
     cell.innerHTML = `
         <div class="d-flex justify-content-between align-items-center w-100 mb-1">
             <span style="font-size: 0.95rem; font-weight: 900; color: #fff;">${day}</span>
-            <!-- ĐÃ BỎ NỀN ĐEN: Ngày âm hiển thị trực tiếp thoáng đãng, to rõ -->
             <span style="font-size: 0.78rem; color: ${isFirstLunarDay ? '#f0c300' : 'var(--primary)'}; font-weight: 800;">${lunarText}</span>
         </div>
         <div class="flex-grow-1 overflow-y-auto" style="max-height: 75px;">
@@ -1692,7 +1674,6 @@ function renderModalAgendaList(year, month) {
                     </div>
                     <div>
                         <div class="d-flex align-items-center gap-2 mb-1">
-                            <!-- Sửa badge giờ hiển thị màu sắc rõ nét, không bị chìm -->
                             <span class="badge px-2 py-1 fw-bold text-black" style="background-color: var(--primary); font-size: 0.75rem;"><i class="fas fa-clock me-1"></i> ${timePart}</span>
                             <h6 class="m-0 text-white fw-bold" style="font-size: 0.95rem;">${c.customer_name || 'Khách lẻ'}</h6>
                             <span class="text-info fw-bold small" style="font-size: 0.8rem;"><i class="fas fa-phone-alt me-1"></i>${c.customer_phone || 'Chưa có SĐT'}</span>
@@ -1752,12 +1733,10 @@ function performModalConversion() {
     if(!resultEl || !dateInput || !dateInput.value) return;
 
     try {
-        // Tách chuỗi YYYY-MM-DD thủ công để tránh thư viện Date hiểu nhầm múi giờ UTC
         let parts = dateInput.value.split('-');
         let y = parseInt(parts[0]), m = parseInt(parts[1]), d = parseInt(parts[2]);
         
         if (!isLunarToSolar) {
-            // Dương lịch sang Âm lịch
             let solarObj = Solar.fromYmd(y, m, d);
             let lunarObj = solarObj.getLunar();
             let lD = lunarObj.getDay();
@@ -1766,7 +1745,6 @@ function performModalConversion() {
             let isLeap = lunarObj.getMonth() < 0;
             resultEl.innerHTML = `<span class="text-warning">➔ ÂL: ${lD}/${lM}${isLeap ? 'n' : ''}/${lY}</span>`;
         } else {
-            // Âm lịch sang Dương lịch
             let lunarObj = Lunar.fromYmd(y, m, d);
             let solarObj = lunarObj.getSolar();
             let sD = String(solarObj.getDay()).padStart(2, '0');
@@ -1874,7 +1852,6 @@ async function triggerSyncAndCheckToken() {
         let y = parseInt(parts[0]), m = parseInt(parts[1]), d = parseInt(parts[2]);
         
         if (!isLunarToSolar) {
-            // Dương sang Âm
             let solarObj = Solar.fromYmd(y, m, d);
             let lunarObj = solarObj.getLunar();
             let lD = lunarObj.getDay();
@@ -1883,7 +1860,6 @@ async function triggerSyncAndCheckToken() {
             let isLeap = lunarObj.getMonth() < 0;
             resultEl.innerHTML = `<span class="text-warning">➔ ÂL: ${lD}/${lM}${isLeap ? 'n' : ''}/${lY}</span>`;
         } else {
-            // Âm sang Dương
             let lunarObj = Lunar.fromYmd(y, m, d);
             let solarObj = lunarObj.getSolar();
             let sD = String(solarObj.getDay()).padStart(2, '0');
@@ -1906,8 +1882,7 @@ async function triggerSyncAndCheckToken() {
             document.getElementById('viewModeGrid').checked = true;
             switchCalendarView('grid');
             renderModalCalendar(modalCurrentYear, modalCurrentMonth);
-            
-            // Lấy chuẩn xác ngày tháng năm local hiện tại
+
             let year = modalToday.getFullYear();
             let month = String(modalToday.getMonth() + 1).padStart(2, '0');
             let day = String(modalToday.getDate()).padStart(2, '0');
@@ -1929,32 +1904,24 @@ async function triggerSyncAndCheckToken() {
     if (syncCheckbox) {
         function updateSyncUI() {
             if (syncCheckbox.checked) {
-                // 1. Hiển thị dòng chữ trạng thái phụ phía dưới
                 if (syncStatusText) {
                     syncStatusText.style.display = 'block';
                     syncStatusText.innerHTML = "⚡ Trạng thái: Sẽ tự động đồng bộ lịch khi lưu.";
                 }
-                // 2. Đổi tên nút bấm thành dài (có đồng bộ)
                 if (saveBtn) {
                     saveBtn.innerText = "LƯU HỢP ĐỒNG & ĐỒNG BỘ LỊCH GOOGLE CALENDAR";
                 }
             } else {
-                // 1. Ẩn dòng chữ trạng thái phụ
                 if (syncStatusText) {
                     syncStatusText.style.display = 'none';
                     syncStatusText.innerHTML = "";
                 }
-                // 2. Rút gọn tên nút bấm lại (chỉ lưu hợp đồng)
                 if (saveBtn) {
                     saveBtn.innerText = "LƯU HỢP ĐỒNG";
                 }
             }
         }
-
-        // Chạy lần đầu khi load trang/modal
         updateSyncUI();
-
-        // Lắng nghe sự kiện mỗi khi người dùng bấm tích / bỏ tích checkbox
         syncCheckbox.addEventListener('change', updateSyncUI);
     }
 });
@@ -2007,7 +1974,6 @@ async function triggerSyncAndCheckToken() {
         }
     }
         function fixModalBackdrop() {
-    // Xóa các backdrop dư thừa gây mờ màn hình
     document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
     document.body.classList.remove('modal-open');
     document.body.style.overflow = '';
@@ -2022,76 +1988,65 @@ async function triggerSyncAndCheckToken() {
     }
 });
             </script>
-<div class="modal fade" id="lunarCalendarModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered" style="max-width: 95vw; width: 95vw;">
-        <div class="modal-content" style="background: rgba(10, 17, 36, 0.98) !important; border: 1.5px solid var(--primary) !important; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.8);">
+            <div class="modal fade" id="lunarCalendarModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-xl modal-dialog-centered" style="max-width: 95vw; width: 95vw;">
+                    <div class="modal-content" style="background: rgba(10, 17, 36, 0.98) !important; border: 1.5px solid var(--primary) !important; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.8);">
+                        <div class="modal-header border-bottom border-secondary position-relative py-3 px-4">
+                            <h5 class="modal-title text-white fw-bold m-0 w-100 text-center" style="font-size: 1.1rem;">
+                                <i class="fas fa-calendar-alt text-primary me-2"></i> Lịch Vạn Niên & Lịch Trình Studio
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white position-absolute end-0 me-4" data-bs-dismiss="modal" aria-label="Close" style="z-index: 5;"></button>
+                        </div>
             
-            <!-- Header Modal -->
-            <div class="modal-header border-bottom border-secondary justify-content-between align-items-center py-3 px-4">
-                <h5 class="modal-title text-white fw-bold m-0" style="font-size: 1.1rem;">
-                    <i class="fas fa-calendar-alt text-primary me-2"></i> Lịch Vạn Niên & Lịch Trình Studio
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="modal-body p-4">
+            <div class="cal-header d-flex justify-content-between align-items-center mb-3 px-4 py-3 rounded-4 flex-wrap gap-3" style="background: rgba(13, 25, 48, 0.95); border: 1px solid rgba(0, 235, 176, 0.25); width: 100%; box-sizing: border-box;">
+                <div class="d-flex align-items-center gap-2" style="flex-shrink: 0;">
+                    <button class="btn-today-quick px-3 py-2 fw-bold text-uppercase" style="font-size: 0.8rem;" onclick="jumpToToday()">Hôm nay</button>
+                    
+                    <div class="d-flex align-items-center gap-1">
+                        <button class="btn btn-sm btn-outline-light rounded-2 px-2.5 py-1.5 border-0" style="background: rgba(255,255,255,0.05);" onclick="changeMonthModal(-1)" title="Tháng trước"><i class="fas fa-chevron-left text-primary"></i></button>
+                        <button class="btn btn-sm btn-outline-light rounded-2 px-2.5 py-1.5 border-0" style="background: rgba(255,255,255,0.05);" onclick="changeMonthModal(1)" title="Tháng sau"><i class="fas fa-chevron-right text-primary"></i></button>
+                    </div>
+                    
+                    <div class="d-flex align-items-center gap-1 text-white ms-2">
+                        <select id="modalSelectMonth" class="form-select form-select-sm bg-transparent text-white border-0 fw-bold shadow-none p-0 pe-1 cursor-pointer custom-select-dark" style="width: auto; outline: none; font-size: 0.95rem;" onchange="jumpToMonthModal()">
+                            <option value="0">Tháng 1</option><option value="1">Tháng 2</option>
+                            <option value="2">Tháng 3</option><option value="3">Tháng 4</option>
+                            <option value="4">Tháng 5</option><option value="5">Tháng 6</option>
+                            <option value="6">Tháng 7</option><option value="7">Tháng 8</option>
+                            <option value="8">Tháng 9</option><option value="9">Tháng 10</option>
+                            <option value="10">Tháng 11</option><option value="11">Tháng 12</option>
+                        </select>
+                        <span class="text-primary mx-1">/</span>
+                        <select id="modalSelectYear" class="form-select form-select-sm bg-transparent text-primary border-0 fw-bold shadow-none p-0 cursor-pointer custom-select-dark" style="width: auto; outline: none; font-size: 0.95rem;" onchange="jumpToMonthModal()">
+                        </select>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center justify-content-center gap-2 px-2 py-1" style="width: 360px; min-width: 360px; max-width: 360px; flex-shrink: 0; box-sizing: border-box;">
+                    <div class="btn-group btn-group-sm" role="group" style="flex-shrink: 0;">
+                        <input type="radio" class="btn-check" name="convertType" id="typeSolarToLunar" checked onclick="switchConvertMode()">
+                        <label class="btn btn-outline-primary py-1 px-2.5" style="font-size:0.7rem; font-weight:700;" for="typeSolarToLunar">Dương➔Âm</label>
+                        <input type="radio" class="btn-check" name="convertType" id="typeLunarToSolar" onclick="switchConvertMode()">
+                        <label class="btn btn-outline-primary py-1 px-2.5" style="font-size:0.7rem; font-weight:700;" for="typeLunarToSolar">Âm➔Dương</label>
+                    </div>
+                    
+                    <div style="width: 120px; min-width: 120px; max-width: 120px; flex-shrink: 0;">
+                        <input type="date" id="modalConvertDate" class="form-control form-control-sm text-center fw-bold shadow-none" style="font-size: 0.75rem; width: 120px !important; height: 30px !important; background: #13223f; color: #fff; border: 1px solid rgba(255,255,255,0.25); outline: none !important;" onchange="performModalConversion()">
+                    </div>
+                    
+                    <div id="modalConversionResult" class="text-success fw-bold text-nowrap text-start" style="font-size: 0.72rem; width: 95px; min-width: 95px; max-width: 95px; overflow: hidden; text-overflow: ellipsis; flex-shrink: 0;">
+                        Chọn ngày
+                    </div>
+                </div>
+                <div class="d-flex align-items-center p-0" role="group" style="flex-shrink: 0; gap: 6px;">
+                    <input type="radio" class="btn-check" name="calendarViewMode" id="viewModeGrid" checked onclick="switchCalendarView('grid')">
+                    <label class="btn btn-sm btn-outline-light px-3.5 py-1.5 fw-bold border border-secondary border-opacity-50 rounded-2" style="font-size: 0.8rem;" for="viewModeGrid"><i class="fas fa-th me-1.5 text-primary"></i> Lưới</label>
+            
+                    <input type="radio" class="btn-check" name="calendarViewMode" id="viewModeList" onclick="switchCalendarView('list')">
+                    <label class="btn btn-sm btn-outline-light px-3.5 py-1.5 fw-bold border border-secondary border-opacity-50 rounded-2" style="font-size: 0.8rem;" for="viewModeList"><i class="fas fa-list me-1.5 text-primary"></i> Danh Sách</label>
+                </div>
+            
             </div>
-
-            <!-- Modal Body -->
-            <div class="modal-body p-4">
-                
-                <!-- Thanh công cụ đã được phóng to nhẹ, dày dặn hơn nhưng giới hạn 100% khung ngoài, không phình to -->
-<div class="cal-header d-flex justify-content-between align-items-center mb-3 px-4 py-3 rounded-4 flex-wrap gap-3" style="background: rgba(13, 25, 48, 0.95); border: 1px solid rgba(0, 235, 176, 0.25); width: 100%; box-sizing: border-box;">
-    
-    <!-- Nhóm Trái: Hôm nay, Mũi tên, Tháng/Năm -->
-    <div class="d-flex align-items-center gap-2" style="flex-shrink: 0;">
-        <button class="btn-today-quick px-3 py-2 fw-bold text-uppercase" style="font-size: 0.8rem;" onclick="jumpToToday()">Hôm nay</button>
-        
-        <div class="d-flex align-items-center gap-1">
-            <button class="btn btn-sm btn-outline-light rounded-2 px-2.5 py-1.5 border-0" style="background: rgba(255,255,255,0.05);" onclick="changeMonthModal(-1)" title="Tháng trước"><i class="fas fa-chevron-left text-primary"></i></button>
-            <button class="btn btn-sm btn-outline-light rounded-2 px-2.5 py-1.5 border-0" style="background: rgba(255,255,255,0.05);" onclick="changeMonthModal(1)" title="Tháng sau"><i class="fas fa-chevron-right text-primary"></i></button>
-        </div>
-        
-        <div class="d-flex align-items-center gap-1 text-white ms-2">
-            <select id="modalSelectMonth" class="form-select form-select-sm bg-transparent text-white border-0 fw-bold shadow-none p-0 pe-1 cursor-pointer custom-select-dark" style="width: auto; outline: none; font-size: 0.95rem;" onchange="jumpToMonthModal()">
-                <option value="0">Tháng 1</option><option value="1">Tháng 2</option>
-                <option value="2">Tháng 3</option><option value="3">Tháng 4</option>
-                <option value="4">Tháng 5</option><option value="5">Tháng 6</option>
-                <option value="6">Tháng 7</option><option value="7">Tháng 8</option>
-                <option value="8">Tháng 9</option><option value="9">Tháng 10</option>
-                <option value="10">Tháng 11</option><option value="11">Tháng 12</option>
-            </select>
-            <span class="text-primary mx-1">/</span>
-            <select id="modalSelectYear" class="form-select form-select-sm bg-transparent text-primary border-0 fw-bold shadow-none p-0 cursor-pointer custom-select-dark" style="width: auto; outline: none; font-size: 0.95rem;" onchange="jumpToMonthModal()">
-            </select>
-        </div>
-    </div>
-
-    <!-- Nhóm Giữa: Chuyển đổi Âm Dương (Kích thước được căn chỉnh cân đối) -->
-    <div class="d-flex align-items-center justify-content-center gap-2 px-2 py-1" style="width: 360px; min-width: 360px; max-width: 360px; flex-shrink: 0; box-sizing: border-box;">
-        <div class="btn-group btn-group-sm" role="group" style="flex-shrink: 0;">
-            <input type="radio" class="btn-check" name="convertType" id="typeSolarToLunar" checked onclick="switchConvertMode()">
-            <label class="btn btn-outline-primary py-1 px-2.5" style="font-size:0.7rem; font-weight:700;" for="typeSolarToLunar">Dương➔Âm</label>
-            <input type="radio" class="btn-check" name="convertType" id="typeLunarToSolar" onclick="switchConvertMode()">
-            <label class="btn btn-outline-primary py-1 px-2.5" style="font-size:0.7rem; font-weight:700;" for="typeLunarToSolar">Âm➔Dương</label>
-        </div>
-        
-        <div style="width: 120px; min-width: 120px; max-width: 120px; flex-shrink: 0;">
-            <input type="date" id="modalConvertDate" class="form-control form-control-sm text-center fw-bold shadow-none" style="font-size: 0.75rem; width: 120px !important; height: 30px !important; background: #13223f; color: #fff; border: 1px solid rgba(255,255,255,0.25); outline: none !important;" onchange="performModalConversion()">
-        </div>
-        
-        <div id="modalConversionResult" class="text-success fw-bold text-nowrap text-start" style="font-size: 0.72rem; width: 95px; min-width: 95px; max-width: 95px; overflow: hidden; text-overflow: ellipsis; flex-shrink: 0;">
-            Chọn ngày
-        </div>
-    </div>
-    
-    <!-- Nhóm Phải: Nút Lưới & Danh Sách -->
-    <div class="d-flex align-items-center p-0" role="group" style="flex-shrink: 0; gap: 6px;">
-        <input type="radio" class="btn-check" name="calendarViewMode" id="viewModeGrid" checked onclick="switchCalendarView('grid')">
-        <label class="btn btn-sm btn-outline-light px-3.5 py-1.5 fw-bold border border-secondary border-opacity-50 rounded-2" style="font-size: 0.8rem;" for="viewModeGrid"><i class="fas fa-th me-1.5 text-primary"></i> Lưới</label>
-
-        <input type="radio" class="btn-check" name="calendarViewMode" id="viewModeList" onclick="switchCalendarView('list')">
-        <label class="btn btn-sm btn-outline-light px-3.5 py-1.5 fw-bold border border-secondary border-opacity-50 rounded-2" style="font-size: 0.8rem;" for="viewModeList"><i class="fas fa-list me-1.5 text-primary"></i> Danh Sách</label>
-    </div>
-
-</div>
                 <div id="calendarGridViewContainer">
                     <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; margin-bottom: 6px;">
                         <div style="font-weight: 900; color: #94a3b8; font-size: 0.75rem;">Thứ 2</div>
@@ -2105,8 +2060,6 @@ async function triggerSyncAndCheckToken() {
                     <div id="modalCalendarDaysContainer" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; min-height: 620px;">
                     </div>
                 </div>
-
-                <!-- DẠNG 2: DANH SÁCH SỰ KIỆN -->
                 <div id="calendarListViewContainer" style="display: none; height: 620px; overflow-y: auto; padding-right: 5px;">
                     <div id="modalCalendarAgendaBody"></div>
                 </div>
@@ -2115,8 +2068,6 @@ async function triggerSyncAndCheckToken() {
         </div>
     </div>
 </div>
-
-<!-- CSS bổ sung: Chống viền vàng focus và tùy chỉnh dropdown tối màu -->
 <style>
     .custom-select-dark option {
         background-color: #0c152a !important;
