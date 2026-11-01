@@ -1501,28 +1501,38 @@ async function printContract(c) {
     let bgStyle = isToday ? 'rgba(0,235,176,0.15)' : 'rgba(255,255,255,0.02)';
     let borderStyle = isToday ? '1.5px solid var(--primary)' : '1px solid rgba(255,255,255,0.04)';
     
-    cell.style.cssText = `background: ${bgStyle}; border: ${borderStyle}; border-radius: 10px; min-height: 95px; padding: 6px; display: flex; flex-direction: column; justify-content: space-between; opacity: ${isOtherMonth ? '0.3' : '1'}; position: relative; overflow: hidden;`;
+    cell.style.cssText = `background: ${bgStyle}; border: ${borderStyle}; border-radius: 10px; min-height: 105px; padding: 6px; display: flex; flex-direction: column; justify-content: space-between; opacity: ${isOtherMonth ? '0.3' : '1'}; position: relative; overflow: hidden;`;
 
     let dateStrFormatted = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     let dayContracts = (typeof allContractsGlobal !== 'undefined') ? allContractsGlobal.filter(c => c.event_date && c.event_date.startsWith(dateStrFormatted) && !c.is_hidden) : [];
 
     let formattedLunarDay = String(lunarDay).padStart(2, '0');
     let formattedLunarMonth = String(lunarMonth).padStart(2, '0') + (isLeap ? 'n' : '');
-    let lunarText = isFirstLunarDay ? `01/${formattedLunarMonth}` : `${formattedLunarDay}/${formattedLunarMonth}`;
+    let lunarText = isFirstLunarDay ? `01/${formattedLunarMonth} Âm` : `${formattedLunarDay}/${formattedLunarMonth}`;
 
     let htmlContent = `
-        <div class="d-flex justify-content-between align-items-center w-100">
-            <span style="font-size: 0.95rem; font-weight: 900; color: #fff;">${day}</span>
-            <span style="font-size: 0.68rem; color: ${isFirstLunarDay ? '#f0c300' : 'var(--primary)'}; font-weight: 700;">🌙 ${lunarText}</span>
+        <div class="d-flex justify-content-between align-items-center w-100 mb-1">
+            <span style="font-size: 1rem; font-weight: 900; color: #fff;">${day}</span>
+            <span style="font-size: 0.65rem; color: ${isFirstLunarDay ? '#f0c300' : '#94a3b8'}; background: rgba(0,0,0,0.3); padding: 1px 5px; border-radius: 4px; font-weight: 600;">${lunarText}</span>
         </div>
-        <div class="customer-events-area mt-1" style="flex-grow: 1; overflow-y: auto; max-height: 55px;">
+        <div class="customer-events-area" style="flex-grow: 1; overflow-y: auto; max-height: 65px;">
     `;
 
     if (dayContracts.length > 0) {
         dayContracts.forEach(c => {
+            // Lấy giờ phút từ event_date (VD: "2026-11-11T10:00" -> "10:00")
+            let timeStr = "";
+            if (c.event_date && c.event_date.includes('T')) {
+                timeStr = c.event_date.split('T')[1].substring(0, 5);
+            } else if (c.event_date && c.event_date.includes(' ')) {
+                timeStr = c.event_date.split(' ')[1].substring(0, 5);
+            }
+
+            let displayText = timeStr ? `${c.customer_name} - ${timeStr}` : c.customer_name;
+
             htmlContent += `
-                <div onclick='openEditModal(${JSON.stringify(c)})' class="badge bg-info text-dark d-block text-truncate mb-1 text-start" style="cursor: pointer; font-size: 0.65rem; padding: 3px 6px;" title="${c.customer_name} - ${c.service_package}">
-                    <i class="fas fa-camera-retro me-1"></i>${c.customer_name}
+                <div onclick='openEditModal(${JSON.stringify(c)})' class="badge bg-info text-dark d-block text-truncate mb-1 text-start" style="cursor: pointer; font-size: 0.68rem; font-weight: 700; padding: 4px 6px;" title="${displayText} - ${c.service_package}">
+                    <i class="fas fa-camera-retro me-1" style="font-size:0.6rem;"></i>${displayText}
                 </div>
             `;
         });
@@ -1532,7 +1542,7 @@ async function printContract(c) {
     cell.innerHTML = htmlContent;
     return cell;
 }
-        function renderCalendarListView(year, month) {
+      function renderCalendarListView(year, month) {
     const tbody = document.getElementById('calendarListTableBody');
     if (!tbody) return;
     tbody.innerHTML = '';
@@ -1542,31 +1552,57 @@ async function printContract(c) {
 
     let monthContracts = (typeof allContractsGlobal !== 'undefined') ? allContractsGlobal.filter(c => c.event_date && c.event_date.startsWith(targetYM) && !c.is_hidden) : [];
 
+    // Sắp xếp theo ngày tăng dần
+    monthContracts.sort((a, b) => new Date(a.event_date) - new Date(b.event_date));
+
     if (monthContracts.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="text-center text-secondary py-4">Không có lịch trình nào trong tháng ${month + 1}/${year}.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center text-secondary py-5">Không có lịch trình nào trong tháng ${month + 1}/${year}.</td></tr>`;
         return;
     }
 
     monthContracts.forEach(c => {
         let cleanDt = c.event_date.replace('T', ' ');
         let datePart = cleanDt.split(' ')[0];
+        let timePart = cleanDt.split(' ')[1] ? cleanDt.split(' ')[1].substring(0, 5) : 'Cả ngày';
         let [y, m, d] = datePart.split('-');
+        
         let lunarStr = '';
+        let dayOfWeekStr = '';
         try {
-            let solar = Solar.fromYmd(parseInt(y), parseInt(m), parseInt(d));
-            let lunar = solar.getLunar();
-            lunarStr = `<br><span style="color:#f0c300; font-size:0.7rem;">Âm: ${lunar.getDay()}/${Math.abs(lunar.getMonth())}/${lunar.getYear()}</span>`;
+            let solarObj = Solar.fromYmd(parseInt(y), parseInt(m), parseInt(d));
+            let lunarObj = solarObj.getLunar();
+            lunarStr = `(Âm lịch: Ngày ${lunarObj.getDay()} tháng ${Math.abs(lunarObj.getMonth())})`;
+            
+            // Tính thứ trong tuần
+            let dObj = new Date(y, m - 1, d);
+            let daysOfWeek = ['Chủ Nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
+            dayOfWeekStr = daysOfWeek[dObj.getDay()];
         } catch(e) {}
 
         tbody.innerHTML += `
-            <tr>
-                <td class="fw-bold text-primary">${cleanDt}${lunarStr}</td>
-                <td class="text-white fw-bold">${c.customer_name || ''}<br><small class="text-secondary">${c.customer_phone || ''}</small></td>
-                <td>${c.service_package || ''}</td>
-                <td>${c.event_location || 'Tại studio'}</td>
-                <td><span class="badge ${c.payment_status === 'Đã tất toán' ? 'bg-success' : 'bg-warning'} text-dark">${c.payment_status || 'Đã cọc'}</span></td>
-                <td class="text-end">
-                    <button class="btn btn-sm btn-outline-info py-0 px-2" style="font-size:0.7rem;" onclick='openEditModal(${JSON.stringify(c)})'><i class="fas fa-pen me-1"></i> Xem/Sửa</button>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <td style="width: 25%;">
+                    <div class="fw-bold text-white" style="font-size: 0.85rem;">${d} tháng ${m}, ${y}</div>
+                    <div style="font-size: 0.7rem; color: #f0c300; font-weight: 600;">${dayOfWeekStr} • ${lunarStr}</div>
+                </td>
+                <td style="width: 15%;">
+                    <span class="badge bg-secondary text-white" style="font-size: 0.75rem; font-weight: 700;">${timePart}</span>
+                </td>
+                <td style="width: 25%;">
+                    <div class="fw-bold text-primary" style="font-size: 0.85rem;">${c.customer_name || 'Khách lẻ'}</div>
+                    <div style="font-size: 0.72rem; color: #94a3b8;"><i class="fas fa-phone-alt me-1"></i>${c.customer_phone || 'Chưa có SĐT'}</div>
+                </td>
+                <td style="width: 20%;">
+                    <div class="text-white" style="font-size: 0.8rem;">${c.service_package || 'Gói dịch vụ'}</div>
+                    <div style="font-size: 0.7rem; color: #cbd5e1;"><i class="fas fa-map-marker-alt me-1 text-danger"></i>${c.event_location || 'Tại studio'}</div>
+                </td>
+                <td style="width: 15%;">
+                    <span class="badge ${c.payment_status === 'Đã tất toán' ? 'bg-success' : 'bg-warning'} text-dark" style="font-size: 0.7rem; font-weight: 800;">${c.payment_status || 'Đã cọc'}</span>
+                </td>
+                <td class="text-end" style="width: 10%;">
+                    <button class="btn btn-sm btn-outline-info py-1 px-2" style="font-size:0.75rem; border-radius: 6px;" onclick='openEditModal(${JSON.stringify(c)})' title="Xem và sửa hợp đồng">
+                        <i class="fas fa-pen"></i>
+                    </button>
                 </td>
             </tr>
         `;
