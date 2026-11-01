@@ -1452,7 +1452,11 @@ async function printContract(c) {
             } else {
                 renderModalAgendaList(modalCurrentYear, modalCurrentMonth);
             }
-        }
+        } catch(e) {
+        console.error(e);
+        alert('Lỗi kết nối webhook!');
+    }
+}
         document.addEventListener('DOMContentLoaded', () => {
             updateHeaderUI();
             loadContracts();
