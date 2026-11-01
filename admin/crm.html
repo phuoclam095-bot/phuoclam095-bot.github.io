@@ -1702,17 +1702,27 @@ function performModalConversion() {
     if(!resultEl || !dateInput || !dateInput.value) return;
 
     try {
+        // Tách chuỗi YYYY-MM-DD thủ công để tránh thư viện Date hiểu nhầm múi giờ UTC
         let parts = dateInput.value.split('-');
         let y = parseInt(parts[0]), m = parseInt(parts[1]), d = parseInt(parts[2]);
         
         if (!isLunarToSolar) {
+            // Dương lịch sang Âm lịch
             let solarObj = Solar.fromYmd(y, m, d);
             let lunarObj = solarObj.getLunar();
-            resultEl.innerHTML = `<span class="text-warning">➔ ÂL: Ngày ${lunarObj.getDay()}/${Math.abs(lunarObj.getMonth())}/${lunarObj.getYear()}</span>`;
+            let lD = lunarObj.getDay();
+            let lM = Math.abs(lunarObj.getMonth());
+            let lY = lunarObj.getYear();
+            let isLeap = lunarObj.getMonth() < 0;
+            resultEl.innerHTML = `<span class="text-warning">➔ ÂL: ${lD}/${lM}${isLeap ? 'n' : ''}/${lY}</span>`;
         } else {
+            // Âm lịch sang Dương lịch
             let lunarObj = Lunar.fromYmd(y, m, d);
             let solarObj = lunarObj.getSolar();
-            resultEl.innerHTML = `<span class="text-info">➔ DL: ${String(solarObj.getDay()).padStart(2,'0')}/${String(solarObj.getMonth()).padStart(2,'0')}/${solarObj.getYear()}</span>`;
+            let sD = String(solarObj.getDay()).padStart(2, '0');
+            let sM = String(solarObj.getMonth()).padStart(2, '0');
+            let sY = solarObj.getYear();
+            resultEl.innerHTML = `<span class="text-info">➔ DL: ${sD}/${sM}/${sY}</span>`;
         }
     } catch(e) {
         resultEl.innerHTML = `<span class="text-danger">Lỗi định dạng!</span>`;
@@ -1876,7 +1886,7 @@ async function triggerSyncAndCheckToken() {
         }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
+   document.addEventListener('DOMContentLoaded', () => {
     initModalCalendarYears();
     const modalEl = document.getElementById('lunarCalendarModal');
     if (modalEl) {
@@ -1887,7 +1897,7 @@ async function triggerSyncAndCheckToken() {
             switchCalendarView('grid');
             renderModalCalendar(modalCurrentYear, modalCurrentMonth);
             
-            // Fix lỗi chọn sai ngày do lệch múi giờ ISO string bằng cách lấy local YYYY-MM-DD
+            // Lấy chuẩn xác ngày tháng năm local hiện tại
             let year = modalToday.getFullYear();
             let month = String(modalToday.getMonth() + 1).padStart(2, '0');
             let day = String(modalToday.getDate()).padStart(2, '0');
@@ -2038,11 +2048,13 @@ async function triggerSyncAndCheckToken() {
                             <input type="radio" class="btn-check" name="convertType" id="typeLunarToSolar" onclick="switchConvertMode()">
                             <label class="btn btn-outline-primary py-0.5 px-2" style="font-size:0.65rem; font-weight:700;" for="typeLunarToSolar">Âm➔Dương</label>
                         </div>
-                        <div id="convertInputContainer" style="display: inline-block; width: 135px;">
-                            <!-- Thêm style outline: none để triệt tiêu hoàn toàn khung vàng trình duyệt -->
-                            <input type="date" id="modalConvertDate" class="form-control form-control-sm text-center fw-bold py-0 shadow-none" style="font-size: 0.72rem; height: 26px; background: #13223f; color: #fff; border: 1px solid rgba(255,255,255,0.2); outline: none !important;" onchange="performModalConversion()">
+                        
+                        <!-- Cố định cứng width và height, thêm box-sizing để chống phình to -->
+                        <div id="convertInputContainer" style="width: 130px; min-width: 130px; max-width: 130px;">
+                            <input type="date" id="modalConvertDate" class="form-control form-control-sm text-center fw-bold py-0 shadow-none" style="font-size: 0.72rem; width: 130px !important; height: 26px !important; background: #13223f; color: #fff; border: 1px solid rgba(255,255,255,0.2); outline: none !important; box-sizing: border-box;" onchange="performModalConversion()">
                         </div>
-                        <div id="modalConversionResult" class="text-success fw-bold text-nowrap" style="font-size: 0.72rem; min-width: 140px;">
+                        
+                        <div id="modalConversionResult" class="text-success fw-bold text-nowrap" style="font-size: 0.72rem; min-width: 130px;">
                             Chọn ngày quy đổi
                         </div>
                     </div>
