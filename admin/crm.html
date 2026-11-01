@@ -504,16 +504,25 @@
                     </div>
                         
                        
-                        <div class="row mb-3">
+                        <div class="row mb-4">
                             <div class="col-md-12">
-                                <div class="form-check p-3 rounded" style="background: rgba(0, 235, 176, 0.05); border: 1px solid rgba(0, 235, 176, 0.2);">
-                                    <input class="form-check-input" type="checkbox" id="syncGoogleCalendar" checked style="background-color: #13223f; border-color: var(--primary);">
-                                    <label class="form-check-input-label text-white fw-bold small ms-2" for="syncGoogleCalendar" style="cursor: pointer;">
-                                        <i class="fab fa-google text-primary me-1"></i> Đồng bộ lịch google ( Do chưa được xác minh web nên sau khi thêm lịch vui lòng bấm vào kết nối lịch và đồng bộ bên ngoài giao diện để đồng bộ )
-                                    </label>
+                                <div class="p-3 rounded-4" style="background: rgba(0, 235, 176, 0.04); border: 1.5px solid rgba(0, 235, 176, 0.25); box-shadow: 0 4px 20px rgba(0,0,0,0.2);">
+                                    <div class="form-check d-flex align-items-center m-0 ps-0">
+                                        <input class="form-check-input mt-0" type="checkbox" id="syncGoogleCalendar" checked 
+                                               style="width: 24px; height: 24px; min-width: 24px; background-color: #13223f; border: 2px solid var(--primary); cursor: pointer; accent-color: var(--primary);">
+                                        
+                                        <label class="form-check-label text-white fw-bold ms-3" for="syncGoogleCalendar" style="cursor: pointer; font-size: 0.85rem; line-height: 1.4;">
+                                            <i class="fab fa-google text-primary me-1 fs-6"></i> 
+                                            <span style="color: var(--primary);">Tích vào nếu bạn muốn thêm lịch này vào lịch Google</span>
+                                            <!-- Phần chữ thay đổi động nằm ở đây -->
+                                            <div id="syncStatusText" class="text-success fw-bold mt-1" style="font-size: 0.75rem;">
+                                                ⚡ Trạng thái: Sẽ tự động đồng bộ lịch khi lưu.
+                                            </div>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
-                        </div>   
+                        </div>  
                         <div class="row">
                             <div class="col-md-4 mb-3">
                                 <label class="form-label small fw-bold text-secondary">TỔNG GIÁ TRỊ (VNĐ)</label>
@@ -544,7 +553,9 @@
                                 <span id="remainingPreview" class="text-warning fw-900 fs-5">0 VNĐ</span>
                             </div>
                         </div>
-                        <button type="button" class="btn btn-primary-custom w-100 py-3" onclick="saveContract()">LƯU HỢP ĐỒNG & ĐỒNG BỘ LỊCH GOOGLE CALENDAR</button>
+                        <button type="button" id="saveContractBtn" class="btn btn-primary-custom w-100 py-3" onclick="saveContract()">
+                            LƯU HỢP ĐỒNG & ĐỒNG BỘ LỊCH GOOGLE CALENDAR
+                        </button>
                     </form>
                 </div>
             </div>
@@ -1678,6 +1689,43 @@ async function triggerSyncAndCheckToken() {
             });
         }
     });
+        document.addEventListener('DOMContentLoaded', () => {
+    const syncCheckbox = document.getElementById('syncGoogleCalendar');
+    const syncStatusText = document.getElementById('syncStatusText');
+    const saveBtn = document.getElementById('saveContractBtn');
+
+    if (syncCheckbox) {
+        function updateSyncUI() {
+            if (syncCheckbox.checked) {
+                // 1. Hiển thị dòng chữ trạng thái phụ phía dưới
+                if (syncStatusText) {
+                    syncStatusText.style.display = 'block';
+                    syncStatusText.innerHTML = "⚡ Trạng thái: Sẽ tự động đồng bộ lịch khi lưu.";
+                }
+                // 2. Đổi tên nút bấm thành dài (có đồng bộ)
+                if (saveBtn) {
+                    saveBtn.innerText = "LƯU HỢP ĐỒNG & ĐỒNG BỘ LỊCH GOOGLE CALENDAR";
+                }
+            } else {
+                // 1. Ẩn dòng chữ trạng thái phụ
+                if (syncStatusText) {
+                    syncStatusText.style.display = 'none';
+                    syncStatusText.innerHTML = "";
+                }
+                // 2. Rút gọn tên nút bấm lại (chỉ lưu hợp đồng)
+                if (saveBtn) {
+                    saveBtn.innerText = "LƯU HỢP ĐỒNG";
+                }
+            }
+        }
+
+        // Chạy lần đầu khi load trang/modal
+        updateSyncUI();
+
+        // Lắng nghe sự kiện mỗi khi người dùng bấm tích / bỏ tích checkbox
+        syncCheckbox.addEventListener('change', updateSyncUI);
+    }
+});
     function toggleEventDateInputMode() {
         const isLunar = document.getElementById('isLunarEvent').checked;
         const noteEl = document.getElementById('eventDateNotes');
