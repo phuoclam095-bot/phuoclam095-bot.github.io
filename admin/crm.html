@@ -419,7 +419,7 @@
                         <button class="btn btn-sm btn-outline-warning fw-bold text-uppercase" id="btnToggleHidden" onclick="toggleShowHidden()">
                             <i class="fas fa-eye-slash me-1"></i> Xem ẩn (<span id="hiddenCount">0</span>)
                         </button>
-                        <button class="btn btn-outline-light fw-bold px-3 py-2 rounded-3 text-uppercase" style="font-size: 0.75rem; border-color: rgba(255,255,255,0.2);" onclick="requestCalendarPermission()">
+                        <button class="btn btn-outline-light fw-bold px-3 py-2 rounded-3 text-uppercase" style="font-size: 0.75rem; border-color: rgba(255,255,255,0.2);" onclick="triggerSyncAndCheckToken()">
                             <i class="fab fa-google text-primary me-2"></i> Kết nối Lịch & Đồng bộ
                         </button>
                         <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#addContractModal">
@@ -573,14 +573,15 @@
 
 function updateHeaderUI() {
     const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
+    const status = localStorage.getItem('admin_status') || 'new';
+    const expiry = getExpiryTimestamp();
     const name = localStorage.getItem('admin_name') || 'Anh/Chị';
-
+    const isVIP = (status === 'active' && expiry > Date.now());
     const navLinks = document.getElementById('adminNavLinks');
     const loggedInNav = document.getElementById('loggedInNav');
     const loggedOutNav = document.getElementById('loggedOutNav');
     const mainWorkGrid = document.getElementById('mainWorkGrid');
     const vipExpiredBlockNotice = document.getElementById('vipExpiredBlockNotice');
-
     if(navLinks) navLinks.style.setProperty('display', 'flex', 'important');
     if(loggedInNav) loggedInNav.style.setProperty('display', 'flex', 'important');
     if(loggedOutNav) loggedOutNav.style.setProperty('display', 'none', 'important');
@@ -588,12 +589,25 @@ function updateHeaderUI() {
     if(vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'none', 'important');
 
     if (isLoggedIn) {
+        if(navLinks) navLinks.style.setProperty('display', 'flex', 'important');
+        if(loggedInNav) loggedInNav.style.setProperty('display', 'flex', 'important');
+        if(loggedOutNav) loggedOutNav.style.setProperty('display', 'none', 'important');
+        
         document.getElementById('userNameDisplay').innerText = name;
         const av = localStorage.getItem('admin_avatar');
         document.getElementById('avatarPlaceholder').innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:30px; color:var(--primary)"></i>`;
-        
+
         const statusEl = document.getElementById('userStatusDisplay');
         if (statusEl) {
+            if (isVIP) {
+                statusEl.innerHTML = `<span class="status-tag tag-active">ACTIVE - Hạn: ${new Date(expiry).toLocaleDateString('vi-VN')}</span>`;
+                if (mainWorkGrid) mainWorkGrid.style.setProperty('display', 'block', 'important');
+                if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'none', 'important');
+            } else {
+                statusEl.innerHTML = `<span class="status-tag ${status === 'new' ? 'tag-new' : 'tag-expired'}">${status === 'new' ? 'MỚI' : 'EXPIRED'}</span>`;
+                if (mainWorkGrid) mainWorkGrid.style.setProperty('display', 'none', 'important');
+                if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'block', 'important');
+            }
             statusEl.innerHTML = `<span class="status-tag tag-active">TESTER - MIỄN PHÍ</span>`;
         }
     } else {
@@ -603,6 +617,12 @@ function updateHeaderUI() {
         if (statusEl) {
             statusEl.innerHTML = `<span class="status-tag tag-active">REVIEW MODE</span>`;
         }
+    } else { 
+        if(navLinks) navLinks.style.setProperty('display', 'none', 'important');
+        if(loggedInNav) loggedInNav.style.setProperty('display', 'none', 'important');
+        if(loggedOutNav) loggedOutNav.style.setProperty('display', 'block', 'important');
+        if(mainWorkGrid) mainWorkGrid.style.setProperty('display', 'none', 'important');
+        if(vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'block', 'important');
     }
 }
 function getExpiryTimestamp() {
@@ -1295,89 +1315,96 @@ async function printContract(c) {
         }
 
         async function saveContract() {
-        const adminEmail = localStorage.getItem('admin_email') || "studio@congtubaclieu.com.vn";
-        
-        let rawDateVal = document.getElementById('eventDate').value;
-        const isLunar = document.getElementById('isLunarEvent').checked;
-        let finalEventDate = rawDateVal;
-        let lunarDateStr = "";
+    const adminEmail = localStorage.getItem('admin_email') || "";
+    const syncChecked = document.getElementById('syncGoogleCalendar').checked;
+    
+    let rawDateVal = document.getElementById('eventDate').value;
+    const isLunar = document.getElementById('isLunarEvent').checked;
+    let finalEventDate = rawDateVal;
+    let lunarDateStr = "";
 
-        if (rawDateVal) {
-            try {
-                let parts = rawDateVal.split('T');
-                let dateParts = parts[0].split('-');
-                let y = parseInt(dateParts[0]), m = parseInt(dateParts[1]), d = parseInt(dateParts[2]);
-                let timePart = parts[1] || '00:00';
-
-                let solarObj, lunarObj;
-                if (isLunar) {
-                    lunarObj = Lunar.fromYmd(y, m, d);
-                    solarObj = lunarObj.getSolar();
-                    
-                    let sY = solarObj.getYear();
-                    let sM = String(solarObj.getMonth()).padStart(2, '0');
-                    let sD = String(solarObj.getDay()).padStart(2, '0');
-                    
-                    finalEventDate = `${sY}-${sM}-${sD}T${timePart}`;
-                    let isLeap = lunarObj.getMonth() < 0;
-                    lunarDateStr = `${d}/${m}${isLeap ? 'n' : ''}/${y}`;
-                } else {
-                    solarObj = Solar.fromYmd(y, m, d);
-                    lunarObj = solarObj.getLunar();
-                    let lD = lunarObj.getDay();
-                    let lM = Math.abs(lunarObj.getMonth());
-                    let lY = lunarObj.getYear();
-                    let isLeap = lunarObj.getMonth() < 0;
-
-                    lunarDateStr = `${lD}/${lM}${isLeap ? 'n' : ''}/${lY}`;
-                }
-            } catch (e) {
-                console.error("Lỗi quy đổi ngày:", e);
-            }
-        }
-
-        const data = {
-            studio_email: adminEmail,
-            studio_slug: localStorage.getItem('admin_studio_slug') || 'studio',
-            customer_name: document.getElementById('custName').value,
-            customer_phone: document.getElementById('custPhone').value,
-            customer_email: document.getElementById('custEmail').value,
-            service_package: document.getElementById('servicePkg').value,
-            event_date: finalEventDate,
-            lunar_date: lunarDateStr, 
-            event_location: document.getElementById('eventLocation').value,
-            total_amount: document.getElementById('totalAmt').value,
-            deposit_amount: document.getElementById('depositAmt').value,
-            extra_fee: document.getElementById('extraFee').value,
-            payment_status: document.getElementById('paymentStatus').value,
-            note: document.getElementById('eventNote').value,
-            sync_calendar: document.getElementById('syncGoogleCalendar').checked
-        };
-        
-        if(!data.customer_name || !data.event_date) {
-            return alert('Vui lòng nhập Tên khách hàng và Ngày giờ sự kiện!');
-        }
-        
-        showToast("Đang xử lý hợp đồng...");
-        
+    if (rawDateVal) {
         try {
-            const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/save-contract', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-            
-            if(res.ok) {
-                showToast("Đã lưu hợp đồng thành công!");
-                setTimeout(() => location.reload(), 1200);
+            let parts = rawDateVal.split('T');
+            let dateParts = parts[0].split('-');
+            let y = parseInt(dateParts[0]), m = parseInt(dateParts[1]), d = parseInt(dateParts[2]);
+            let timePart = parts[1] || '00:00';
+
+            if (isLunar) {
+                let lunarObj = Lunar.fromYmd(y, m, d);
+                let solarObj = lunarObj.getSolar();
+                let sY = solarObj.getYear();
+                let sM = String(solarObj.getMonth()).padStart(2, '0');
+                let sD = String(solarObj.getDay()).padStart(2, '0');
+                finalEventDate = `${sY}-${sM}-${sD}T${timePart}`;
+                let isLeap = lunarObj.getMonth() < 0;
+                lunarDateStr = `${d}/${m}${isLeap ? 'n' : ''}/${y}`;
             } else {
-                alert('Lỗi lưu hợp đồng trên máy chủ!');
+                let solarObj = Solar.fromYmd(y, m, d);
+                let lunarObj = solarObj.getLunar();
+                let lD = lunarObj.getDay();
+                let lM = Math.abs(lunarObj.getMonth());
+                let lY = lunarObj.getYear();
+                let isLeap = lunarObj.getMonth() < 0;
+                lunarDateStr = `${lD}/${lM}${isLeap ? 'n' : ''}/${lY}`;
             }
-        } catch(e) {
-            console.error(e);
-            alert('Lỗi kết nối n8n webhook!');
+        } catch (e) {
+            console.error("Lỗi quy đổi ngày:", e);
         }
     }
+
+    const data = {
+        studio_email: adminEmail,
+        studio_slug: localStorage.getItem('admin_studio_slug') || 'studio',
+        customer_name: document.getElementById('custName').value,
+        customer_phone: document.getElementById('custPhone').value,
+        customer_email: document.getElementById('custEmail').value,
+        service_package: document.getElementById('servicePkg').value,
+        event_date: finalEventDate,
+        lunar_date: lunarDateStr, 
+        event_location: document.getElementById('eventLocation').value,
+        total_amount: document.getElementById('totalAmt').value,
+        deposit_amount: document.getElementById('depositAmt').value,
+        extra_fee: document.getElementById('extraFee').value,
+        payment_status: document.getElementById('paymentStatus').value,
+        note: document.getElementById('eventNote').value,
+        sync_calendar: syncChecked
+    };
+    
+    if(!data.customer_name || !data.event_date) {
+        return alert('Vui lòng nhập Tên khách hàng và Ngày giờ sự kiện!');
+    }
+    
+    showToast("Đang lưu hợp đồng và đồng bộ lịch ngầm...");
+    
+    try {
+        const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/save-contract', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await res.json();
+        
+        // 🌟 BẮT LỖI NẾU REFRESH TOKEN ĐÃ CHẾT / HẾT HẠN (invalid_grant)
+        if (result.status === 'token_expired' || result.error === 'invalid_grant') {
+            if (confirm("Quyền kết nối Google Calendar của bạn đã hết hạn hoặc bị thu hồi.\n\nBạn có muốn bấm để kết nối lại tài khoản ngay không?")) {
+                requestCalendarPermission();
+            }
+            return;
+        }
+        
+        if(res.ok) {
+            showToast("Đã lưu hợp đồng và đồng bộ lịch thành công!");
+            setTimeout(() => location.reload(), 1200);
+        } else {
+            alert('Lỗi lưu hợp đồng trên máy chủ!');
+        }
+    } catch(e) {
+        console.error(e);
+        alert('Lỗi kết nối webhook!');
+    }
+}
         document.addEventListener('DOMContentLoaded', () => {
             updateHeaderUI();
             loadContracts();
@@ -1395,10 +1422,12 @@ async function printContract(c) {
             const redirectUri = 'https://wsm.congtubaclieu.com.vn/webhook/save-calendar-token'; 
             const scope = 'https://www.googleapis.com/auth/calendar.events';
             const currentEmail = localStorage.getItem('admin_email') || '';
-            let authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scope)}&access_type=offline&prompt=consent&state=${encodeURIComponent(currentEmail)}`;
+            
+            let authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scope)}&access_type=offline&prompt=consent`;
             
             if (currentEmail) {
                 authUrl += `&login_hint=${encodeURIComponent(currentEmail)}`;
+                authUrl += `&state=${encodeURIComponent(currentEmail)}`;
             }
             
             window.location.href = authUrl;
@@ -1551,6 +1580,60 @@ async function printContract(c) {
         }
         performModalConversion();
     }
+function redirectToGoogleAuth() {
+    const clientId = '549408699768-0hhl7oc0sjhr1c9tsa1fo9ahv5apuecc.apps.googleusercontent.com';
+    const redirectUri = 'https://wsm.congtubaclieu.com.vn/webhook/save-calendar-token'; 
+    const scope = 'https://www.googleapis.com/auth/calendar.events';
+    const currentEmail = localStorage.getItem('admin_email') || '';
+    
+    let authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scope)}&access_type=offline&prompt=consent`;
+    
+    if (currentEmail) {
+        authUrl += `&login_hint=${encodeURIComponent(currentEmail)}`;
+        authUrl += `&state=${encodeURIComponent(currentEmail)}`;
+    }
+    
+    window.location.href = authUrl;
+}
+async function triggerSyncAndCheckToken() {
+    const adminEmail = localStorage.getItem('admin_email') || "";
+    if (!adminEmail) {
+        alert("Không tìm thấy thông tin email quản trị viên!");
+        return;
+    }
+
+    showToast("Đang kiểm tra và đồng bộ lịch ngầm...");
+
+    try {
+        const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/save-calendar-token', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ studio_email: adminEmail })
+        });
+        
+        const result = await res.json();
+
+        if (result.status === 'token_expired' || result.error === 'invalid_grant') {
+            if (confirm("Quyền kết nối Google Calendar của bạn đã hết hạn hoặc bị thu hồi.\n\nBạn có muốn bấm để cấp quyền lại ngay không?")) {
+                redirectToGoogleAuth();
+            }
+            return;
+        }
+
+        if (res.ok && result.status === 'success') {
+            showToast("Đồng bộ toàn bộ lịch thành công!");
+            setTimeout(() => {
+                if (typeof loadContracts === 'function') loadContracts();
+            }, 1000);
+        } else {
+            alert(result.message || "Lỗi đồng bộ lịch từ máy chủ!");
+        }
+
+    } catch (e) {
+        console.error(e);
+        alert("Lỗi kết nối máy chủ khi thực hiện đồng bộ lịch!");
+    }
+}
     function performModalConversion() {
         const isLunarToSolar = document.getElementById('typeLunarToSolar').checked;
         const resultEl = document.getElementById('modalConversionResult');
