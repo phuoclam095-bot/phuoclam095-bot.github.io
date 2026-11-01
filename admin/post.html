@@ -12,43 +12,32 @@
         :root { --primary: #00ebb0; --gold-vip: #f0c300; --bg-deep: #050a14; --neon: 0 0 20px rgba(0, 235, 176, 0.4); --card-glass: rgba(10, 17, 36, 0.95); --border-glass: rgba(255, 255, 255, 0.1); }
         html { scroll-behavior: smooth; }
         body { margin: 0; padding-top: 100px; font-family: 'Montserrat', sans-serif; background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.8) 40%, rgba(5, 10, 20, 0.95) 100%), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; min-height: 100vh; }
-
         .navbar { background: rgba(5, 10, 20, 0.95); backdrop-filter: blur(30px); border-bottom: 1px solid rgba(255,255,255,0.08); min-height: 80px; position: fixed; width: 100%; top: 0; z-index: 2000; }
         .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); font-size: 1.25rem; }
         .nav-link-custom { color: #fff !important; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; transition: 0.3s; padding: 0.5rem 1rem; text-decoration: none; }
-        .nav-link-custom:hover { color: var(--primary) !important; }
-        
+        .nav-link-custom:hover { color: var(--primary) !important; }        
         .main-content { background: var(--card-glass); padding: 40px; border-radius: 30px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6); border: 1px solid var(--border-glass); }
         .post-title { font-weight: 900; color: #fff; margin-bottom: 10px; font-size: 2.6rem; line-height: 1.2; background: linear-gradient(90deg, #fff, var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .post-meta { color: #cbd5e1; font-size: 0.9rem; padding-bottom: 15px; margin-bottom: 25px; display: flex; align-items: center; border-bottom: 1px solid var(--border-glass); font-weight: 600; }
-        
-        .post-image { max-height: 550px; width: 100%; object-fit: cover; border-radius: 20px; margin: 10px 0 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); border: 1px solid var(--border-glass); }
-        
+        .post-meta { color: #cbd5e1; font-size: 0.9rem; padding-bottom: 15px; margin-bottom: 25px; display: flex; align-items: center; border-bottom: 1px solid var(--border-glass); font-weight: 600; }       
+        .post-image { max-height: 550px; width: 100%; object-fit: cover; border-radius: 20px; margin: 10px 0 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); border: 1px solid var(--border-glass); }        
         #postAuthorContainer { background: rgba(0, 235, 176, 0.05); border-radius: 20px; padding: 20px 25px; margin-bottom: 35px; border: 1px solid rgba(0, 235, 176, 0.2); display: flex; align-items: center; gap: 15px; width: fit-content; }
         #postAuthorAvatar { width: 50px; height: 50px; line-height: 50px; text-align: center; background: var(--primary); color: #000; border-radius: 50%; font-weight: 900; font-size: 1.2rem; box-shadow: var(--neon); border: 2px solid #fff; }
         .author-info-name { color: var(--primary) !important; font-weight: 900; font-size: 1.15rem; }
-
         #postContentWrapper { margin-bottom: 10px; position: relative; overflow: hidden; transition: max-height 0.5s ease; }
         .post-content { line-height: 1.8; font-size: 1.1rem; color: #f1f5f9; white-space: pre-wrap; text-align: justify; }
         #readMoreBtn { background: var(--primary); border: none; color: #000; font-weight: 900; padding: 12px 30px; border-radius: 50px; cursor: pointer; margin: 20px 0; transition: 0.3s; text-transform: uppercase; font-size: 0.8rem; display: none; width: fit-content; box-shadow: var(--neon); }
-        
-        /* COMMENT & INTERACTIVE */
         #commentSectionContainer { margin-top: 40px; padding-top: 30px; border-top: 1px solid var(--border-glass); }
         .comment-header-title { font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: var(--primary); margin-bottom: 25px; }
         .user-avatar-comment { width: 42px; height: 42px; background: var(--primary); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; flex-shrink: 0; }
         .comment-item { padding: 18px 0; border-bottom: 1px solid var(--border-glass); position: relative; }
         .comment-item .comment-item { border-left: 3px solid var(--gold-vip); padding-left: 20px; margin-left: 45px; border-bottom: none; }
-        
         .comment-author-name { color: var(--primary) !important; font-weight: 800; font-size: 1rem; }
         .comment-item .comment-item .comment-author-name { color: var(--gold-vip) !important; }
         .comment-date-text { color: #94a3b8 !important; font-size: 0.75rem; font-weight: 700; margin-bottom: 4px; display: block; }
         .comment-content-text { color: #ffffff !important; font-size: 0.95rem; line-height: 1.6; }
-
-        .btn-reply-action { background: none; border: none; color: var(--primary); font-weight: 800; font-size: 0.75rem; text-transform: uppercase; padding: 0; margin-top: 8px; cursor: pointer; }
-        
+        .btn-reply-action { background: none; border: none; color: var(--primary); font-weight: 800; font-size: 0.75rem; text-transform: uppercase; padding: 0; margin-top: 8px; cursor: pointer; }        
         .form-control { background: rgba(255,255,255,0.05) !important; border: 1px solid var(--border-glass) !important; color: #fff !important; border-radius: 15px; padding: 15px; }
         .form-control::placeholder { color: #a5f3e0 !important; font-weight: 600; }
-
         #btnSubmitComment { background: var(--primary) !important; color: #000 !important; font-weight: 900; padding: 12px 35px; border-radius: 50px; text-transform: uppercase; border: none; }
     </style>
 </head>
@@ -83,8 +72,6 @@
         const N8N_GET_COMMENTS = 'https://wsm.congtubaclieu.com.vn/webhook/get-comments';
         const N8N_SUBMIT_COMMENT = 'https://wsm.congtubaclieu.com.vn/webhook/submit-comment'; 
         const MAX_CONTENT_HEIGHT = 450; 
-        
-        // HÀM LẤY GIỜ VIỆT NAM CHUẨN (+7)
         function getVietnamTime() {
             const now = new Date();
             const vnTime = new Date(now.getTime() + (7 * 60 * 60 * 1000));
@@ -130,8 +117,6 @@
             const driveFileId = extractDriveFileId(blog.image);
             const imageUrl = driveFileId ? `https://drive.google.com/thumbnail?id=${driveFileId}&sz=w800` : 'https://via.placeholder.com/1000x450';
             const wrappedContent = `<p>${(blog.content || '').replace(/\n/g, '</p><p>')}</p>`; 
-            
-            // FIX LOGIC XEM THÊM: Chỉ hiện khi nội dung > 600 ký tự
             const requiresCollapse = blog.content && blog.content.length > 600; 
 
             document.getElementById('postContainer').innerHTML = `
