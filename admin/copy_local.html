@@ -26,13 +26,9 @@
                 width: max-content !important;  
                 z-index: 5;  
             }
-            
-            /* Cấu hình chuẩn cho từng nút tab trên desktop */
             .nav-link {
                 position: relative !important;
             }
-            
-            /* Gạch chân phát sáng chạy chuẩn ngay ngắn dưới tab đang active */
             .nav-link.active::after { 
                 content: '' !important; 
                 position: absolute !important; 
@@ -47,15 +43,11 @@
         }
             
         body { background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 0.8), rgba(5, 10, 20, 0.95)), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; font-family: 'Montserrat', sans-serif; height: 100vh; overflow: hidden; padding-top: 105px; }
-        
-        /* --- LOADING --- */
         #loadOverlay { position: fixed; inset: 0; background: #050a14; z-index: 20000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .load-logo { font-weight: 900; font-size: 2.5rem; color: var(--primary); text-shadow: var(--neon); letter-spacing: 5px; animation: floating 3s ease-in-out infinite; }
         @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
         .pulse-shadow { width: 100px; height: 10px; background: rgba(0,235,176,0.2); border-radius: 50%; margin-top: 20px; animation: shadow-pulse 3s ease-in-out infinite; }
         @keyframes shadow-pulse { 0%, 100% { transform: scale(1); opacity: 0.3; } 50% { transform: scale(1.5); opacity: 0.1; } }
-
-        /* --- NAVBAR & TABS --- */
         .navbar { background: rgba(5, 10, 20, 0.95); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); height: 95px; }
         .navbar-brand { font-weight: 900; color: var(--primary) !important; text-shadow: var(--neon); font-size: 1.4rem; }
         .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; padding: 10px 15px !important; transition: 0.3s ease; position: relative; }
@@ -70,7 +62,6 @@
         .status-tag { font-size: 0.6rem; padding: 2px 8px; border-radius: 4px; font-weight: 900; text-transform: uppercase; line-height: 1; }
         #userExpiryText { font-size: 0.75rem !important; color: #fff !important; font-weight: 800 !important; margin-left: 5px; }
 
-        /* --- TYPOGRAPHY --- */
         .supreme-title { 
             font-weight: 900; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 5px; text-align: center; margin-bottom: 20px;
             background: linear-gradient(90deg, #fff, var(--primary), #fff);
@@ -79,14 +70,12 @@
         }
         @keyframes text-shine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
 
-        /* --- BỐ CỤC 70/30 --- */
         .main-grid { display: grid; grid-template-columns: 7fr 3fr; gap: 20px; height: calc(100vh - 200px); max-width: 1550px; margin: 0 auto; padding: 0 20px; }
         .rainbow-wrap { position: relative; padding: 3px; border-radius: 30px; background: var(--rainbow); background-size: 200% auto; animation: rainbow-run 4s linear infinite; height: 100%; }
         @keyframes rainbow-run { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
 
         .copy-card { background: #080d1a; border-radius: 27px; padding: 25px; display: flex; flex-direction: column; height: 100%; }
 
-        /* GHI CHÚ THƯƠNG MẠI */
         .alert-mini { background: rgba(0, 235, 176, 0.05); border: 1px solid rgba(0, 235, 176, 0.2); border-radius: 15px; padding: 10px 15px; margin-bottom: 15px; font-size: 0.8rem; color: #fff; font-weight: 700; text-align: center; }
 
         .dir-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
@@ -104,21 +93,17 @@
         .btn-action:hover { transform: scale(1.02); filter: brightness(1.1); }
         .btn-action:disabled { background: #334155 !important; opacity: 0.4 !important; cursor: not-allowed; }
 
-        /* --- LOG PANEL --- */
         .log-panel { background: #020617; border-radius: 30px; border: 1px solid rgba(255,255,255,0.08); padding: 20px; height: 100%; display: flex; flex-direction: column; }
         #statusLog { flex: 1; overflow-y: auto; font-family: 'Consolas', monospace; font-size: 0.8rem; padding-right: 10px; }
         #statusLog::-webkit-scrollbar { width: 5px; }
         #statusLog::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
         
-        /* FIX CHỐNG XUỐNG DÒNG */
         .log-info { color: #3b82f6; font-weight: 800; margin-bottom: 10px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.8rem; }
         .log-success { color: var(--primary); padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.02); }
         .log-error { color: #ff4757; padding: 4px 0; }
 
         #toastNotice { position: fixed; top: 110px; right: 30px; background: var(--primary); color: #000; padding: 10px 25px; border-radius: 10px; z-index: 10000; font-weight: 900; display: none; }
         #mobileBlockNotice { display: none; }
-
-        /* --- 🌟 MOBILE RESPONSIVE ĐỒNG BỘ 100% --- */
         @media (max-width: 991.98px) {
             body { padding-top: 150px; }
             .navbar { padding: 10px 0; min-height: auto; }
@@ -139,7 +124,6 @@
                 z-index: 10;
             }
 
-            /* Hàng tab menu lướt ngang mượt mà */
             .nav-center-container {
                 position: static !important;
                 transform: none !important;
@@ -190,10 +174,8 @@
 
             .supreme-title { font-size: 1.8rem; letter-spacing: 4px; }
             
-            /* 🌟 CHẶN HIỂN THỊ GIAO DIỆN LÀM VIỆC TRÊN MOBILE */
             .main-grid { display: none !important; }
             
-            /* 🌟 HIỆN KHUNG THÔNG BÁO CHẶN CHUẨN ĐẸP */
             #mobileBlockNotice {
                 display: block !important;
                 max-width: 90%;
@@ -233,12 +215,9 @@
 
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
     <div class="container-fluid px-3 px-lg-5 d-flex flex-wrap align-items-center justify-content-between">
-        
-        <!-- Logo bên trái -->
-        <a class="navbar-brand-left m-0" href="index">CHONANHNHANH<span style="color:#f0c300">.VN</span></a>
 
-        
-        <!-- Khối thông tin User / Nút đăng nhập bên phải -->
+        <a class="navbar-brand-left m-0" href="index">CHONANHNHANH<span style="color:#f0c300">.VN</span></a>
+     
         <div class="d-flex align-items-center ms-auto order-lg-3">
             <div id="loggedOutNav" style="display: none;">
                 <div class="btn-login-rainbow" onclick="startGoogleLogin()">
@@ -257,7 +236,6 @@
                     <i class="fas fa-power-off"></i>
                 </button>
             </div>
-        <!-- Thanh menu căn giữa tuyệt đối -->
         <div class="nav-center-container" id="navCenterArea">
             <ul class="navbar-nav" id="adminNavLinks">
                 <li><a href="index" class="nav-link">Tạo Album</a></li>
@@ -332,7 +310,6 @@
                 </div>
             </div>
 
-            <!-- KHỐI 2: KHU VỰC NHẬT KÝ TIẾN TRÌNH -->
             <div class="log-panel">
                 <span style="font-size:0.7rem; color:var(--primary); font-weight:900; margin-bottom:15px; display:block; text-transform:uppercase;">Nhật ký tiến trình:</span>
                 <div id="statusLog">
