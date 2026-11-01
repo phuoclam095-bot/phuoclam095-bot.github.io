@@ -14,7 +14,6 @@
         
         .navbar { height: var(--header-h); background: #000; border-bottom: 1px solid #222; padding: 0 15px; z-index: 5000; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; }
         
-        /* 1 & 2. HIỂN THỊ TÊN ALBUM VÀ TÊN ẢNH GẦN NHAU */
         .header-left { display: flex; flex-direction: column; max-width: 70%; }
         .album-title { font-weight: 900; font-size: 0.8rem; color: var(--primary); text-transform: uppercase; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         #displayFileName { font-size: 0.55rem; color: #aaa; font-weight: 700; text-transform: uppercase; margin-top: -2px; }
@@ -40,8 +39,8 @@
         
         #mainImg {
             max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; display: block; margin: auto; 
-            image-rendering: -webkit-optimize-contrast; /* Tối ưu hóa độ tương phản và nén mượt trên mobile */
-            transform: translateZ(0); /* Kích hoạt phần cứng tăng tốc đồ họa */
+            image-rendering: -webkit-optimize-contrast; 
+            transform: translateZ(0); 
         }
         #photoInfoBadge { position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.7); color: #fff; padding: 5px 15px; border-radius: 20px; font-weight: 800; font-size: 0.7rem; border: 1px solid rgba(255,255,255,0.1); z-index: 4500; }
 
@@ -66,7 +65,7 @@
         position: absolute;
         bottom: 6px;
         left: 6px;
-        background: #3b82f6; /* Màu xanh dương nổi bật */
+        background: #3b82f6; 
         color: #fff;
         border-radius: 50%;
         width: 22px;
@@ -79,10 +78,10 @@
         border: 1.5px solid #000;
         box-shadow: 0 2px 5px rgba(0,0,0,0.5);
     }
-        /* 🌟 Cố định lớp watermark bám sát vào khung hiển thị của ảnh chính */
+
         .stage-inner { 
             position: relative; 
-            display: inline-flex; /* Ôm sát kích thước thực của ảnh bên trong */
+            display: inline-flex; 
             align-items: center; 
             justify-content: center; 
             max-width: 100%; 
@@ -102,9 +101,9 @@
         }
         
         .watermark-overlay img {
-            width: 45%; /* Tăng độ rộng của logo (chiếm 45% kích thước bức ảnh) */
-            max-width: 250px; /* Tăng giới hạn tối đa để logo hiện rõ hơn trên màn hình lớn */
-            opacity: 0.35; /* Tăng nhẹ độ rõ (35%) cho dễ nhận diện bản quyền */
+            width: 45%; 
+            max-width: 250px; 
+            opacity: 0.35; 
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
             user-select: none;
             -webkit-user-select: none;
@@ -157,8 +156,7 @@
         <div class="d-flex gap-2">
             <button class="btn-action btn-sq bg-danger-vip" onclick="clearAll()"><i class="fas fa-undo-alt"></i></button>
             <button class="btn-action btn-sq bg-gray" id="btnFilter" onclick="toggleFilter()"><i class="fas fa-eye"></i></button>
-            
-            <!-- THÊM 2 NÚT NÀY -->
+        
             <button class="btn-action btn-sq bg-gray" id="btnDownload" onclick="downloadPhoto()" style="display:none;"><i class="fas fa-download"></i></button>
             <button class="btn-action btn-sq bg-gray" id="btnComment" onclick="commentPhoto()" style="display:none;"><i class="fas fa-comment-dots"></i></button>
         </div>
@@ -184,7 +182,6 @@
         }
         // ---------------------------------------
 
-        // 🌟 Hạ DPI / Giảm kích thước ảnh để load lẹ hơn trên mobile và PC
         function getLink(id, sz) { return `https://lh3.googleusercontent.com/d/${id}=${sz}`; }
         
 
@@ -221,7 +218,6 @@
                     else dot.innerText = num;
                 } else if(dot) dot.remove();
 
-                // HIỂN THỊ HOẶC XÓA BIỂU TƯỢNG GHI CHÚ
                 let noteIcon = el.querySelector('.note-badge');
                 if(hasNote) {
                     if(!noteIcon) el.insertAdjacentHTML('beforeend', `<div class="note-badge" title="Xem ghi chú" onclick="event.stopPropagation(); openViewNoteModal('${p.id}');"><i class="fas fa-comment-alt"></i></div>`);
@@ -284,7 +280,6 @@
                 item.className = 'grid-item'; 
                 item.id = `item-${i}`;
                 
-                // 🌟 Hiển thị chuẩn ảnh và lớp phủ logo watermark nếu được bật
                 item.innerHTML = `
                     <img src="${getLink(p.id, 's400')}" loading="lazy">
                    
@@ -296,15 +291,13 @@
             });
             syncGridUI();
         }
-    // 3. HÀM XỬ LÝ KHI BẤM NÚT LƯU TRONG KHUNG GHI CHÚ
         async function saveCurrentComment() {
             const p = photos[cur];
             if (!p) return;
             
             const inputEl = document.getElementById('photoCommentInput');
             const noteVal = inputEl ? inputEl.value.trim() : '';
-            
-            // Cập nhật lại LocalStorage
+
             const notesMap = JSON.parse(localStorage.getItem('ghi_chu_anh_' + fid) || '{}');
             if (noteVal) {
                 notesMap[p.id] = noteVal;
@@ -316,15 +309,12 @@
             localStorage.setItem('ghi_chu_anh_' + fid, JSON.stringify(notesMap));
             
             showToast("Đã cập nhật ghi chú thành công!");
-            
-            // Ẩn khung nhập sau khi lưu
+
             const container = document.getElementById('commentBoxContainer');
             if (container) container.style.display = 'none';
-            
-            // Cập nhật lại giao diện để hiển thị/làm mới icon ghi chú trên ảnh
+
             currentView === 'grid' ? syncGridUI() : showViewer();
             
-            // Đồng bộ ngầm bản chỉnh sửa lên n8n / Database Supabase
             try {
                 await fetch(PATHS.SAVE, { 
                     method: 'POST', 
@@ -343,7 +333,6 @@
             const idx = selectedIds.indexOf(p.id);
             
             if (idx === -1) {
-                // KIỂM TRA GIỚI HẠN SỐ LƯỢNG ẢNH TỪ ADMIN
                 if (albumSettings.limitPhotos > 0 && selectedIds.length >= albumSettings.limitPhotos) {
                     return alert (`Dạ, album này được giới hạn chọn tối đa ${albumSettings.limitPhotos} ảnh ạ!`);
                 }
@@ -356,16 +345,11 @@
             currentView === 'grid' ? syncGridUI() : showViewer();
             fetch(PATHS.SAVE, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected: idx === -1}) });
         }
-        // HÀM MỞ MODAL XEM GHI CHÚ KHI NHẤP VÀO ICON NHỎ
         function openViewNoteModal(photoId) {
             const p = photos.find(x => x.id === photoId);
             if (!p) return;
-            
-            // Gán hình ảnh và nội dung ghi chú tương ứng của ảnh đó lên Modal
             document.getElementById('modalNoteImg').src = getLink(p.id, 's200');
             document.getElementById('modalNoteContent').innerText = p.note || "Không có ghi chú nào.";
-            
-            // Hiển thị Modal Bootstrap
             new bootstrap.Modal(document.getElementById('viewNoteModal')).show();
         }
         function toggleFilter() {
@@ -408,13 +392,11 @@
             t.style.display = 'block';
             setTimeout(() => { t.style.display = 'none'; }, 2200);
         }
-        // 1. CHỨC NĂNG TẢI ẢNH GỐC (Tải ảnh hiện tại đang xem hoặc chọn)
         async function downloadPhoto() {
             const p = photos[cur];
             if (!p) return;
             showToast("Đang tải ảnh gốc...");
             
-            // Tạo link tải trực tiếp file từ Google Drive
             const downloadUrl = `https://drive.google.com/uc?export=download&id=${p.id}`;
             
             // Mở tab ẩn hoặc tạo thẻ a tải trực tiếp
@@ -428,28 +410,17 @@
 
 
         async function commentPhoto() {
-            // Lấy chính xác bức ảnh đang xem theo vị trí `cur`
             const p = photos[cur];
             if (!p) return;
-            
-            // Lấy thẳng ghi chú từ dữ liệu của tấm ảnh này (đã được tải sẵn khi mở trang)
             const currentNote = p.note || '';
-            
-            // Hiển thị hộp thoại prompt với đúng ghi chú riêng biệt của tấm ảnh đó
             const userNote = prompt(`Nhập ghi chú cho ảnh [${p.name || 'Ảnh'}]:`, currentNote);
             if (userNote === null) return; // Khách bấm Hủy thì thoát
             
             const trimmedNote = userNote.trim();
-            
-            // Cập nhật lại ngay vào đối tượng ảnh `p` hiện tại
             p.note = trimmedNote;
             
             showToast("Đang lưu ghi chú...");
-            
-            // Cập nhật lại giao diện lưới/chi tiết để hiện đúng icon tin nhắn trên ảnh đó
             currentView === 'grid' ? syncGridUI() : showViewer();
-            
-            // Đồng bộ ngầm bản ghi chú này lên Supabase thông qua webhook SAVE
             try {
                 await fetch(PATHS.SAVE, { 
                     method: 'POST', 
@@ -496,8 +467,6 @@
             
             window.fid = data.folder_id || albumSlug; 
             fid = window.fid;
-
-            // Kiểm tra nếu album không có ảnh nào
             if (photos.length === 0) {
                 throw new Error("Album này hiện tại chưa có bức ảnh nào hoặc đang trong quá trình đồng bộ.");
             }
@@ -511,16 +480,10 @@
             if (albumSettings.comment) document.getElementById('btnComment').style.display = 'flex';
 
             let folderName = photos[0].folderName || "VIP ALBUM";
-            
-            // 🌟 SỬA TẠI ĐÂY: Ưu tiên lấy studio_slug từ response của n8n (chính là "pla")
             let studioFullName = data.studioName || data.name || data.studio_name || data.studio_slug || "";
-
-            // Nếu dữ liệu trả về không có, mới dùng tham số trên URL nhưng loại bỏ chữ "studio" mặc định
             if ((!studioFullName || studioFullName.toLowerCase() === 'studio') && studioSlug && studioSlug.toLowerCase() !== 'studio') {
                 studioFullName = studioSlug;
             }
-
-            // Gán tiêu đề trình duyệt và hiển thị lên giao diện Navbar
             if (studioFullName && studioFullName.toLowerCase() !== 'studio') {
                 document.title = `${studioFullName.toUpperCase()} - ${folderName}`;
                 document.getElementById('albumTitle').innerText = `${studioFullName.toUpperCase()} - ${folderName}`;
@@ -540,15 +503,12 @@
             loadOverlay.style.display = 'none';
             if (errorText) errorText.innerText = e.message || "Không tìm thấy album hoặc tên đường dẫn không tồn tại.";
             if (errorBox) {
-                // Ép hiển thị khung thông báo lỗi dạng flex đè lên màn hình đen
                 errorBox.style.setProperty('display', 'flex', 'important');
             }
         }
     }
-        // 🌟 BẮT BUỘC PHẢI CÓ DÒNG NÀY ĐỂ KÍCH HOẠT HỆ THỐNG KHI MỞ TRANG
         init();
     </script>
-    <!-- MODAL XEM GHI CHÚ CỦA ẢNH -->
     <div class="modal fade" id="viewNoteModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="background: #0a0f1e; border: 2px solid var(--primary); border-radius: 20px;">
