@@ -333,8 +333,16 @@
     z-index: 1070 !important;
 }
 
-.modal-backdrop.show:nth-of-type(even) {
-    opacity: 0.3 !important;
+.modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.4) !important;
+    z-index: 1040 !important;
+}
+.modal {
+    z-index: 1050 !important;
+}
+/* Tránh trường hợp bị dồn nhiều lớp backdrop gây mờ tối toàn trang */
+.modal-backdrop + .modal-backdrop {
+    display: none;
 }
             </style>
 </head>
@@ -1998,6 +2006,21 @@ async function triggerSyncAndCheckToken() {
             console.error(e);
         }
     }
+        function fixModalBackdrop() {
+    // Xóa các backdrop dư thừa gây mờ màn hình
+    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+    document.body.classList.remove('modal-open');
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+}
+        document.addEventListener('DOMContentLoaded', () => {
+    const calendarModalEl = document.getElementById('lunarCalendarModal');
+    if (calendarModalEl) {
+        calendarModalEl.addEventListener('show.bs.modal', () => {
+            fixModalBackdrop();
+        });
+    }
+});
             </script>
 <div class="modal fade" id="lunarCalendarModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered" style="max-width: 95vw; width: 95vw;">
