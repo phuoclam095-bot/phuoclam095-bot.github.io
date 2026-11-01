@@ -1464,16 +1464,23 @@ function switchCalendarView(viewType) {
     }
 }
 
-// Cập nhật lại hàm renderModalCalendar để nhúng sự kiện vào ô ngày
 function renderModalCalendar(year, month) {
     initModalCalendarYears();
     const container = document.getElementById('modalCalendarDaysContainer');
     if (!container) return;
     container.innerHTML = '';
     
-    document.getElementById('modalSelectMonth').value = month;
-    document.getElementById('modalSelectYear').value = year;
-    document.getElementById('modalMonthYearLabel').innerText = `Tháng ${month + 1} / ${year}`;
+    // Cập nhật giá trị cho dropdown chọn tháng/năm an toàn
+    const monthSel = document.getElementById('modalSelectMonth');
+    const yearSel = document.getElementById('modalSelectYear');
+    if (monthSel) monthSel.value = month;
+    if (yearSel) yearSel.value = year;
+
+    // Kiểm tra an toàn trước khi gán text để tránh lỗi null
+    const label = document.getElementById('modalMonthYearLabel');
+    if (label) {
+        label.innerText = `Tháng ${month + 1} / ${year}`;
+    }
 
     let firstDayIndex = new Date(year, month, 1).getDay();
     firstDayIndex = (firstDayIndex === 0) ? 6 : firstDayIndex - 1;
@@ -1481,7 +1488,7 @@ function renderModalCalendar(year, month) {
     let totalDays = new Date(year, month + 1, 0).getDate();
     let prevTotalDays = new Date(year, month, 0).getDate();
 
-    // Ngày tháng trước
+    // Vẽ ngày tháng trước (làm mờ)
     for (let i = firstDayIndex; i > 0; i--) {
         let d = prevTotalDays - i + 1;
         let prevM = month === 0 ? 11 : month - 1;
@@ -1489,13 +1496,13 @@ function renderModalCalendar(year, month) {
         container.appendChild(createModalDayCell(d, prevM + 1, prevY, true, false));
     }
 
-    // Ngày trong tháng hiện tại
+    // Vẽ ngày trong tháng chính thức
     for (let d = 1; d <= totalDays; d++) {
         let isToday = (d === modalToday.getDate() && month === modalToday.getMonth() && year === modalToday.getFullYear());
         container.appendChild(createModalDayCell(d, month + 1, year, false, isToday));
     }
 
-    // Nếu đang ở chế độ danh sách thì render luôn danh sách
+    // Nếu đang ở chế độ danh sách thì render danh sách
     if (currentCalendarView === 'list') {
         renderModalAgendaList(year, month);
     }
