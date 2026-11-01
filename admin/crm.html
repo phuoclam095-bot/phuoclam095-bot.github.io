@@ -669,7 +669,7 @@ function getExpiryTimestamp() {
             setTimeout(() => { t.style.display = 'none'; }, 2500);
         }
 
-        function autoCalculate() {
+       function autoCalculate() {
             const total = parseFloat(document.getElementById('totalAmt').value) || 0;
             const deposit = parseFloat(document.getElementById('depositAmt').value) || 0;
             const extra = parseFloat(document.getElementById('extraFee').value) || 0;
@@ -695,35 +695,29 @@ function getExpiryTimestamp() {
         }
         let allContractsGlobal = []; 
 
-        async function loadContracts() {
-    const studioSlug = localStorage.getItem('admin_studio_slug') || 'studio';
-    const adminEmail = localStorage.getItem('admin_email') || '';
-    try {
-        const res = await fetch(`${PATHS.GET_CONTRACTS}?studio_slug=${encodeURIComponent(studioSlug)}&admin_email=${encodeURIComponent(adminEmail)}`);
-        if (!res.ok) {
-            throw new Error("Lỗi máy chủ HTTP: " + res.status);
-        }
-
-        const textData = await res.text();
-
-        if (!textData || textData.trim() === "") {
-            allContractsGlobal = [];
-        } else {
-            const data = JSON.parse(textData);
-            allContractsGlobal = Array.isArray(data) ? data : (data.contracts || []);
-        }
-
-        allContractsGlobal.sort((a, b) => new Date(a.event_date) - new Date(b.event_date));
+        function autoCalculateEdit() {
+            const total = parseFloat(document.getElementById('editTotalAmt').value) || 0;
+            const deposit = parseFloat(document.getElementById('editDepositAmt').value) || 0;
+            const extra = parseFloat(document.getElementById('editExtraFee').value) || 0;
+            
+            const grandTotal = total + extra;
+            const remaining = grandTotal - deposit;
+            
+            if (grandTotal === 0 && deposit === 0) {
+                document.getElementById('editRemainingPreview').innerText = '0 VNĐ';
+            } else {
+                document.getElementById('editRemainingPreview').innerText = remaining.toLocaleString('vi-VN') + ' VNĐ';
+            }
         
-        populateMonthFilter(allContractsGlobal);
-        renderTable(allContractsGlobal);
-
-    } catch(e) {
-        console.error("Lỗi tải hợp đồng:", e);
-        document.getElementById('contractsTableBody').innerHTML = `<tr><td colspan="9" class="text-center text-danger py-4">Lỗi kết nối lấy dữ liệu từ máy chủ!</td></tr>`;
-    }
-}
-        
+            const statusInput = document.getElementById('editPaymentStatus');
+            if (deposit <= 0) {
+                statusInput.value = "Chưa cọc";
+            } else if (remaining <= 0) {
+                statusInput.value = "Đã tất toán";
+            } else {
+                statusInput.value = "Đã cọc";
+            }
+        }
         function populateMonthFilter(contracts) {
             const monthSelect = document.getElementById('monthFilter');
             const currentValue = monthSelect.value;
@@ -1206,11 +1200,7 @@ async function printContract(c) {
             const grandTotal = total + extra;
             const remaining = grandTotal - deposit;
             
-            if (grandTotal === 0 && deposit === 0) {
-                document.getElementById('editRemainingPreview').innerText = '0 VNĐ';
-            } else {
-                document.getElementById('editRemainingPreview').innerText = remaining.toLocaleString('vi-VN') + ' VNĐ';
-            }
+            document.getElementById('editRemainingPreview').innerText = remaining.toLocaleString('vi-VN') + ' VNĐ';
         
             const statusInput = document.getElementById('editPaymentStatus');
             if (deposit <= 0) {
@@ -1218,7 +1208,7 @@ async function printContract(c) {
             } else if (remaining <= 0) {
                 statusInput.value = "Đã tất toán";
             } else {
-                statusInput.value = "Đã cọc";
+                statusInput.value = "Đã cọc ";
             }
         }
     
@@ -1453,6 +1443,14 @@ async function printContract(c) {
                 renderModalAgendaList(modalCurrentYear, modalCurrentMonth);
             }
         }
+        } else {
+            alert('Lỗi lưu hợp đồng trên máy chủ!');
+        }
+    } catch(e) {
+        console.error(e);
+        alert('Lỗi kết nối webhook!');
+    }
+}
         document.addEventListener('DOMContentLoaded', () => {
             updateHeaderUI();
             loadContracts();
