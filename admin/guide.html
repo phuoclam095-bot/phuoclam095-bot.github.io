@@ -41,8 +41,6 @@
         .guide-box { margin-bottom: 35px; padding: 25px; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; background: rgba(255,255,255,0.02); }
         .guide-title { font-size: 1.15rem; color: var(--primary); font-weight: 900; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; text-transform: uppercase; }
         .guide-desc { color: #cbd5e1; margin-bottom: 20px; font-size: 0.9rem; line-height: 1.6; }
-
-        /* Khung chứa video chuẩn tỷ lệ 16:9 */
         .video-container { position: relative; width: 100%; padding-bottom: 56.25%; height: 0; background: #000; border-radius: 15px; overflow: hidden; border: 1.5px solid rgba(0, 235, 176, 0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
 
@@ -71,8 +69,6 @@
     </style>
 </head>
 <body>
-
-    <!-- NAVBAR CHUẨN ĐỒNG BỘ -->
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
         <div class="container-fluid px-3 px-lg-5 d-flex flex-wrap align-items-center justify-content-between">
             <a class="navbar-brand-left m-0" href="index">CHONANHNHANH<span style="color:#f0c300">.VN</span></a>
@@ -96,8 +92,6 @@
                     </button>
                 </div>
             </div>
-
-            <!-- THANH ĐIỀU HƯỚNG CÁC TAB CHUẨN -->
             <div class="nav-center-container" id="navCenterArea">
                 <ul class="navbar-nav" id="adminNavLinks" style="display: flex !important;">
                     <li><a href="index" class="nav-link">Tạo Album</a></li>
@@ -115,8 +109,6 @@
             </div>
         </div>
     </nav>
-
-    <!-- NỘI DUNG TRANG HƯỚNG DẪN -->
     <div class="main-container">
         <div class="rainbow-border-wrapper">
             <div class="create-card">
@@ -125,7 +117,6 @@
                     Tổng hợp video hướng dẫn chi tiết giúp studio thao tác mượt mà và khai thác tối đa tính năng hệ thống.
                 </p>
                 
-                <!-- PHẦN 1: HƯỚNG DẪN TẠO ALBUM -->
                 <div class="guide-box">
                     <div class="guide-title">
                         <i class="fas fa-images"></i> 1. Hướng Dẫn Tạo Album Chọn Ảnh Từ Google Drive
@@ -137,8 +128,6 @@
                         <iframe src="https://www.youtube.com/embed/BHSA5hUgrcs?si=LedWZNUBYAmVVrJh" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                     </div>
                 </div>
-
-                <!-- PHẦN 2: HƯỚNG DẪN LỊCH TRÌNH VÀ HỢP ĐỒNG -->
                 <div class="guide-box" style="margin-bottom: 0;">
                     <div class="guide-title">
                         <i class="fas fa-file-contract"></i> 2. Hướng Dẫn Quản Lý Lịch Trình & Hợp Đồng Dịch Vụ
@@ -154,8 +143,6 @@
             </div>
         </div>
     </div>
-
-    <!-- FOOTER CHUẨN -->
     <div style="background: rgba(0, 235, 176, 0.05); border-top: 1px solid rgba(0, 235, 176, 0.2); padding: 20px 0; margin-top: 50px; text-align: center; color: #94a3b8; font-size: 0.75rem;">
         <div class="container">
             <p class="mb-1" style="font-weight: 700; color: var(--primary);">CHONANHNHANH.VN - STUDIO WORKFLOW MANAGEMENT PLATFORM</p>
@@ -165,7 +152,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Đồng bộ hiển thị trạng thái đăng nhập trên Header
         const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
         const name = localStorage.getItem('admin_name') || 'Admin';
         const av = localStorage.getItem('admin_avatar');
