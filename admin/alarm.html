@@ -35,7 +35,6 @@
             min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box;
         }
 
-        /* --- NAVBAR ĐỒNG BỘ SIZE ADMIN --- */
         .navbar {
             position: fixed; top: 0; left: 0; width: 100%; height: 80px;
             background: rgba(5, 10, 20, 0.9); backdrop-filter: blur(15px);
@@ -43,7 +42,6 @@
             display: flex; justify-content: center; align-items: center; z-index: 2000;
         }
 
-        /* Nút 3 gạch cho di động */
         .menu-toggle {
             display: none; font-size: 1.5rem; color: var(--primary);
             cursor: pointer; position: absolute; right: 20px;
@@ -62,7 +60,6 @@
         }
         .nav-link:hover { color: var(--primary) !important; }
 
-        /* --- MOBILE RESPONSIVE (DẤU 3 GẠCH) --- */
         @media (max-width: 850px) {
             .menu-toggle { display: block; }
             .navbar-nav {
@@ -75,7 +72,6 @@
             .nav-link { font-size: 0.9rem; padding: 15px !important; width: 100%; text-align: center; }
         }
 
-        /* --- CONTAINER BÁO THỨC (GIỮ NGUYÊN) --- */
         .alarm-container {
             width: 95%; max-width: 550px; padding: 3px; border-radius: 40px;
             background: var(--rainbow); background-size: 200% auto; animation: rainbow-move 4s linear infinite;
