@@ -342,47 +342,34 @@
         }
         async function openSelectedPhotosModal(folderId, albumName) {
     showToast("Đang tải danh sách ảnh đã chọn...");
-    console.log("👉 Đang gọi API với folderId:", folderId);
-    
     try {
         const res = await fetch(`${PATHS.SELECTED_PHOTOS}?folderId=${folderId}`);
         const data = await res.json();
         
-        console.log("👉 Dữ liệu nhận từ server:", data);
-
-        let photos = [];
-        if (Array.isArray(data)) {
-            photos = data;
-        } else if (data && typeof data === 'object') {
-            // Nếu server trả về object đơn lẻ (như log của bạn) hoặc bọc trong thuộc tính khác
-            photos = data.photos || data.data || data.items || [data];
-        }
+        // Lưu vào biến toàn cục để các hàm khác có thể truy cập
+        currentLightboxPhotos = Array.isArray(data) ? data : (data.photos || data.data || data.items || [data]);
         
-        console.log("👉 Số lượng ảnh sau khi xử lý:", photos.length);
-
         const infoEl = document.getElementById('selectedModalInfo');
         if (infoEl) {
-            infoEl.innerText = `Album: ${albumName || 'Chi tiết'} (Đã chọn: ${photos.length} ảnh)`;
+            infoEl.innerText = `Album: ${albumName || 'Chi tiết'} (Đã chọn: ${currentLightboxPhotos.length} ảnh)`;
         }
         
         const grid = document.getElementById('selectedPhotosGrid');
-        if (!grid) {
-            console.error("❌ Không tìm thấy phần tử #selectedPhotosGrid trong HTML!");
-            return;
-        }
+        if (!grid) return;
         
         grid.innerHTML = '';
         
-        if (photos.length === 0 || !photos[0].id) {
+        if (currentLightboxPhotos.length === 0 || !currentLightboxPhotos[0].id) {
             grid.innerHTML = `<div class="text-center text-secondary py-4" style="grid-column: 1 / -1;">Khách hàng chưa chọn bức ảnh nào.</div>`;
         } else {
-            photos.forEach((p, index) => {
+            currentLightboxPhotos.forEach((p, index) => {
                 const imgUrl = p.url || (p.id ? `https://drive.google.com/thumbnail?id=${p.id}&sz=h400` : '');
                 const imgName = p.name || `Ảnh ${index + 1}`;
                 
+                // QUAN TRỌNG: Chỉ truyền vào số thứ tự index, không truyền cả mảng photos nữa
                 grid.innerHTML += `
                     <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(0, 235, 176, 0.2); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; align-items: center; padding: 6px;">
-                        <img src="${imgUrl}" style="width: 100%; height: 110px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer;" onclick="openClientLightbox(${index}, photos)" title="Xem chi tiết">
+                        <img src="${imgUrl}" style="width: 100%; height: 110px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer;" onclick="openClientLightbox(${index})" title="Xem chi tiết">
                         <span style="font-size: 0.65rem; color: var(--primary); margin-top: 6px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;" title="${imgName}">${imgName}</span>
                     </div>
                 `;
@@ -394,7 +381,7 @@
             new bootstrap.Modal(modalEl).show();
         }
     } catch(e) {
-        console.error("❌ Lỗi ngoại lệ:", e);
+        console.error("Lỗi:", e);
         showToast("Không thể tải danh sách ảnh đã chọn!");
     }
 }
@@ -645,58 +632,57 @@
         let currentLightboxPhotos = [];
         let currentIndex = 0;
         
-        function openClientLightbox(index, photosArray) {
-            currentLightboxPhotos = photosArray;
-            currentIndex = index;
-            
-            renderLightboxCurrent();
-        
-            let lightboxEl = document.getElementById('clientLightboxModal');
-            let modalInstance = bootstrap.Modal.getInstance(lightboxEl);
-            if (!modalInstance) {
-                modalInstance = new bootstrap.Modal(lightboxEl);
-            }
-            modalInstance.show();
-        }
+        function openClientLightbox(index) {
+    currentIndex = index;
+    renderLightboxCurrent();
+    
+    let lightboxEl = document.getElementById('clientLightboxModal');
+    let modalInstance = bootstrap.Modal.getInstance(lightboxEl);
+    if (!modalInstance) {
+        modalInstance = new bootstrap.Modal(lightboxEl);
+    }
+    modalInstance.show();
+}
         
         function renderLightboxCurrent() {
-            if (currentLightboxPhotos.length === 0) return;
-            const p = currentLightboxPhotos[currentIndex];
-            
-            const imgUrl = p.url || (p.id ? `https://drive.google.com/thumbnail?id=${p.id}&sz=h1000` : '');
-            const imgName = p.name || `Ảnh ${currentIndex + 1}`;
-            
-            document.getElementById('lightboxMainImage').src = imgUrl;
-            document.getElementById('lightboxPhotoName').innerText = `${imgName}  (${currentIndex + 1} / ${currentLightboxPhotos.length})`;
-            
-            // Render thanh thumbnail phía dưới
-            const thumbBar = document.getElementById('lightboxThumbnailsBar');
-            thumbBar.innerHTML = '';
-            
-            currentLightboxPhotos.forEach((item, idx) => {
-                const tUrl = item.url || (item.id ? `https://drive.google.com/thumbnail?id=${item.id}&sz=h200` : '');
-                const isActive = idx === currentIndex ? 'border: 2px solid var(--primary); transform: scale(1.1);' : 'border: 1px solid rgba(255,255,255,0.2); opacity: 0.6;';
-                
-                thumbBar.innerHTML += `
-                    <img src="${tUrl}" onclick="jumpToLightboxIndex(${idx})" style="width: 55px; height: 55px; object-fit: cover; border-radius: 6px; cursor: pointer; transition: 0.2s; ${isActive}" title="${item.name || ''}">
-                `;
-            });
-        }
+    if (currentLightboxPhotos.length === 0) return;
+    const p = currentLightboxPhotos[currentIndex];
+    
+    const imgUrl = p.url || (p.id ? `https://drive.google.com/thumbnail?id=${p.id}&sz=h1000` : '');
+    const imgName = p.name || `Ảnh ${currentIndex + 1}`;
+    
+    document.getElementById('lightboxMainImage').src = imgUrl;
+    document.getElementById('lightboxPhotoName').innerText = `${imgName}  (${currentIndex + 1} / ${currentLightboxPhotos.length})`;
+    
+    const thumbBar = document.getElementById('lightboxThumbnailsBar');
+    if (!thumbBar) return;
+    
+    thumbBar.innerHTML = '';
+    
+    currentLightboxPhotos.forEach((item, idx) => {
+        const tUrl = item.url || (item.id ? `https://drive.google.com/thumbnail?id=${item.id}&sz=h200` : '');
+        const isActive = idx === currentIndex ? 'border: 2px solid var(--primary); transform: scale(1.1);' : 'border: 1px solid rgba(255,255,255,0.2); opacity: 0.6;';
+        
+        thumbBar.innerHTML += `
+            <img src="${tUrl}" onclick="jumpToLightboxIndex(${idx})" style="width: 55px; height: 55px; object-fit: cover; border-radius: 6px; cursor: pointer; transition: 0.2s; ${isActive}" title="${item.name || ''}">
+        `;
+    });
+}
         
         function changeLightboxImage(direction) {
-            currentIndex += direction;
-            if (currentIndex < 0) {
-                currentIndex = currentLightboxPhotos.length - 1; // Vòng lại ảnh cuối
-            } else if (currentIndex >= currentLightboxPhotos.length) {
-                currentIndex = 0; // Vòng lại ảnh đầu
-            }
-            renderLightboxCurrent();
-        }
-        
-        function jumpToLightboxIndex(idx) {
-            currentIndex = idx;
-            renderLightboxCurrent();
-        }
+    currentIndex += direction;
+    if (currentIndex < 0) {
+        currentIndex = currentLightboxPhotos.length - 1;
+    } else if (currentIndex >= currentLightboxPhotos.length) {
+        currentIndex = 0;
+    }
+    renderLightboxCurrent();
+}
+
+function jumpToLightboxIndex(idx) {
+    currentIndex = idx;
+    renderLightboxCurrent();
+}
 
         
         async function init() { 
