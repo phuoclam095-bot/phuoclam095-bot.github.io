@@ -346,24 +346,20 @@
     
     try {
         const res = await fetch(`${PATHS.SELECTED_PHOTOS}?folderId=${folderId}`);
-        console.log("👉 Trạng thái phản hồi HTTP:", res.status, res.statusText);
+        const data = await res.json();
         
-        const rawText = await res.text();
-        console.log("👉 Dữ liệu thô (Raw text) nhận từ server:", rawText);
+        console.log("👉 Dữ liệu nhận từ server:", data);
         
-        let data = [];
-        try {
-            data = JSON.parse(rawText);
-        } catch (err) {
-            console.error("❌ Lỗi Parse JSON:", err);
+        // --- XỬ LÝ QUAN TRỌNG: TỰ ĐỘNG ÉP KIỂU CHUẨN XÁC ---
+        let photos = [];
+        if (Array.isArray(data)) {
+            photos = data;
+        } else if (data && typeof data === 'object') {
+            // Nếu server trả về object đơn lẻ (như log của bạn) hoặc bọc trong thuộc tính khác
+            photos = data.photos || data.data || data.items || [data];
         }
         
-        console.log("👉 Dữ liệu sau khi parse JSON:", data);
-        
-        // Lấy danh sách ảnh an toàn
-        const photos = Array.isArray(data) ? data : (data.photos || data.data || data.items || []);
-        console.log("👉 Số lượng ảnh trích xuất được (photos.length):", photos.length);
-        console.log("👉 Danh sách ảnh chi tiết:", photos);
+        console.log("👉 Số lượng ảnh sau khi xử lý:", photos.length);
 
         const infoEl = document.getElementById('selectedModalInfo');
         if (infoEl) {
@@ -378,14 +374,12 @@
         
         grid.innerHTML = '';
         
-        if (photos.length === 0) {
-            grid.innerHTML = `<div class="text-center text-secondary py-4" style="grid-column: 1 / -1;">Khách hàng chưa chọn bức ảnh nào. (Hoặc cấu trúc JSON không khớp)</div>`;
+        if (photos.length === 0 || !photos[0].id) {
+            grid.innerHTML = `<div class="text-center text-secondary py-4" style="grid-column: 1 / -1;">Khách hàng chưa chọn bức ảnh nào.</div>`;
         } else {
             photos.forEach((p, index) => {
                 const imgUrl = p.url || (p.id ? `https://drive.google.com/thumbnail?id=${p.id}&sz=h400` : '');
                 const imgName = p.name || `Ảnh ${index + 1}`;
-                
-                console.log(`🖼️ Ảnh [${index}] - Name: ${imgName} - URL: ${imgUrl}`);
                 
                 grid.innerHTML += `
                     <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(0, 235, 176, 0.2); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; align-items: center; padding: 6px;">
@@ -401,7 +395,7 @@
             new bootstrap.Modal(modalEl).show();
         }
     } catch(e) {
-        console.error("❌ Lỗi ngoại lệ trong catch:", e);
+        console.error("❌ Lỗi ngoại lệ:", e);
         showToast("Không thể tải danh sách ảnh đã chọn!");
     }
 }
