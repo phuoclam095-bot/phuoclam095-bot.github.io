@@ -346,12 +346,12 @@
         const res = await fetch(`${PATHS.SELECTED_PHOTOS}?folderId=${folderId}`);
         const data = await res.json();
         
-        // Chống lỗi không phải mảng
-        const photos = Array.isArray(data) ? data : (data.photos || data.data || []);
+        // Xử lý chuẩn xác: Nếu server trả về mảng trực tiếp hoặc bọc trong object
+        const photos = Array.isArray(data) ? data : (data.photos || data.data || data.items || []);
         
         const infoEl = document.getElementById('selectedModalInfo');
         if (infoEl) {
-            infoEl.innerText = `Album: ${albumName} (Đã chọn: ${photos.length} ảnh)`;
+            infoEl.innerText = `Album: ${albumName || 'Chi tiết'} (Đã chọn: ${photos.length} ảnh)`;
         }
         
         const grid = document.getElementById('selectedPhotosGrid');
@@ -366,9 +366,8 @@
             grid.innerHTML = `<div class="text-center text-secondary py-4" style="grid-column: 1 / -1;">Khách hàng chưa chọn bức ảnh nào.</div>`;
         } else {
             photos.forEach(p => {
-                // CHUYỂN ĐỔI CHUẨN VỀ DẠNG THUMBNAIL GOOGLE DRIVE ĐỂ TRÁNH LỖI 403 FORBIDDEN
-                const photoId = p.id || (p.url ? p.url.match(/id=([a-zA-Z0-9_-]+)/)?.[1] : '');
-                const imgUrl = photoId ? `https://drive.google.com/thumbnail?id=${photoId}&sz=h400` : (p.url || p.thumbnailLink);
+                // Lấy trực tiếp trường url từ n8n trả về hoặc tự dựng lại từ id
+                const imgUrl = p.url || (p.id ? `https://drive.google.com/thumbnail?id=${p.id}&sz=h400` : '');
                 const imgName = p.name || 'Ảnh';
                 
                 grid.innerHTML += `
