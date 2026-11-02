@@ -706,10 +706,17 @@ function jumpToLightboxIndex(idx) {
 }
 
         
+        function hideLoadOverlay() {
+            const overlay = document.getElementById('loadOverlay');
+            if (overlay) {
+                overlay.style.display = 'none';
+            }
+        }
+
         async function init() { 
             updateHeaderUI(); 
             if (!document.getElementById('mainWorkGrid') || document.getElementById('mainWorkGrid').innerHTML === '') {
-                setTimeout(() => { document.getElementById('loadOverlay').style.display = 'none'; }, 500); 
+                setTimeout(hideLoadOverlay, 500); 
                 return;
             }
             
@@ -717,14 +724,10 @@ function jumpToLightboxIndex(idx) {
                 const res = await fetch(`${PATHS.LIST}?adminEmail=${adminEmail}`); 
                 allAlbums = await res.json(); 
                 renderAlbums(allAlbums); 
-                setTimeout(() => { 
-                    const overlay = document.getElementById('loadOverlay');
-                    if (overlay) {
-                        overlay.style.display = 'none'; 
-                    }
-                }, 500);
+                setTimeout(hideLoadOverlay, 500);
             } catch (e) { 
-                document.getElementById('loadOverlay').style.display = 'none'; 
+                console.error("Lỗi tải danh sách album:", e);
+                hideLoadOverlay(); 
             } 
         }
         function logoutAdmin() { localStorage.clear(); window.location.href = 'index'; }
