@@ -338,8 +338,8 @@
         <div class="vip-actions-grid">
             <button class="btn-vip" style="background: #10b981; color: #fff;" onclick="downloadSelectedZip('${id}', '${albumTitle}')" title="Tải tất cả ảnh đã chọn kèm ghi chú thành file ZIP"><i class="fas fa-file-archive"></i> TẢI FINAL</button>
             <button class="btn-vip" style="background: #0ea5e9; color: #fff;" onclick="openAlbumLinksModal('${albumTitle}', '${clientPageUrl}', '${driveFolderUrl}')" title="Xem và sao chép liên kết truy cập album"><i class="fas fa-link"></i> LINK</button>
-            <button class="btn-vip v-export" onclick="handleExportClick('${id}', '${albumTitle}')" title="Trích xuất tên file">
-                <i class="fa-regular fa-copy"></i> Copy
+            <button class="btn-vip v-export" onclick="handleExportClick('${id}', '${albumTitle}')" title="Trích xuất tên file" style="color: #ffffff !important;">
+                <i class="fa-regular fa-copy" style="color: #ffffff !important;"></i> Copy
             </button>
             <button class="btn-vip" style="background: #8b5cf6; grid-column: span 3;" onclick="openSettingsModal('${id}', ${limitVal}, ${downloadVal}, ${commentVal}, ${watermarkEnabledVal ? 'true' : 'false'}, '${watermarkLogoVal}')">
                 <i class="fas fa-sliders-h me-1"></i> Cài đặt cấu hình album
