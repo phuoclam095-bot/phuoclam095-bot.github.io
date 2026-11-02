@@ -704,7 +704,17 @@ function jumpToLightboxIndex(idx) {
     currentIndex = idx;
     renderLightboxCurrent();
 }
-
+    function toSlug(str) {
+    if (!str) return '';
+    return str.toString().toLowerCase()
+        .normalize('NFD') // Tách các dấu tiếng Việt
+        .replace(/[\u0300-\u036f]/g, '') // Xóa các dấu sau khi tách
+        .replace(/[đĐ]/g, 'd') // Thay thế chữ đ / Đ
+        .replace(/([^0-9a-z-\s])/g, '') // Xóa ký tự đặc biệt
+        .trim()
+        .replace(/\s+/g, '-') // Thay khoảng trắng thành dấu gạch ngang (-)
+        .replace(/-+/g, '-'); // Thu gọn các dấu gạch ngang liên tiếp
+}
         
         function hideLoadOverlay() {
             const overlay = document.getElementById('loadOverlay');
@@ -712,7 +722,6 @@ function jumpToLightboxIndex(idx) {
                 overlay.style.display = 'none';
             }
         }
-
         async function init() { 
             updateHeaderUI(); 
             if (!document.getElementById('mainWorkGrid') || document.getElementById('mainWorkGrid').innerHTML === '') {
