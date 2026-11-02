@@ -642,7 +642,12 @@
                 const res = await fetch(`${PATHS.LIST}?adminEmail=${adminEmail}`); 
                 allAlbums = await res.json(); 
                 renderAlbums(allAlbums); 
-                setTimeout(() => { document.getElementById('loadOverlay').style.display = 'none'; }, 500); 
+                setTimeout(() => { 
+                    const overlay = document.getElementById('loadOverlay');
+                    if (overlay) {
+                        overlay.style.display = 'none'; 
+                    }
+                }, 500);
             } catch (e) { 
                 document.getElementById('loadOverlay').style.display = 'none'; 
             } 
