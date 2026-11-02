@@ -338,7 +338,7 @@
         <div class="vip-actions-grid">
             <button class="btn-vip" style="background: #10b981; color: #fff;" onclick="downloadSelectedZip('${id}', '${albumTitle}')" title="Tải tất cả ảnh đã chọn kèm ghi chú thành file ZIP"><i class="fas fa-file-archive"></i> TẢI FINAL</button>
             <button class="btn-vip" style="background: #0ea5e9; color: #fff;" onclick="openAlbumLinksModal('${albumTitle}', '${clientPageUrl}', '${driveFolderUrl}')" title="Xem và sao chép liên kết truy cập album"><i class="fas fa-link"></i> LINK</button>
-            <button onclick="copyAlbumFileList(folderId)" class="btn btn-warning btn-sm d-inline-flex align-items-center gap-1" title="Copy danh sách tên file">
+            <button onclick="copyAlbumFileList('${folderId}')" class="btn-vip" style="background: #f59e0b; color: #fff;" title="Copy danh sách tên file">
                 <i class="fa-regular fa-copy"></i> Copy
             </button>
             <button class="btn-vip" style="background: #8b5cf6; grid-column: span 3;" onclick="openSettingsModal('${id}', ${limitVal}, ${downloadVal}, ${commentVal}, ${watermarkEnabledVal ? 'true' : 'false'}, '${watermarkLogoVal}')">
