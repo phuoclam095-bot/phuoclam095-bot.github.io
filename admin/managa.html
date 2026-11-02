@@ -282,7 +282,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const PATHS = { LIST: 'https://wsm.congtubaclieu.com.vn/webhook/get-album-list', DELETE: 'https://wsm.congtubaclieu.com.vn/webhook/delete-album', EXPORT: 'https://wsm.congtubaclieu.com.vn/webhook/export_filenames',NOTES: 'https://wsm.congtubaclieu.com.vn/webhook/get-album-notes', CLIENT: 'https://chonanhnhanh.vn/' };
+        const PATHS = { LIST: 'https://wsm.congtubaclieu.com.vn/webhook/get-album-list', DELETE: 'https://wsm.congtubaclieu.com.vn/webhook/delete-album', EXPORT: 'https://wsm.congtubaclieu.com.vn/webhook/export_filenames',SELECTED_PHOTOS: 'https://wsm.congtubaclieu.com.vn/webhook/get-selected-photos', NOTES: 'https://wsm.congtubaclieu.com.vn/webhook/get-album-notes', CLIENT: 'https://chonanhnhanh.vn/' };
         let adminEmail = localStorage.getItem('admin_email'), allAlbums = [];
 
         function showToast(msg) { const t = document.getElementById('toastNotice'); t.innerText = msg; t.style.display = 'block'; setTimeout(() => { t.style.display = 'none'; }, 2200); }
@@ -312,7 +312,11 @@
 
             card.innerHTML = `<div class="card-img-header" style="background-image: url('${img}');"><div class="album-vip-title">${folderName}</div></div>
                 <div class="stats-grid">
-                    <div class="stat-pill" onclick="window.open('${clientPageUrl}?mode=selected', '_blank')"><span class="stat-val">${album.selected_photos || 0}</span><span class="stat-lab">Chọn</span></div>
+                    <!-- ĐÃ CẬP NHẬT: Bấm vào đây sẽ mở modal hiển thị danh sách thumbnail ảnh có select = TRUE -->
+                    <div class="stat-pill" onclick="openSelectedPhotosModal('${id}', '${albumTitle}')">
+                        <span class="stat-val">${album.selected_photos || 0}</span>
+                        <span class="stat-lab">Chọn</span>
+                    </div>
                     <div class="stat-pill"><span class="stat-val text-white">${album.total_photos || 0}</span><span class="stat-lab">Tổng</span></div>
                     <div class="stat-pill" onclick="openNoteModal('${id}', '${albumTitle}')"><span class="stat-val text-info">${album.comments || 0}</span><span class="stat-lab">Note</span></div>
                 </div>
@@ -646,6 +650,23 @@
                     
                     <textarea id="fileNamesOutput" class="form-control mb-4" rows="12" readonly></textarea>
                     <button type="button" class="btn btn-copy-action w-100" onclick="copyFileNames()">SAO CHÉP DANH SÁCH</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="selectedPhotosModal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">DANH SÁCH ẢNH KHÁCH ĐÃ CHỌN</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="alert alert-supreme text-center mb-3" id="selectedModalInfo">Album: ...</div>
+                    <div id="selectedPhotosGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; max-height: 500px; overflow-y: auto; padding: 5px;">
+                    </div>
                 </div>
             </div>
         </div>
