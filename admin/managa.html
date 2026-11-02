@@ -340,48 +340,50 @@
                 .replace(/([^0-9a-z])/g, '') 
                 .trim();
         }
-        function openSelectedPhotosModal(folderId, albumName) {
+        async function openSelectedPhotosModal(folderId, albumName) {
     showToast("Đang tải danh sách ảnh đã chọn...");
-    fetch(`https://wsm.congtubaclieu.com.vn/webhook/get-selected-photos?folderId=${folderId}`)
-        .then(res => res.json())
-        .then(data => {
-            const photos = data.photos || data || [];
-            
-            const infoEl = document.getElementById('selectedModalInfo');
-            if (infoEl) infoEl.innerText = `Album: ${albumName} (Đã chọn: ${photos.length} ảnh)`;
-            
-            const grid = document.getElementById('selectedPhotosGrid');
-            if (grid) {
-                grid.innerHTML = ''; 
-            }
-            
-            grid.innerHTML = '';
-            
-            if (photos.length === 0) {
-                grid.innerHTML = `<div class="text-center text-secondary py-4" style="grid-column: 1 / -1;">Khách hàng chưa chọn bức ảnh nào.</div>`;
-            } else {
-                photos.forEach(p => {
-                    const imgUrl = p.thumbnailLink || p.url || `https://drive.google.com/thumbnail?id=${p.id}&sz=w400`;
-                    const imgName = p.name || 'Ảnh';
-                    
-                    grid.innerHTML += `
-                        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(0, 235, 176, 0.2); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; align-items: center; padding: 6px;">
-                            <img src="${imgUrl}" style="width: 100%; height: 110px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer;" onclick="window.open('${imgUrl}', '_blank')" title="Bấm để xem ảnh lớn">
-                            <span style="font-size: 0.65rem; color: var(--primary); margin-top: 6px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;" title="${imgName}">${imgName}</span>
-                        </div>
-                    `;
-                });
-            }
-            
-            const modalEl = document.getElementById('selectedPhotosModal');
-            if (modalEl) {
-                new bootstrap.Modal(modalEl).show();
-            }
-        })
-        .catch(e => {
-            console.error(e);
-            showToast("Không thể tải danh sách ảnh đã chọn!");
-        });
+    try {
+        const res = await fetch(`${PATHS.SELECTED_PHOTOS}?folderId=${folderId}`);
+        const data = await res.json();
+        const photos = Array.isArray(data) ? data : (data.photos || data.data || []);
+        
+        const infoEl = document.getElementById('selectedModalInfo');
+        if (infoEl) {
+            infoEl.innerText = `Album: ${albumName} (Đã chọn: ${photos.length} ảnh)`;
+        }
+        
+        const grid = document.getElementById('selectedPhotosGrid');
+        if (!grid) {
+            console.error("Không tìm thấy phần tử #selectedPhotosGrid trong HTML!");
+            return;
+        }
+        
+        grid.innerHTML = '';
+        
+        if (photos.length === 0) {
+            grid.innerHTML = `<div class="text-center text-secondary py-4" style="grid-column: 1 / -1;">Khách hàng chưa chọn bức ảnh nào.</div>`;
+        } else {
+            photos.forEach(p => {
+                const imgUrl = p.url || p.thumbnailLink || `https://drive.google.com/thumbnail?id=${p.id}&sz=w400`;
+                const imgName = p.name || 'Ảnh';
+                
+                grid.innerHTML += `
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(0, 235, 176, 0.2); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; align-items: center; padding: 6px;">
+                        <img src="${imgUrl}" style="width: 100%; height: 110px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer;" onclick="window.open('${imgUrl}', '_blank')" title="Bấm để xem ảnh lớn">
+                        <span style="font-size: 0.65rem; color: var(--primary); margin-top: 6px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;" title="${imgName}">${imgName}</span>
+                    </div>
+                `;
+            });
+        }
+        
+        const modalEl = document.getElementById('selectedPhotosModal');
+        if (modalEl) {
+            new bootstrap.Modal(modalEl).show();
+        }
+    } catch(e) {
+        console.error(e);
+        showToast("Không thể tải danh sách ảnh đã chọn!");
+    }
 }
        async function openNoteModal(folderId, albumName) {
             showToast("Đang tải ghi chú...");
@@ -702,7 +704,7 @@
     </div>
 
 
-    <div class="modal fade" id="selectedPhotosModal" tabindex="-1">
+<div class="modal fade" id="selectedPhotosModal" tabindex="-1">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header border-0">
