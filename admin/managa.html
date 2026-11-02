@@ -341,19 +341,40 @@
 
     const PATH_ZIP_DOWNLOAD = 'https://wsm.congtubaclieu.com.vn/webhook/download-selected-zip';
 
-    function downloadSelectedZip(folderId, albumName) {
-    showToast(`Đang đóng gói file ZIP cho album "${albumName}"... Vui lòng đợi!`);
+    async function downloadSelectedZip(folderId, albumName) {
+    showToast(`Đang chuẩn bị gói dữ liệu cho album "${albumName}"... Vui lòng đợi!`);
     
-    const targetUrl = `${PATH_ZIP_DOWNLOAD}?folderId=${folderId}`;
-    
-    const iframe = document.createElement('iframe');
-    iframe.style.display = 'none';
-    iframe.src = targetUrl;
-    document.body.appendChild(iframe);
-    
-    setTimeout(() => {
-        document.body.removeChild(iframe);
-    }, 15000);
+    try {
+        const response = await fetch(`${PATH_ZIP_DOWNLOAD}?folderId=${folderId}`);
+        
+        if (!response.ok) {
+            throw new Error(`Lỗi máy chủ: ${response.status}`);
+        }
+        
+
+        const blob = await response.blob();
+        
+        if (blob.size < 100) {
+            throw new Error("File trả về trống hoặc không hợp lệ!");
+        }
+        
+
+        const downloadUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = `${toSlug(albumName) || 'album'}_chon_anh.zip`;
+        document.body.appendChild(a);
+        a.click();
+        
+        // Dọn dẹp bộ nhớ
+        a.remove();
+        window.URL.revokeObjectURL(downloadUrl);
+        
+        showToast("Tải file ZIP thành công!");
+    } catch (error) {
+        console.error("Lỗi tải ZIP:", error);
+        alert(`Không thể tải file ZIP: ${error.message}`);
+    }
 }
     function openAlbumLinksModal(albumName, clientUrl, driveUrl) {
         document.getElementById('linksModalAlbumName').innerText = `Album: ${albumName}`;
