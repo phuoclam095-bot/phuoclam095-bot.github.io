@@ -306,8 +306,10 @@
     const folderName = album.folderName || album.name || 'VIP Album';
     const albumTitle = folderName.replace(/'/g, "\\'");
 
-    // --- CHUẨN HÓA SLUG CHO STUDIO VÀ ALBUM ---
-    let rawStudio = album.studio_slug || album.studioSlug || album.studio || 'studio';
+    // --- ƯU TIÊN LẤY TỪ LOCALSTORAGE, SAU ĐÓ ĐẾN ALBUM, CUỐI CÙNG MỚI LÀ 'studio' ---
+    const localStudioSlug = localStorage.getItem('admin_studio_slug');
+    let rawStudio = localStudioSlug || album.studio_slug || album.studioSlug || album.studio || 'studio';
+    
     const studioSlug = toSlug(rawStudio);
     const albumSlug = album.album_slug || album.albumSlug || toSlug(folderName);
     
@@ -704,17 +706,7 @@ function jumpToLightboxIndex(idx) {
     currentIndex = idx;
     renderLightboxCurrent();
 }
-    function toSlug(str) {
-    if (!str) return '';
-    return str.toString().toLowerCase()
-        .normalize('NFD') // Tách các dấu tiếng Việt
-        .replace(/[\u0300-\u036f]/g, '') // Xóa các dấu sau khi tách
-        .replace(/[đĐ]/g, 'd') // Thay thế chữ đ / Đ
-        .replace(/([^0-9a-z-\s])/g, '') // Xóa ký tự đặc biệt
-        .trim()
-        .replace(/\s+/g, '-') // Thay khoảng trắng thành dấu gạch ngang (-)
-        .replace(/-+/g, '-'); // Thu gọn các dấu gạch ngang liên tiếp
-}
+
         
         function hideLoadOverlay() {
             const overlay = document.getElementById('loadOverlay');
