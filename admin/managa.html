@@ -342,8 +342,15 @@
     const PATH_ZIP_DOWNLOAD = 'https://wsm.congtubaclieu.com.vn/webhook/download-selected-zip';
 
     async function downloadSelectedZip(folderId, albumName) {
-    showToast(`Đang chuẩn bị gói dữ liệu cho album "${albumName}"... Vui lòng đợi!`);
+    // 1. Hiển thị bảng loading vòng xoay
+    const loadingModal = document.getElementById('zipLoadingModal');
+    const statusText = document.getElementById('zipStatusText');
+    if (loadingModal) loadingModal.style.display = 'flex';
     
+    if (statusText) {
+        statusText.innerHTML = `Đang đóng gói album <b>"${albumName}"</b>.<br>Tốc độ nhanh hay chậm phụ thuộc vào đường truyền mạng của bạn...`;
+    }
+
     try {
         const response = await fetch(`${PATH_ZIP_DOWNLOAD}?folderId=${folderId}`);
         
@@ -351,18 +358,18 @@
             throw new Error(`Lỗi máy chủ: ${response.status}`);
         }
         
-
+        // Nhận dữ liệu file dạng blob
         const blob = await response.blob();
         
         if (blob.size < 100) {
-            throw new Error("File trả về trống hoặc không hợp lệ!");
+            throw new Error("File ZIP trả về trống hoặc không có dữ liệu!");
         }
         
-
+        // 2. Kích hoạt tải file xuống
         const downloadUrl = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = downloadUrl;
-        a.download = `${toSlug(albumName) || 'album'}_chon_anh.zip`;
+        a.download = `${albumName || 'album'}_chon_anh.zip`;
         document.body.appendChild(a);
         a.click();
         
@@ -370,11 +377,20 @@
         a.remove();
         window.URL.revokeObjectURL(downloadUrl);
         
-        showToast("Tải file ZIP thành công!");
+        showToast("Tải file ZIP thành công!", { bg: 'success' });
+        
     } catch (error) {
         console.error("Lỗi tải ZIP:", error);
         alert(`Không thể tải file ZIP: ${error.message}`);
+    } finally {
+        // 3. Tắt bảng loading khi hoàn tất
+        if (loadingModal) loadingModal.style.display = 'none';
     }
+}
+
+function closeZipLoading() {
+    const loadingModal = document.getElementById('zipLoadingModal');
+    if (loadingModal) loadingModal.style.display = 'none';
 }
     function openAlbumLinksModal(albumName, clientUrl, driveUrl) {
         document.getElementById('linksModalAlbumName').innerText = `Album: ${albumName}`;
@@ -906,6 +922,32 @@ function jumpToLightboxIndex(idx) {
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+    <!-- Modal / Khung Loading Chờ Tải ZIP -->
+<div id="zipLoadingModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center;">
+    <div style="background: #1a1a2e; border: 1px solid rgba(0, 235, 176, 0.4); padding: 30px; border-radius: 15px; text-align: center; max-width: 400px; width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+        <!-- Vòng xoay loading -->
+        <div class="spinner-border text-success mb-3" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <h5 style="color: #fff; font-weight: bold; margin-bottom: 10px;">Đang chuẩn bị gói ZIP...</h5>
+        <p id="zipStatusText" style="color: #a0aec0; font-size: 0.9rem; margin-bottom: 15px;">Hệ thống đang tải ảnh từ máy chủ và đóng gói. Quá trình này phụ thuộc vào tốc độ mạng của bạn.</p>
+        
+        <div class="alert alert-warning border-0 shadow-sm rounded-4 p-3 mb-3" style="background: rgba(255, 193, 7, 0.1); border-left: 4px solid #ffc107 !important;">
+            <div class="d-flex align-items-start">
+                <div class="me-3 fs-4">💡</div>
+                <div>
+                    <h6 class="text-warning fw-bold mb-1">Mẹo xử lý nhanh khi mạng chậm:</h6>
+                    <p class="text-muted small mb-0">
+                        Thay vì đợi hệ thống đóng gói và tải file ZIP nặng, bạn hãy bấm vào <b>icon COPY Bên Phải</b> của album, sau đó chuyển sang tab <b>SAO CHÉP</b> để lấy danh sách tên file ảnh xuất ra, giúp bạn lọc và trích xuất file gốc trên máy tính (PC) nhanh chóng hơn!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <button onclick="closeZipLoading()" class="btn btn-outline-light btn-sm w-100">Ẩn thông báo (chạy ngầm)</button>
     </div>
 </div>
 </body>
