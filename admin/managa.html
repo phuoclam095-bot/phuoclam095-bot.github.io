@@ -342,12 +342,10 @@
     const PATH_ZIP_DOWNLOAD = 'https://wsm.congtubaclieu.com.vn/webhook/download-selected-zip';
 
     function downloadSelectedZip(folderId, albumName) {
-    showToast(`Đang chuẩn bị file ZIP cho album "${albumName}"... Vui lòng đợi!`);
+    showToast(`Đang đóng gói file ZIP cho album "${albumName}"... Vui lòng đợi!`);
     
-    // Gửi folderId qua query string để n8n nhận dạng
     const targetUrl = `${PATH_ZIP_DOWNLOAD}?folderId=${folderId}`;
     
-    // Dùng iframe ẩn để kích hoạt trình duyệt tải file xuống tự động mượt mà
     const iframe = document.createElement('iframe');
     iframe.style.display = 'none';
     iframe.src = targetUrl;
