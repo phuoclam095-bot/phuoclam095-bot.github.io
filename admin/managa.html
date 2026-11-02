@@ -19,19 +19,22 @@
         .album-card-vip,  
         .album-vip-title,  
         .stats-grid,  
-        .stat-val,
-        .stat-pill,  .stat-lab {
+        /* Tùy chỉnh khung chọn và note của album */
+        .stat-pill, .stat-val, .stat-lab {
+            /* Đảm bảo các khung thống kê có viền mỏng tinh tế */
             border: 1px solid rgba(255, 255, 255, 0.15) !important;
             transition: all 0.25s ease-in-out;
-            cursor: pointer; 
+            cursor: pointer; /* Biến con trỏ thành hình bàn tay khi rê vào */
         }
-        .stat-val:hover,
-        .stat-pill:hover,  .stat-lab:hover {
-            border-color: #0ea5e9 !important; 
-            background: rgba(14, 165, 233, 0.1) !important; 
-            transform: translateY(-2px); 
+        
+        /* Hiệu ứng khi di chuyển chuột vào (Hover) */
+        .stat-pill:hover, .stat-val:hover, .stat-lab:hover {
+            border-color: #0ea5e9 !important; /* Đổi màu viền sang xanh nổi bật */
+            background: rgba(14, 165, 233, 0.1) !important; /* Tạo nền mờ nhẹ */
+            transform: translateY(-2px); /* Hiệu ứng nổi nhẹ lên trên */
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
+        
         .supreme-title {
             user-select: none !important;
             -webkit-user-select: none !important;
