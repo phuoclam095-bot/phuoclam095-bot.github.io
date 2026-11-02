@@ -308,7 +308,7 @@
             let rawStudio = album.studio_slug || album.studioSlug || 'studio';
             const sSlug = rawStudio.replace(/-+/g, '-').replace(/^-|-$/g, '') || 'studio';
             const aSlug = album.album_slug || album.albumSlug || createSlug(folderName);
-            const clientPageUrl = `${PATHS.CLIENT}${rawStudio}/${aSlug}`;
+            const clientPageUrl = `${PATHS.CLIENT}${studio_slug}/${album_slug}`;
             const driveFolderUrl = `https://drive.google.com/drive/folders/${id}`;
 
             card.innerHTML = `<div class="card-img-header" style="background-image: url('${img}');"><div class="album-vip-title">${folderName}</div></div>
