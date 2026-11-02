@@ -548,7 +548,10 @@
             const preview = document.getElementById('editLogoPreview');
             if (editStoredLogoBase64 && editStoredLogoBase64 !== 'null' && editStoredLogoBase64 !== 'undefined') {
                 preview.src = editStoredLogoBase64;
-                preview.style.display = 'block';
+                const el = document.getElementById('elementId');
+                if (el) {
+                        el.style.display = 'block';
+                    }
             } else {
                 editStoredLogoBase64 = '';
                 preview.src = '';
