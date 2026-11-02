@@ -309,10 +309,10 @@
             const sSlug = rawStudio.replace(/-+/g, '-').replace(/^-|-$/g, '') || 'studio';
             const aSlug = album.album_slug || album.albumSlug || createSlug(folderName);
             const clientPageUrl = `${PATHS.CLIENT}${rawStudio}/${aSlug}`;
+            const driveFolderUrl = `https://drive.google.com/drive/folders/${id}`;
 
             card.innerHTML = `<div class="card-img-header" style="background-image: url('${img}');"><div class="album-vip-title">${folderName}</div></div>
                 <div class="stats-grid">
-                    <!-- ĐÃ CẬP NHẬT: Bấm vào đây sẽ mở modal hiển thị danh sách thumbnail ảnh có select = TRUE -->
                     <div class="stat-pill" onclick="openSelectedPhotosModal('${id}', '${albumTitle}')">
                         <span class="stat-val">${album.selected_photos || 0}</span>
                         <span class="stat-lab">Chọn</span>
@@ -321,9 +321,10 @@
                     <div class="stat-pill" onclick="openNoteModal('${id}', '${albumTitle}')"><span class="stat-val text-info">${album.comments || 0}</span><span class="stat-lab">Note</span></div>
                 </div>
                 <div class="vip-actions-grid">
-                    <button class="btn-vip v-view" onclick="window.open('${clientPageUrl}', '_blank')"><i class="fas fa-eye"></i></button>
-                    <button class="btn-vip v-drive" onclick="window.open('https://drive.google.com/drive/folders/${id}', '_blank')"><i class="fab fa-google-drive"></i></button>
-                    <button class="btn-vip v-export" onclick="handleExportClick('${id}', '${albumTitle}')"><i class="fas fa-file-export"></i></button>  
+                    <button class="btn-vip v-view" onclick="window.open('${clientPageUrl}', '_blank')" title="Xem trang client"><i class="fas fa-eye"></i></button>
+                    <!-- NÚT LINK MỚI: Bấm mở modal chứa 2 link copy -->
+                    <button class="btn-vip" style="background: #0ea5e9; color: #fff;" onclick="openAlbumLinksModal('${albumTitle}', '${clientPageUrl}', '${driveFolderUrl}')"><i class="fas fa-link"></i> LINK</button>
+                    <button class="btn-vip v-export" onclick="handleExportClick('${id}', '${albumTitle}')" title="Trích xuất tên file"><i class="fas fa-file-export"></i></button>  
                     <button class="btn-vip" style="background: #8b5cf6; grid-column: span 3;" onclick="openSettingsModal('${id}', ${limitVal}, ${downloadVal}, ${commentVal}, ${watermarkEnabledVal ? 'true' : 'false'}, '${watermarkLogoVal}')">
                         <i class="fas fa-sliders-h me-1"></i> Cài đặt cấu hình album
                     </button>
@@ -331,6 +332,25 @@
                 </div>`;
             return card;
         }
+    function openAlbumLinksModal(albumName, clientUrl, driveUrl) {
+        document.getElementById('linksModalAlbumName').innerText = `Album: ${albumName}`;
+        document.getElementById('inputClientLink').value = clientUrl;
+        document.getElementById('inputDriveLink').value = driveUrl;
+        
+        new bootstrap.Modal(document.getElementById('albumLinksModal')).show();
+    }
+    function copyLinkText(elementId) {
+        const inputEl = document.getElementById(elementId);
+        inputEl.select();
+        inputEl.setSelectionRange(0, 99999); // Hỗ trợ thiết bị di động
+        navigator.clipboard.writeText(inputEl.value).then(() => {
+            showToast("Đã sao chép liên kết vào bộ nhớ tạm!");
+        }).catch(err => {
+            console.error("Lỗi khi sao chép: ", err);
+            showToast("Không thể sao chép liên kết!");
+        });
+    }
+        
         function createSlug(str) {
             if (!str) return 'album';
             return str.toLowerCase()
@@ -345,8 +365,7 @@
     try {
         const res = await fetch(`${PATHS.SELECTED_PHOTOS}?folderId=${folderId}`);
         const data = await res.json();
-        
-        // Gán vào biến toàn cục currentLightboxPhotos
+
         currentLightboxPhotos = Array.isArray(data) ? data : (data.photos || data.data || data.items || [data]);
         
         const infoEl = document.getElementById('selectedModalInfo');
@@ -796,6 +815,37 @@ function jumpToLightboxIndex(idx) {
             </div>
             <div class="position-absolute bottom-0 start-0 end-0 p-2" style="background: rgba(0,0,0,0.9); z-index: 10;">
                 <div id="lightboxThumbnailsBar" class="d-flex align-items-center gap-2 overflow-auto justify-content-center py-1" style="max-width: 100%; white-space: nowrap;">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <div class="modal fade" id="albumLinksModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title">LIÊN KẾT TRUY CẬP ALBUM</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="alert alert-supreme text-center mb-4" id="linksModalAlbumName" style="font-size: 0.85rem;">Album: ...</div>
+                
+                <!-- Link Client (Chonanhnhanh.vn) -->
+                <div class="mb-3">
+                    <label class="form-label text-primary fw-bold small text-uppercase">1. Link gửi khách chọn ảnh (Client)</label>
+                    <div class="input-group">
+                        <input type="text" id="inputClientLink" class="form-control bg-dark text-white border-secondary" readonly style="font-size: 0.8rem;">
+                        <button class="btn btn-outline-primary" type="button" onclick="copyLinkText('inputClientLink')"><i class="fas fa-copy"></i> Sao chép</button>
+                    </div>
+                </div>
+
+                <!-- Link Google Drive Gốc -->
+                <div class="mb-2">
+                    <label class="form-label text-success fw-bold small text-uppercase">2. Link thư mục Google Drive gốc</label>
+                    <div class="input-group">
+                        <input type="text" id="inputDriveLink" class="form-control bg-dark text-white border-secondary" readonly style="font-size: 0.8rem;">
+                        <button class="btn btn-outline-success" type="button" onclick="copyLinkText('inputDriveLink')"><i class="fas fa-copy"></i> Sao chép</button>
+                    </div>
                 </div>
             </div>
         </div>
