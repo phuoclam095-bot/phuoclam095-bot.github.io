@@ -187,11 +187,11 @@
 
         .table-responsive {
             border-radius: 16px;
-            overflow: hidden;
+            overflow-x: auto !important; 
+            -webkit-overflow-scrolling: touch; 
             border: 1px solid rgba(0, 235, 176, 0.15);
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
         }
-
         .table-dark {
             background-color: #081121 !important;
             color: #f8fafc;
@@ -2068,7 +2068,7 @@ async function triggerSyncAndCheckToken() {
                         </select>
                     </div>
                 </div>
-                <div class="d-flex align-items-center justify-content-center gap-2 px-2 py-1" style="width: 360px; min-width: 360px; max-width: 360px; flex-shrink: 0; box-sizing: border-box;">
+                <div class="d-flex align-items-center justify-content-center gap-2 px-2 py-1 flex-wrap" style="width: 100%; box-sizing: border-box;">
                     <div class="btn-group btn-group-sm" role="group" style="flex-shrink: 0;">
                         <input type="radio" class="btn-check" name="convertType" id="typeSolarToLunar" checked onclick="switchConvertMode()">
                         <label class="btn btn-outline-primary py-1 px-2.5" style="font-size:0.7rem; font-weight:700;" for="typeSolarToLunar">Dương➔Âm</label>
@@ -2076,8 +2076,8 @@ async function triggerSyncAndCheckToken() {
                         <label class="btn btn-outline-primary py-1 px-2.5" style="font-size:0.7rem; font-weight:700;" for="typeLunarToSolar">Âm➔Dương</label>
                     </div>
                     
-                    <div style="width: 120px; min-width: 120px; max-width: 120px; flex-shrink: 0;">
-                        <input type="date" id="modalConvertDate" class="form-control form-control-sm text-center fw-bold shadow-none" style="font-size: 0.75rem; width: 120px !important; height: 30px !important; background: #13223f; color: #fff; border: 1px solid rgba(255,255,255,0.25); outline: none !important;" onchange="performModalConversion()">
+                    <div style="width: 110px; flex-shrink: 0;">
+                        <input type="date" id="modalConvertDate" class="form-control form-control-sm text-center fw-bold shadow-none" style="font-size: 0.75rem; width: 100% !important; height: 30px !important; background: #13223f; color: #fff; border: 1px solid rgba(255,255,255,0.25); outline: none !important;" onchange="performModalConversion()">
                     </div>
                     
                     <div id="modalConversionResult" class="text-success fw-bold text-nowrap text-start" style="font-size: 0.72rem; width: 95px; min-width: 95px; max-width: 95px; overflow: hidden; text-overflow: ellipsis; flex-shrink: 0;">
