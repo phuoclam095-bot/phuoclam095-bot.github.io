@@ -500,7 +500,7 @@
             
             loadOverlay.style.display = 'none';
             initGrid(); 
-            
+            init()
         } catch(e) { 
             console.error(e);
             loadOverlay.style.display = 'none';
@@ -512,36 +512,51 @@
     }
         init();
 
-// --- HÀM CHUẨN HÓA VECTOR (L2 Normalization) ĐỂ SO SÁNH CHÍNH XÁC HƠN ---
+let aiFaceClusters = [];
+let activeClusterIndex = null;
+let originalPhotosOrder = [];
+
+// --- 1. HÀM CHUẨN HÓA VÀ TƯƠNG ĐỒNG ---
 function l2Normalize(descriptor) {
     let norm = Math.sqrt(descriptor.reduce((sum, val) => sum + val * val, 0));
     return descriptor.map(val => val / (norm || 1e-6));
 }
 
-// --- HÀM TÍNH ĐỘ TƯƠNG ĐỒNG COSINE ---
 function cosineSimilarity(desc1, desc2) {
     let dot = 0;
     for (let i = 0; i < desc1.length; i++) {
         dot += desc1[i] * desc2[i];
     }
-    return dot; // Giá trị càng gần 1.0 càng giống nhau tuyệt đối
+    return dot;
 }
 
-// --- HÀM QUÉT AI TỐI ƯU CỰC KỲ CHÍNH XÁC CHO TIỆC ĐÔNG NGƯỜI ---
-async function runAutoFaceClustering() {
-    if (typeof faceapi === 'undefined') {
-        alert("Thư viện AI chưa sẵn sàng!");
+// --- 2. KHỞI TẠO QUÉT NGẦM ÂM THẦM KHI MỞ TRANG (KHÔNG LÀM PHIỀN KHÁCH) ---
+async function initBrowserCacheAI() {
+    if (!fid) return;
+    
+    // Kiểm tra xem trình duyệt đã lưu cụm AI của album này chưa
+    const cachedData = localStorage.getItem('ai_cluster_cache_' + fid);
+    
+    if (cachedData) {
+        aiFaceClusters = JSON.parse(cachedData);
+        renderFaceClusterUI();
         return;
     }
 
+    // Nếu chưa có, kích hoạt quét ngầm dưới nền hoàn toàn im lặng
+    runAndCacheFaceAISilently();
+}
+
+// --- 3. HÀM QUÉT AI DƯỚI NỀN (KHÔNG HIỆN THÔNG BÁO) ---
+async function runAndCacheFaceAISilently() {
+    if (typeof faceapi === 'undefined') return;
+
     try {
-        showToast("⏳ Đang khởi động mô hình AI nhận diện khuôn mặt...");
         await faceapi.nets.tinyFaceDetector.loadFromUri('https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/');
         await faceapi.nets.faceLandmark68Net.loadFromUri('https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/');
         await faceapi.nets.faceRecognitionNet.loadFromUri('https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/');
     } catch(err) { 
-        showToast("Lỗi tải mô hình AI!");
-        return;
+        return; 
     }
 
     if (!window.originalPhotosOrder || window.originalPhotosOrder.length === 0) {
@@ -552,18 +567,14 @@ async function runAutoFaceClustering() {
     const totalPhotos = window.originalPhotosOrder.length;
 
     for (let i = 0; i < totalPhotos; i++) {
-        showToast(`🔍 AI đang quét ảnh ${i + 1} / ${totalPhotos}`);
-
         const p = window.originalPhotosOrder[i];
         const img = document.createElement('img');
         img.crossOrigin = 'anonymous';
-        // Dùng kích thước s800 để giữ độ chi tiết nét mặt tốt nhất cho AI
         img.src = `https://lh3.googleusercontent.com/d/${p.id}=s800`;
 
         await new Promise((resolve) => {
             img.onload = async () => {
                 try {
-                    // Tăng inputSize lên 416 và scoreThreshold lên 0.75 để loại bỏ hoàn toàn mặt mờ, góc khuất
                     const options = new faceapi.TinyFaceDetectorOptions({ inputSize: 416, scoreThreshold: 0.75 });
                     const detections = await faceapi.detectAllFaces(img, options).withFaceLandmarks().withFaceDescriptors();
                     
@@ -572,6 +583,7 @@ async function runAutoFaceClustering() {
                             const normalizedDesc = l2Normalize(det.descriptor);
                             allFacesData.push({
                                 photoIndex: i,
+                                photoId: p.id,
                                 descriptor: normalizedDesc,
                                 detectionScore: det.detection.score
                             });
@@ -584,75 +596,57 @@ async function runAutoFaceClustering() {
         });
     }
 
-    if (allFacesData.length === 0) {
-        showToast("Không tìm thấy khuôn mặt rõ nét nào.");
-        return;
-    }
+    if (allFacesData.length === 0) return;
 
-    showToast("🔄 Đang gom nhóm nhân vật bằng thuật toán đa mẫu chuẩn xác...");
-    window.faceClusters = [];
-    
-    // Ngưỡng tương đồng Cosine khắt khe (>= 0.58 tương đương sai số cực thấp)
+    let clusters = [];
     const SIMILARITY_THRESHOLD = 0.58; 
 
     allFacesData.forEach(face => {
-        let matchedCluster = null;
         let highestSim = -1;
-
-        // Kiểm tra xem khuôn mặt này khớp với cụm nhân vật nào đã có không
-        for (let cluster of window.faceClusters) {
-            // So sánh với tất cả các mẫu (reference descriptors) trong cụm để đảm bảo độ chính xác đa góc độ
+        for (let cluster of clusters) {
             for (let refDesc of cluster.referenceDescriptors) {
                 let sim = cosineSimilarity(face.descriptor, refDesc);
-                if (sim > highestSim) {
-                    highestSim = sim;
-                }
+                if (sim > highestSim) highestSim = sim;
             }
         }
 
         if (highestSim >= SIMILARITY_THRESHOLD) {
-            // Tìm cụm có độ tương đồng cao nhất để gộp vào
-            let targetCluster = window.faceClusters.find(cluster => {
+            let targetCluster = clusters.find(cluster => {
                 return cluster.referenceDescriptors.some(ref => cosineSimilarity(face.descriptor, ref) >= SIMILARITY_THRESHOLD);
             });
-
             if (targetCluster) {
                 targetCluster.photoIndices.push(face.photoIndex);
-                // Nếu cụm chưa đủ 5 mẫu tham chiếu và điểm số nhận diện cao, lưu thêm làm mẫu đa góc độ
+                targetCluster.photoIds.push(face.photoId);
                 if (targetCluster.referenceDescriptors.length < 5 && face.detectionScore > 0.85) {
                     targetCluster.referenceDescriptors.push(face.descriptor);
                 }
             }
         } else {
-            // Tạo cụm nhân vật mới nếu chưa khớp ai
-            window.faceClusters.push({
+            clusters.push({
                 referenceDescriptors: [face.descriptor],
-                photoIndices: [face.photoIndex]
+                photoIndices: [face.photoIndex],
+                photoIds: [face.photoId]
             });
         }
     });
 
-    // Lọc bỏ các index trùng lặp trong từng cụm
-    window.faceClusters.forEach(cluster => {
-        cluster.photoIndices = [...new Set(cluster.photoIndices)];
-    });
+    aiFaceClusters = clusters.map((cl, idx) => ({
+        cluster_index: idx,
+        photo_ids: [...new Set(cl.photoIds)],
+        photo_indices: [...new Set(cl.photoIndices)]
+    })).filter(cl => cl.photo_ids.length >= 4);
 
-    // Sắp xếp nhóm xuất hiện nhiều nhất lên đầu
-    window.faceClusters.sort((a, b) => b.photoIndices.length - a.photoIndices.length);
+    aiFaceClusters.sort((a, b) => b.photo_ids.length - a.photo_ids.length);
+    aiFaceClusters = aiFaceClusters.slice(0, 5);
 
-    // Lọc chỉ giữ lại nhân vật xuất hiện từ 4 ảnh trở lên và tối đa top 5 nhân vật chính
-    window.faceClusters = window.faceClusters.filter(cluster => cluster.photoIndices.length >= 4).slice(0, 5);
-
-    if (window.faceClusters.length === 0) {
-        showToast("Không tìm thấy nhân vật chính xuất hiện xuyên suốt sự kiện.");
-        return;
+    if (aiFaceClusters.length > 0) {
+        // Lưu vĩnh viễn vào bộ nhớ trình duyệt, không làm phiền khách
+        localStorage.setItem('ai_cluster_cache_' + fid, JSON.stringify(aiFaceClusters));
+        renderFaceClusterUI();
     }
-
-    renderFaceClusterUI();
-    showToast(`✨ Đã lọc thành công ${window.faceClusters.length} nhân vật chính với độ chính xác cao!`);
 }
 
-// --- HÀM HIỂN THỊ GIAO DIỆN CHIP NHÂN VẬT ---
+// --- 4. HIỂN THỊ THANH CHIP NHÂN VẬT ---
 function renderFaceClusterUI() {
     const bar = document.getElementById('aiFaceClustersBar');
     if (!bar) return;
@@ -660,42 +654,40 @@ function renderFaceClusterUI() {
     bar.style.display = 'flex';
     bar.innerHTML = `<span style="font-size:0.65rem; color:var(--primary); font-weight:800; align-self:center; white-space:nowrap; margin-right:4px;">NHÂN VẬT CHÍNH:</span>`;
 
-    window.faceClusters.forEach((cluster, idx) => {
-        const avatarPhoto = window.originalPhotosOrder[cluster.photoIndices[0]];
-        const avatarUrl = `https://lh3.googleusercontent.com/d/${avatarPhoto.id}=h100`;
+    aiFaceClusters.forEach((cluster, idx) => {
+        const firstId = cluster.photo_ids[0];
+        const avatarUrl = `https://lh3.googleusercontent.com/d/${firstId}=h100`;
 
         const btn = document.createElement('button');
         btn.className = 'face-cluster-chip';
         btn.style.cssText = `background: #151b2b; color: #fff; border: 1px solid rgba(0,235,176,0.3); padding: 4px 10px; border-radius: 20px; font-weight: 700; font-size: 0.65rem; display: flex; align-items: center; gap: 6px; cursor: pointer; white-space: nowrap;`;
         
-        let label = idx === 0 ? `⭐ Nhân vật số 1 (${cluster.photoIndices.length})` : `Nhân vật ${idx + 1} (${cluster.photoIndices.length})`;
+        let label = idx === 0 ? `⭐ Nhân vật 1 (${cluster.photo_ids.length})` : `Nhân vật ${idx + 1} (${cluster.photo_ids.length})`;
         btn.innerHTML = `<img src="${avatarUrl}" style="width:20px; height:20px; border-radius:50%; object-fit:cover;"> ${label}`;
         
-        btn.onclick = () => filterByFaceCluster(cluster, btn, idx);
+        btn.onclick = () => filterPhotosByCachedCluster(cluster, btn, idx);
         bar.appendChild(btn);
     });
 }
 
-// --- HÀM LỌC ẢNH THEO NHÂN VẬT ĐÃ CHỌN ---
-function filterByFaceCluster(clusterObj, btnElement, clusterIdx) {
+// --- 5. SẮP XẾP ẢNH VÀ THÔNG BÁO KHI KHÁCH BẤM CHIP ---
+function filterPhotosByCachedCluster(clusterObj, btnElement, clusterIdx) {
     if (!window.originalPhotosOrder || window.originalPhotosOrder.length === 0) {
         window.originalPhotosOrder = [...photos];
     }
 
-    if (window.activeClusterIndex === clusterIdx) {
-        window.activeClusterIndex = null;
+    if (activeClusterIndex === clusterIdx) {
+        activeClusterIndex = null;
         btnElement.style.borderColor = 'rgba(0,235,176,0.3)';
         btnElement.style.background = '#151b2b';
-        
         photos = [...window.originalPhotosOrder];
         cur = 0;
         initGrid();
-        showToast("Đã tắt bộ lọc, hiển thị theo thời gian ban đầu.");
+        showToast("Đã tắt bộ lọc nhân vật.");
         return;
     }
 
-    window.activeClusterIndex = clusterIdx;
-    
+    activeClusterIndex = clusterIdx;
     document.querySelectorAll('.face-cluster-chip').forEach(b => {
         b.style.borderColor = 'rgba(0,235,176,0.3)';
         b.style.background = '#151b2b';
@@ -704,16 +696,17 @@ function filterByFaceCluster(clusterObj, btnElement, clusterIdx) {
     btnElement.style.borderColor = 'var(--primary)';
     btnElement.style.background = 'rgba(0,235,176,0.15)';
 
-    const matchedIndices = clusterObj.photoIndices;
-    const matchedPhotos = matchedIndices.map(i => window.originalPhotosOrder[i]);
-    const otherPhotos = window.originalPhotosOrder.filter((_, i) => !matchedIndices.includes(i));
+    const matched = window.originalPhotosOrder.filter(p => clusterObj.photo_ids.includes(p.id));
+    const others = window.originalPhotosOrder.filter(p => !clusterObj.photo_ids.includes(p.id));
     
-    photos = [...matchedPhotos, ...otherPhotos];
-    
+    photos = [...matched, ...others];
     cur = 0;
     initGrid();
-    showToast(`✨ Đã đưa toàn bộ ${matchedPhotos.length} ảnh của nhân vật này lên đầu!`);
+    
+    // Chỉ thông báo khi người dùng chủ động bấm vào chip
+    showToast(`✨ Đã lọc và đưa ${matched.length} ảnh của nhân vật lên đầu!`);
 }
+
     </script>
     <div class="modal fade" id="viewNoteModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
