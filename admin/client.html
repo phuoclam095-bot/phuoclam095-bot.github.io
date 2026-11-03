@@ -512,8 +512,8 @@
     }
         init();
 
-let aiFaceClusters = [];
-let activeClusterIndex = null;
+if (typeof window.aiFaceClusters === 'undefined') window.aiFaceClusters = [];
+if (typeof window.activeClusterIndex === 'undefined') window.activeClusterIndex = null;
 let originalPhotosOrder = [];
 
 // --- 1. HÀM CHUẨN HÓA VÀ TƯƠNG ĐỒNG ---
