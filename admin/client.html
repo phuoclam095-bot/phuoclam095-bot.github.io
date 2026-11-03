@@ -511,7 +511,8 @@
         }
     }
         init();
-       async function runAutoFaceClustering() {
+        // Bước 1: Quét và phân cụm khuôn mặt tự động
+async function runAutoFaceClustering() {
     showToast("🤖 AI đang phân tích nhân vật chính trong album...");
     
     if (typeof faceapi === 'undefined') {
@@ -592,10 +593,7 @@
     renderFaceClusterUI();
     showToast(`✨ Đã tìm thấy ${faceClusters.length} nhân vật chính xuất hiện nhiều nhất!`);
 }
-
-    renderFaceClusterUI();
-    showToast(`✨ Đã tìm thấy ${faceClusters.length} nhân vật chính xuất hiện nhiều nhất!`);
-}
+// Hiển thị thanh chọn nhân vật
 function renderFaceClusterUI() {
     const bar = document.getElementById('aiFaceClustersBar');
     if (!bar) return;
