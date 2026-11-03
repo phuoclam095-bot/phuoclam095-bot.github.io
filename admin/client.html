@@ -511,7 +511,10 @@
         }
     }
         init();
-        // --- 1. HÀM QUÉT AI & GOM CỤM ---
+       let faceClusters = []; 
+let activeClusterIndex = null;
+let originalPhotosOrder = []; // Lưu lại trật tự gốc theo thời gian
+
 async function runAutoFaceClustering() {
     showToast("🤖 AI đang phân tích nhân vật chính trong album...");
     
@@ -520,22 +523,26 @@ async function runAutoFaceClustering() {
         return;
     }
 
+    // Tải mô hình AI từ CDN
     try {
         await faceapi.nets.ssdMobilenetv1.loadFromUri('https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/');
         await faceapi.nets.faceLandmark68Net.loadFromUri('https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/');
         await faceapi.nets.faceRecognitionNet.loadFromUri('https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/');
     } catch(err) { console.log(err); }
 
+    // Lưu lại mảng gốc ngay lần chạy đầu tiên để phục vụ việc Reset về sau
+    if (!originalPhotosOrder || originalPhotosOrder.length === 0) {
+        originalPhotosOrder = [...photos];
+    }
+
     let allFacesData = [];
 
-    // Duyệt qua từng ảnh trong mảng gốc (originalPhotosOrder) để lấy đúng vị trí index chuẩn
-    const sourcePhotos = (window.originalPhotosOrder && window.originalPhotosOrder.length > 0) ? window.originalPhotosOrder : photos;
-
-    for (let i = 0; i < sourcePhotos.length; i++) {
-        const p = sourcePhotos[i];
+    // Quét qua tất cả ảnh trong mảng gốc bằng link lh3 (siêu mượt, không lỗi CORS)
+    for (let i = 0; i < originalPhotosOrder.length; i++) {
+        const p = originalPhotosOrder[i];
         const img = document.createElement('img');
         img.crossOrigin = 'anonymous';
-        img.src = `https://lh3.googleusercontent.com/d/${p.id}=s200`;  
+        img.src = `https://lh3.googleusercontent.com/d/${p.id}=s200`; // Dùng lh3 size nhỏ để AI quét chớp nhoáng
 
         await new Promise((resolve) => {
             img.onload = async () => {
@@ -544,7 +551,7 @@ async function runAutoFaceClustering() {
                     if (detections && detections.length > 0) {
                         detections.forEach(det => {
                             allFacesData.push({
-                                photoIndex: i, // Lưu đúng chỉ số trong mảng gốc
+                                photoIndex: i, // Lưu chính xác vị trí trong mảng gốc
                                 descriptor: det.descriptor
                             });
                         });
@@ -557,10 +564,11 @@ async function runAutoFaceClustering() {
     }
 
     if (allFacesData.length === 0) {
-        showToast("Không tìm thấy khuôn mặt nào.");
+        showToast("Không tìm thấy khuôn mặt nào trong album này.");
         return;
     }
 
+    // Gom cụm khuôn mặt giống nhau
     faceClusters = [];
     const threshold = 0.55;
 
@@ -580,10 +588,11 @@ async function runAutoFaceClustering() {
         }
     });
 
-    // Sắp xếp nhóm xuất hiện nhiều ảnh nhất lên đầu
+    // Sắp xếp nhóm đông ảnh nhất lên đầu
     faceClusters.sort((a, b) => b.photoIndices.length - a.photoIndices.length);
 
-    // Lọc: Chỉ giữ lại nhân vật xuất hiện từ 5 tấm trở lên và lấy Top 3
+    // 💡 LỌC THÔNG MINH CHO ALBUM NHIỀU ẢNH: 
+    // Chỉ giữ lại nhân vật xuất hiện từ 5 tấm trở lên và lấy tối đa Top 3 nhân vật chính (tránh ngợp giao diện)
     faceClusters = faceClusters.filter(cluster => cluster.photoIndices.length >= 5).slice(0, 3);
 
     if (faceClusters.length === 0) {
@@ -592,21 +601,20 @@ async function runAutoFaceClustering() {
     }
 
     renderFaceClusterUI();
-    showToast(`✨ Đã tìm thấy ${faceClusters.length} nhân vật chính!`);
+    showToast(`✨ Đã tìm thấy ${faceClusters.length} nhân vật chính xuất hiện nhiều nhất!`);
 }
 
-// --- 2. HÀM HIỂN THỊ THANH MENU NHÂN VẬT ---
+// Hiển thị thanh chọn nhân vật
 function renderFaceClusterUI() {
     const bar = document.getElementById('aiFaceClustersBar');
     if (!bar) return;
     
-    const sourcePhotos = (window.originalPhotosOrder && window.originalPhotosOrder.length > 0) ? window.originalPhotosOrder : photos;
-
     bar.style.display = 'flex';
     bar.innerHTML = `<span style="font-size:0.65rem; color:var(--primary); font-weight:800; align-self:center; white-space:nowrap; margin-right:4px;">NHÂN VẬT:</span>`;
 
     faceClusters.forEach((cluster, idx) => {
-        const avatarPhoto = sourcePhotos[cluster.photoIndices[0]];
+        // Lấy avatar bằng link lh3
+        const avatarPhoto = originalPhotosOrder[cluster.photoIndices[0]];
         const avatarUrl = `https://lh3.googleusercontent.com/d/${avatarPhoto.id}=h100`;
 
         const btn = document.createElement('button');
@@ -619,26 +627,26 @@ function renderFaceClusterUI() {
     });
 }
 
-// --- 3. HÀM BẬT/TẮT (TOGGLE) ĐẨY LÊN TRÊN & TRẢ VỀ NHƯ CŨ ---
+// Cơ chế Toggle: Bấm lần 1 đẩy lên trên, bấm lần 2 trả về như cũ
 function filterByFaceCluster(indices, btnElement, clusterIdx) {
-    if (!window.originalPhotosOrder || window.originalPhotosOrder.length === 0) {
-        window.originalPhotosOrder = [...photos]; // Đảm bảo luôn có mảng gốc
+    if (!originalPhotosOrder || originalPhotosOrder.length === 0) {
+        originalPhotosOrder = [...photos];
     }
 
     if (activeClusterIndex === clusterIdx) {
-        // Bấm lần 2 -> TẮT, trả về thứ tự thời gian gốc
+        // Bấm lại lần 2 -> TẮT, trả về đúng trật tự thời gian ban đầu
         activeClusterIndex = null;
         btnElement.style.borderColor = 'rgba(0,235,176,0.3)';
         btnElement.style.background = '#151b2b';
         
-        photos = [...window.originalPhotosOrder];
+        photos = [...originalPhotosOrder];
         cur = 0;
-        initGrid(); // Vẽ lại giao diện ngay lập tức
+        initGrid();
         showToast("Đã tắt bộ lọc, hiển thị theo thời gian ban đầu.");
         return;
     }
 
-    // Bấm lần 1 -> BẬT, đẩy ảnh nhân vật lên trên
+    // Bấm lần 1 -> BẬT, đẩy ảnh nhân vật lên trên đầu
     activeClusterIndex = clusterIdx;
     
     document.querySelectorAll('.face-cluster-chip').forEach(b => {
@@ -649,15 +657,14 @@ function filterByFaceCluster(indices, btnElement, clusterIdx) {
     btnElement.style.borderColor = 'var(--primary)';
     btnElement.style.background = 'rgba(0,235,176,0.15)';
 
-    // Lọc các tấm ảnh thuộc nhân vật này dựa vào mảng gốc
-    const matchedPhotos = indices.map(i => window.originalPhotosOrder[i]);
-    const otherPhotos = window.originalPhotosOrder.filter((_, i) => !indices.includes(i));
+    // Lọc ảnh chuẩn xác dựa vào mảng gốc không bị lệch chỉ số
+    const matchedPhotos = indices.map(i => originalPhotosOrder[i]);
+    const otherPhotos = originalPhotosOrder.filter((_, i) => !indices.includes(i));
     
-    // Gộp mảng mới: Ảnh nhân vật lên đầu, còn lại ở dưới
     photos = [...matchedPhotos, ...otherPhotos];
     
     cur = 0;
-    initGrid(); // 💡 BẮT BUỘC PHẢI CÓ DÒNG NÀY ĐỂ GIAO DIỆN LƯỚI CẬP NHẬT THỨ TỰ MỚI
+    initGrid(); // Vẽ lại lưới ngay lập tức
     showToast("✨ Đã đưa toàn bộ ảnh của nhân vật này lên trên đầu!");
 }
     </script>
