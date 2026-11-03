@@ -512,6 +512,11 @@
     }
         init();
 
+// Khởi tạo biến toàn cục nếu chưa có
+if (typeof window.faceClusters === 'undefined') window.faceClusters = [];
+if (typeof window.activeClusterIndex === 'undefined') window.activeClusterIndex = null;
+if (typeof window.originalPhotosOrder === 'undefined') window.originalPhotosOrder = [];
+
 if (typeof window.faceClusters === 'undefined') window.faceClusters = [];
 if (typeof window.activeClusterIndex === 'undefined') window.activeClusterIndex = null;
 if (typeof window.originalPhotosOrder === 'undefined') window.originalPhotosOrder = [];
@@ -611,6 +616,69 @@ async function runAutoFaceClustering() {
 
     renderFaceClusterUI();
     showToast(`✨ Đã lọc chính xác ${window.faceClusters.length} nhân vật chính!`);
+}
+function renderFaceClusterUI() {
+    const bar = document.getElementById('aiFaceClustersBar');
+    if (!bar) return;
+    
+    bar.style.display = 'flex';
+    bar.innerHTML = `<span style="font-size:0.65rem; color:var(--primary); font-weight:800; align-self:center; white-space:nowrap; margin-right:4px;">NHÂN VẬT:</span>`;
+
+    window.faceClusters.forEach((cluster, idx) => {
+        cluster.photoIndices = [...new Set(cluster.photoIndices)]; // Loại bỏ trùng lặp index trong cùng 1 ảnh
+
+        const avatarPhoto = window.originalPhotosOrder[cluster.photoIndices[0]];
+        const avatarUrl = `https://lh3.googleusercontent.com/d/${avatarPhoto.id}=h100`;
+
+        const btn = document.createElement('button');
+        btn.className = 'face-cluster-chip';
+        btn.style.cssText = `background: #151b2b; color: #fff; border: 1px solid rgba(0,235,176,0.3); padding: 4px 10px; border-radius: 20px; font-weight: 700; font-size: 0.65rem; display: flex; align-items: center; gap: 6px; cursor: pointer; white-space: nowrap;`;
+        // Nhân vật 1 chắc chắn là người xuất hiện nhiều nhất (Cô dâu / Chú rể)
+        let label = idx === 0 ? `⭐ Nhân vật chính (${cluster.photoIndices.length})` : `Nhân vật ${idx + 1} (${cluster.photoIndices.length})`;
+        btn.innerHTML = `<img src="${avatarUrl}" style="width:20px; height:20px; border-radius:50%; object-fit:cover;"> ${label}`;
+        
+        btn.onclick = () => filterByFaceCluster(cluster.photoIndices, btn, idx);
+        bar.appendChild(btn);
+    });
+}
+
+function filterByFaceCluster(indices, btnElement, clusterIdx) {
+    if (!window.originalPhotosOrder || window.originalPhotosOrder.length === 0) {
+        window.originalPhotosOrder = [...photos];
+    }
+
+    if (window.activeClusterIndex === clusterIdx) {
+        // Bấm lần 2 -> TẮT, trả về trật tự gốc theo thời gian
+        window.activeClusterIndex = null;
+        btnElement.style.borderColor = 'rgba(0,235,176,0.3)';
+        btnElement.style.background = '#151b2b';
+        
+        photos = [...window.originalPhotosOrder];
+        cur = 0;
+        initGrid();
+        showToast("Đã tắt bộ lọc, hiển thị theo thời gian ban đầu.");
+        return;
+    }
+
+    // Bấm lần 1 -> BẬT, đẩy toàn bộ ảnh của nhân vật này lên trên đầu
+    window.activeClusterIndex = clusterIdx;
+    
+    document.querySelectorAll('.face-cluster-chip').forEach(b => {
+        b.style.borderColor = 'rgba(0,235,176,0.3)';
+        b.style.background = '#151b2b';
+    });
+    
+    btnElement.style.borderColor = 'var(--primary)';
+    btnElement.style.background = 'rgba(0,235,176,0.15)';
+
+    const matchedPhotos = indices.map(i => window.originalPhotosOrder[i]);
+    const otherPhotos = window.originalPhotosOrder.filter((_, i) => !indices.includes(i));
+    
+    photos = [...matchedPhotos, ...otherPhotos];
+    
+    cur = 0;
+    initGrid();
+    showToast("✨ Đã đưa toàn bộ ảnh của nhân vật này lên trên đầu!");
 }
     </script>
     <div class="modal fade" id="viewNoteModal" tabindex="-1">
