@@ -207,6 +207,20 @@
     z-index: 10;
     white-space: nowrap;
 }
+        @media (max-width: 991.98px) {
+    body { padding-top: 150px; }
+    .navbar { min-height: auto; padding: 10px 0; }
+    .nav-center-container { 
+        position: static !important; transform: none !important; width: 100% !important; margin-top: 12px !important; order: 3; display: flex !important; overflow-x: auto !important; -webkit-overflow-scrolling: touch; justify-content: flex-start !important; padding: 0 15px !important; 
+    }
+    .nav-center-container::-webkit-scrollbar { display: none !important; }
+    .navbar-nav { display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; gap: 8px !important; width: max-content !important; justify-content: flex-start !important; margin: 0 !important; }
+    .nav-link { font-size: 0.72rem !important; padding: 8px 14px !important; background: rgba(255, 255, 255, 0.05) !important; border-radius: 10px !important; border: 1px solid rgba(0, 235, 176, 0.15) !important; }
+    .nav-link.active { background: rgba(0, 235, 176, 0.15) !important; border-color: var(--primary) !important; }
+    .nav-link.active::after { display: none !important; }
+    #loggedInNav { padding-right: 8px; }
+    .user-pill { min-width: auto; height: 42px; padding: 5px 8px; }
+}
     </style>
 </head>
 <body>
@@ -215,9 +229,8 @@
 
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
     <div class="container-fluid px-3 px-lg-5 d-flex flex-wrap align-items-center justify-content-between">
-
         <a class="navbar-brand-left m-0" href="index">CHONANHNHANH<span style="color:#f0c300">.VN</span></a>
-     
+        
         <div class="d-flex align-items-center ms-auto order-lg-3">
             <div id="loggedOutNav" style="display: none;">
                 <div class="btn-login-rainbow" onclick="startGoogleLogin()">
@@ -227,15 +240,17 @@
             <div id="loggedInNav" class="d-flex align-items-center" style="display: none;">
                 <div class="user-pill">
                     <div id="avatarPlaceholder"></div>
-                    <div class="d-flex flex-column">
-                        <span id="userNameDisplay" style="font-weight:900; font-size:0.75rem; line-height:1.2;"></span>
-                        <span id="badgeStatus" class="status-tag tag-active" style="background:var(--primary); color:#000; font-weight:900; margin-top:2px;">...</span>
+                    <div class="d-flex flex-column overflow-hidden">
+                        <span id="userNameDisplay" style="font-weight:900; font-size:0.75rem; line-height:1"></span>
+                        <div id="userStatusDisplay"></div>
                     </div>
                 </div>
                 <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()" style="cursor:pointer" title="Đăng xuất">
                     <i class="fas fa-power-off"></i>
                 </button>
             </div>
+        </div>
+
         <div class="nav-center-container" id="navCenterArea">
             <ul class="navbar-nav" id="adminNavLinks">
                 <li><a href="index" class="nav-link">Tạo Album</a></li>
@@ -251,7 +266,6 @@
                 <li><a href="privacy" class="nav-link">Chính Sách Bảo Mật</a></li>
             </ul>
         </div>
-
     </div>
 </nav>
 
@@ -333,61 +347,47 @@
 
         let isVIP = false, dirHandleSource = null, dirHandleDest = null;
 
-        function updateHeaderUI() {
-    if (localStorage.getItem('admin_is_logged_in') === 'true') {
-        const name = localStorage.getItem('admin_name') || 'Anh/Chị';
-        const av = localStorage.getItem('admin_avatar');
-        const status = localStorage.getItem('admin_status') || 'new';
-        
-        const expiry = getExpiryTimestamp(); 
-        isVIP = (status === 'active' && expiry > Date.now());
-        
-        const navLinks = document.getElementById('adminNavLinks');
-        const loggedInNav = document.getElementById('loggedInNav');
-        const loggedOutNav = document.getElementById('loggedOutNav');
+       function updateHeaderUI() {
+    const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
+    const status = localStorage.getItem('admin_status') || 'new';
+    const expiry = getExpiryTimestamp();
+    const name = localStorage.getItem('admin_name') || 'Anh/Chị';
+    isVIP = (status === 'active' && expiry > Date.now());
 
+    const navLinks = document.getElementById('adminNavLinks');
+    const loggedInNav = document.getElementById('loggedInNav');
+    const loggedOutNav = document.getElementById('loggedOutNav');
+    const mainWorkGrid = document.getElementById('mainWorkGrid');
+    const vipExpiredBlockNotice = document.getElementById('vipExpiredBlockNotice');
+
+    if (isLoggedIn) {
         if(navLinks) navLinks.style.setProperty('display', 'flex', 'important');
         if(loggedInNav) loggedInNav.style.setProperty('display', 'flex', 'important');
         if(loggedOutNav) loggedOutNav.style.setProperty('display', 'none', 'important');
-
-        const nameDisplay = document.getElementById('userNameDisplay');
-        if (nameDisplay) nameDisplay.innerText = name;
-
-        const avatarPlaceholder = document.getElementById('avatarPlaceholder');
-        if (avatarPlaceholder) {
-            avatarPlaceholder.innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:30px; color:var(--primary)"></i>`;
-        }
         
-        const badge = document.getElementById('badgeStatus'); 
-        const mainWorkGrid = document.getElementById('mainWorkGrid');
-        const vipExpiredBlockNotice = document.getElementById('vipExpiredBlockNotice');
-
-        if (isVIP) {
-            if (badge) {
-                badge.className = "status-tag";
-                badge.style.background = "var(--primary)";
-                badge.style.color = "#000";
-                badge.innerText = "ACTIVE - Hạn: " + new Date(expiry).toLocaleDateString('vi-VN');
+        document.getElementById('userNameDisplay').innerText = name;
+        const av = localStorage.getItem('admin_avatar');
+        document.getElementById('avatarPlaceholder').innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:30px; color:var(--primary)"></i>`;
+        
+        const statusEl = document.getElementById('userStatusDisplay');
+        if (statusEl) {
+            if (isVIP) {
+                statusEl.innerHTML = `<span class="status-tag tag-active">ACTIVE - Hạn: ${new Date(expiry).toLocaleDateString('vi-VN')}</span>`;
+                if (window.innerWidth > 991.98 && mainWorkGrid) mainWorkGrid.style.setProperty('display', 'grid', 'important');
+                if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'none', 'important');
+                if (document.getElementById('noticeVIP')) document.getElementById('noticeVIP').style.display = 'none';
+            } else {
+                statusEl.innerHTML = `<span class="status-tag ${status === 'new' ? 'tag-new' : 'tag-expired'}">${status === 'new' ? 'MỚI' : 'EXPIRED'}</span>`;
+                if (mainWorkGrid) mainWorkGrid.style.setProperty('display', 'none', 'important');
+                if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'block', 'important');
             }
-            
-            if (window.innerWidth > 991.98) {
-                if(mainWorkGrid) mainWorkGrid.style.setProperty('display', 'grid', 'important');
-                if(vipExpiredBlockNotice) vipExpiredBlockNotice.style.display = 'none';
-            }
-            if (document.getElementById('noticeVIP')) document.getElementById('noticeVIP').style.display = 'none';
-        } else {
-            if (badge) {
-                badge.className = "status-tag";
-                badge.style.background = "#ff4757";
-                badge.style.color = "#fff";
-                badge.innerText = status === 'new' ? "MỚI" : "EXPIRED (Hết hạn: " + new Date(expiry).toLocaleDateString('vi-VN') + ")";
-            }
-            
-            if (mainWorkGrid) mainWorkGrid.style.setProperty('display', 'none', 'important');
-            if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'block', 'important');
         }
     } else { 
-        window.location.href = 'index'; 
+        if(navLinks) navLinks.style.setProperty('display', 'none', 'important');
+        if(loggedInNav) loggedInNav.style.setProperty('display', 'none', 'important');
+        if(loggedOutNav) loggedOutNav.style.setProperty('display', 'block', 'important');
+        if(mainWorkGrid) mainWorkGrid.style.setProperty('display', 'none', 'important');
+        if(vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'block', 'important');
     }
 }
         function getExpiryTimestamp() {
