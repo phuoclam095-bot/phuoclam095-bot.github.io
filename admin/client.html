@@ -180,7 +180,12 @@
             console.log("Đang xem album thuộc Studio: " + studioSlug);
         }
 
-        function getLink(id, sz) { return `https://lh3.googleusercontent.com/d/${id}=${sz}`; }
+        function getLink(id, sz) { 
+    
+        if (sz === 's100') return `https://drive.google.com/thumbnail?id=${id}&sz=h150`;
+        if (sz === 's400') return `https://drive.google.com/thumbnail?id=${id}&sz=w400`;
+        return `https://drive.google.com/thumbnail?id=${id}&sz=w1000`; 
+    }
         
 
         function setView(v) {
