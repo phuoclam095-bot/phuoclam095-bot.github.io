@@ -518,15 +518,13 @@ if (typeof window.activeClusterIndex === 'undefined') window.activeClusterIndex 
 if (typeof window.originalPhotosOrder === 'undefined') window.originalPhotosOrder = [];
 
 async function runAutoFaceClustering() {
-    showToast("🤖 AI đang quét khuôn mặt, vui lòng đợi trong giây lát...");
-    
     if (typeof faceapi === 'undefined') {
         alert("Thư viện AI chưa sẵn sàng!");
         return;
     }
 
     try {
-        // Sử dụng TinyFaceDetector (nhanh, nhẹ và cực nhạy trên web/mobile)
+        showToast("⏳ Đang tải mô hình AI nhận diện khuôn mặt...");
         await faceapi.nets.tinyFaceDetector.loadFromUri('https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/');
         await faceapi.nets.faceLandmark68Net.loadFromUri('https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/');
         await faceapi.nets.faceRecognitionNet.loadFromUri('https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/');
@@ -541,9 +539,13 @@ async function runAutoFaceClustering() {
     }
 
     let allFacesData = [];
+    const totalPhotos = window.originalPhotosOrder.length;
 
-    // Quét qua các ảnh bằng link lh3 (tăng kích thước lên =s300 để AI nhìn rõ mặt hơn)
-    for (let i = 0; i < window.originalPhotosOrder.length; i++) {
+    // 💡 Quét từng ảnh và cập nhật tiến trình liên tục để người dùng biết AI đang chạy
+    for (let i = 0; i < totalPhotos; i++) {
+        // Hiển thị tiến trình chạy thực tế lên thông báo
+        showToast(`🤖 Đang quét AI: Ảnh ${i + 1} / ${totalPhotos}`);
+
         const p = window.originalPhotosOrder[i];
         const img = document.createElement('img');
         img.crossOrigin = 'anonymous';
@@ -552,7 +554,6 @@ async function runAutoFaceClustering() {
         await new Promise((resolve) => {
             img.onload = async () => {
                 try {
-                    // Cấu hình TinyFaceDetector tối ưu cho ảnh nhỏ
                     const options = new faceapi.TinyFaceDetectorOptions({ inputSize: 320, scoreThreshold: 0.5 });
                     const detections = await faceapi.detectAllFaces(img, options).withFaceLandmarks().withFaceDescriptors();
                     
@@ -564,7 +565,7 @@ async function runAutoFaceClustering() {
                             });
                         });
                     }
-                } catch(e) { console.log("Lỗi detect ảnh:", e); }
+                } catch(e) {}
                 resolve();
             };
             img.onerror = () => resolve();
@@ -576,8 +577,9 @@ async function runAutoFaceClustering() {
         return;
     }
 
+    showToast("🔄 Đang gom nhóm các khuôn mặt giống nhau...");
     window.faceClusters = [];
-    const threshold = 0.6; // Nới lỏng khoảng cách một chút để dễ gom trúng mặt cùng một người
+    const threshold = 0.6; // Ngưỡng nhận diện giống nhau
 
     allFacesData.forEach(face => {
         let matchedCluster = window.faceClusters.find(cluster => {
@@ -595,19 +597,19 @@ async function runAutoFaceClustering() {
         }
     });
 
-    // Sắp xếp nhóm đông ảnh nhất lên đầu
+    // 💡 TỰ ĐỘNG ĐƯA NHÂN VẬT XUẤT HIỆN NHIỀU NHẤT LÊN ĐẦU (Cô dâu / Chú rể)
     window.faceClusters.sort((a, b) => b.photoIndices.length - a.photoIndices.length);
 
-    // 💡 GIẢM ĐIỀU KIỆN LỌC XUỐNG: Chỉ cần xuất hiện từ 2 ảnh trở lên là được nhận diện, lấy tối đa 5 nhân vật
+    // Lọc lấy các nhân vật xuất hiện từ 2 ảnh trở lên, lấy tối đa 5 nhân vật chính nổi bật nhất
     window.faceClusters = window.faceClusters.filter(cluster => cluster.photoIndices.length >= 2).slice(0, 5);
 
     if (window.faceClusters.length === 0) {
-        showToast("Tìm thấy mặt nhưng chưa đủ cụm nhân vật chính (cần xuất hiện >= 2 ảnh).");
+        showToast("Chưa tìm thấy nhóm nhân vật nào xuất hiện từ 2 ảnh trở lên.");
         return;
     }
 
     renderFaceClusterUI();
-    showToast(`✨ Đã tìm thấy ${window.faceClusters.length} nhân vật nổi bật!`);
+    showToast(`✨ Hoàn tất! Đã tìm thấy ${window.faceClusters.length} nhân vật chính.`);
 }
 
 function renderFaceClusterUI() {
@@ -618,8 +620,7 @@ function renderFaceClusterUI() {
     bar.innerHTML = `<span style="font-size:0.65rem; color:var(--primary); font-weight:800; align-self:center; white-space:nowrap; margin-right:4px;">NHÂN VẬT:</span>`;
 
     window.faceClusters.forEach((cluster, idx) => {
-        // Loại bỏ các index trùng lặp trong cùng một cụm nếu có
-        cluster.photoIndices = [...new Set(cluster.photoIndices)];
+        cluster.photoIndices = [...new Set(cluster.photoIndices)]; // Loại bỏ trùng lặp index trong cùng 1 ảnh
 
         const avatarPhoto = window.originalPhotosOrder[cluster.photoIndices[0]];
         const avatarUrl = `https://lh3.googleusercontent.com/d/${avatarPhoto.id}=h100`;
@@ -627,7 +628,9 @@ function renderFaceClusterUI() {
         const btn = document.createElement('button');
         btn.className = 'face-cluster-chip';
         btn.style.cssText = `background: #151b2b; color: #fff; border: 1px solid rgba(0,235,176,0.3); padding: 4px 10px; border-radius: 20px; font-weight: 700; font-size: 0.65rem; display: flex; align-items: center; gap: 6px; cursor: pointer; white-space: nowrap;`;
-        btn.innerHTML = `<img src="${avatarUrl}" style="width:20px; height:20px; border-radius:50%; object-fit:cover;"> Nhân vật ${idx + 1} (${cluster.photoIndices.length})`;
+        // Nhân vật 1 chắc chắn là người xuất hiện nhiều nhất (Cô dâu / Chú rể)
+        let label = idx === 0 ? `⭐ Nhân vật chính (${cluster.photoIndices.length})` : `Nhân vật ${idx + 1} (${cluster.photoIndices.length})`;
+        btn.innerHTML = `<img src="${avatarUrl}" style="width:20px; height:20px; border-radius:50%; object-fit:cover;"> ${label}`;
         
         btn.onclick = () => filterByFaceCluster(cluster.photoIndices, btn, idx);
         bar.appendChild(btn);
@@ -640,7 +643,7 @@ function filterByFaceCluster(indices, btnElement, clusterIdx) {
     }
 
     if (window.activeClusterIndex === clusterIdx) {
-        // Bấm lần 2 -> TẮT, trả về trật tự gốc
+        // Bấm lần 2 -> TẮT, trả về trật tự gốc theo thời gian
         window.activeClusterIndex = null;
         btnElement.style.borderColor = 'rgba(0,235,176,0.3)';
         btnElement.style.background = '#151b2b';
@@ -652,7 +655,7 @@ function filterByFaceCluster(indices, btnElement, clusterIdx) {
         return;
     }
 
-    // Bấm lần 1 -> BẬT, đẩy ảnh nhân vật lên đầu
+    // Bấm lần 1 -> BẬT, đẩy toàn bộ ảnh của nhân vật này lên trên đầu
     window.activeClusterIndex = clusterIdx;
     
     document.querySelectorAll('.face-cluster-chip').forEach(b => {
@@ -669,7 +672,7 @@ function filterByFaceCluster(indices, btnElement, clusterIdx) {
     photos = [...matchedPhotos, ...otherPhotos];
     
     cur = 0;
-    initGrid(); // Vẽ lại lưới ngay lập tức
+    initGrid();
     showToast("✨ Đã đưa toàn bộ ảnh của nhân vật này lên trên đầu!");
 }
     </script>
