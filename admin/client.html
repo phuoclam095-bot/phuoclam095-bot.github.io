@@ -511,31 +511,29 @@
         }
     }
         init();
-        // Bước 1: Quét và phân cụm khuôn mặt tự động
-async function runAutoFaceClustering() {
-    showToast("🤖 AI đang quét và phân nhóm khuôn mặt toàn bộ album...");
+       async function runAutoFaceClustering() {
+    showToast("🤖 AI đang phân tích nhân vật chính trong album...");
     
     if (typeof faceapi === 'undefined') {
-        alert("Thư viện AI chưa sẵn sàng, vui lòng kiểm tra kết nối mạng!");
+        alert("Thư viện AI chưa sẵn sàng!");
         return;
     }
 
-    // Tải các mô hình AI nhẹ từ CDN
     try {
         await faceapi.nets.ssdMobilenetv1.loadFromUri('https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/');
         await faceapi.nets.faceLandmark68Net.loadFromUri('https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/');
         await faceapi.nets.faceRecognitionNet.loadFromUri('https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/');
-    } catch(err) {
-        console.log("Lỗi tải model AI:", err);
-    }
+    } catch(err) { console.log(err); }
 
     let allFacesData = [];
 
+    // Duyệt qua từng ảnh và dùng link lh3 để AI quét trực tiếp mượt mà không lỗi CORS
     for (let i = 0; i < photos.length; i++) {
         const p = photos[i];
-        const img = new Image();
-        img.crossOrigin = "anonymous"; 
-        img.src = `https://lh3.googleusercontent.com/d/${p.id}=s400`;
+        const img = document.createElement('img');
+        img.crossOrigin = 'anonymous';
+        // Dùng link lh3 dạng =s200 hoặc =s400 để AI đọc cực nhanh và không bị nghẽn mạng
+        img.src = `https://lh3.googleusercontent.com/d/${p.id}=s200`;  
 
         await new Promise((resolve) => {
             img.onload = async () => {
@@ -557,11 +555,10 @@ async function runAutoFaceClustering() {
     }
 
     if (allFacesData.length === 0) {
-        showToast("Không tìm thấy khuôn mặt nào trong album này.");
+        showToast("Không tìm thấy khuôn mặt nào.");
         return;
     }
 
-    // Gom cụm khuôn mặt giống nhau
     faceClusters = [];
     const threshold = 0.55;
 
@@ -581,12 +578,24 @@ async function runAutoFaceClustering() {
         }
     });
 
+    // Sắp xếp nhóm xuất hiện nhiều ảnh nhất lên đầu
     faceClusters.sort((a, b) => b.photoIndices.length - a.photoIndices.length);
+
+    // Lọc thông minh: Chỉ giữ lại các nhân vật xuất hiện từ 5 tấm trở lên và lấy Top 3 nhân vật chính
+    faceClusters = faceClusters.filter(cluster => cluster.photoIndices.length >= 5).slice(0, 3);
+
+    if (faceClusters.length === 0) {
+        showToast("Không tìm thấy nhân vật chính xuất hiện xuyên suốt album.");
+        return;
+    }
+
     renderFaceClusterUI();
-    showToast(`✨ Đã gom thành công ${faceClusters.length} nhân vật!`);
+    showToast(`✨ Đã tìm thấy ${faceClusters.length} nhân vật chính xuất hiện nhiều nhất!`);
 }
 
-// Hiển thị thanh chọn nhân vật
+    renderFaceClusterUI();
+    showToast(`✨ Đã tìm thấy ${faceClusters.length} nhân vật chính xuất hiện nhiều nhất!`);
+}
 function renderFaceClusterUI() {
     const bar = document.getElementById('aiFaceClustersBar');
     if (!bar) return;
