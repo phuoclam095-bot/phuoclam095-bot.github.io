@@ -343,6 +343,52 @@
 .modal-backdrop + .modal-backdrop {
     display: none;
 }
+        @media (max-width: 991.98px) {
+    body { padding-top: 150px; }
+    .navbar { min-height: auto; padding: 10px 0; }
+    
+    /* Biến menu thành thanh cuộn ngang mượt mà bằng ngón tay, ẩn scrollbar */
+    .nav-center-container { 
+        position: static !important; 
+        transform: none !important; 
+        width: 100% !important; 
+        margin-top: 12px !important; 
+        order: 3; 
+        display: flex !important; 
+        overflow-x: auto !important; 
+        -webkit-overflow-scrolling: touch; 
+        justify-content: flex-start !important; 
+        padding: 0 15px !important; 
+    }
+    .nav-center-container::-webkit-scrollbar { display: none !important; }
+    
+    .navbar-nav { 
+        display: flex !important; 
+        flex-direction: row !important; 
+        flex-wrap: nowrap !important; 
+        gap: 8px !important; 
+        width: max-content !important; 
+        justify-content: flex-start !important; 
+        margin: 0 !important; 
+    }
+    
+    /* Tối ưu các nút menu link để dễ bấm trên di động */
+    .nav-link { 
+        font-size: 0.72rem !important; 
+        padding: 8px 14px !important; 
+        background: rgba(255, 255, 255, 0.05) !important; 
+        border-radius: 10px !important; 
+        border: 1px solid rgba(0, 235, 176, 0.15) !important; 
+    }
+    .nav-link.active { 
+        background: rgba(0, 235, 176, 0.15) !important; 
+        border-color: var(--primary) !important; 
+    }
+    .nav-link.active::after { display: none !important; }
+    
+    #loggedInNav { padding-right: 8px; }
+    .user-pill { min-width: auto; height: 42px; padding: 5px 8px; }
+}
             </style>
 </head>
 <body>
