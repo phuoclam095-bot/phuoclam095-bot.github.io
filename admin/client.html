@@ -531,12 +531,11 @@ async function runAutoFaceClustering() {
 
     let allFacesData = [];
 
-    // Quét từng ảnh trong album
     for (let i = 0; i < photos.length; i++) {
         const p = photos[i];
-        const img = document.createElement('img');
-        img.crossOrigin = 'anonymous';
-        img.src = `https://drive.google.com/thumbnail?id=${p.id}&sz=w400`;
+        const img = new Image();
+        img.crossOrigin = "anonymous"; 
+        img.src = `https://lh3.googleusercontent.com/d/${p.id}=s400`;
 
         await new Promise((resolve) => {
             img.onload = async () => {
