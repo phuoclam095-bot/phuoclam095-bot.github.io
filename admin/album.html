@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChonAnhNhanh.vn - Thiết Kế Album Chuyên Nghiệp (100+ Mẫu & Bìa)</title>
+    <title>ChonAnhNhanh.vn - Dàn Trang Album & Chọn Kích Thước</title>
     <style>
         :root {
             --bg: #0b0f19;
@@ -41,15 +41,16 @@
         button.pri { background: var(--primary); color: #fff; border: none; }
         button.pri:hover { background: var(--primary-hover); }
 
-        /* Khung hiển thị trang đôi / Bìa album */
-        .workspace-wrapper { background: #05070a; border: 2px solid var(--border); border-radius: 14px; width: 100%; aspect-ratio: 2/1; position: relative; overflow: hidden; box-shadow: inset 0 0 30px rgba(0,0,0,0.8); }
-        #album-canvas { width: 100%; height: 100%; display: block; }
+        /* Vùng Workspace tự động co giãn theo Kích thước Album */
+        .workspace-container { display: flex; justify-content: center; align-items: center; background: #05070a; border: 2px solid var(--border); border-radius: 14px; width: 100%; min-height: 500px; padding: 20px; overflow: hidden; position: relative; }
+        #album-canvas { max-width: 100%; max-height: 600px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); display: block; }
 
-        /* Bảng nạp ảnh cho các slot */
-        .slot-inputs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 20px; }
-        .slot-input-item { background: rgba(255,255,255,0.03); border: 1px dashed var(--border); padding: 12px; border-radius: 8px; display: flex; flex-direction: column; gap: 6px; }
-        .slot-input-item label { font-size: 12.5px; font-weight: 500; color: var(--text-mu); }
-        .slot-input-item input[type="file"] { font-size: 12px; color: var(--text-mu); }
+        /* Khu vực kéo thả / thảy nhiều ảnh cùng lúc */
+        .dropzone-box { border: 2px dashed var(--primary); background: rgba(59, 130, 246, 0.05); padding: 25px; border-radius: 12px; text-align: center; margin-top: 20px; cursor: pointer; transition: 0.2s; }
+        .dropzone-box:hover { background: rgba(59, 130, 246, 0.1); }
+        .thumb-preview-list { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px; }
+        .thumb-item { width: 70px; height: 70px; border-radius: 6px; overflow: hidden; border: 1px solid var(--border); position: relative; }
+        .thumb-item img { width: 100%; height: 100%; object-fit: cover; }
     </style>
 </head>
 <body>
@@ -58,366 +59,254 @@
     <div class="card">
         <div class="header-flex">
             <div>
-                <h2>📖 Phần Mềm Dàn Trang Album & Bìa (100+ Mẫu)</h2>
-                <p class="mu">Hệ thống layout đa dạng, nền mờ nghệ thuật và Typography chuẩn in ấn.</p>
+                <h2>📖 Phần Mềm Dàn Trang Album & Chọn Khổ In</h2>
+                <p class="mu">Thảy nhiều ảnh vào cùng lúc, chọn kích thước album và tự động bố trí layout.</p>
             </div>
             <div class="toolbar">
-                <!-- Chọn Loại Trang (Bìa hoặc Trang ruột) -->
-                <select id="sel-page-type">
-                    <option value="spread">📄 Trang Ruột (Spread Đôi)</option>
-                    <option value="cover">📘 Bìa Album (Cover Trước & Gáy)</option>
+                <!-- 1. Chọn Kích Thước Album -->
+                <select id="sel-size">
+                    <option value="30x20">📐 Khổ Ngang (30 x 20 cm — Tỷ lệ 3:2)</option>
+                    <option value="25x35">📏 Khổ Đứng (25 x 35 cm — Tỷ lệ 5:7)</option>
+                    <option value="30x30">🔲 Khổ Vuông (30 x 30 cm — Tỷ lệ 1:1)</option>
                 </select>
 
-                <!-- Chọn Mẫu Layout (Mô phỏng hơn 100+ mẫu) -->
+                <!-- 2. Chọn Layout dàn trang -->
                 <select id="sel-layout">
-                    <!-- Danh sách mẫu sẽ được sinh động qua JS -->
+                    <option value="blur_center">✨ Nền mờ + Khung nổi</option>
+                    <option value="grid_2">🖼️ Lưới đôi (2 Ảnh)</option>
+                    <option value="grid_3">📐 Lưới 3 Ảnh (1 Chính, 2 Phụ)</option>
+                    <option value="grid_4">📑 Lưới 4 Ảnh (Tạp chí)</option>
                 </select>
 
-                <!-- Chọn Kiểu Chữ (Typography) -->
-                <select id="sel-typo">
-                    <option value="classic">✒️ Serif Cổ Điển (Cưới)</option>
-                    <option value="modern">🔠 Sans-Serif Hiện Đại</option>
-                    <option value="script">✍️ Chữ Viết Tay (Romantic)</option>
-                    <option value="none">🚫 Không chữ</option>
-                </select>
-
-                <button class="pri" id="btn-export">📥 Xuất File JPG (DPI Cao)</button>
+                <button class="pri" id="btn-export">📥 Xuất File In (DPI Cao)</button>
             </div>
         </div>
 
         <!-- WORKSPACE CANVAS -->
-        <div class="workspace-wrapper">
-            <canvas id="album-canvas" width="1600" height="800"></canvas>
+        <div class="workspace-container">
+            <canvas id="album-canvas" width="1500" height="1000"></canvas>
         </div>
 
-        <!-- KHUNG NẠP ẢNH TƯƠNG ƯNG (TỐI ĐA 6 ẢNH CHO LAYOUT PHỨC TẠP) -->
-        <div class="slot-inputs-grid" id="slot-inputs-container">
-            <!-- Sinh động qua JS -->
+        <!-- KHU VỰC THẢ NHIỀU ẢNH (MULTI-FILE UPLOAD) -->
+        <div class="dropzone-box" onclick="document.getElementById('multi-file-input').click()">
+            <b style="font-size: 15px;">📁 Thảy nhiều ảnh vào đây (Chọn 3 - 4 tấm trở lên)</b>
+            <p class="mu" style="margin-top: 4px;">Bấm vào đây hoặc kéo thả file ảnh từ máy tính của bạn vào để hệ thống tự nhận diện.</p>
+            <input type="file" id="multi-file-input" accept="image/*" multiple style="display: none;">
         </div>
+
+        <!-- Danh sách ảnh đã thảy vào -->
+        <div class="thumb-preview-list" id="thumb-container"></div>
     </div>
 </div>
 
 <script>
-/* --- HỆ THỐNG DÀN TRANG ALBUM PRO (100+ MẪU & BÌA) --- */
-const ProAlbumApp = {
-    images: [null, null, null, null, null, null], // Lưu trữ tối đa 6 ảnh
-    pageType: 'spread', // 'spread' hoặc 'cover'
-    layoutId: 'blur_center',
-    typoId: 'classic',
-
-    // Danh sách hơn 100+ mẫu được phân loại nhóm thông minh
-    layouts: [
-        // Nhóm Trang Ruột
-        { id: 'blur_center', name: '[Trang Ruột] ✨ Nền mờ + Khung nổi', group: 'spread', slots: 1 },
-        { id: 'grid_2', name: '[Trang Ruột] 🖼️ Lưới đôi cân đối (2 Ảnh)', group: 'spread', slots: 2 },
-        { id: 'grid_3_asym', name: '[Trang Ruột] 📐 Lưới bất đối xứng (3 Ảnh)', group: 'spread', slots: 3 },
-        { id: 'grid_4_magazine', name: '[Trang Ruột] 📑 Tạp chí phong cách (4 Ảnh)', group: 'spread', slots: 4 },
-        { id: 'grid_6_epic', name: '[Trang Ruột] 💎 Bộ sưu tập lớn (6 Ảnh)', group: 'spread', slots: 6 },
-        
-        // Nhóm Bìa Album (Cover)
-        { id: 'cover_classic', name: '[Bìa Album] 📘 Bìa cứng truyền thống + Khung ảnh', group: 'cover', slots: 1 },
-        { id: 'cover_modern', name: '[Bìa Album] 🖤 Bìa tràn viền tối giản sang trọng', group: 'cover', slots: 1 },
-        { id: 'cover_duo', name: '[Bìa Album] 📸 Bìa đôi kết hợp tên cô dâu chú rể', group: 'cover', slots: 2 }
-    ],
+/* --- MODULE XỬ LÝ ALBUM THÔNG MINH --- */
+const SmartAlbumApp = {
+    uploadedImages: [], // Mảng chứa tất cả ảnh khách thảy vào
+    canvasWidth: 1500,
+    canvasHeight: 1000,
+    currentLayout: 'blur_center',
 
     init() {
-        this.updateLayoutDropdown();
         this.bindEvents();
-        this.renderInputs();
         this.redraw();
     },
 
-    updateLayoutDropdown() {
-        const sel = document.getElementById('sel-layout');
-        const filtered = this.layouts.filter(l => l.group === this.pageType);
-        sel.innerHTML = filtered.map(l => `<option value="${l.id}">${l.name}</option>`).join('');
-        this.layoutId = filtered[0].id;
-    },
-
     bindEvents() {
-        document.getElementById('sel-page-type').onchange = (e) => {
-            this.pageType = e.target.value;
-            this.updateLayoutDropdown();
-            this.renderInputs();
+        // Thay đổi kích thước album
+        document.getElementById('sel-size').onchange = (e) => {
+            const val = e.target.value;
+            if (val === '30x20') { this.canvasWidth = 1500; this.canvasHeight = 1000; } // 3:2 ngang
+            else if (val === '25x35') { this.canvasWidth = 1050; this.canvasHeight = 1470; } // 5:7 đứng
+            else if (val === '30x30') { this.canvasWidth = 1200; this.canvasHeight = 1200; } // 1:1 vuông
             this.redraw();
         };
 
+        // Thay đổi layout
         document.getElementById('sel-layout').onchange = (e) => {
-            this.layoutId = e.target.value;
-            this.renderInputs();
+            this.currentLayout = e.target.value;
             this.redraw();
         };
 
-        document.getElementById('sel-typo').onchange = (e) => {
-            this.typoId = e.target.value;
-            this.redraw();
-        };
+        // Bắt sự kiện chọn nhiều ảnh cùng lúc
+        const fileInput = document.getElementById('multi-file-input');
+        fileInput.onchange = (e) => {
+            const files = Array.from(e.target.files);
+            if (!files.length) return;
 
-        document.getElementById('btn-export').onclick = () => {
-            const canvas = document.getElementById('album-canvas');
-            const link = document.createElement('a');
-            link.download = `album_${this.pageType}_${Date.now()}.jpg`;
-            link.href = canvas.toDataURL('image/jpeg', 0.98);
-            link.click();
-        };
-    },
-
-    getCurrentSlotsCount() {
-        const found = this.layouts.find(l => l.id === this.layoutId);
-        return found ? found.slots : 1;
-    },
-
-    renderInputs() {
-        const container = document.getElementById('slot-inputs-container');
-        const count = this.getCurrentSlotsCount();
-        let html = '';
-        for (let i = 0; i < count; i++) {
-            html += `
-                <div class="slot-input-item">
-                    <label>Ảnh khung số ${i + 1}</label>
-                    <input type="file" accept="image/*" data-slot-index="${i}" class="file-slot-input">
-                </div>
-            `;
-        }
-        container.innerHTML = html;
-
-        // Gắn sự kiện đọc file
-        container.querySelectorAll('.file-slot-input').forEach(input => {
-            input.onchange = (e) => {
-                const idx = parseInt(e.target.dataset.slotIndex);
-                const file = e.target.files[0];
-                if (!file) return;
+            files.forEach(file => {
                 const reader = new FileReader();
                 reader.onload = (ev) => {
                     const img = new Image();
                     img.onload = () => {
-                        this.images[idx] = img;
+                        this.uploadedImages.push(img);
+                        this.renderThumbnails();
                         this.redraw();
                     };
                     img.src = ev.target.result;
                 };
                 reader.readAsDataURL(file);
-            };
-        });
+            });
+        };
+
+        // Xuất file in
+        document.getElementById('btn-export').onclick = () => {
+            const canvas = document.getElementById('album-canvas');
+            const link = document.createElement('a');
+            link.download = `album_print_${Date.now()}.jpg`;
+            link.href = canvas.toDataURL('image/jpeg', 0.98);
+            link.click();
+        };
+    },
+
+    renderThumbnails() {
+        const container = document.getElementById('thumb-container');
+        container.innerHTML = this.uploadedImages.map((img, idx) => `
+            <div class="thumb-item" title="Ảnh số ${idx + 1}">
+                <img src="${img.src}">
+            </div>
+        `).join('');
     },
 
     redraw() {
         const canvas = document.getElementById('album-canvas');
         if (!canvas) return;
+        canvas.width = this.canvasWidth;
+        canvas.height = this.canvasHeight;
         const ctx = canvas.getContext('2d');
-        canvas.width = 1600;
-        canvas.height = 800;
 
-        // Xóa nền cũ
+        // Xóa nền
         ctx.fillStyle = '#0f172a';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        const primaryImg = this.images[0];
-
-        // Nếu chưa nạp ảnh, vẽ hướng dẫn
-        if (!primaryImg && this.pageType === 'spread') {
-            this.drawPlaceholder(ctx, canvas, 'Vui lòng chọn ảnh ở các ô phía dưới để bắt đầu dàn trang ruột');
-            return;
-        }
-        if (!primaryImg && this.pageType === 'cover') {
-            this.drawPlaceholder(ctx, canvas, 'Vui lòng chọn ảnh làm Bìa Album chính');
+        // Nếu chưa có ảnh nào được thảy vào
+        if (this.uploadedImages.length === 0) {
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '22px system-ui, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('Hãy bấm vào ô trên để thảy 3-4 tấm ảnh vào dàn trang', canvas.width / 2, canvas.height / 2);
             return;
         }
 
-        // --- PHÂN LOẠI VẼ THEO LAYOUT ---
-        if (this.pageType === 'cover') {
-            this.drawCoverLayout(ctx, canvas, primaryImg);
-        } else {
-            if (this.layoutId === 'blur_center') {
-                this.drawBlurCenterLayout(ctx, canvas, primaryImg);
-            } else if (this.layoutId === 'grid_2') {
-                this.drawGrid2Layout(ctx, canvas);
-            } else if (this.layoutId === 'grid_3_asym') {
-                this.drawGrid3AsymLayout(ctx, canvas);
-            } else if (this.layoutId === 'grid_4_magazine') {
-                this.drawGrid4MagazineLayout(ctx, canvas);
-            } else if (this.layoutId === 'grid_6_epic') {
-                this.drawGrid6EpicLayout(ctx, canvas);
-            }
+        // Phân bổ ảnh theo layout được chọn
+        if (this.currentLayout === 'blur_center') {
+            this.drawBlurCenter(ctx, canvas, this.uploadedImages[0]);
+        } else if (this.currentLayout === 'grid_2') {
+            this.drawGrid2(ctx, canvas, this.uploadedImages);
+        } else if (this.currentLayout === 'grid_3') {
+            this.drawGrid3(ctx, canvas, this.uploadedImages);
+        } else if (this.currentLayout === 'grid_4') {
+            this.drawGrid4(ctx, canvas, this.uploadedImages);
         }
-
-        // --- VẼ TYPOGRAPHY (CHỮ NGHỆ THUẬT) ---
-        this.drawTypography(ctx, canvas);
-    },
-
-    drawPlaceholder(ctx, canvas, text) {
-        ctx.fillStyle = '#1e293b';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#94a3b8';
-        ctx.font = '22px system-ui, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(text, canvas.width / 2, canvas.height / 2);
     },
 
     // 1. Layout Nền mờ + Khung nổi
-    drawBlurCenterLayout(ctx, canvas, img) {
+    drawBlurCenter(ctx, canvas, img) {
         ctx.save();
-        ctx.filter = 'blur(25px) brightness(0.45)';
+        ctx.filter = 'blur(25px) brightness(0.4)';
         const r = Math.max(canvas.width / img.width, canvas.height / img.height);
         const w = img.width * r, h = img.height * r;
         ctx.drawImage(img, (canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
         ctx.restore();
 
-        const fW = 720, fH = 560;
-        const fX = (canvas.width - fW) / 2, fY = (canvas.height - fH) / 2 - 15;
-        
+        const fW = canvas.width * 0.65;
+        const fH = canvas.height * 0.70;
+        const fX = (canvas.width - fW) / 2;
+        const fY = (canvas.height - fH) / 2;
+
         ctx.shadowColor = 'rgba(0,0,0,0.6)';
         ctx.shadowBlur = 35;
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(fX - 12, fY - 12, fW + 24, fH + 24);
 
+        ctx.save();
         ctx.beginPath();
         ctx.rect(fX, fY, fW, fH);
         ctx.clip();
 
         const ir = Math.max(fW / img.width, fH / img.height);
         ctx.drawImage(img, fX + (fW - img.width * ir) / 2, fY + (fH - img.height * ir) / 2, img.width * ir, img.height * ir);
+        ctx.restore();
     },
 
-    // 2. Lưới đôi cân đối
-    drawGrid2Layout(ctx, canvas) {
-        const img1 = this.images[0] || this.images[1];
-        const img2 = this.images[1] || this.images[0];
-        const slots = [
-            { x: 80, y: 80, w: 680, h: 640 },
-            { x: 840, y: 80, w: 680, h: 640 }
-        ];
-        slots.forEach((s, i) => {
-            const im = i === 0 ? img1 : img2;
-            if (!im) return;
+    // 2. Lưới 2 ảnh
+    drawGrid2(ctx, canvas, imgs) {
+        const im1 = imgs[0], im2 = imgs[1] || imgs[0];
+        const pad = 40, w = (canvas.width - (pad * 3)) / 2, h = canvas.height - (pad * 2);
+
+        [ { x: pad, im: im1 }, { x: pad * 2 + w, im: im2 } ].forEach(slot => {
             ctx.fillStyle = '#ffffff';
-            ctx.fillRect(s.x - 10, s.y - 10, s.w + 20, s.h + 20);
+            ctx.fillRect(slot.x - 10, pad - 10, w + 20, h + 20);
             ctx.save();
             ctx.beginPath();
-            ctx.rect(s.x, s.y, s.w, s.h);
+            ctx.rect(slot.x, pad, w, h);
             ctx.clip();
-            const r = Math.max(s.w / im.width, s.h / im.height);
-            ctx.drawImage(im, s.x + (s.w - im.width * r) / 2, s.y + (s.h - im.height * r) / 2, im.width * r, im.height * r);
+            const r = Math.max(w / slot.im.width, h / slot.im.height);
+            ctx.drawImage(slot.im, slot.x + (w - slot.im.width * r) / 2, pad + (h - slot.im.height * r) / 2, slot.im.width * r, slot.im.height * r);
             ctx.restore();
         });
     },
 
-    // 3. Lưới 3 ảnh bất đối xứng
-    drawGrid3AsymLayout(ctx, canvas) {
-        const im0 = this.images[0], im1 = this.images[1] || im0, im2 = this.images[2] || im0;
-        const slots = [
-            { x: 80, y: 80, w: 750, h: 640 },
-            { x: 870, y: 80, w: 650, h: 300 },
-            { x: 870, y: 420, w: 650, h: 300 }
-        ];
-        slots.forEach((s, i) => {
-            const im = [im0, im1, im2][i];
-            if (!im) return;
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(s.x - 8, s.y - 8, s.w + 16, s.h + 16);
-            ctx.save();
-            ctx.beginPath();
-            ctx.rect(s.x, s.y, s.w, s.h);
-            ctx.clip();
-            const r = Math.max(s.w / im.width, s.h / im.height);
-            ctx.drawImage(im, s.x + (s.w - im.width * r) / 2, s.y + (s.h - im.height * r) / 2, im.width * r, im.height * r);
-            ctx.restore();
-        });
-    },
-
-    // 4. Lưới 4 ảnh Tạp chí
-    drawGrid4MagazineLayout(ctx, canvas) {
-        // Có thể mở rộng vẽ 4 ô linh hoạt tương tự
-        this.drawGrid2Layout(ctx, canvas); // Mặc định fallback nếu thiếu ảnh
-    },
-
-    // 5. Lưới 6 ảnh
-    drawGrid6EpicLayout(ctx, canvas) {
-        this.drawGrid2Layout(ctx, canvas);
-    },
-
-    // --- XỬ LÝ BÌA ALBUM (COVER) ---
-    drawCoverLayout(ctx, canvas, img) {
-        // Nền bìa tối sang trọng
-        ctx.fillStyle = '#0b0f19';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        // Mô phỏng gáy sách ở chính giữa (đường gấp khúc bìa cứng)
-        ctx.strokeStyle = 'rgba(255,255,255,0.08)';
-        ctx.lineWidth = 4;
-        ctx.beginPath();
-        ctx.moveTo(canvas.width / 2, 0);
-        ctx.lineTo(canvas.width / 2, canvas.height);
-        ctx.stroke();
-
-        // Khung ảnh bìa trước (Bên phải)
-        const cW = 600, cH = 600;
-        const cX = 850, cY = 100;
-
-        ctx.shadowColor = 'rgba(0,0,0,0.5)';
-        ctx.shadowBlur = 30;
+    // 3. Lưới 3 ảnh (1 chính, 2 phụ)
+    drawGrid3(ctx, canvas, imgs) {
+        const im1 = imgs[0], im2 = imgs[1] || im1, im3 = imgs[2] || im1;
+        const pad = 30;
+        const mainW = canvas.width * 0.55 - pad;
+        const mainH = canvas.height - (pad * 2);
+        
+        // Vẽ ô chính bên trái
         ctx.fillStyle = '#ffffff';
-        ctx.fillRect(cX - 12, cY - 12, cW + 24, cH + 24);
-
+        ctx.fillRect(pad - 8, pad - 8, mainW + 16, mainH + 16);
         ctx.save();
-        ctx.beginPath();
-        ctx.rect(cX, cY, cW, cH);
-        ctx.clip();
-        const r = Math.max(cW / img.width, cH / img.height);
-        ctx.drawImage(img, cX + (cW - img.width * r) / 2, cY + (cH - img.height * r) / 2, img.width * r, img.height * r);
+        ctx.beginPath(); ctx.rect(pad, pad, mainW, mainH); ctx.clip();
+        let r = Math.max(mainW / im1.width, mainH / im1.height);
+        ctx.drawImage(im1, pad + (mainW - im1.width * r) / 2, pad + (mainH - im1.height * r) / 2, im1.width * r, im1.height * r);
         ctx.restore();
+
+        // 2 ô phụ bên phải
+        const subX = pad * 2 + mainW;
+        const subW = canvas.width - subX - pad;
+        const subH = (mainH - pad) / 2;
+
+        [ { y: pad, im: im2 }, { y: pad + subH + pad, im: im3 } ].forEach(sub => {
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(subX - 8, sub.y - 8, subW + 16, subH + 16);
+            ctx.save();
+            ctx.beginPath(); ctx.rect(subX, sub.y, subW, subH); ctx.clip();
+            let sr = Math.max(subW / sub.im.width, subH / sub.im.height);
+            ctx.drawImage(sub.im, subX + (subW - sub.im.width * sr) / 2, sub.y + (subH - sub.im.height * sr) / 2, sub.im.width * sr, sub.im.height * sr);
+            ctx.restore();
+        });
     },
 
-    // --- HỆ THỐNG TYPOGRAPHY NGHỆ THUẬT ---
-    drawTypography(ctx, canvas) {
-        if (this.typoId === 'none') return;
+    // 4. Lưới 4 ảnh tạp chí
+    drawGrid4(ctx, canvas, imgs) {
+        const pad = 30;
+        const w = (canvas.width - (pad * 3)) / 2;
+        const h = (canvas.height - (pad * 3)) / 2;
 
-        ctx.save();
-        ctx.shadowColor = 'rgba(0,0,0,0.8)';
-        ctx.shadowBlur = 12;
+        const coords = [
+            { x: pad, y: pad },
+            { x: pad * 2 + w, y: pad },
+            { x: pad, y: pad * 2 + h },
+            { x: pad * 2 + w, y: pad * 2 + h }
+        ];
 
-        if (this.pageType === 'cover') {
-            // Typography trên Bìa Album (Bên trái của bìa)
-            ctx.textAlign = 'left';
-            if (this.typoId === 'classic') {
-                ctx.fillStyle = '#f8fafc';
-                ctx.font = 'bold 42px "Times New Roman", serif';
-                ctx.fillText('NAM PHƯỚC', 150, 250);
-                ctx.font = 'italic 28px Georgia, serif';
-                ctx.fillStyle = '#cbd5e1';
-                ctx.fillText('& HỒ SƠ CƯỚI', 150, 300);
-                ctx.font = '16px sans-serif';
-                ctx.fillStyle = '#94a3b8';
-                ctx.fillText('WEDDING COLLECTION — 2026', 150, 360);
-            } else if (this.typoId === 'script') {
-                ctx.fillStyle = '#fde047';
-                ctx.font = 'italic 48px Georgia, serif';
-                ctx.fillText('Our Forever Love', 150, 280);
-            }
-        } else {
-            // Typography trên Trang Ruột (Góc dưới)
-            ctx.textAlign = 'center';
-            if (this.typoId === 'classic') {
-                ctx.fillStyle = '#f8fafc';
-                ctx.font = 'italic 28px "Times New Roman", serif';
-                ctx.fillText('— The Wedding Day —', canvas.width / 2, canvas.height - 45);
-            } else if (this.typoId === 'modern') {
-                ctx.fillStyle = '#ffffff';
-                ctx.font = 'bold 22px system-ui, sans-serif';
-                ctx.fillText('LOVE & MEMORIES', canvas.width / 2, canvas.height - 45);
-            } else if (this.typoId === 'script') {
-                ctx.fillStyle = '#fde047';
-                ctx.font = 'italic 32px Georgia, serif';
-                ctx.fillText('Our Special Chapter', canvas.width / 2, canvas.height - 45);
-            }
-        }
-
-        ctx.restore();
+        coords.forEach((c, idx) => {
+            const im = imgs[idx % imgs.length];
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(c.x - 8, c.y - 8, w + 16, h + 16);
+            ctx.save();
+            ctx.beginPath(); ctx.rect(c.x, c.y, w, h); ctx.clip();
+            const r = Math.max(w / im.width, h / im.height);
+            ctx.drawImage(im, c.x + (w - im.width * r) / 2, c.y + (h - im.height * r) / 2, im.width * r, im.height * r);
+            ctx.restore();
+        });
     }
 };
 
-// Khởi chạy ứng dụng
-ProAlbumApp.init();
+// Khởi chạy
+SmartAlbumApp.init();
 </script>
 
 </body>
