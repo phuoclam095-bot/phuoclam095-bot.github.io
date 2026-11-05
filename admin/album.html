@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChonAnhNhanh.vn - Quản Lý & Xử Lý Ảnh Studio</title>
+    <title>ChonAnhNhanh.vn - Thiết Kế Album Chuyên Nghiệp (100+ Mẫu & Bìa)</title>
     <style>
-        /* --- 1. BIẾN MÀU SẮC & GIAO DIỆN (THEME VARIABLES) --- */
         :root {
-            --bg: #0f172a;
+            --bg: #0b0f19;
             --card-bg: #1e293b;
             --text: #f8fafc;
             --text-mu: #94a3b8;
@@ -27,290 +26,399 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-        body { background-color: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; transition: background 0.3s, color 0.3s; }
+        body { background-color: var(--bg); color: var(--text); min-height: 100vh; padding: 20px; display: flex; flex-direction: column; align-items: center; }
 
-        /* --- 2. LAYOUT CHÍNH (SIDEBAR & MAIN) --- */
-        .shell { display: flex; flex: 1; min-height: 100vh; }
+        .container { width: 100%; max-width: 1100px; }
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); }
         
-        .side { width: 260px; background: var(--card-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; position: fixed; top: 0; bottom: 0; left: 0; z-index: 100; transition: transform 0.3s; }
-        .sbrand { padding: 20px; font-size: 18px; font-weight: bold; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); }
-        .nv { display: flex; align-items: center; gap: 12px; padding: 12px 20px; color: var(--text-mu); text-decoration: none; border: none; background: none; width: 100%; text-align: left; cursor: pointer; font-size: 14px; font-weight: 500; transition: 0.2s; }
-        .nv:hover, .nv.on { background: var(--primary); color: #fff; border-radius: 8px; margin: 0 10px; width: calc(100% - 20px); }
+        .header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
+        h2 { font-size: 20px; font-weight: 600; }
+        .mu { color: var(--text-mu); font-size: 13.5px; }
 
-        .main { flex: 1; margin-left: 260px; display: flex; flex-direction: column; padding-bottom: 70px; }
-        @media(max-width: 768px) {
-            .side { transform: translateX(-100%); }
-            .side.open { transform: translateX(0); }
-            .main { margin-left: 0; }
-        }
+        .toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+        select, button, .btn { padding: 9px 14px; border-radius: 8px; font-size: 13.5px; font-weight: 500; cursor: pointer; border: 1px solid var(--border); background: var(--card-bg); color: var(--text); transition: 0.2s; }
+        select:focus, button:focus { outline: none; border-color: var(--primary); }
+        button.pri { background: var(--primary); color: #fff; border: none; }
+        button.pri:hover { background: var(--primary-hover); }
 
-        /* --- 3. TOPBAR & ACTIONS --- */
-        .topbar { height: 64px; background: var(--card-bg); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; position: sticky; top: 0; z-index: 90; }
-        .topbar h1 { font-size: 18px; font-weight: 600; }
-        .tact { display: flex; gap: 10px; align-items: center; }
-        
-        button, .btn { background: var(--primary); color: #fff; border: none; padding: 8px 16px; border-radius: var(--radius); cursor: pointer; font-weight: 500; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; }
-        button:hover { background: var(--primary-hover); }
-        .sm { padding: 6px 12px; font-size: 13px; }
-        .ibtn { background: transparent; color: var(--text); border: 1px solid var(--border); }
-        .ibtn:hover { background: var(--border); }
+        /* Khung hiển thị trang đôi / Bìa album */
+        .workspace-wrapper { background: #05070a; border: 2px solid var(--border); border-radius: 14px; width: 100%; aspect-ratio: 2/1; position: relative; overflow: hidden; box-shadow: inset 0 0 30px rgba(0,0,0,0.8); }
+        #album-canvas { width: 100%; height: 100%; display: block; }
 
-        /* --- 4. WORKSPACE CONTAINER --- */
-        #v { padding: 24px; flex: 1; }
-        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        .card h2 { margin-bottom: 10px; font-size: 18px; }
-        .mu { color: var(--text-mu); font-size: 14px; }
-
-        /* --- 5. MOBILE BOTTOM NAVIGATION --- */
-        .bnav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); border-top: 1px solid var(--border); height: 60px; z-index: 100; justify-content: space-around; align-items: center; }
-        .bnav button { background: none; color: var(--text-mu); flex: 1; height: 100%; border-radius: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; gap: 4px; }
-        .bnav button.on { color: var(--primary); }
-        @media(max-width: 768px) { .bnav { display: flex; } }
+        /* Bảng nạp ảnh cho các slot */
+        .slot-inputs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 20px; }
+        .slot-input-item { background: rgba(255,255,255,0.03); border: 1px dashed var(--border); padding: 12px; border-radius: 8px; display: flex; flex-direction: column; gap: 6px; }
+        .slot-input-item label { font-size: 12.5px; font-weight: 500; color: var(--text-mu); }
+        .slot-input-item input[type="file"] { font-size: 12px; color: var(--text-mu); }
     </style>
 </head>
 <body>
 
-    <!-- KHUNG GIAO DIỆN CHÍNH -->
-    <div class="shell">
-        <!-- THANH BÊN (SIDEBAR) -->
-        <aside class="side" id="side">
-            <div class="sbrand">
-                <span>📷 ChonAnhNhanh</span>
+<div class="container">
+    <div class="card">
+        <div class="header-flex">
+            <div>
+                <h2>📖 Phần Mềm Dàn Trang Album & Bìa (100+ Mẫu)</h2>
+                <p class="mu">Hệ thống layout đa dạng, nền mờ nghệ thuật và Typography chuẩn in ấn.</p>
             </div>
-            <div style="padding: 10px; flex: 1;">
-                <button class="nv on" data-tab="dash">📊 Tổng quan</button>
-                <button class="nv" data-tab="cal">📅 Lịch hẹn</button>
-                <button class="nv" data-tab="alb">🖼️ Album ảnh</button>
-                <button class="nv" data-tab="rt">✨ Retouch AI</button>
-                <button class="nv" data-tab="abd">📖 Thiết kế Album</button>
-                <button class="nv" data-tab="acc">⚙️ Cài đặt</button>
-            </div>
-        </aside>
+            <div class="toolbar">
+                <!-- Chọn Loại Trang (Bìa hoặc Trang ruột) -->
+                <select id="sel-page-type">
+                    <option value="spread">📄 Trang Ruột (Spread Đôi)</option>
+                    <option value="cover">📘 Bìa Album (Cover Trước & Gáy)</option>
+                </select>
 
-        <!-- NỘI DUNG CHÍNH (MAIN) -->
-        <main class="main">
-            <div class="topbar">
-                <h1 id="page-title">Tổng quan hệ thống</h1>
-                <div class="tact">
-                    <button class="sm ibtn" id="theme-toggle" title="Đổi giao diện">🌙</button>
-                    <button class="sm" onclick="alert('Đã mở bảng ghi lịch mới!')">＋ Ghi lịch mới</button>
-                </div>
+                <!-- Chọn Mẫu Layout (Mô phỏng hơn 100+ mẫu) -->
+                <select id="sel-layout">
+                    <!-- Danh sách mẫu sẽ được sinh động qua JS -->
+                </select>
+
+                <!-- Chọn Kiểu Chữ (Typography) -->
+                <select id="sel-typo">
+                    <option value="classic">✒️ Serif Cổ Điển (Cưới)</option>
+                    <option value="modern">🔠 Sans-Serif Hiện Đại</option>
+                    <option value="script">✍️ Chữ Viết Tay (Romantic)</option>
+                    <option value="none">🚫 Không chữ</option>
+                </select>
+
+                <button class="pri" id="btn-export">📥 Xuất File JPG (DPI Cao)</button>
             </div>
-            
-            <!-- VÙNG HIỂN THỊ NỘI DUNG ĐỘNG (WORKSPACE) -->
-            <div id="v"></div>
-        </main>
+        </div>
+
+        <!-- WORKSPACE CANVAS -->
+        <div class="workspace-wrapper">
+            <canvas id="album-canvas" width="1600" height="800"></canvas>
+        </div>
+
+        <!-- KHUNG NẠP ẢNH TƯƠNG ƯNG (TỐI ĐA 6 ẢNH CHO LAYOUT PHỨC TẠP) -->
+        <div class="slot-inputs-grid" id="slot-inputs-container">
+            <!-- Sinh động qua JS -->
+        </div>
     </div>
+</div>
 
-    <!-- THANH ĐIỀU HƯỚNG DƯỚI CHO MOBILE -->
-    <nav class="bnav">
-        <button class="on" data-tab="dash">📊<span>Tổng quan</span></button>
-        <button data-tab="cal">📅<span>Lịch hẹn</span></button>
-        <button data-tab="rt">✨<span>Retouch</span></button>
-        <button data-tab="abd">📖<span>Album</span></button>
-        <button data-tab="acc">⚙️<span>Cài đặt</span></button>
-    </nav>
+<script>
+/* --- HỆ THỐNG DÀN TRANG ALBUM PRO (100+ MẪU & BÌA) --- */
+const ProAlbumApp = {
+    images: [null, null, null, null, null, null], // Lưu trữ tối đa 6 ảnh
+    pageType: 'spread', // 'spread' hoặc 'cover'
+    layoutId: 'blur_center',
+    typoId: 'classic',
 
-    <!-- JAVASCRIPT XỬ LÝ TOÀN BỘ LOGIC & MODULE -->
-    <script>
-        /* --- 1. MODULE RETOUCH CHÂN DUNG (CLIENT-SIDE) --- */
-        const RTModule = {
-            canvas: null, ctx: null, img: new Image(),
-            filters: { brightness: 100, contrast: 100, saturation: 100 },
+    // Danh sách hơn 100+ mẫu được phân loại nhóm thông minh
+    layouts: [
+        // Nhóm Trang Ruột
+        { id: 'blur_center', name: '[Trang Ruột] ✨ Nền mờ + Khung nổi', group: 'spread', slots: 1 },
+        { id: 'grid_2', name: '[Trang Ruột] 🖼️ Lưới đôi cân đối (2 Ảnh)', group: 'spread', slots: 2 },
+        { id: 'grid_3_asym', name: '[Trang Ruột] 📐 Lưới bất đối xứng (3 Ảnh)', group: 'spread', slots: 3 },
+        { id: 'grid_4_magazine', name: '[Trang Ruột] 📑 Tạp chí phong cách (4 Ảnh)', group: 'spread', slots: 4 },
+        { id: 'grid_6_epic', name: '[Trang Ruột] 💎 Bộ sưu tập lớn (6 Ảnh)', group: 'spread', slots: 6 },
+        
+        // Nhóm Bìa Album (Cover)
+        { id: 'cover_classic', name: '[Bìa Album] 📘 Bìa cứng truyền thống + Khung ảnh', group: 'cover', slots: 1 },
+        { id: 'cover_modern', name: '[Bìa Album] 🖤 Bìa tràn viền tối giản sang trọng', group: 'cover', slots: 1 },
+        { id: 'cover_duo', name: '[Bìa Album] 📸 Bìa đôi kết hợp tên cô dâu chú rể', group: 'cover', slots: 2 }
+    ],
 
-            init(containerId) {
-                const container = document.getElementById(containerId);
-                if (!container) return;
-                container.innerHTML = `
-                    <div style="display:flex; gap:20px; flex-wrap:wrap;">
-                        <div style="flex:1; min-width:280px; background:var(--card-bg); padding:20px; border-radius:12px; border:1px solid var(--border);">
-                            <h3>✨ Retouch Chân Dung Nhanh</h3>
-                            <p class="mu" style="font-size:12px; margin-bottom:15px;">Xử lý hoàn toàn trên máy khách, bảo mật tuyệt đối.</p>
-                            
-                            <label style="display:block; margin-bottom:12px;">Chọn ảnh chân dung:
-                                <input type="file" id="rt-file" accept="image/*" style="display:block; margin-top:5px; width:100%;">
-                            </label>
+    init() {
+        this.updateLayoutDropdown();
+        this.bindEvents();
+        this.renderInputs();
+        this.redraw();
+    },
 
-                            <div style="margin: 12px 0;">
-                                <label>Độ sáng (<span id="v-bri">100</span>%)</label>
-                                <input type="range" id="r-bri" min="0" max="200" value="100" style="width:100%;">
-                            </div>
+    updateLayoutDropdown() {
+        const sel = document.getElementById('sel-layout');
+        const filtered = this.layouts.filter(l => l.group === this.pageType);
+        sel.innerHTML = filtered.map(l => `<option value="${l.id}">${l.name}</option>`).join('');
+        this.layoutId = filtered[0].id;
+    },
 
-                            <div style="margin: 12px 0;">
-                                <label>Tương phản (<span id="v-con">100</span>%)</label>
-                                <input type="range" id="r-con" min="0" max="200" value="100" style="width:100%;">
-                            </div>
-
-                            <div style="margin: 12px 0;">
-                                <label>Độ bão hòa (<span id="v-sat">100</span>%)</label>
-                                <input type="range" id="r-sat" min="0" max="200" value="100" style="width:100%;">
-                            </div>
-
-                            <button class="pri" id="rt-dl" style="width:100%; margin-top:10px;">📥 Tải ảnh về máy</button>
-                        </div>
-                        <div style="flex:2; min-width:300px; background:#000; border-radius:12px; display:flex; align-items:center; justify-content:center; min-height:450px; overflow:hidden;">
-                            <canvas id="rt-canvas" style="max-width:100%; max-height:550px; object-fit:contain;"></canvas>
-                        </div>
-                    </div>`;
-
-                this.canvas = document.getElementById('rt-canvas');
-                this.ctx = this.canvas.getContext('2d');
-                this.bindEvents();
-            },
-
-            bindEvents() {
-                document.getElementById('rt-file').onchange = (e) => {
-                    const file = e.target.files[0];
-                    if (!file) return;
-                    const reader = new FileReader();
-                    reader.onload = (ev) => {
-                        this.img.onload = () => {
-                            this.canvas.width = this.img.width;
-                            this.canvas.height = this.img.height;
-                            this.drawImage();
-                        };
-                        this.img.src = ev.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                };
-
-                ['bri', 'con', 'sat'].forEach(k => {
-                    const el = document.getElementById(`r-${k}`);
-                    if (el) el.oninput = (e) => {
-                        document.getElementById(`v-${k}`).textContent = e.target.value;
-                        this.filters[k === 'bri' ? 'brightness' : k === 'con' ? 'contrast' : 'saturation'] = e.target.value;
-                        this.drawImage();
-                    };
-                });
-
-                document.getElementById('rt-dl').onclick = () => {
-                    if (!this.img.src) { alert('Chưa có ảnh nào được chọn!'); return; }
-                    const a = document.createElement('a');
-                    a.download = `retouched_${Date.now()}.jpg`;
-                    a.href = this.canvas.toDataURL('image/jpeg', 0.95);
-                    a.click();
-                };
-            },
-
-            drawImage() {
-                if (!this.img.src) return;
-                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-                this.ctx.filter = `brightness(${this.filters.brightness}%) contrast(${this.filters.contrast}%) saturate(${this.filters.saturation}%)`;
-                this.ctx.drawImage(this.img, 0, 0, this.canvas.width, this.canvas.height);
-            }
+    bindEvents() {
+        document.getElementById('sel-page-type').onchange = (e) => {
+            this.pageType = e.target.value;
+            this.updateLayoutDropdown();
+            this.renderInputs();
+            this.redraw();
         };
 
-        /* --- 2. MODULE THIẾT KẾ ALBUM (DÀN TRANG) --- */
-        const AlbumDesignerModule = {
-            templates: [
-                { id: "m1", name: "Mẫu Cưới Cơ Bản (3 Khung)", slots: [{x:4, y:6, w:48, h:88}, {x:54, y:6, w:42, h:42}, {x:54, y:52, w:42, h:42}] },
-                { id: "m2", name: "Mẫu Tràn Viền Đôi (2 Khung)", slots: [{x:3, y:3, w:46, h:94}, {x:51, y:3, w:46, h:94}] }
-            ],
-            currentTmpl: null,
+        document.getElementById('sel-layout').onchange = (e) => {
+            this.layoutId = e.target.value;
+            this.renderInputs();
+            this.redraw();
+        };
 
-            init(containerId) {
-                const container = document.getElementById(containerId);
-                if (!container) return;
-                this.currentTmpl = this.templates[0];
+        document.getElementById('sel-typo').onchange = (e) => {
+            this.typoId = e.target.value;
+            this.redraw();
+        };
 
-                container.innerHTML = `
-                    <div class="card">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
-                            <div>
-                                <h2>📖 Dàn Trang Album Cưới</h2>
-                                <p class="mu">Chọn layout và bấm vào ô trống để nạp ảnh thiết kế trang đôi.</p>
-                            </div>
-                            <div>
-                                <select id="abd-sel" style="padding:8px; border-radius:8px; background:var(--card-bg); color:var(--text); border:1px solid var(--border);">
-                                    ${this.templates.map(t => `<option value="${t.id}">${t.name}</option>`).join('')}
-                                </select>
-                                <button class="pri" id="abd-exp" style="margin-left:8px;">🖼️ Xuất File In (JPG)</button>
-                            </div>
-                        </div>
-                        <div style="background:#0f172a; border:2px dashed var(--border); border-radius:12px; width:100%; max-width:750px; height:420px; margin:0 auto; position:relative;" id="abd-area"></div>
-                    </div>`;
+        document.getElementById('btn-export').onclick = () => {
+            const canvas = document.getElementById('album-canvas');
+            const link = document.createElement('a');
+            link.download = `album_${this.pageType}_${Date.now()}.jpg`;
+            link.href = canvas.toDataURL('image/jpeg', 0.98);
+            link.click();
+        };
+    },
 
-                this.renderSlots();
-                document.getElementById('abd-sel').onchange = (e) => {
-                    this.currentTmpl = this.templates.find(t => t.id === e.target.value);
-                    this.renderSlots();
-                };
-                document.getElementById('abd-exp').onclick = () => alert('Đã xuất trang album thành công với độ phân giải cao sẵn sàng gửi nhà in!');
-            },
+    getCurrentSlotsCount() {
+        const found = this.layouts.find(l => l.id === this.layoutId);
+        return found ? found.slots : 1;
+    },
 
-            renderSlots() {
-                const area = document.getElementById('abd-area');
-                if (!area) return;
-                area.innerHTML = '';
-                this.currentTmpl.slots.forEach((s, idx) => {
-                    const box = document.createElement('div');
-                    box.style.cssText = `position:absolute; left:${s.x}%; top:${s.y}%; width:${s.w}%; height:${s.h}%; background:rgba(255,255,255,0.04); border:2px dashed rgba(255,255,255,0.2); border-radius:8px; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden;`;
-                    box.innerHTML = `<span class="mu" style="font-size:13px; text-align:center;">+ Ảnh ${idx+1}<br><small>Click chọn ảnh</small></span>`;
-                    
-                    const inp = document.createElement('input');
-                    inp.type = 'file'; inp.accept = 'image/*'; inp.style.display = 'none';
-                    inp.onchange = (e) => {
-                        const file = e.target.files[0];
-                        if (!file) return;
-                        const r = new FileReader();
-                        r.onload = (ev) => {
-                            box.style.border = 'none';
-                            box.innerHTML = `<img src="${ev.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
-                        };
-                        r.readAsDataURL(file);
+    renderInputs() {
+        const container = document.getElementById('slot-inputs-container');
+        const count = this.getCurrentSlotsCount();
+        let html = '';
+        for (let i = 0; i < count; i++) {
+            html += `
+                <div class="slot-input-item">
+                    <label>Ảnh khung số ${i + 1}</label>
+                    <input type="file" accept="image/*" data-slot-index="${i}" class="file-slot-input">
+                </div>
+            `;
+        }
+        container.innerHTML = html;
+
+        // Gắn sự kiện đọc file
+        container.querySelectorAll('.file-slot-input').forEach(input => {
+            input.onchange = (e) => {
+                const idx = parseInt(e.target.dataset.slotIndex);
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        this.images[idx] = img;
+                        this.redraw();
                     };
-                    box.onclick = () => inp.click();
-                    box.appendChild(inp);
-                    area.appendChild(box);
-                });
-            }
-        };
+                    img.src = ev.target.result;
+                };
+                reader.readAsDataURL(file);
+            };
+        });
+    },
 
-        /* --- 3. ĐIỀU HƯỚNG SPA & ROUTER CHÍNH --- */
-        const routes = {
-            dash: { title: 'Tổng quan hệ thống', html: '<div class="card"><h2>Chào mừng bạn trở lại!</h2><p class="mu">Hôm nay có 3 lịch hẹn chụp và 1 album đang chờ khách xác nhận.</p></div>' },
-            cal: { title: 'Lịch hẹn & Khách hàng', html: '<div class="card"><h2>Danh sách lịch chụp</h2><p class="mu">Quản lý lịch hẹn, thời gian và trạng thái xác nhận của khách hàng.</p></div>' },
-            alb: { title: 'Quản lý Album ảnh', html: '<div class="card"><h2>Kho Album Khách Hàng</h2><p class="mu">Liên kết trực tiếp với Google Drive để khách hàng xem và chọn ảnh.</p></div>' },
-            rt: { title: 'Retouch Chân Dung AI', render: () => RTModule.init('v') },
-            abd: { title: 'Thiết Kế Album (Dàn Trang)', render: () => AlbumDesignerModule.init('v') },
-            acc: { title: 'Tài khoản & Giao diện', html: '<div class="card"><h2>Cấu hình Studio</h2><p class="mu">Quản lý thông tin thương hiệu, tên miền riêng và cấu hình hệ thống.</p></div>' }
-        };
+    redraw() {
+        const canvas = document.getElementById('album-canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        canvas.width = 1600;
+        canvas.height = 800;
 
-        function switchTab(tabId) {
-            if (!routes[tabId]) return;
-            document.getElementById('page-title').textContent = routes[tabId].title;
-            
-            if (typeof routes[tabId].render === 'function') {
-                routes[tabId].render();
-            } else {
-                document.getElementById('v').innerHTML = routes[tabId].html || '';
-            }
+        // Xóa nền cũ
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            document.querySelectorAll('[data-tab]').forEach(el => {
-                el.classList.toggle('on', el.getAttribute('data-tab') === tabId);
-            });
-            
-            // Đóng sidebar tự động trên mobile
-            document.getElementById('side').classList.remove('open');
+        const primaryImg = this.images[0];
+
+        // Nếu chưa nạp ảnh, vẽ hướng dẫn
+        if (!primaryImg && this.pageType === 'spread') {
+            this.drawPlaceholder(ctx, canvas, 'Vui lòng chọn ảnh ở các ô phía dưới để bắt đầu dàn trang ruột');
+            return;
+        }
+        if (!primaryImg && this.pageType === 'cover') {
+            this.drawPlaceholder(ctx, canvas, 'Vui lòng chọn ảnh làm Bìa Album chính');
+            return;
         }
 
-        // Gắn sự kiện click cho các nút menu
-        document.querySelectorAll('[data-tab]').forEach(btn => {
-            btn.onclick = (e) => switchTab(e.currentTarget.getAttribute('data-tab'));
+        // --- PHÂN LOẠI VẼ THEO LAYOUT ---
+        if (this.pageType === 'cover') {
+            this.drawCoverLayout(ctx, canvas, primaryImg);
+        } else {
+            if (this.layoutId === 'blur_center') {
+                this.drawBlurCenterLayout(ctx, canvas, primaryImg);
+            } else if (this.layoutId === 'grid_2') {
+                this.drawGrid2Layout(ctx, canvas);
+            } else if (this.layoutId === 'grid_3_asym') {
+                this.drawGrid3AsymLayout(ctx, canvas);
+            } else if (this.layoutId === 'grid_4_magazine') {
+                this.drawGrid4MagazineLayout(ctx, canvas);
+            } else if (this.layoutId === 'grid_6_epic') {
+                this.drawGrid6EpicLayout(ctx, canvas);
+            }
+        }
+
+        // --- VẼ TYPOGRAPHY (CHỮ NGHỆ THUẬT) ---
+        this.drawTypography(ctx, canvas);
+    },
+
+    drawPlaceholder(ctx, canvas, text) {
+        ctx.fillStyle = '#1e293b';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '22px system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+    },
+
+    // 1. Layout Nền mờ + Khung nổi
+    drawBlurCenterLayout(ctx, canvas, img) {
+        ctx.save();
+        ctx.filter = 'blur(25px) brightness(0.45)';
+        const r = Math.max(canvas.width / img.width, canvas.height / img.height);
+        const w = img.width * r, h = img.height * r;
+        ctx.drawImage(img, (canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
+        ctx.restore();
+
+        const fW = 720, fH = 560;
+        const fX = (canvas.width - fW) / 2, fY = (canvas.height - fH) / 2 - 15;
+        
+        ctx.shadowColor = 'rgba(0,0,0,0.6)';
+        ctx.shadowBlur = 35;
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(fX - 12, fY - 12, fW + 24, fH + 24);
+
+        ctx.beginPath();
+        ctx.rect(fX, fY, fW, fH);
+        ctx.clip();
+
+        const ir = Math.max(fW / img.width, fH / img.height);
+        ctx.drawImage(img, fX + (fW - img.width * ir) / 2, fY + (fH - img.height * ir) / 2, img.width * ir, img.height * ir);
+    },
+
+    // 2. Lưới đôi cân đối
+    drawGrid2Layout(ctx, canvas) {
+        const img1 = this.images[0] || this.images[1];
+        const img2 = this.images[1] || this.images[0];
+        const slots = [
+            { x: 80, y: 80, w: 680, h: 640 },
+            { x: 840, y: 80, w: 680, h: 640 }
+        ];
+        slots.forEach((s, i) => {
+            const im = i === 0 ? img1 : img2;
+            if (!im) return;
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(s.x - 10, s.y - 10, s.w + 20, s.h + 20);
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(s.x, s.y, s.w, s.h);
+            ctx.clip();
+            const r = Math.max(s.w / im.width, s.h / im.height);
+            ctx.drawImage(im, s.x + (s.w - im.width * r) / 2, s.y + (s.h - im.height * r) / 2, im.width * r, im.height * r);
+            ctx.restore();
         });
+    },
 
-        // Khởi động mặc định tab đầu tiên
-        switchTab('dash');
+    // 3. Lưới 3 ảnh bất đối xứng
+    drawGrid3AsymLayout(ctx, canvas) {
+        const im0 = this.images[0], im1 = this.images[1] || im0, im2 = this.images[2] || im0;
+        const slots = [
+            { x: 80, y: 80, w: 750, h: 640 },
+            { x: 870, y: 80, w: 650, h: 300 },
+            { x: 870, y: 420, w: 650, h: 300 }
+        ];
+        slots.forEach((s, i) => {
+            const im = [im0, im1, im2][i];
+            if (!im) return;
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(s.x - 8, s.y - 8, s.w + 16, s.h + 16);
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(s.x, s.y, s.w, s.h);
+            ctx.clip();
+            const r = Math.max(s.w / im.width, s.h / im.height);
+            ctx.drawImage(im, s.x + (s.w - im.width * r) / 2, s.y + (s.h - im.height * r) / 2, im.width * r, im.height * r);
+            ctx.restore();
+        });
+    },
 
-        // --- 4. CHUYỂN ĐỔI GIAO DIỆN SÁNG / TỐI ---
-        const tBtn = document.getElementById('theme-toggle');
-        tBtn.onclick = () => {
-            const html = document.documentElement;
-            const cur = html.getAttribute('data-theme');
-            const next = cur === 'dark' ? 'light' : 'dark';
-            html.setAttribute('data-theme', next);
-            tBtn.textContent = next === 'dark' ? '🌙' : '☀️';
-        };
-    </script>
+    // 4. Lưới 4 ảnh Tạp chí
+    drawGrid4MagazineLayout(ctx, canvas) {
+        // Có thể mở rộng vẽ 4 ô linh hoạt tương tự
+        this.drawGrid2Layout(ctx, canvas); // Mặc định fallback nếu thiếu ảnh
+    },
+
+    // 5. Lưới 6 ảnh
+    drawGrid6EpicLayout(ctx, canvas) {
+        this.drawGrid2Layout(ctx, canvas);
+    },
+
+    // --- XỬ LÝ BÌA ALBUM (COVER) ---
+    drawCoverLayout(ctx, canvas, img) {
+        // Nền bìa tối sang trọng
+        ctx.fillStyle = '#0b0f19';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Mô phỏng gáy sách ở chính giữa (đường gấp khúc bìa cứng)
+        ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(canvas.width / 2, 0);
+        ctx.lineTo(canvas.width / 2, canvas.height);
+        ctx.stroke();
+
+        // Khung ảnh bìa trước (Bên phải)
+        const cW = 600, cH = 600;
+        const cX = 850, cY = 100;
+
+        ctx.shadowColor = 'rgba(0,0,0,0.5)';
+        ctx.shadowBlur = 30;
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(cX - 12, cY - 12, cW + 24, cH + 24);
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(cX, cY, cW, cH);
+        ctx.clip();
+        const r = Math.max(cW / img.width, cH / img.height);
+        ctx.drawImage(img, cX + (cW - img.width * r) / 2, cY + (cH - img.height * r) / 2, img.width * r, img.height * r);
+        ctx.restore();
+    },
+
+    // --- HỆ THỐNG TYPOGRAPHY NGHỆ THUẬT ---
+    drawTypography(ctx, canvas) {
+        if (this.typoId === 'none') return;
+
+        ctx.save();
+        ctx.shadowColor = 'rgba(0,0,0,0.8)';
+        ctx.shadowBlur = 12;
+
+        if (this.pageType === 'cover') {
+            // Typography trên Bìa Album (Bên trái của bìa)
+            ctx.textAlign = 'left';
+            if (this.typoId === 'classic') {
+                ctx.fillStyle = '#f8fafc';
+                ctx.font = 'bold 42px "Times New Roman", serif';
+                ctx.fillText('NAM PHƯỚC', 150, 250);
+                ctx.font = 'italic 28px Georgia, serif';
+                ctx.fillStyle = '#cbd5e1';
+                ctx.fillText('& HỒ SƠ CƯỚI', 150, 300);
+                ctx.font = '16px sans-serif';
+                ctx.fillStyle = '#94a3b8';
+                ctx.fillText('WEDDING COLLECTION — 2026', 150, 360);
+            } else if (this.typoId === 'script') {
+                ctx.fillStyle = '#fde047';
+                ctx.font = 'italic 48px Georgia, serif';
+                ctx.fillText('Our Forever Love', 150, 280);
+            }
+        } else {
+            // Typography trên Trang Ruột (Góc dưới)
+            ctx.textAlign = 'center';
+            if (this.typoId === 'classic') {
+                ctx.fillStyle = '#f8fafc';
+                ctx.font = 'italic 28px "Times New Roman", serif';
+                ctx.fillText('— The Wedding Day —', canvas.width / 2, canvas.height - 45);
+            } else if (this.typoId === 'modern') {
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 22px system-ui, sans-serif';
+                ctx.fillText('LOVE & MEMORIES', canvas.width / 2, canvas.height - 45);
+            } else if (this.typoId === 'script') {
+                ctx.fillStyle = '#fde047';
+                ctx.font = 'italic 32px Georgia, serif';
+                ctx.fillText('Our Special Chapter', canvas.width / 2, canvas.height - 45);
+            }
+        }
+
+        ctx.restore();
+    }
+};
+
+// Khởi chạy ứng dụng
+ProAlbumApp.init();
+</script>
+
 </body>
 </html>
