@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChonAnhNhanh.vn - Quản Lý & Xử Lý Ảnh Studio</title>
+    <style>
+        /* --- 1. BIẾN MÀU SẮC & GIAO DIỆN (THEME VARIABLES) --- */
+        :root {
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f8fafc;
+            --text-mu: #94a3b8;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --border: #334155;
+            --radius: 12px;
+        }
+        [data-theme="light"] {
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --text-mu: #64748b;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --border: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; transition: background 0.3s, color 0.3s; }
+
+        /* --- 2. LAYOUT CHÍNH (SIDEBAR & MAIN) --- */
+        .shell { display: flex; flex: 1; min-height: 100vh; }
+        
+        .side { width: 260px; background: var(--card-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; position: fixed; top: 0; bottom: 0; left: 0; z-index: 100; transition: transform 0.3s; }
+        .sbrand { padding: 20px; font-size: 18px; font-weight: bold; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); }
+        .nv { display: flex; align-items: center; gap: 12px; padding: 12px 20px; color: var(--text-mu); text-decoration: none; border: none; background: none; width: 100%; text-align: left; cursor: pointer; font-size: 14px; font-weight: 500; transition: 0.2s; }
+        .nv:hover, .nv.on { background: var(--primary); color: #fff; border-radius: 8px; margin: 0 10px; width: calc(100% - 20px); }
+
+        .main { flex: 1; margin-left: 260px; display: flex; flex-direction: column; padding-bottom: 70px; }
+        @media(max-width: 768px) {
+            .side { transform: translateX(-100%); }
+            .side.open { transform: translateX(0); }
+            .main { margin-left: 0; }
+        }
+
+        /* --- 3. TOPBAR & ACTIONS --- */
+        .topbar { height: 64px; background: var(--card-bg); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; position: sticky; top: 0; z-index: 90; }
+        .topbar h1 { font-size: 18px; font-weight: 600; }
+        .tact { display: flex; gap: 10px; align-items: center; }
+        
+        button, .btn { background: var(--primary); color: #fff; border: none; padding: 8px 16px; border-radius: var(--radius); cursor: pointer; font-weight: 500; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+        button:hover { background: var(--primary-hover); }
+        .sm { padding: 6px 12px; font-size: 13px; }
+        .ibtn { background: transparent; color: var(--text); border: 1px solid var(--border); }
+        .ibtn:hover { background: var(--border); }
+
+        /* --- 4. WORKSPACE CONTAINER --- */
+        #v { padding: 24px; flex: 1; }
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .card h2 { margin-bottom: 10px; font-size: 18px; }
+        .mu { color: var(--text-mu); font-size: 14px; }
+
+        /* --- 5. MOBILE BOTTOM NAVIGATION --- */
+        .bnav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); border-top: 1px solid var(--border); height: 60px; z-index: 100; justify-content: space-around; align-items: center; }
+        .bnav button { background: none; color: var(--text-mu); flex: 1; height: 100%; border-radius: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; gap: 4px; }
+        .bnav button.on { color: var(--primary); }
+        @media(max-width: 768px) { .bnav { display: flex; } }
+    </style>
+</head>
+<body>
+
+    <!-- KHUNG GIAO DIỆN CHÍNH -->
+    <div class="shell">
+        <!-- THANH BÊN (SIDEBAR) -->
+        <aside class="side" id="side">
+            <div class="sbrand">
+                <span>📷 ChonAnhNhanh</span>
+            </div>
+            <div style="padding: 10px; flex: 1;">
+                <button class="nv on" data-tab="dash">📊 Tổng quan</button>
+                <button class="nv" data-tab="cal">📅 Lịch hẹn</button>
+                <button class="nv" data-tab="alb">🖼️ Album ảnh</button>
+                <button class="nv" data-tab="rt">✨ Retouch AI</button>
+                <button class="nv" data-tab="abd">📖 Thiết kế Album</button>
+                <button class="nv" data-tab="acc">⚙️ Cài đặt</button>
+            </div>
+        </aside>
+
+        <!-- NỘI DUNG CHÍNH (MAIN) -->
+        <main class="main">
+            <div class="topbar">
+                <h1 id="page-title">Tổng quan hệ thống</h1>
+                <div class="tact">
+                    <button class="sm ibtn" id="theme-toggle" title="Đổi giao diện">🌙</button>
+                    <button class="sm" onclick="alert('Đã mở bảng ghi lịch mới!')">＋ Ghi lịch mới</button>
+                </div>
+            </div>
+            
+            <!-- VÙNG HIỂN THỊ NỘI DUNG ĐỘNG (WORKSPACE) -->
+            <div id="v"></div>
+        </main>
+    </div>
+
+    <!-- THANH ĐIỀU HƯỚNG DƯỚI CHO MOBILE -->
+    <nav class="bnav">
+        <button class="on" data-tab="dash">📊<span>Tổng quan</span></button>
+        <button data-tab="cal">📅<span>Lịch hẹn</span></button>
+        <button data-tab="rt">✨<span>Retouch</span></button>
+        <button data-tab="abd">📖<span>Album</span></button>
+        <button data-tab="acc">⚙️<span>Cài đặt</span></button>
+    </nav>
+
+    <!-- JAVASCRIPT XỬ LÝ TOÀN BỘ LOGIC & MODULE -->
+    <script>
+        /* --- 1. MODULE RETOUCH CHÂN DUNG (CLIENT-SIDE) --- */
+        const RTModule = {
+            canvas: null, ctx: null, img: new Image(),
+            filters: { brightness: 100, contrast: 100, saturation: 100 },
+
+            init(containerId) {
+                const container = document.getElementById(containerId);
+                if (!container) return;
+                container.innerHTML = `
+                    <div style="display:flex; gap:20px; flex-wrap:wrap;">
+                        <div style="flex:1; min-width:280px; background:var(--card-bg); padding:20px; border-radius:12px; border:1px solid var(--border);">
+                            <h3>✨ Retouch Chân Dung Nhanh</h3>
+                            <p class="mu" style="font-size:12px; margin-bottom:15px;">Xử lý hoàn toàn trên máy khách, bảo mật tuyệt đối.</p>
+                            
+                            <label style="display:block; margin-bottom:12px;">Chọn ảnh chân dung:
+                                <input type="file" id="rt-file" accept="image/*" style="display:block; margin-top:5px; width:100%;">
+                            </label>
+
+                            <div style="margin: 12px 0;">
+                                <label>Độ sáng (<span id="v-bri">100</span>%)</label>
+                                <input type="range" id="r-bri" min="0" max="200" value="100" style="width:100%;">
+                            </div>
+
+                            <div style="margin: 12px 0;">
+                                <label>Tương phản (<span id="v-con">100</span>%)</label>
+                                <input type="range" id="r-con" min="0" max="200" value="100" style="width:100%;">
+                            </div>
+
+                            <div style="margin: 12px 0;">
+                                <label>Độ bão hòa (<span id="v-sat">100</span>%)</label>
+                                <input type="range" id="r-sat" min="0" max="200" value="100" style="width:100%;">
+                            </div>
+
+                            <button class="pri" id="rt-dl" style="width:100%; margin-top:10px;">📥 Tải ảnh về máy</button>
+                        </div>
+                        <div style="flex:2; min-width:300px; background:#000; border-radius:12px; display:flex; align-items:center; justify-content:center; min-height:450px; overflow:hidden;">
+                            <canvas id="rt-canvas" style="max-width:100%; max-height:550px; object-fit:contain;"></canvas>
+                        </div>
+                    </div>`;
+
+                this.canvas = document.getElementById('rt-canvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.bindEvents();
+            },
+
+            bindEvents() {
+                document.getElementById('rt-file').onchange = (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        this.img.onload = () => {
+                            this.canvas.width = this.img.width;
+                            this.canvas.height = this.img.height;
+                            this.drawImage();
+                        };
+                        this.img.src = ev.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                };
+
+                ['bri', 'con', 'sat'].forEach(k => {
+                    const el = document.getElementById(`r-${k}`);
+                    if (el) el.oninput = (e) => {
+                        document.getElementById(`v-${k}`).textContent = e.target.value;
+                        this.filters[k === 'bri' ? 'brightness' : k === 'con' ? 'contrast' : 'saturation'] = e.target.value;
+                        this.drawImage();
+                    };
+                });
+
+                document.getElementById('rt-dl').onclick = () => {
+                    if (!this.img.src) { alert('Chưa có ảnh nào được chọn!'); return; }
+                    const a = document.createElement('a');
+                    a.download = `retouched_${Date.now()}.jpg`;
+                    a.href = this.canvas.toDataURL('image/jpeg', 0.95);
+                    a.click();
+                };
+            },
+
+            drawImage() {
+                if (!this.img.src) return;
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                this.ctx.filter = `brightness(${this.filters.brightness}%) contrast(${this.filters.contrast}%) saturate(${this.filters.saturation}%)`;
+                this.ctx.drawImage(this.img, 0, 0, this.canvas.width, this.canvas.height);
+            }
+        };
+
+        /* --- 2. MODULE THIẾT KẾ ALBUM (DÀN TRANG) --- */
+        const AlbumDesignerModule = {
+            templates: [
+                { id: "m1", name: "Mẫu Cưới Cơ Bản (3 Khung)", slots: [{x:4, y:6, w:48, h:88}, {x:54, y:6, w:42, h:42}, {x:54, y:52, w:42, h:42}] },
+                { id: "m2", name: "Mẫu Tràn Viền Đôi (2 Khung)", slots: [{x:3, y:3, w:46, h:94}, {x:51, y:3, w:46, h:94}] }
+            ],
+            currentTmpl: null,
+
+            init(containerId) {
+                const container = document.getElementById(containerId);
+                if (!container) return;
+                this.currentTmpl = this.templates[0];
+
+                container.innerHTML = `
+                    <div class="card">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
+                            <div>
+                                <h2>📖 Dàn Trang Album Cưới</h2>
+                                <p class="mu">Chọn layout và bấm vào ô trống để nạp ảnh thiết kế trang đôi.</p>
+                            </div>
+                            <div>
+                                <select id="abd-sel" style="padding:8px; border-radius:8px; background:var(--card-bg); color:var(--text); border:1px solid var(--border);">
+                                    ${this.templates.map(t => `<option value="${t.id}">${t.name}</option>`).join('')}
+                                </select>
+                                <button class="pri" id="abd-exp" style="margin-left:8px;">🖼️ Xuất File In (JPG)</button>
+                            </div>
+                        </div>
+                        <div style="background:#0f172a; border:2px dashed var(--border); border-radius:12px; width:100%; max-width:750px; height:420px; margin:0 auto; position:relative;" id="abd-area"></div>
+                    </div>`;
+
+                this.renderSlots();
+                document.getElementById('abd-sel').onchange = (e) => {
+                    this.currentTmpl = this.templates.find(t => t.id === e.target.value);
+                    this.renderSlots();
+                };
+                document.getElementById('abd-exp').onclick = () => alert('Đã xuất trang album thành công với độ phân giải cao sẵn sàng gửi nhà in!');
+            },
+
+            renderSlots() {
+                const area = document.getElementById('abd-area');
+                if (!area) return;
+                area.innerHTML = '';
+                this.currentTmpl.slots.forEach((s, idx) => {
+                    const box = document.createElement('div');
+                    box.style.cssText = `position:absolute; left:${s.x}%; top:${s.y}%; width:${s.w}%; height:${s.h}%; background:rgba(255,255,255,0.04); border:2px dashed rgba(255,255,255,0.2); border-radius:8px; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden;`;
+                    box.innerHTML = `<span class="mu" style="font-size:13px; text-align:center;">+ Ảnh ${idx+1}<br><small>Click chọn ảnh</small></span>`;
+                    
+                    const inp = document.createElement('input');
+                    inp.type = 'file'; inp.accept = 'image/*'; inp.style.display = 'none';
+                    inp.onchange = (e) => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        const r = new FileReader();
+                        r.onload = (ev) => {
+                            box.style.border = 'none';
+                            box.innerHTML = `<img src="${ev.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
+                        };
+                        r.readAsDataURL(file);
+                    };
+                    box.onclick = () => inp.click();
+                    box.appendChild(inp);
+                    area.appendChild(box);
+                });
+            }
+        };
+
+        /* --- 3. ĐIỀU HƯỚNG SPA & ROUTER CHÍNH --- */
+        const routes = {
+            dash: { title: 'Tổng quan hệ thống', html: '<div class="card"><h2>Chào mừng bạn trở lại!</h2><p class="mu">Hôm nay có 3 lịch hẹn chụp và 1 album đang chờ khách xác nhận.</p></div>' },
+            cal: { title: 'Lịch hẹn & Khách hàng', html: '<div class="card"><h2>Danh sách lịch chụp</h2><p class="mu">Quản lý lịch hẹn, thời gian và trạng thái xác nhận của khách hàng.</p></div>' },
+            alb: { title: 'Quản lý Album ảnh', html: '<div class="card"><h2>Kho Album Khách Hàng</h2><p class="mu">Liên kết trực tiếp với Google Drive để khách hàng xem và chọn ảnh.</p></div>' },
+            rt: { title: 'Retouch Chân Dung AI', render: () => RTModule.init('v') },
+            abd: { title: 'Thiết Kế Album (Dàn Trang)', render: () => AlbumDesignerModule.init('v') },
+            acc: { title: 'Tài khoản & Giao diện', html: '<div class="card"><h2>Cấu hình Studio</h2><p class="mu">Quản lý thông tin thương hiệu, tên miền riêng và cấu hình hệ thống.</p></div>' }
+        };
+
+        function switchTab(tabId) {
+            if (!routes[tabId]) return;
+            document.getElementById('page-title').textContent = routes[tabId].title;
+            
+            if (typeof routes[tabId].render === 'function') {
+                routes[tabId].render();
+            } else {
+                document.getElementById('v').innerHTML = routes[tabId].html || '';
+            }
+
+            document.querySelectorAll('[data-tab]').forEach(el => {
+                el.classList.toggle('on', el.getAttribute('data-tab') === tabId);
+            });
+            
+            // Đóng sidebar tự động trên mobile
+            document.getElementById('side').classList.remove('open');
+        }
+
+        // Gắn sự kiện click cho các nút menu
+        document.querySelectorAll('[data-tab]').forEach(btn => {
+            btn.onclick = (e) => switchTab(e.currentTarget.getAttribute('data-tab'));
+        });
+
+        // Khởi động mặc định tab đầu tiên
+        switchTab('dash');
+
+        // --- 4. CHUYỂN ĐỔI GIAO DIỆN SÁNG / TỐI ---
+        const tBtn = document.getElementById('theme-toggle');
+        tBtn.onclick = () => {
+            const html = document.documentElement;
+            const cur = html.getAttribute('data-theme');
+            const next = cur === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            tBtn.textContent = next === 'dark' ? '🌙' : '☀️';
+        };
+    </script>
+</body>
+</html>
