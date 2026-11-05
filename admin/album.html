@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phần Mềm Thiết Kế Album Chuyên Nghiệp - ChonAnhNhanh.vn</title>
+    <title>Thiết Kế Album Khổ 70x25 cm (Spread 35x25) - ChonAnhNhanh.vn</title>
     <style>
         :root {
             --bg: #0b0f19;
@@ -28,7 +28,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
         body { background-color: var(--bg); color: var(--text); min-height: 100vh; padding: 20px; display: flex; flex-direction: column; align-items: center; }
 
-        .container { width: 100%; max-width: 1200px; }
+        .container { width: 100%; max-width: 1300px; }
         .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); }
         
         .header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
@@ -41,11 +41,11 @@
         button.pri { background: var(--primary); color: #fff; border: none; }
         button.pri:hover { background: var(--primary-hover); }
 
-        /* Vùng Workspace hiển thị Canvas album */
-        .workspace-container { display: flex; justify-content: center; align-items: center; background: #05070a; border: 2px solid var(--border); border-radius: 14px; width: 100%; min-height: 500px; padding: 20px; overflow: hidden; position: relative; }
-        #album-canvas { max-width: 100%; max-height: 650px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); display: block; }
+        /* Khung Workspace tỷ lệ chuẩn 70x25 cm (Tỷ lệ 14:5) */
+        .workspace-container { display: flex; justify-content: center; align-items: center; background: #05070a; border: 2px solid var(--border); border-radius: 14px; width: 100%; padding: 20px; overflow: hidden; position: relative; }
+        #album-canvas { width: 100%; max-height: 550px; object-fit: contain; box-shadow: 0 10px 30px rgba(0,0,0,0.8); display: block; background: #000; }
 
-        /* Khu vực thảy ảnh (Dropzone) */
+        /* Khu vực thảy nhiều ảnh cùng lúc */
         .dropzone-box { border: 2px dashed var(--primary); background: rgba(59, 130, 246, 0.05); padding: 25px; border-radius: 12px; text-align: center; margin-top: 20px; cursor: pointer; transition: 0.2s; }
         .dropzone-box:hover { background: rgba(59, 130, 246, 0.1); }
         
@@ -60,38 +60,32 @@
     <div class="card">
         <div class="header-flex">
             <div>
-                <h2>📖 Phần Mềm Thiết Kế Album (Client-Side)</h2>
-                <p class="mu">Thảy nhiều ảnh vào, tự động dàn trang, tạo nền mờ nghệ thuật và xuất file in.</p>
+                <h2>📖 Phần Mềm Dàn Trang Album (Khổ Trang Đôi 70x25 cm)</h2>
+                <p class="mu">Mỗi trang 35x25 cm, ghép đôi thành 70x25 cm (Tỷ lệ 14:5 chuẩn in ấn cao cấp).</p>
             </div>
             <div class="toolbar">
-                <!-- Chọn Khổ In Album -->
-                <select id="sel-size">
-                    <option value="30x20">📐 Khổ Ngang (30x20 cm — Tỷ lệ 3:2)</option>
-                    <option value="25x35">📏 Khổ Đứng (25x35 cm — Tỷ lệ 5:7)</option>
-                    <option value="30x30">🔲 Khổ Vuông (30x30 cm — Tỷ lệ 1:1)</option>
-                </select>
-
-                <!-- Chọn Kiểu Layout -->
+                <!-- Chọn Dạng Layout Đa Dạng -->
                 <select id="sel-layout">
-                    <option value="blur_center">✨ Nền mờ + Khung nổi</option>
-                    <option value="grid_2">🖼️ Lưới đôi (2 Ảnh)</option>
-                    <option value="grid_3">📐 Lưới 3 Ảnh (1 Chính, 2 Phụ)</option>
-                    <option value="grid_4">📑 Lưới 4 Ảnh (Tạp chí)</option>
+                    <option value="blur_center">✨ Nền mờ nghệ thuật + Khung nổi giữa</option>
+                    <option value="grid_2">🖼️ Lưới 2 ảnh cân đối (Trái / Phải)</option>
+                    <option value="grid_3">📐 Lưới 3 ảnh (1 Ảnh lớn trái, 2 Ảnh nhỏ phải)</option>
+                    <option value="grid_4">📑 Lưới 4 ảnh kiểu Tạp chí</option>
+                    <option value="asym_split">💎 Bố cục bất đối xứng nghệ thuật</option>
                 </select>
 
-                <button class="pri" id="btn-export">📥 Xuất File In (JPG DPI Cao)</button>
+                <button class="pri" id="btn-export">📥 Xuất File In 70x25 (DPI Cao)</button>
             </div>
         </div>
 
-        <!-- CANVAS WORKSPACE -->
+        <!-- CANVAS WORKSPACE (Độ phân giải chuẩn in 2800x1000 cho sắc nét tuyệt đối) -->
         <div class="workspace-container">
-            <canvas id="album-canvas" width="1500" height="1000"></canvas>
+            <canvas id="album-canvas" width="2800" height="1000"></canvas>
         </div>
 
         <!-- KHU VỰC THẢ ẢNH HÀNG LOẠT -->
         <div class="dropzone-box" onclick="document.getElementById('multi-file-input').click()">
-            <b style="font-size: 15px;">📁 Thảy nhiều ảnh vào đây (Chọn 3-4 tấm trở lên)</b>
-            <p class="mu" style="margin-top: 4px;">Bấm vào đây để chọn hoặc kéo thả hàng loạt ảnh gốc từ máy tính của bạn.</p>
+            <b style="font-size: 15px;">📁 Thảy nhiều ảnh vào đây (Chọn từ 3 đến 6 tấm)</b>
+            <p class="mu" style="margin-top: 4px;">Bấm vào đây hoặc kéo thả hàng loạt ảnh gốc từ máy tính của bạn vào.</p>
             <input type="file" id="multi-file-input" accept="image/*" multiple style="display: none;">
         </div>
 
@@ -101,11 +95,11 @@
 </div>
 
 <script>
-/* --- LOGIC XỬ LÝ DÀN TRANG ALBUM TRỰC TIẾP TRÊN TRÌNH DUYỆT --- */
-const AlbumStudio = {
+/* --- LOGIC DÀN TRANG ALBUM KHỔ 70x25 CM (TỶ LỆ 14:5) --- */
+const Album70x25Studio = {
     images: [],
-    canvasWidth: 1500,
-    canvasHeight: 1000,
+    canvasWidth: 2800,  // Độ phân giải cao cho khổ 70cm
+    canvasHeight: 1000, // Độ phân giải cao cho khổ 25cm
     currentLayout: 'blur_center',
 
     init() {
@@ -114,16 +108,6 @@ const AlbumStudio = {
     },
 
     bindEvents() {
-        // Đổi kích thước khổ in
-        document.getElementById('sel-size').onchange = (e) => {
-            const val = e.target.value;
-            if (val === '30x20') { this.canvasWidth = 1500; this.canvasHeight = 1000; }
-            else if (val === '25x35') { this.canvasWidth = 1050; this.canvasHeight = 1470; }
-            else if (val === '30x30') { this.canvasWidth = 1200; this.canvasHeight = 1200; }
-            this.redraw();
-        };
-
-        // Đổi layout
         document.getElementById('sel-layout').onchange = (e) => {
             this.currentLayout = e.target.value;
             this.redraw();
@@ -153,7 +137,7 @@ const AlbumStudio = {
         document.getElementById('btn-export').onclick = () => {
             const canvas = document.getElementById('album-canvas');
             const link = document.createElement('a');
-            link.download = `album_spread_${Date.now()}.jpg`;
+            link.download = `album_70x25_${Date.now()}.jpg`;
             link.href = canvas.toDataURL('image/jpeg', 0.98);
             link.click();
         };
@@ -171,8 +155,6 @@ const AlbumStudio = {
     redraw() {
         const canvas = document.getElementById('album-canvas');
         if (!canvas) return;
-        canvas.width = this.canvasWidth;
-        canvas.height = this.canvasHeight;
         const ctx = canvas.getContext('2d');
 
         ctx.fillStyle = '#0f172a';
@@ -180,12 +162,16 @@ const AlbumStudio = {
 
         if (this.images.length === 0) {
             ctx.fillStyle = '#94a3b8';
-            ctx.font = '22px system-ui, sans-serif';
+            ctx.font = '26px system-ui, sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText('Hãy bấm vào ô bên dưới để thảy ảnh vào dàn trang', canvas.width / 2, canvas.height / 2);
+            ctx.fillText('Hãy thảy 3 - 4 tấm ảnh vào khung bên dưới để bắt đầu dàn trang 70x25 cm', canvas.width / 2, canvas.height / 2);
             return;
         }
 
+        // Vẽ đường gáy sách mờ ở chính giữa (giữa trang 35cm trái và 35cm phải)
+        this.drawSpineLine(ctx, canvas);
+
+        // Phân bổ theo layout
         if (this.currentLayout === 'blur_center') {
             this.drawBlurCenter(ctx, canvas, this.images[0]);
         } else if (this.currentLayout === 'grid_2') {
@@ -194,27 +180,42 @@ const AlbumStudio = {
             this.drawGrid3(ctx, canvas, this.images);
         } else if (this.currentLayout === 'grid_4') {
             this.drawGrid4(ctx, canvas, this.images);
+        } else if (this.currentLayout === 'asym_split') {
+            this.drawAsymSplit(ctx, canvas, this.images);
         }
     },
 
-    // Hiệu ứng nền mờ nghệ thuật + Khung nổi chính giữa
+    // Vẽ đường gáy sách phân định 2 trang 35cm
+    drawSpineLine(ctx, canvas) {
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([10, 10]);
+        ctx.beginPath();
+        ctx.moveTo(canvas.width / 2, 0);
+        ctx.lineTo(canvas.width / 2, canvas.height);
+        ctx.stroke();
+        ctx.restore();
+    },
+
+    // 1. Nền mờ nghệ thuật + Khung nổi giữa
     drawBlurCenter(ctx, canvas, img) {
         ctx.save();
-        ctx.filter = 'blur(25px) brightness(0.4)';
+        ctx.filter = 'blur(30px) brightness(0.4)';
         const r = Math.max(canvas.width / img.width, canvas.height / img.height);
         const w = img.width * r, h = img.height * r;
         ctx.drawImage(img, (canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
         ctx.restore();
 
-        const fW = canvas.width * 0.65;
-        const fH = canvas.height * 0.70;
+        const fW = 1400; // Chiếm độ rộng vừa đẹp trên tổng 2800
+        const fH = 750;
         const fX = (canvas.width - fW) / 2;
         const fY = (canvas.height - fH) / 2;
 
-        ctx.shadowColor = 'rgba(0,0,0,0.6)';
-        ctx.shadowBlur = 35;
+        ctx.shadowColor = 'rgba(0,0,0,0.7)';
+        ctx.shadowBlur = 40;
         ctx.fillStyle = '#ffffff';
-        ctx.fillRect(fX - 12, fY - 12, fW + 24, fH + 24);
+        ctx.fillRect(fX - 15, fY - 15, fW + 30, fH + 30);
 
         ctx.save();
         ctx.beginPath();
@@ -226,14 +227,14 @@ const AlbumStudio = {
         ctx.restore();
     },
 
-    // Lưới 2 ảnh
+    // 2. Lưới 2 ảnh (Trang trái & Trang phải)
     drawGrid2(ctx, canvas, imgs) {
         const im1 = imgs[0], im2 = imgs[1] || imgs[0];
-        const pad = 40, w = (canvas.width - (pad * 3)) / 2, h = canvas.height - (pad * 2);
+        const pad = 80, w = (canvas.width - (pad * 3)) / 2, h = canvas.height - (pad * 2);
 
         [ { x: pad, im: im1 }, { x: pad * 2 + w, im: im2 } ].forEach(slot => {
             ctx.fillStyle = '#ffffff';
-            ctx.fillRect(slot.x - 10, pad - 10, w + 20, h + 20);
+            ctx.fillRect(slot.x - 12, pad - 12, w + 24, h + 24);
             ctx.save();
             ctx.beginPath();
             ctx.rect(slot.x, pad, w, h);
@@ -244,28 +245,30 @@ const AlbumStudio = {
         });
     },
 
-    // Lưới 3 ảnh (1 chính lớn, 2 phụ nhỏ)
+    // 3. Lưới 3 ảnh (1 lớn trái, 2 nhỏ phải)
     drawGrid3(ctx, canvas, imgs) {
         const im1 = imgs[0], im2 = imgs[1] || im1, im3 = imgs[2] || im1;
-        const pad = 30;
-        const mainW = canvas.width * 0.55 - pad;
+        const pad = 60;
+        const mainW = (canvas.width / 2) - pad - 30;
         const mainH = canvas.height - (pad * 2);
         
+        // Ô lớn bên trái
         ctx.fillStyle = '#ffffff';
-        ctx.fillRect(pad - 8, pad - 8, mainW + 16, mainH + 16);
+        ctx.fillRect(pad - 10, pad - 10, mainW + 20, mainH + 20);
         ctx.save();
         ctx.beginPath(); ctx.rect(pad, pad, mainW, mainH); ctx.clip();
         let r = Math.max(mainW / im1.width, mainH / im1.height);
         ctx.drawImage(im1, pad + (mainW - im1.width * r) / 2, pad + (mainH - im1.height * r) / 2, im1.width * r, im1.height * r);
         ctx.restore();
 
-        const subX = pad * 2 + mainW;
+        // 2 ô nhỏ bên phải
+        const subX = pad + mainW + 60;
         const subW = canvas.width - subX - pad;
         const subH = (mainH - pad) / 2;
 
         [ { y: pad, im: im2 }, { y: pad + subH + pad, im: im3 } ].forEach(sub => {
             ctx.fillStyle = '#ffffff';
-            ctx.fillRect(subX - 8, sub.y - 8, subW + 16, subH + 16);
+            ctx.fillRect(subX - 10, sub.y - 10, subW + 20, subH + 20);
             ctx.save();
             ctx.beginPath(); ctx.rect(subX, sub.y, subW, subH); ctx.clip();
             let sr = Math.max(subW / sub.im.width, subH / sub.im.height);
@@ -274,9 +277,9 @@ const AlbumStudio = {
         });
     },
 
-    // Lưới 4 ảnh tạp chí
+    // 4. Lưới 4 ảnh tạp chí
     drawGrid4(ctx, canvas, imgs) {
-        const pad = 30;
+        const pad = 60;
         const w = (canvas.width - (pad * 3)) / 2;
         const h = (canvas.height - (pad * 3)) / 2;
 
@@ -290,18 +293,40 @@ const AlbumStudio = {
         coords.forEach((c, idx) => {
             const im = imgs[idx % imgs.length];
             ctx.fillStyle = '#ffffff';
-            ctx.fillRect(c.x - 8, c.y - 8, w + 16, h + 16);
+            ctx.fillRect(c.x - 10, c.y - 10, w + 20, h + 20);
             ctx.save();
             ctx.beginPath(); ctx.rect(c.x, c.y, w, h); ctx.clip();
             const r = Math.max(w / im.width, h / im.height);
             ctx.drawImage(im, c.x + (w - im.width * r) / 2, c.y + (h - im.height * r) / 2, im.width * r, im.height * r);
             ctx.restore();
         });
+    },
+
+    // 5. Bố cục bất đối xứng nghệ thuật
+    drawAsymSplit(ctx, canvas, imgs) {
+        const im1 = imgs[0], im2 = imgs[1] || im1;
+        const pad = 60;
+        // Chia lệch tỷ lệ 60% - 40%
+        const w1 = canvas.width * 0.58 - pad;
+        const w2 = canvas.width - w1 - (pad * 3);
+        const h = canvas.height - (pad * 2);
+
+        [ { x: pad, w: w1, im: im1 }, { x: pad * 2 + w1, w: w2, im: im2 } ].forEach(slot => {
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(slot.x - 10, pad - 10, slot.w + 20, h + 20);
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(slot.x, pad, slot.w, h);
+            ctx.clip();
+            const r = Math.max(slot.w / slot.im.width, h / slot.im.height);
+            ctx.drawImage(slot.im, slot.x + (slot.w - slot.im.width * r) / 2, pad + (h - slot.im.height * r) / 2, slot.im.width * r, slot.im.height * r);
+            ctx.restore();
+        });
     }
 };
 
-// Khởi chạy ứng dụng
-AlbumStudio.init();
+// Khởi chạy
+Album70x25Studio.init();
 </script>
 
 </body>
