@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChonAnhNhanh.vn - Dàn Trang Album & Chọn Kích Thước</title>
+    <title>Phần Mềm Thiết Kế Album Chuyên Nghiệp - ChonAnhNhanh.vn</title>
     <style>
         :root {
             --bg: #0b0f19;
@@ -28,11 +28,11 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
         body { background-color: var(--bg); color: var(--text); min-height: 100vh; padding: 20px; display: flex; flex-direction: column; align-items: center; }
 
-        .container { width: 100%; max-width: 1100px; }
+        .container { width: 100%; max-width: 1200px; }
         .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); }
         
         .header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
-        h2 { font-size: 20px; font-weight: 600; }
+        h2 { font-size: 20px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
         .mu { color: var(--text-mu); font-size: 13.5px; }
 
         .toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
@@ -41,15 +41,16 @@
         button.pri { background: var(--primary); color: #fff; border: none; }
         button.pri:hover { background: var(--primary-hover); }
 
-        /* Vùng Workspace tự động co giãn theo Kích thước Album */
+        /* Vùng Workspace hiển thị Canvas album */
         .workspace-container { display: flex; justify-content: center; align-items: center; background: #05070a; border: 2px solid var(--border); border-radius: 14px; width: 100%; min-height: 500px; padding: 20px; overflow: hidden; position: relative; }
-        #album-canvas { max-width: 100%; max-height: 600px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); display: block; }
+        #album-canvas { max-width: 100%; max-height: 650px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); display: block; }
 
-        /* Khu vực kéo thả / thảy nhiều ảnh cùng lúc */
+        /* Khu vực thảy ảnh (Dropzone) */
         .dropzone-box { border: 2px dashed var(--primary); background: rgba(59, 130, 246, 0.05); padding: 25px; border-radius: 12px; text-align: center; margin-top: 20px; cursor: pointer; transition: 0.2s; }
         .dropzone-box:hover { background: rgba(59, 130, 246, 0.1); }
+        
         .thumb-preview-list { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px; }
-        .thumb-item { width: 70px; height: 70px; border-radius: 6px; overflow: hidden; border: 1px solid var(--border); position: relative; }
+        .thumb-item { width: 75px; height: 75px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); position: relative; background: #000; }
         .thumb-item img { width: 100%; height: 100%; object-fit: cover; }
     </style>
 </head>
@@ -59,18 +60,18 @@
     <div class="card">
         <div class="header-flex">
             <div>
-                <h2>📖 Phần Mềm Dàn Trang Album & Chọn Khổ In</h2>
-                <p class="mu">Thảy nhiều ảnh vào cùng lúc, chọn kích thước album và tự động bố trí layout.</p>
+                <h2>📖 Phần Mềm Thiết Kế Album (Client-Side)</h2>
+                <p class="mu">Thảy nhiều ảnh vào, tự động dàn trang, tạo nền mờ nghệ thuật và xuất file in.</p>
             </div>
             <div class="toolbar">
-                <!-- 1. Chọn Kích Thước Album -->
+                <!-- Chọn Khổ In Album -->
                 <select id="sel-size">
-                    <option value="30x20">📐 Khổ Ngang (30 x 20 cm — Tỷ lệ 3:2)</option>
-                    <option value="25x35">📏 Khổ Đứng (25 x 35 cm — Tỷ lệ 5:7)</option>
-                    <option value="30x30">🔲 Khổ Vuông (30 x 30 cm — Tỷ lệ 1:1)</option>
+                    <option value="30x20">📐 Khổ Ngang (30x20 cm — Tỷ lệ 3:2)</option>
+                    <option value="25x35">📏 Khổ Đứng (25x35 cm — Tỷ lệ 5:7)</option>
+                    <option value="30x30">🔲 Khổ Vuông (30x30 cm — Tỷ lệ 1:1)</option>
                 </select>
 
-                <!-- 2. Chọn Layout dàn trang -->
+                <!-- Chọn Kiểu Layout -->
                 <select id="sel-layout">
                     <option value="blur_center">✨ Nền mờ + Khung nổi</option>
                     <option value="grid_2">🖼️ Lưới đôi (2 Ảnh)</option>
@@ -78,31 +79,31 @@
                     <option value="grid_4">📑 Lưới 4 Ảnh (Tạp chí)</option>
                 </select>
 
-                <button class="pri" id="btn-export">📥 Xuất File In (DPI Cao)</button>
+                <button class="pri" id="btn-export">📥 Xuất File In (JPG DPI Cao)</button>
             </div>
         </div>
 
-        <!-- WORKSPACE CANVAS -->
+        <!-- CANVAS WORKSPACE -->
         <div class="workspace-container">
             <canvas id="album-canvas" width="1500" height="1000"></canvas>
         </div>
 
-        <!-- KHU VỰC THẢ NHIỀU ẢNH (MULTI-FILE UPLOAD) -->
+        <!-- KHU VỰC THẢ ẢNH HÀNG LOẠT -->
         <div class="dropzone-box" onclick="document.getElementById('multi-file-input').click()">
-            <b style="font-size: 15px;">📁 Thảy nhiều ảnh vào đây (Chọn 3 - 4 tấm trở lên)</b>
-            <p class="mu" style="margin-top: 4px;">Bấm vào đây hoặc kéo thả file ảnh từ máy tính của bạn vào để hệ thống tự nhận diện.</p>
+            <b style="font-size: 15px;">📁 Thảy nhiều ảnh vào đây (Chọn 3-4 tấm trở lên)</b>
+            <p class="mu" style="margin-top: 4px;">Bấm vào đây để chọn hoặc kéo thả hàng loạt ảnh gốc từ máy tính của bạn.</p>
             <input type="file" id="multi-file-input" accept="image/*" multiple style="display: none;">
         </div>
 
-        <!-- Danh sách ảnh đã thảy vào -->
+        <!-- Danh sách ảnh đã thảy -->
         <div class="thumb-preview-list" id="thumb-container"></div>
     </div>
 </div>
 
 <script>
-/* --- MODULE XỬ LÝ ALBUM THÔNG MINH --- */
-const SmartAlbumApp = {
-    uploadedImages: [], // Mảng chứa tất cả ảnh khách thảy vào
+/* --- LOGIC XỬ LÝ DÀN TRANG ALBUM TRỰC TIẾP TRÊN TRÌNH DUYỆT --- */
+const AlbumStudio = {
+    images: [],
     canvasWidth: 1500,
     canvasHeight: 1000,
     currentLayout: 'blur_center',
@@ -113,24 +114,23 @@ const SmartAlbumApp = {
     },
 
     bindEvents() {
-        // Thay đổi kích thước album
+        // Đổi kích thước khổ in
         document.getElementById('sel-size').onchange = (e) => {
             const val = e.target.value;
-            if (val === '30x20') { this.canvasWidth = 1500; this.canvasHeight = 1000; } // 3:2 ngang
-            else if (val === '25x35') { this.canvasWidth = 1050; this.canvasHeight = 1470; } // 5:7 đứng
-            else if (val === '30x30') { this.canvasWidth = 1200; this.canvasHeight = 1200; } // 1:1 vuông
+            if (val === '30x20') { this.canvasWidth = 1500; this.canvasHeight = 1000; }
+            else if (val === '25x35') { this.canvasWidth = 1050; this.canvasHeight = 1470; }
+            else if (val === '30x30') { this.canvasWidth = 1200; this.canvasHeight = 1200; }
             this.redraw();
         };
 
-        // Thay đổi layout
+        // Đổi layout
         document.getElementById('sel-layout').onchange = (e) => {
             this.currentLayout = e.target.value;
             this.redraw();
         };
 
-        // Bắt sự kiện chọn nhiều ảnh cùng lúc
-        const fileInput = document.getElementById('multi-file-input');
-        fileInput.onchange = (e) => {
+        // Nhận nhiều ảnh thảy vào
+        document.getElementById('multi-file-input').onchange = (e) => {
             const files = Array.from(e.target.files);
             if (!files.length) return;
 
@@ -139,7 +139,7 @@ const SmartAlbumApp = {
                 reader.onload = (ev) => {
                     const img = new Image();
                     img.onload = () => {
-                        this.uploadedImages.push(img);
+                        this.images.push(img);
                         this.renderThumbnails();
                         this.redraw();
                     };
@@ -149,11 +149,11 @@ const SmartAlbumApp = {
             });
         };
 
-        // Xuất file in
+        // Xuất file ảnh in chất lượng cao
         document.getElementById('btn-export').onclick = () => {
             const canvas = document.getElementById('album-canvas');
             const link = document.createElement('a');
-            link.download = `album_print_${Date.now()}.jpg`;
+            link.download = `album_spread_${Date.now()}.jpg`;
             link.href = canvas.toDataURL('image/jpeg', 0.98);
             link.click();
         };
@@ -161,8 +161,8 @@ const SmartAlbumApp = {
 
     renderThumbnails() {
         const container = document.getElementById('thumb-container');
-        container.innerHTML = this.uploadedImages.map((img, idx) => `
-            <div class="thumb-item" title="Ảnh số ${idx + 1}">
+        container.innerHTML = this.images.map((img, idx) => `
+            <div class="thumb-item" title="Ảnh ${idx + 1}">
                 <img src="${img.src}">
             </div>
         `).join('');
@@ -175,32 +175,29 @@ const SmartAlbumApp = {
         canvas.height = this.canvasHeight;
         const ctx = canvas.getContext('2d');
 
-        // Xóa nền
         ctx.fillStyle = '#0f172a';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Nếu chưa có ảnh nào được thảy vào
-        if (this.uploadedImages.length === 0) {
+        if (this.images.length === 0) {
             ctx.fillStyle = '#94a3b8';
             ctx.font = '22px system-ui, sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText('Hãy bấm vào ô trên để thảy 3-4 tấm ảnh vào dàn trang', canvas.width / 2, canvas.height / 2);
+            ctx.fillText('Hãy bấm vào ô bên dưới để thảy ảnh vào dàn trang', canvas.width / 2, canvas.height / 2);
             return;
         }
 
-        // Phân bổ ảnh theo layout được chọn
         if (this.currentLayout === 'blur_center') {
-            this.drawBlurCenter(ctx, canvas, this.uploadedImages[0]);
+            this.drawBlurCenter(ctx, canvas, this.images[0]);
         } else if (this.currentLayout === 'grid_2') {
-            this.drawGrid2(ctx, canvas, this.uploadedImages);
+            this.drawGrid2(ctx, canvas, this.images);
         } else if (this.currentLayout === 'grid_3') {
-            this.drawGrid3(ctx, canvas, this.uploadedImages);
+            this.drawGrid3(ctx, canvas, this.images);
         } else if (this.currentLayout === 'grid_4') {
-            this.drawGrid4(ctx, canvas, this.uploadedImages);
+            this.drawGrid4(ctx, canvas, this.images);
         }
     },
 
-    // 1. Layout Nền mờ + Khung nổi
+    // Hiệu ứng nền mờ nghệ thuật + Khung nổi chính giữa
     drawBlurCenter(ctx, canvas, img) {
         ctx.save();
         ctx.filter = 'blur(25px) brightness(0.4)';
@@ -229,7 +226,7 @@ const SmartAlbumApp = {
         ctx.restore();
     },
 
-    // 2. Lưới 2 ảnh
+    // Lưới 2 ảnh
     drawGrid2(ctx, canvas, imgs) {
         const im1 = imgs[0], im2 = imgs[1] || imgs[0];
         const pad = 40, w = (canvas.width - (pad * 3)) / 2, h = canvas.height - (pad * 2);
@@ -247,14 +244,13 @@ const SmartAlbumApp = {
         });
     },
 
-    // 3. Lưới 3 ảnh (1 chính, 2 phụ)
+    // Lưới 3 ảnh (1 chính lớn, 2 phụ nhỏ)
     drawGrid3(ctx, canvas, imgs) {
         const im1 = imgs[0], im2 = imgs[1] || im1, im3 = imgs[2] || im1;
         const pad = 30;
         const mainW = canvas.width * 0.55 - pad;
         const mainH = canvas.height - (pad * 2);
         
-        // Vẽ ô chính bên trái
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(pad - 8, pad - 8, mainW + 16, mainH + 16);
         ctx.save();
@@ -263,7 +259,6 @@ const SmartAlbumApp = {
         ctx.drawImage(im1, pad + (mainW - im1.width * r) / 2, pad + (mainH - im1.height * r) / 2, im1.width * r, im1.height * r);
         ctx.restore();
 
-        // 2 ô phụ bên phải
         const subX = pad * 2 + mainW;
         const subW = canvas.width - subX - pad;
         const subH = (mainH - pad) / 2;
@@ -279,7 +274,7 @@ const SmartAlbumApp = {
         });
     },
 
-    // 4. Lưới 4 ảnh tạp chí
+    // Lưới 4 ảnh tạp chí
     drawGrid4(ctx, canvas, imgs) {
         const pad = 30;
         const w = (canvas.width - (pad * 3)) / 2;
@@ -305,8 +300,8 @@ const SmartAlbumApp = {
     }
 };
 
-// Khởi chạy
-SmartAlbumApp.init();
+// Khởi chạy ứng dụng
+AlbumStudio.init();
 </script>
 
 </body>
