@@ -227,14 +227,15 @@
             console.log("Đang xem album thuộc Studio: " + studioSlug);
         }
 
-        function getLink(id, sz) {
+       function getLink(id, sz) {
     if (!id) return '';
     const cleanId = String(id).trim();
     
-    if (sz === 's100') return `https://drive.google.com/thumbnail?id=${cleanId}&sz=w400`;
-    if (sz === 's400') return `https://drive.google.com/thumbnail?id=${cleanId}&sz=w400`;
-    if (sz === 's800') return `https://drive.google.com/thumbnail?id=${cleanId}&sz=w800`;
-    return `https://drive.google.com/uc?export=view&id=${cleanId}`;
+    if (sz === 's100') return `https://lh3.googleusercontent.com/d/${cleanId}=w400`;
+    if (sz === 's400') return `https://lh3.googleusercontent.com/d/${cleanId}=w400`;
+    if (sz === 's800') return `https://lh3.googleusercontent.com/d/${cleanId}=w800`;
+    
+    return `https://lh3.googleusercontent.com/d/${cleanId}=s1200`;
 }
 let pageFlipInstance = null;
 let selectedCoverId = localStorage.getItem('anh_bia_cua_khach_' + fid) || null;
