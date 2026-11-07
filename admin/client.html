@@ -477,7 +477,7 @@ function prevPage3D() {
         }
         
         if(hasNote) {
-            th.insertAdjacentHTML('beforeend',<div class="note-badge" title="Xem ghi chú" style="width:14px; height:14px; font-size:7px; bottom:2px; left:2px;" onclick="event.stopPropagation(); openViewNoteModal('${photoItem.id}');"><i class="fas fa-comment"></i></div>);
+            th.insertAdjacentHTML('beforeend', `<div class="note-badge" title="Xem ghi chú" style="width:14px; height:14px; font-size:7px; bottom:2px; left:2px;" onclick="event.stopPropagation(); openViewNoteModal('${photoItem.id}');"><i class="fas fa-comment"></i></div>`);
         }
         
         th.onclick = () => { cur = i; showViewer(); };
