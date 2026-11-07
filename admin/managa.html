@@ -573,10 +573,16 @@ function closeZipLoading() {
             if (!confirm(`Xóa album: ${name}?`)) return;
             try {
                 const res = await fetch(PATHS.DELETE, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ folderId: id, adminEmail: adminEmail }) });
-                if ((await res.json()).success) { document.getElementById(`card-${id}`).remove(); showToast("Đã xóa album"); }
+                const data = await res.json();
+                if (data.success) { 
+                    allAlbums = allAlbums.filter(a => (a.folder_id || a.folderId || a.id) !== id);
+                    sessionStorage.setItem('cache_albums', JSON.stringify(allAlbums));
+                    
+                    renderAlbums(allAlbums); 
+                    showToast("Đã xóa album"); 
+                }
             } catch (e) { showToast("Lỗi"); }
         }
-
         function updateHeaderUI() {
             const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
             const status = localStorage.getItem('admin_status') || 'new';
@@ -698,6 +704,9 @@ function closeZipLoading() {
                 const result = await res.json();
                 if(result.success) {
                     showToast("Cập nhật thành công!");
+                    
+                    sessionStorage.removeItem('cache_albums');
+                    
                     bootstrap.Modal.getInstance(document.getElementById('settingsModal')).hide();
                     setTimeout(() => location.reload(), 1000); 
                 } else {
@@ -814,13 +823,28 @@ function jumpToLightboxIndex(idx) {
                 return;
             }
             
+            const cachedAlbums = sessionStorage.getItem('cache_albums');
+            if (cachedAlbums) {
+                try {
+                    allAlbums = JSON.parse(cachedAlbums);
+                    renderAlbums(allAlbums); 
+                    hideLoadOverlay(); 
+                } catch(err) {
+                    console.error("Lỗi đọc cache", err);
+                }
+            }
+        
             try { 
                 const res = await fetch(`${PATHS.LIST}?adminEmail=${adminEmail}`); 
                 allAlbums = await res.json(); 
+                
+                // Lưu lại cache mới
+                sessionStorage.setItem('cache_albums', JSON.stringify(allAlbums));
+                
                 renderAlbums(allAlbums); 
-                setTimeout(hideLoadOverlay, 500);
+                hideLoadOverlay();
             } catch (e) { 
-                console.error("Lỗi tải danh sách album:", e);
+                console.error("Lỗi tải danh sách album ngầm:", e);
                 hideLoadOverlay(); 
             } 
         }
