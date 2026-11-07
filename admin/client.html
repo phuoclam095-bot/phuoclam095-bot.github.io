@@ -489,8 +489,10 @@
         }
         
         function updateInfo() {
-            const p = photos[cur]; if(!p) return;
-            document.getElementById('totalPhotos').innerText = selectedIds.length;
+            const totalEl = document.getElementById('totalPhotos');
+            if (totalEl) {
+                totalEl.innerText = selectedIds.length;
+            }
         }
         function openViewNoteModal(photoId) {
             const p = photos.find(x => x.id === photoId);
