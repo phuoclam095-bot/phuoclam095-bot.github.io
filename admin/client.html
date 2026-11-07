@@ -233,7 +233,7 @@
     
     if (sz === 's100') return `https://lh3.googleusercontent.com/d/${cleanId}=w400`;
     if (sz === 's400') return `https://lh3.googleusercontent.com/d/${cleanId}=w400`;
-    if (sz === 's800') return `https://lh3.googleusercontent.com/d/${cleanId}=w800`;
+    if (sz === 's800') return `https://lh3.googleusercontent.com/d/${cleanId}=h1200`;
     
     return `https://lh3.googleusercontent.com/d/${cleanId}=s1200`;
 }
@@ -245,13 +245,10 @@ function setView(v) {
     const gridEl = document.getElementById('photoGrid');
     const viewerEl = document.getElementById('photoViewer');
     const view3D = document.getElementById('photo3DView');
-
-    // Bật/tắt hiển thị các khung giao diện tương ứng
     gridEl.style.display = (v === 'grid') ? 'grid' : 'none';
     viewerEl.style.display = (v === 'viewer') ? 'flex' : 'none';
     if(view3D) view3D.style.display = (v === '3d') ? 'flex' : 'none';
 
-    // Đổi màu chữ trên thanh menu (navbar)
     document.getElementById('btnGrid').style.color = (v === 'grid') ? 'var(--primary)' : '#666';
     document.getElementById('btnViewer').style.color = (v === 'viewer') ? 'var(--primary)' : '#666';
     const btn3D = document.getElementById('btn3D');
@@ -269,6 +266,8 @@ function setView(v) {
             pageFlipInstance = null;
         }
 
+        const bookContainer = document.getElementById('dynamic-book');
+        if (bookContainer) bookContainer.innerHTML = '';
         setTimeout(() => {
             initPhotobook3D();
         }, 150);
