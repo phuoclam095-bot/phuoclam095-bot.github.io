@@ -65,7 +65,7 @@
     }
 
     /* Khung bọc ảnh ôm khít tỷ lệ thực tế của ảnh (ảnh đứng và ngang) */
-    .stage-inner { 
+      .stage-inner { 
         position: relative !important; 
         display: inline-flex !important; 
         align-items: center; 
@@ -74,7 +74,6 @@
         max-height: 100% !important;
         width: auto !important; 
         height: auto !important;
-        min-height: 0; 
     }
     
     #mainImg {
@@ -88,8 +87,7 @@
         -webkit-touch-callout: none; 
     }
 
-    /* Nút trái tim ở chế độ chi tiết (bám sát góc trên bên phải khung ảnh) */
-    #viewerHeartBtn {
+        #viewerHeartBtn {
         position: absolute !important;
         top: 8px !important;
         right: 8px !important;
@@ -107,7 +105,6 @@
         z-index: 5000 !important;
         transition: 0.2s;
         box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-        -webkit-tap-highlight-color: transparent;
     }
     
     #viewerHeartBtn.selected {
@@ -117,7 +114,6 @@
         transform: scale(1.1);
     }
 
-    /* --- CÁC THÀNH PHẦN KHÁC --- */
     .watermark-overlay {
         position: absolute;
         inset: 0;
@@ -230,12 +226,10 @@
         <div id="photoViewer">
             <div class="stage">
                 <div id="photoInfoBadge">0/0</div>
-                <!-- Đặt nút trái tim ở đây để luôn bám góc phải phía trên của khung ảnh chi tiết -->
-                <div id="viewerHeartBtn" onclick="togSel()"><i class="fas fa-heart"></i></div>
-                
                 <div class="stage-inner">
                     <img id="mainImg" src="">
                     <div id="clientWatermarkContainer"></div>
+                    <div id="viewerHeartBtn" onclick="togSel()"><i class="fas fa-heart"></i></div>
                 </div>
             </div>
             <div class="strip-luxury" id="strip"></div>
