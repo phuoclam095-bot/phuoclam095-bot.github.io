@@ -117,6 +117,37 @@
     pointer-events: auto !important;
     z-index: 30;
 }
+        .stage { 
+    flex: 1; 
+    min-height: 0; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    overflow: hidden; 
+    padding: 0; 
+    position: relative; 
+    width: 100%; 
+}
+.stage-inner { 
+    position: relative; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    width: 100%; 
+    height: 100%; 
+    min-height: 0; 
+}
+#mainImg {
+    max-width: 100%; 
+    max-height: 100%; 
+    width: auto; 
+    height: auto; 
+    object-fit: contain; 
+    display: block; 
+    margin: auto; 
+    image-rendering: -webkit-optimize-contrast; 
+    transform: translateZ(0); 
+}
     </style>
 </head>
 <body>
@@ -400,43 +431,54 @@ function prevPage3D() {
             updateInfo();
         }
        function showViewer() {
-            const p = photos[cur]; 
-            if(!p) return;
-            document.getElementById('mainImg').src = getLink(p.id, 's800');
-            document.getElementById('displayFileName').innerText = p.name || "UNNAMED";
-            document.getElementById('photoInfoBadge').innerText = `${cur + 1} / ${photos.length}`;
+    const p = photos[cur]; 
+    if(!p) return;
+    
+    // Cập nhật tên file hiển thị
+    document.getElementById('displayFileName').innerText = p.name || "UNNAMED";
+    document.getElementById('photoInfoBadge').innerText = `${cur + 1} / ${photos.length}`;
 
-            const watermarkContainer = document.getElementById('clientWatermarkContainer');
-            if (watermarkContainer) {
-                watermarkContainer.innerHTML = watermarkHTML;
-            }
-            const strip = document.getElementById('strip'); 
-            strip.innerHTML = '';    
-            photos.forEach((photoItem, i) => {
-                const isSel = selectedIds.includes(photoItem.id);
-                const hasNote = photoItem.note && photoItem.note.trim() !== '';
-                if(isFiltering && !isSel) return;
-                const th = document.createElement('div');
-                th.className = `th-vip ${i === cur ? 'act' : ''} ${isSel ? 'sel' : ''}`;
-                th.innerHTML = `<img src="${getLink(photoItem.id, 's100')}">`;
-                if(isSel) {
-                    const num = selectedIds.indexOf(photoItem.id) + 1;
-                    th.insertAdjacentHTML('beforeend', `<div class="vip-dot" style="width:14px; height:14px; font-size:7px; top:2px; right:2px;">${num}</div>`);
-                }
-                
-                if(hasNote) {
-                    th.insertAdjacentHTML('beforeend', `<div class="note-badge" title="Xem ghi chú" style="width:14px; height:14px; font-size:7px; bottom:2px; left:2px;" onclick="event.stopPropagation(); openViewNoteModal('${photoItem.id}');"><i class="fas fa-comment"></i></div>`);
-                }
-                
-                th.onclick = () => { cur = i; showViewer(); };
-                strip.appendChild(th);
-            });
-            
-            const activeTh = strip.querySelector('.act');
-            if(activeTh) setTimeout(() => activeTh.scrollIntoView({behavior:'smooth', inline:'center'}), 50);
-            updateInfo();
+    const watermarkContainer = document.getElementById('clientWatermarkContainer');
+    if (watermarkContainer) {
+        watermarkContainer.innerHTML = watermarkHTML;
+    }
+
+    // Gán source ảnh với độ trễ nhỏ giúp mobile render mượt mà, tránh màn hình đen
+    setTimeout(() => {
+        const mainImg = document.getElementById('mainImg');
+        if(mainImg) {
+            mainImg.src = getLink(p.id, 's800');
         }
+    }, 50);
 
+    const strip = document.getElementById('strip'); 
+    strip.innerHTML = '';    
+    photos.forEach((photoItem, i) => {
+        const isSel = selectedIds.includes(photoItem.id);
+        const hasNote = photoItem.note && photoItem.note.trim() !== '';
+        if(isFiltering && !isSel) return;
+        
+        const th = document.createElement('div');
+        th.className = `th-vip ${i === cur ? 'act' : ''} ${isSel ? 'sel' : ''}`;
+        th.innerHTML = `<img src="${getLink(photoItem.id, 's100')}">`;
+        
+        if(isSel) {
+            const num = selectedIds.indexOf(photoItem.id) + 1;
+            th.insertAdjacentHTML('beforeend', `<div class="vip-dot" style="width:14px; height:14px; font-size:7px; top:2px; right:2px;">${num}</div>`);
+        }
+        
+        if(hasNote) {
+            th.insertAdjacentHTML('beforeend', `<div class="note-badge" title="Xem ghi chú" style="width:14px; height:14px; font-size:7px; bottom:2px; left:2px;" onclick="event.stopPropagation(); openViewNoteModal('${photoItem.id}');"><i class="fas fa-comment"></i></div>`);
+        }
+        
+        th.onclick = () => { cur = i; showViewer(); };
+        strip.appendChild(th);
+    });
+    
+    const activeTh = strip.querySelector('.act');
+    if(activeTh) setTimeout(() => activeTh.scrollIntoView({behavior:'smooth', inline:'center'}), 50);
+    updateInfo();
+}
 
         async function saveCurrentComment() {
             const p = photos[cur];
