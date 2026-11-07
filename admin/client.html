@@ -229,11 +229,10 @@
         <div id="photoViewer">
             <div class="stage">
                 <div id="photoInfoBadge">0/0</div>
-                <!-- Đặt nút trái tim ở đây để luôn bám góc phải phía trên của khung ảnh chi tiết -->
-                <div id="viewerHeartBtn" onclick="togSel()"><i class="fas fa-heart"></i></div>
                 
                 <div class="stage-inner">
                     <img id="mainImg" src="">
+                    <div id="viewerHeartBtn" onclick="togSel()"><i class="fas fa-heart"></i></div>
                     <div id="clientWatermarkContainer"></div>
                 </div>
             </div>
@@ -594,78 +593,87 @@
         }
 
     async function init() {
-        const errorBox = document.getElementById('errorNotificationBox');
-        const errorText = document.getElementById('errorMessageText');
-        const loadOverlay = document.getElementById('loadOverlay');
+    const errorBox = document.getElementById('errorNotificationBox');
+    const errorText = document.getElementById('errorMessageText');
+    const loadOverlay = document.getElementById('loadOverlay');
 
-        try {
-            const urlParams = new URLSearchParams(window.location.search);
-            const albumSlug = urlParams.get('album');
-            const studioSlug = urlParams.get('studio');
+    try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const albumSlug = urlParams.get('album');
+        const studioSlug = urlParams.get('studio');
 
-            if (!albumSlug) {
-                throw new Error("Không tìm thấy đường dẫn định danh album trên trình duyệt.");
-            }
+        if (!albumSlug) {
+            throw new Error("Không tìm thấy đường dẫn định danh album trên trình duyệt.");
+        }
 
-            const res = await fetch(`${PATHS.GET}?studio=${studioSlug}&album=${albumSlug}`);
-            if (!res.ok) {
-                throw new Error(`Máy chủ phản hồi lỗi (Mã trạng thái: ${res.status}). Album có thể không tồn tại.`);
-            }
+        const res = await fetch(`${PATHS.GET}?studio=${studioSlug}&album=${albumSlug}`);
+        if (!res.ok) {
+            throw new Error(`Máy chủ phản hồi lỗi (Mã trạng thái: ${res.status}). Album có thể không tồn tại.`);
+        }
 
-            const rawData = await res.json();
-            const data = Array.isArray(rawData) ? rawData[0] : rawData;
-            
-            if (!data) {
-                throw new Error("Dữ liệu trả về từ máy chủ trống.");
-            }
+        const rawData = await res.json();
+        const data = Array.isArray(rawData) ? rawData[0] : rawData;
+        
+        if (!data) {
+            throw new Error("Dữ liệu trả về từ máy chủ trống.");
+        }
 
-            photos = data.photos || [];
-            albumSettings = data.settings || albumSettings;
-            
-            window.fid = data.folder_id || albumSlug; 
-            fid = window.fid;
-            if (photos.length === 0) {
-                throw new Error("Album này hiện tại chưa có bức ảnh nào hoặc đang trong quá trình đồng bộ.");
-            }
+        photos = data.photos || [];
+        albumSettings = data.settings || albumSettings;
+        
+        window.fid = data.folder_id || albumSlug; 
+        fid = window.fid;
+        if (photos.length === 0) {
+            throw new Error("Album này hiện tại chưa có bức ảnh nào hoặc đang trong quá trình đồng bộ.");
+        }
 
-            const clientLogo = albumSettings.watermark_logo || '';
-            const isWatermarkOn = albumSettings.watermark_enabled !== false;
-            
-            watermarkHTML = (isWatermarkOn && clientLogo) ? `<div class="watermark-overlay"><img src="${clientLogo}" alt="Logo"></div>` : '';
-            
-            const allowDownload = Boolean(albumSettings.download === true || albumSettings.download === 'true' || albumSettings.download === 1);
-            const allowComment = Boolean(albumSettings.comment === true || albumSettings.comment === 'true' || albumSettings.comment === 1);
-            
-            document.getElementById('btnDownload').style.display = allowDownload ? 'flex' : 'none';
-            document.getElementById('btnComment').style.display = allowComment ? 'flex' : 'none';
-            let folderName = photos[0].folderName || "VIP ALBUM";
-            let studioFullName = data.studioName || data.name || data.studio_name || data.studio_slug || "";
-            if ((!studioFullName || studioFullName.toLowerCase() === 'studio') && studioSlug && studioSlug.toLowerCase() !== 'studio') {
-                studioFullName = studioSlug;
-            }
-            if (studioFullName && studioFullName.toLowerCase() !== 'studio') {
-                document.title = `${studioFullName.toUpperCase()} - ${folderName}`;
-                document.getElementById('albumTitle').innerText = `${studioFullName.toUpperCase()} - ${folderName}`;
-            } else {
-                document.title = folderName;
-                document.getElementById('albumTitle').innerText = folderName;
-            }
+        const clientLogo = albumSettings.watermark_logo || '';
+        const isWatermarkOn = albumSettings.watermark_enabled !== false;
+        
+        watermarkHTML = (isWatermarkOn && clientLogo) ? `<div class="watermark-overlay"><img src="${clientLogo}" alt="Logo"></div>` : '';
+        
+        // 🌟 XỬ LÝ CHUẨN XÁC THEO SERVER (Ép kiểu boolean để xử lý cả dạng chuỗi "true"/"false" từ API)
+        const allowDownload = (albumSettings.download === true || albumSettings.download === 'true' || albumSettings.download === 1);
+        const allowComment = (albumSettings.comment === true || albumSettings.comment === 'true' || albumSettings.comment === 1);
 
-            const local = localStorage.getItem('anh_da_chon_cua_khach_' + (window.fid || albumSlug));
-            if (local) selectedIds = JSON.parse(local);
-            
-            loadOverlay.style.display = 'none';
-            initGrid(); 
-            
-        } catch(e) { 
-            console.error(e);
-            loadOverlay.style.display = 'none';
-            if (errorText) errorText.innerText = e.message || "Không tìm thấy album hoặc tên đường dẫn không tồn tại.";
-            if (errorBox) {
-                errorBox.style.setProperty('display', 'flex', 'important');
-            }
+        const btnDownloadEl = document.getElementById('btnDownload');
+        const btnCommentEl = document.getElementById('btnComment');
+
+        if (btnDownloadEl) {
+            btnDownloadEl.style.setProperty('display', allowDownload ? 'flex' : 'none', 'important');
+        }
+        if (btnCommentEl) {
+            btnCommentEl.style.setProperty('display', allowComment ? 'flex' : 'none', 'important');
+        }
+
+        let folderName = photos[0].folderName || "VIP ALBUM";
+        let studioFullName = data.studioName || data.name || data.studio_name || data.studio_slug || "";
+        if ((!studioFullName || studioFullName.toLowerCase() === 'studio') && studioSlug && studioSlug.toLowerCase() !== 'studio') {
+            studioFullName = studioSlug;
+        }
+        if (studioFullName && studioFullName.toLowerCase() !== 'studio') {
+            document.title = `${studioFullName.toUpperCase()} - ${folderName}`;
+            document.getElementById('albumTitle').innerText = `${studioFullName.toUpperCase()} - ${folderName}`;
+        } else {
+            document.title = folderName;
+            document.getElementById('albumTitle').innerText = folderName;
+        }
+
+        const local = localStorage.getItem('anh_da_chon_cua_khach_' + (window.fid || albumSlug));
+        if (local) selectedIds = JSON.parse(local);
+        
+        loadOverlay.style.display = 'none';
+        initGrid(); 
+        
+    } catch(e) { 
+        console.error(e);
+        loadOverlay.style.display = 'none';
+        if (errorText) errorText.innerText = e.message || "Không tìm thấy album hoặc tên đường dẫn không tồn tại.";
+        if (errorBox) {
+            errorBox.style.setProperty('display', 'flex', 'important');
         }
     }
+}
         init();
     </script>
     <div class="modal fade" id="viewNoteModal" tabindex="-1">
