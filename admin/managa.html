@@ -138,7 +138,18 @@
         @keyframes rainbow-run { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
         .search-inner { background: #080d1a; border-radius: 50px; display: flex; align-items: center; padding: 2px 20px; }
         .search-inner input { background: transparent; border: none; color: #fff !important; width: 100%; padding: 10px; font-weight: 700; outline: none; }
-        #albumGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; padding: 0 20px; }
+       #albumGrid { 
+            display: grid; 
+            grid-template-columns: repeat(5, 1fr); 
+            gap: 20px; 
+            padding: 0 20px; 
+        }
+        @media (max-width: 1200px) {
+        #albumGrid { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 768px) {
+            #albumGrid { grid-template-columns: repeat(1, 1fr); }
+        }
         .album-card-vip { background: rgba(10, 20, 40, 0.7); backdrop-filter: blur(15px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); transition: 0.3s; }
         .album-card-vip:hover { border-color: var(--primary); box-shadow: var(--neon); transform: translateY(-5px); }
         .card-img-header { height: 210px; background-size: cover; background-position: center; position: relative; border-radius: 20px 20px 0 0; }
@@ -340,24 +351,18 @@
             if (displayedCount >= albums.length) return;
             
             const nextBatch = albums.slice(displayedCount, displayedCount + pageSize);
-            const fragment = document.DocumentFragment ? document.createDocumentFragment() : document.createElement('div');
+            const fragment = document.createDocumentFragment(); // Viết gọn chuẩn DOM Fragment
             
             nextBatch.forEach(a => {
                 const cardNode = createAlbumCard(a);
-                if (fragment.appendChild) {
-                    fragment.appendChild(cardNode);
-                } else {
-                    grid.appendChild(cardNode);
-                }
+                fragment.appendChild(cardNode);
             });
             
-            if (fragment.appendChild) {
-                grid.appendChild(fragment);
-            }
+            grid.appendChild(fragment);
             
-            displayedCount += nextBatch.size || nextBatch.length;
+            // Đã sửa lỗi .size thành .length của mảng JavaScript
+            displayedCount += nextBatch.length; 
         }
-        
         window.addEventListener('scroll', () => {
             if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 300) {
                 appendMoreAlbums();
