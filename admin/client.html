@@ -229,107 +229,90 @@ function setView(v) {
     else syncGridUI();
 }
 
+function setAsCoverPhoto() {
+    const p = photos[cur];
+    if (!p) return;
+    selectedCoverId = p.id;
+    localStorage.setItem('anh_bia_cua_khach_' + fid, selectedCoverId);
+    showToast("⭐ Đã đặt làm ảnh bìa thành công!");
+    initGrid();
+}
+
+// HÀM KHỞI TẠO PHOTOBOOK 3D ĐÃ FIX LỖI MÀN HÌNH ĐEN & THÊM TRANG BÌA ĐẦU TIÊN
 function initPhotobook3D() {
     const bookContainer = document.getElementById('dynamic-book');
+    if (!bookContainer) return;
     bookContainer.innerHTML = '';
 
-    // Lọc danh sách ảnh: Ưu tiên ảnh khách đã chọn, nếu chưa chọn thì lấy toàn bộ album
+    // Lọc danh sách ảnh: Ưu tiên ảnh khách đã chọn, nếu chưa chọn lấy toàn bộ
     let sourcePhotos = photos.filter(p => selectedIds.includes(p.id));
     if (sourcePhotos.length === 0) {
         sourcePhotos = photos; 
     }
 
-    // 1. Tạo trang bìa đầu tiên
+    // Tìm ảnh bìa (Nếu khách đã chọn ảnh bìa, đưa lên đầu tiên)
+    let coverPhoto = sourcePhotos.find(p => p.id === selectedCoverId);
+    if (!coverPhoto && sourcePhotos.length > 0) {
+        coverPhoto = sourcePhotos[0]; // Mặc định lấy ảnh đầu tiên làm bìa nếu chưa chọn
+    }
+
+    // 1. TRANG BÌA ĐẦU TIÊN (Hiển thị ảnh bìa rõ ràng ở trang đầu tiên)
     let pagesHTML = `
-        <div class="page" style="background: #111; color: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; border-right: 1px solid #333;">
-            <div style="border: 2px solid var(--primary); padding: 20px; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 10px;">
-                <span style="color: var(--primary); font-size: 0.65rem; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;">PHOTOBOOK PREVIEW</span>
-                <h3 style="font-size: 1.1rem; font-weight: 900; margin: 10px 0;">${document.getElementById('albumTitle').innerText}</h3>
-                <p style="font-size: 0.55rem; color: #aaa;">Dàn trang thông minh tự động bởi ChonAnhNhanh.vn</p>
+        <div class="page" style="background: #111; color: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 15px; text-align: center; border-right: 1px solid #333;">
+            <div style="border: 2px solid var(--primary); padding: 10px; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; align-items: center; border-radius: 8px; background: #000;">
+                <span style="color: var(--primary); font-size: 0.6rem; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;">BÌA ALBUM CHÍNH</span>
+                ${coverPhoto ? `<div style="width: 100%; height: 70%; overflow: hidden; border-radius: 6px;"><img src="${getLink(coverPhoto.id, 's800')}" style="width:100%; height:100%; object-fit:contain;"></div>` : ''}
+                <h3 style="font-size: 0.85rem; font-weight: 900; margin: 5px 0; color: #fff;">${document.getElementById('albumTitle').innerText}</h3>
             </div>
         </div>
     `;
 
-    // 2. THUẬT TOÁN DÀN LAYOUT THÔNG MINH (Smart Auto-Flow)
-    // Gom nhóm ảnh: Ảnh ngang ưu tiên chiếm trọn 1 trang đôi (spread), ảnh dọc ghép đôi 2 ảnh/trang
-    let i = 0;
-    let pageNum = 1;
-
-    while (i < sourcePhotos.length) {
-        let p = sourcePhotos[i];
-        // Kiểm tra nếu có thông tin width/height từ Google Drive, ta xét tỷ lệ. Nếu không mặc định coi là ảnh đơn/dọc
-        let isLandscape = p.width && p.height ? (p.width > p.height) : false;
-
-        if (isLandscape && i + 1 < sourcePhotos.length) {
-            // Layout đặc biệt cho ảnh ngang tràn trang hoặc 2 ảnh ngang đẹp mắt
-            let p2 = sourcePhotos[i + 1];
-            pagesHTML += `
-                <div class="page" style="background: #fff; display: flex; flex-direction: column; justify-content: space-between; padding: 10px; border-right: 1px solid #ddd;">
-                    <div style="width: 100%; height: 48%; background: #000; border-radius: 6px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
-                        <img src="${getLink(p.id, 's800')}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
-                    </div>
-                    <div style="width: 100%; height: 48%; background: #000; border-radius: 6px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
-                        <img src="${getLink(p2.id, 's800')}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
-                    </div>
-                    <div style="text-align: center; color: #666; font-size: 0.55rem; font-weight: 700;">Trang ${pageNum}</div>
+    // 2. CÁC TRANG NỘI DUNG TIẾP THEO
+    sourcePhotos.forEach((p, idx) => {
+        pagesHTML += `
+            <div class="page" style="background: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; border-right: 1px solid #ddd;">
+                <div style="width: 100%; height: 88%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #000; border-radius: 8px;">
+                    <img src="${getLink(p.id, 's800')}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
                 </div>
-            `;
-            i += 2; // Bỏ qua 2 ảnh đã ghép
-        } else {
-            // Layout chuẩn 1 ảnh chân dung/chính giữa nổi bật
-            pagesHTML += `
-                <div class="page" style="background: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 12px; border-right: 1px solid #ddd;">
-                    <div style="width: 100%; height: 88%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #000; border-radius: 8px;">
-                        <img src="${getLink(p.id, 's800')}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
-                    </div>
-                    <div style="margin-top: 6px; color: #666; font-weight: 700; font-size: 0.55rem;">
-                        Trang ${pageNum}
-                    </div>
+                <div style="margin-top: 6px; color: #666; font-weight: 700; font-size: 0.55rem;">
+                    Trang ${idx + 1}
                 </div>
-            `;
-            i += 1;
-        }
-        pageNum++;
-    }
-
-    // 3. Tạo trang bìa sau
-    pagesHTML += `
-        <div class="page" style="background: #111; color: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center;">
-            <h4 style="color: var(--primary); font-size: 0.9rem; font-weight: 900;">CHONANHNHANH.VN</h4>
-            <p style="font-size: 0.55rem; color: #777; margin-top: 5px;">Hết album - Sẵn sàng gửi duyệt in!</p>
-        </div>
-    `;
+            </div>
+        `;
+    });
 
     bookContainer.innerHTML = pagesHTML;
 
-    // Khởi tạo lại hiệu ứng lật trang 3D
-    if (pageFlipInstance) {
-        pageFlipInstance.destroy();
-    }
+    // Đảm bảo DOM đã render xong khung trước khi gọi thư viện 3D để tránh lỗi màn hình đen
+    setTimeout(() => {
+        if (pageFlipInstance) {
+            pageFlipInstance.destroy();
+        }
 
-    try {
-        pageFlipInstance = new St.PageFlip(bookContainer, {
-            width: 350,
-            height: 480,
-            size: "stretch",
-            minWidth: 250,
-            maxWidth: 500,
-            minHeight: 350,
-            maxHeight: 600,
-            maxShadowOpacity: 0.5,
-            showCover: true,
-            mobileScrollSupport: false
-        });
+        try {
+            pageFlipInstance = new St.PageFlip(bookContainer, {
+                width: 350,
+                height: 480,
+                size: "stretch",
+                minWidth: 250,
+                maxWidth: 500,
+                minHeight: 350,
+                maxHeight: 600,
+                maxShadowOpacity: 0.5,
+                showCover: true,
+                mobileScrollSupport: false
+            });
 
-        pageFlipInstance.loadFromHTML(bookContainer.querySelectorAll('.page'));
-        
-        pageFlipInstance.on('flip', (e) => {
-            const ind = document.getElementById('pageIndicator3D');
-            if(ind) ind.innerText = `Trang ${e.data + 1} / ${pageFlipInstance.getPageCount()}`;
-        });
-    } catch(err) {
-        console.log("Lỗi khởi tạo 3D flipbook: ", err);
-    }
+            pageFlipInstance.loadFromHTML(bookContainer.querySelectorAll('.page'));
+            
+            pageFlipInstance.on('flip', (e) => {
+                const ind = document.getElementById('pageIndicator3D');
+                if(ind) ind.innerText = `Trang ${e.data + 1} / ${pageFlipInstance.getPageCount()}`;
+            });
+        } catch(err) {
+            console.log("Lỗi khởi tạo 3D flipbook: ", err);
+        }
+    }, 150); // Độ trễ nhỏ giúp loại bỏ hoàn toàn hiện tượng khung đen
 }
 function nextPage3D() {
     if (pageFlipInstance) pageFlipInstance.flipNext();
@@ -404,54 +387,43 @@ function prevPage3D() {
             if(activeTh) setTimeout(() => activeTh.scrollIntoView({behavior:'smooth', inline:'center'}), 50);
             updateInfo();
         }
-       function initGrid() {
-            const grid = document.getElementById('photoGrid'); 
-            if (!grid) return;
-            grid.innerHTML = '';
-            
-            photos.forEach((p, i) => {
-                const item = document.createElement('div');
-                item.className = 'grid-item'; 
-                item.id = `item-${i}`;
-                const isCover = (window.currentCoverId === p.id);
-                
-                item.innerHTML = `
-                    <img src="${getLink(p.id, 's400')}" loading="lazy">
-                    <button type="button" class="cover-btn" title="Chọn làm ảnh bìa" onclick="event.stopPropagation(); setCoverPhoto('${p.id}')" style="position: absolute; top: 6px; left: 6px; background: ${isCover ? 'var(--primary)' : 'rgba(0,0,0,0.6)'}; color: ${isCover ? '#000' : '#fff'}; border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 10px; display: flex; align-items: center; justify-content: center; z-index: 15;">
-                        <i class="fas fa-star"></i>
-                    </button>
-                `;
+       let selectedCoverId = localStorage.getItem('anh_bia_cua_khach_' + fid) || null;
 
-                let touchTime = 0;
-                item.addEventListener('pointerdown', (e) => {
-                    touchTime = new Date().getTime();
-                });
+function initGrid() {
+    const grid = document.getElementById('photoGrid'); 
+    if (!grid) return;
+    grid.innerHTML = '';
+    
+    photos.forEach((p, i) => {
+        const item = document.createElement('div');
+        item.className = 'grid-item'; 
+        item.id = `item-${i}`;
         
-                item.addEventListener('pointerup', (e) => {
-                    let clickDuration = new Date().getTime() - touchTime;
-                    if (clickDuration < 250) {
-                        cur = i; 
-                        syncGridUI();
-                    }
-                });
+        // Kiểm tra xem ảnh này có đang được chọn làm ảnh bìa không
+        const isCover = (selectedCoverId === p.id);
         
-                item.ondblclick = () => { cur = i; setView('viewer'); };
-                
-                grid.appendChild(item);
-            });
-            syncGridUI();
-        }
+        item.innerHTML = `
+            <img src="${getLink(p.id, 's400')}" loading="lazy">
+            ${isCover ? '<div style="position: absolute; top: 6px; left: 6px; background: var(--primary); color: #000; padding: 2px 8px; border-radius: 6px; font-size: 9px; font-weight: 900; z-index: 10;">ẢNH BÌA</div>' : ''}
+        `;
         
-        function setCoverPhoto(photoId) {
-            window.currentCoverId = photoId;
-            localStorage.setItem('anh_bia_cua_khach_' + fid, photoId);
-            if (typeof showToast === 'function') {
-                showToast("⭐ Đã đặt làm ảnh bìa thành công!");
-            } else {
-                alert("Đã đặt làm ảnh bìa thành công!");
+        // Bắt sự kiện chạm mượt mà trên Mobile & PC
+        let touchTime = 0;
+        item.addEventListener('pointerdown', () => { touchTime = new Date().getTime(); });
+        item.addEventListener('pointerup', () => {
+            if (new Date().getTime() - touchTime < 250) {
+                cur = i; 
+                syncGridUI();
             }
-            initGrid(); 
-        }
+        });
+
+        item.ondblclick = () => { cur = i; setView('viewer'); };
+        grid.appendChild(item);
+    });
+    syncGridUI();
+}
+        
+
         async function saveCurrentComment() {
             const p = photos[cur];
             if (!p) return;
