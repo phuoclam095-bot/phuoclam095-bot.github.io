@@ -219,13 +219,23 @@
 
         function setView(v) {
             currentView = v;
-            document.getElementById('photoGrid').style.display = (v === 'grid') ? 'grid' : 'none';
-            document.getElementById('photoViewer').style.display = (v === 'viewer') ? 'flex' : 'none';
+            const gridEl = document.getElementById('photoGrid');
+            const viewerEl = document.getElementById('photoViewer');
+        
+            gridEl.style.display = 'none';
+            viewerEl.style.display = 'none';
+
             document.getElementById('btnGrid').style.color = (v === 'grid') ? 'var(--primary)' : '#666';
             document.getElementById('btnViewer').style.color = (v === 'viewer') ? 'var(--primary)' : '#666';
-            if(v === 'viewer') showViewer(); else syncGridUI();
-        }
 
+            if(v === 'grid') {
+                gridEl.style.display = 'grid';
+                syncGridUI();
+            } else if(v === 'viewer') {
+                viewerEl.style.display = 'flex';
+                showViewer();
+            }
+        }
         
        function syncGridUI() {
             if(currentView !== 'grid') return;
