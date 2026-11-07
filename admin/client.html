@@ -180,7 +180,7 @@
             </div>
             <div class="strip-luxury" id="strip"></div>
         </div>
-        <div id="photo3DView" style="display: none; width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: center; background: #080808; position: relative; overflow: hidden;">
+        <div id="photo3DView" style="display: none; position: absolute; inset: 0; flex-direction: column; align-items: center; justify-content: background: #080808; z-index: 4200; overflow: hidden;">
             <div id="book-container" style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; max-height: 80vh;">
                 <div id="dynamic-book"></div>
             </div>
@@ -245,34 +245,52 @@ function setView(v) {
     const gridEl = document.getElementById('photoGrid');
     const viewerEl = document.getElementById('photoViewer');
     const view3D = document.getElementById('photo3DView');
-    gridEl.style.display = (v === 'grid') ? 'grid' : 'none';
-    viewerEl.style.display = (v === 'viewer') ? 'flex' : 'none';
-    if(view3D) view3D.style.display = (v === '3d') ? 'flex' : 'none';
 
+    // 1. Ẩn tất cả các view trước bằng kỹ thuật an toàn
+    gridEl.style.display = 'none';
+    viewerEl.style.display = 'none';
+    if(view3D) {
+        view3D.style.display = 'none';
+        view3D.style.opacity = '0';
+    }
+
+    // Cập nhật màu sắc tiêu đề trên Navbar
     document.getElementById('btnGrid').style.color = (v === 'grid') ? 'var(--primary)' : '#666';
     document.getElementById('btnViewer').style.color = (v === 'viewer') ? 'var(--primary)' : '#666';
     const btn3D = document.getElementById('btn3D');
     if(btn3D) btn3D.style.color = (v === '3d') ? 'var(--primary)' : '#666';
 
-    if(v === 'viewer') {
+    // 2. Hiển thị view được chọn tương ứng
+    if(v === 'grid') {
+        gridEl.style.display = 'grid';
+        syncGridUI();
+    } else if(v === 'viewer') {
+        viewerEl.style.display = 'flex';
         showViewer();
     } else if(v === '3d') {
+        if(view3D) {
+            view3D.style.display = 'flex';
+        }
+
+        // Hủy bỏ instance cũ của thư viện 3D nếu tồn tại để tránh rác bộ nhớ
         if (pageFlipInstance) {
             try {
                 pageFlipInstance.destroy();
-            } catch(e) {
-                console.log("Lỗi hủy instance cũ:", e);
-            }
+            } catch(e) {}
             pageFlipInstance = null;
         }
 
         const bookContainer = document.getElementById('dynamic-book');
         if (bookContainer) bookContainer.innerHTML = '';
-        setTimeout(() => {
-            initPhotobook3D();
-        }, 150);
-    } else {
-        syncGridUI();
+
+        // 🌟 Khắc phục triệt để lỗi giật hình và màn hình đen:
+        // Đợi khung hình hiển thị mượt mà trên DOM mobile rồi mới kích hoạt render sách 3D
+        requestAnimationFrame(() => {
+            setTimeout(() => {
+                initPhotobook3D();
+                if(view3D) view3D.style.opacity = '1'; // Fade-in mượt mà không bị giật
+            }, 50);
+        });
     }
 }
 function setAsCoverPhoto() {
