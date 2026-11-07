@@ -313,58 +313,107 @@
 
         function showToast(msg) { const t = document.getElementById('toastNotice'); t.innerText = msg; t.style.display = 'block'; setTimeout(() => { t.style.display = 'none'; }, 2200); }
         function filterAlbums() { const kw = document.getElementById('albumSearch').value.toLowerCase(); renderAlbums(allAlbums.filter(a => (a.folderName || a.name || '').toLowerCase().includes(kw))); }
-        function renderAlbums(albums) { const grid = document.getElementById('albumGrid'); grid.innerHTML = ''; albums.forEach(a => grid.appendChild(createAlbumCard(a))); document.getElementById('albumCount').innerText = albums.length; }
+        let displayedCount = 0;
+        const pageSize = 20; //
+        
+        function renderAlbums(albums) {
+            const grid = document.getElementById('albumGrid');
+            if (!grid) return;
+            
+            // Nếu là lần đầu hoặc tìm kiếm mới, làm sạch lưới
+            grid.innerHTML = '';
+            displayedCount = 0;
+            
+            // Lưu lại mảng hiện tại để dùng cho việc cuộn xem tiếp
+            window._currentFilteredAlbums = albums;
+            
+            // Tiến hành vẽ nhóm đầu tiên
+            appendMoreAlbums();
+            
+            document.getElementById('albumCount').innerText = albums.length;
+        }
+        
+        function appendMoreAlbums() {
+            const grid = document.getElementById('albumGrid');
+            const albums = window._currentFilteredAlbums || [];
+            
+            if (displayedCount >= albums.length) return;
+            
+            const nextBatch = albums.slice(displayedCount, displayedCount + pageSize);
+            const fragment = document.DocumentFragment ? document.createDocumentFragment() : document.createElement('div');
+            
+            nextBatch.forEach(a => {
+                const cardNode = createAlbumCard(a);
+                if (fragment.appendChild) {
+                    fragment.appendChild(cardNode);
+                } else {
+                    grid.appendChild(cardNode);
+                }
+            });
+            
+            if (fragment.appendChild) {
+                grid.appendChild(fragment);
+            }
+            
+            displayedCount += nextBatch.size || nextBatch.length;
+        }
+        
+        window.addEventListener('scroll', () => {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 300) {
+                appendMoreAlbums();
+            }
+        });
 
        function createAlbumCard(album) {
-    const card = document.createElement('div');  
-    const id = album.folder_id || album.folderId || album.id;  
-    card.className = 'album-card-vip';  
-    card.id = `card-${id}`;
+        const card = document.createElement('div');  
+        const id = album.folder_id || album.folderId || album.id;  
+        card.className = 'album-card-vip';  
+        card.id = `card-${id}`;
+        
+        const img = album.thumbnailFileId ? `https://drive.google.com/thumbnail?id=${album.thumbnailFileId}&sz=w400` : 'https://images.unsplash.com/photo-1542838132-e0c19b48b940?auto=format&fit=crop&w=600&q=80';
+        
+        const limitVal = album.limit_photos ?? album.limitPhotos ?? 0;
+        const downloadVal = album.allow_download ?? album.allowDownload ?? false;
+        const commentVal = album.allow_comment ?? album.allowComment ?? false;
+        const watermarkEnabledVal = album.watermark_enabled ?? album.watermarkEnabled ?? false;
+        const watermarkLogoVal = album.watermark_logo ?? album.watermarkLogo ?? '';
+        
+        const folderName = album.folderName || album.name || 'VIP Album';
+        const albumTitle = folderName.replace(/'/g, "\\'");
     
-    const img = album.thumbnailFileId ? `https://drive.google.com/thumbnail?id=${album.thumbnailFileId}&sz=w600` : 'https://images.unsplash.com/photo-1542838132-e0c19b48b940?auto=format&fit=crop&w=600&q=80';
     
-    const limitVal = album.limit_photos ?? album.limitPhotos ?? 0;
-    const downloadVal = album.allow_download ?? album.allowDownload ?? false;
-    const commentVal = album.allow_comment ?? album.allowComment ?? false;
-    const watermarkEnabledVal = album.watermark_enabled ?? album.watermarkEnabled ?? false;
-    const watermarkLogoVal = album.watermark_logo ?? album.watermarkLogo ?? '';
+        const localStudioSlug = localStorage.getItem('admin_studio_slug');
+        let rawStudio = localStudioSlug || album.studio_slug || album.studioSlug || album.studio || 'studio';
+        
+        const studioSlug = toSlug(rawStudio);
+        const albumSlug = album.album_slug || album.albumSlug || toSlug(folderName);
+        
     
-    const folderName = album.folderName || album.name || 'VIP Album';
-    const albumTitle = folderName.replace(/'/g, "\\'");
-
-
-    const localStudioSlug = localStorage.getItem('admin_studio_slug');
-    let rawStudio = localStudioSlug || album.studio_slug || album.studioSlug || album.studio || 'studio';
+        const clientPageUrl = `${PATHS.CLIENT}${studioSlug}/${albumSlug}`;
+        const driveFolderUrl = `https://drive.google.com/drive/folders/${id}`;
     
-    const studioSlug = toSlug(rawStudio);
-    const albumSlug = album.album_slug || album.albumSlug || toSlug(folderName);
-    
-
-    const clientPageUrl = `${PATHS.CLIENT}${studioSlug}/${albumSlug}`;
-    const driveFolderUrl = `https://drive.google.com/drive/folders/${id}`;
-
-    card.innerHTML = `<div class="card-img-header" style="background-image: url('${img}');"><div class="album-vip-title">${folderName}</div></div>
-        <div class="stats-grid">
-            <div class="stat-pill" onclick="openSelectedPhotosModal('${id}', '${albumTitle}')">
-                <span class="stat-val">${album.selected_photos || 0}</span>
-                <span class="stat-lab">Chọn</span>
+        card.innerHTML = `<div class="card-img-header" style="background-image: url('${img}');"><div class="album-vip-title">${folderName}</div></div>
+            <div class="stats-grid">
+                <div class="stat-pill" onclick="openSelectedPhotosModal('${id}', '${albumTitle}')">
+                    <span class="stat-val">${album.selected_photos || 0}</span>
+                    <span class="stat-lab">Chọn</span>
+                </div>
+                <div class="stat-pill"><span class="stat-val text-white">${album.total_photos || 0}</span><span class="stat-lab">Tổng</span></div>
+                <div class="stat-pill" onclick="openNoteModal('${id}', '${albumTitle}')"><span class="stat-val text-info">${album.comments || 0}</span><span class="stat-lab">Note</span></div>
             </div>
-            <div class="stat-pill"><span class="stat-val text-white">${album.total_photos || 0}</span><span class="stat-lab">Tổng</span></div>
-            <div class="stat-pill" onclick="openNoteModal('${id}', '${albumTitle}')"><span class="stat-val text-info">${album.comments || 0}</span><span class="stat-lab">Note</span></div>
-        </div>
-        <div class="vip-actions-grid">
-            <button class="btn-vip" style="background: #10b981; color: #fff;" onclick="downloadSelectedZip('${id}', '${albumTitle}')" title="Tải tất cả ảnh đã chọn kèm ghi chú thành file ZIP"><i class="fas fa-file-archive"></i> TẢI FINAL</button>
-            <button class="btn-vip" style="background: #0ea5e9; color: #fff;" onclick="openAlbumLinksModal('${albumTitle}', '${clientPageUrl}', '${driveFolderUrl}')" title="Xem và sao chép liên kết truy cập album"><i class="fas fa-link"></i> LINK</button>
-            <button class="btn-vip v-export" onclick="handleExportClick('${id}', '${albumTitle}')" title="Trích xuất tên file" style="color: #ffffff !important;">
-                <i class="fa-regular fa-copy" style="color: #ffffff !important;"></i> Copy
-            </button>
-            <button class="btn-vip" style="background: #8b5cf6; grid-column: span 3;" onclick="openSettingsModal('${id}', ${limitVal}, ${downloadVal}, ${commentVal}, ${watermarkEnabledVal ? 'true' : 'false'}, '${watermarkLogoVal}')">
-                <i class="fas fa-sliders-h me-1"></i> Cài đặt cấu hình album
-            </button>
-            <button class="btn-vip v-delete" onclick="deleteAlbum('${id}', '${albumTitle}')">Xóa album</button>
-        </div>`;
-    return card;
-}
+            <div class="vip-actions-grid">
+                <button class="btn-vip" style="background: #10b981; color: #fff;" onclick="downloadSelectedZip('${id}', '${albumTitle}')" title="Tải tất cả ảnh đã chọn kèm ghi chú thành file ZIP"><i class="fas fa-file-archive"></i> TẢI FINAL</button>
+                <button class="btn-vip" style="background: #0ea5e9; color: #fff;" onclick="openAlbumLinksModal('${albumTitle}', '${clientPageUrl}', '${driveFolderUrl}')" title="Xem và sao chép liên kết truy cập album"><i class="fas fa-link"></i> LINK</button>
+                <button class="btn-vip v-export" onclick="handleExportClick('${id}', '${albumTitle}')" title="Trích xuất tên file" style="color: #ffffff !important;">
+                    <i class="fa-regular fa-copy" style="color: #ffffff !important;"></i> Copy
+                </button>
+                <button class="btn-vip" style="background: #8b5cf6; grid-column: span 3;" onclick="openSettingsModal('${id}', ${limitVal}, ${downloadVal}, ${commentVal}, ${watermarkEnabledVal ? 'true' : 'false'}, '${watermarkLogoVal}')">
+                    <i class="fas fa-sliders-h me-1"></i> Cài đặt cấu hình album
+                </button>
+                <button class="btn-vip v-delete" onclick="deleteAlbum('${id}', '${albumTitle}')">Xóa album</button>
+            </div>`;
+        return card;
+    }
 
     const PATH_ZIP_DOWNLOAD = 'https://wsm.congtubaclieu.com.vn/webhook/download-selected-zip';
 
