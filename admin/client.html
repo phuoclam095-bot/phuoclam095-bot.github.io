@@ -58,15 +58,14 @@
 #mainImg {
     max-width: 100%; 
     max-height: 100%; 
-    width: 100%; 
-    height: 100%; 
-    object-fit: contain; /* Giúp ảnh tự động co giãn vừa khít màn hình điện thoại mà không bị méo */
+    width: auto; 
+    height: auto; 
+    object-fit: contain; 
     display: block; 
     margin: auto; 
-    image-rendering: -webkit-optimize-contrast; 
+    image-rendering: auto; 
     transform: translateZ(0); 
-}
-        
+}      
 
         #photoInfoBadge { position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.7); color: #fff; padding: 5px 15px; border-radius: 20px; font-weight: 800; font-size: 0.7rem; border: 1px solid rgba(255,255,255,0.1); z-index: 4500; }
 
@@ -228,13 +227,16 @@
         }
 
         function getLink(id, sz) {
-            if (!id) return '';
-            const cleanId = String(id).trim();
-            
-            if (sz === 's100') return `https://drive.google.com/thumbnail?id=${cleanId}&sz=w200`;
-            if (sz === 's400') return `https://drive.google.com/thumbnail?id=${cleanId}&sz=w400`;
-            return `https://drive.google.com/thumbnail?id=${cleanId}&sz=w800`;
-        }
+    if (!id) return '';
+    const cleanId = String(id).trim();
+    
+    // Thumbnail phía dưới dùng sz=w400 hoặc link view trực tiếp để không bao giờ bị lỗi [?]
+    if (sz === 's100') return `https://drive.google.com/thumbnail?id=${cleanId}&sz=w400`;
+    if (sz === 's400') return `https://drive.google.com/thumbnail?id=${cleanId}&sz=w400`;
+    
+    // Ảnh to ở chế độ chi tiết nâng cấp lên sz=w1600 để cực kỳ sắc nét, không bị mờ
+    return `https://drive.google.com/thumbnail?id=${cleanId}&sz=w1000`;
+}
 let pageFlipInstance = null;
 let selectedCoverId = localStorage.getItem('anh_bia_cua_khach_' + fid) || null;
 
@@ -430,7 +432,7 @@ function prevPage3D() {
             });
             updateInfo();
         }
-      function showViewer() {
+     function showViewer() {
     const p = photos[cur]; 
     if(!p) return;
     
@@ -442,13 +444,15 @@ function prevPage3D() {
         watermarkContainer.innerHTML = watermarkHTML;
     }
 
+    // Tải ảnh to độ nét cao (w1600)
     setTimeout(() => {
         const mainImg = document.getElementById('mainImg');
         if(mainImg) {
             mainImg.onerror = null;
-            mainImg.src = getLink(p.id, 's800');
+            mainImg.src = getLink(p.id, 's800'); // Gọi ảnh lớn sắc nét
             mainImg.onerror = function() {
-                mainImg.src = getLink(p.id, 's400');
+                // Dự phòng nếu lỗi link lớn thì fallback về link gốc Google Drive
+                this.src = `https://drive.google.com/uc?export=view&id=${p.id}`;
             };
         }
     }, 50);
@@ -463,11 +467,11 @@ function prevPage3D() {
         const th = document.createElement('div');
         th.className = `th-vip ${i === cur ? 'act' : ''} ${isSel ? 'sel' : ''}`;
         
-        // Tạo thẻ img cho thumbnail kèm cơ chế chống lỗi [?]
+        // Tạo thẻ img cho thumbnail với cơ chế dự phòng chống lỗi [?] tuyệt đối
         const thumbImg = document.createElement('img');
         thumbImg.src = getLink(photoItem.id, 's100');
         thumbImg.onerror = function() {
-            this.src = `https://drive.google.com/uc?export=view&id=${photoItem.id}`; // Fallback dự phòng nếu thumbnail Drive lỗi
+            this.src = `https://drive.google.com/uc?export=view&id=${photoItem.id}`;
         };
         th.appendChild(thumbImg);
 
