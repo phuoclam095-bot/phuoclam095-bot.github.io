@@ -637,24 +637,24 @@ async function activateFreeTrial() {
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
                 email: userEmail,
-                days: 15
+                days: 30 
             })
         });
         
         const data = await res.json();
         
         if (res.ok && (data.status === 'active' || data.success)) {
-            let newExpiry = data.expiry_timestamp || (Date.now() + 15 * 24 * 60 * 60 * 1000);
+            let newExpiry = data.expiry_timestamp || (Date.now() + 30 * 24 * 60 * 60 * 1000); 
             
             localStorage.setItem('admin_status', 'active');
             localStorage.setItem('admin_expiry', newExpiry);
             
-            alert("Kích hoạt dùng thử 15 ngày thành công! Chào mừng bạn đến với ChonAnhNhanh.vn.");
+            alert("Kích hoạt dùng thử 30 ngày thành công! Chào mừng bạn đến với ChonAnhNhanh.vn.");
             window.location.reload(); 
         } else {
             alert("Không thể kích hoạt tự động. Vui lòng thử lại hoặc liên hệ hỗ trợ!");
             if (btn) {
-                btn.innerText = "DÙNG THỬ 15 NGÀY MIỄN PHÍ";
+                btn.innerText = "DÙNG THỬ 30 NGÀY MIỄN PHÍ"; 
                 btn.disabled = false;
             }
         }
