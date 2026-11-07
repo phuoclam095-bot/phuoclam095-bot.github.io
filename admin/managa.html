@@ -412,7 +412,7 @@
                 <button class="btn-vip v-export" onclick="handleExportClick('${id}', '${albumTitle}')" title="Trích xuất tên file" style="color: #ffffff !important;">
                     <i class="fa-regular fa-copy" style="color: #ffffff !important;"></i> Copy
                 </button>
-                <button class="btn-vip" style="background: #8b5cf6; grid-column: span 3;" onclick="openSettingsModal('${id}', ${limitVal}, ${downloadVal}, ${commentVal}, ${watermarkEnabledVal ? 'true' : 'false'}, '${watermarkLogoVal}')">
+                <button class="btn-vip" style="background: #8b5cf6; grid-column: span 3;" onclick="openSettingsModal('${id}')">
                     <i class="fas fa-sliders-h me-1"></i> Cài đặt cấu hình album
                 </button>
                 <button class="btn-vip v-delete" onclick="deleteAlbum('${id}', '${albumTitle}')">Xóa album</button>
@@ -750,17 +750,25 @@ function closeZipLoading() {
                 if(result.success) {
                     showToast("Cập nhật thành công!");
                     
-                    // Cập nhật ngầm vào mảng dữ liệu RAM hiện tại (không cần reload lại trang)
-                    const targetAlbum = allAlbums.find(a => (a.folder_id || a.folderId || a.id) === folderId);
+                    // Cập nhật trực tiếp vào mảng dữ liệu RAM và Cache ngay lập tức
+                    const targetAlbum = allAlbums.find(a => String(a.folder_id || a.folderId || a.id) === String(folderId));
                     if (targetAlbum) {
                         targetAlbum.limit_photos = limitPhotos;
+                        targetAlbum.limitPhotos = limitPhotos;
                         targetAlbum.allow_download = download;
+                        targetAlbum.allowDownload = download;
                         targetAlbum.allow_comment = comment;
+                        targetAlbum.allowComment = comment;
                         targetAlbum.watermark_enabled = watermarkEnabled;
-                        if(watermarkLogo) targetAlbum.watermark_logo = watermarkLogo;
+                        targetAlbum.watermarkEnabled = watermarkEnabled;
+                        if(watermarkLogo) {
+                            targetAlbum.watermark_logo = watermarkLogo;
+                            targetAlbum.watermarkLogo = watermarkLogo;
+                        }
                     }
                     sessionStorage.setItem('cache_albums', JSON.stringify(allAlbums));
                     
+                    // Đóng modal cấu hình
                     bootstrap.Modal.getInstance(document.getElementById('settingsModal')).hide();
                 } else {
                     alert("Lưu thất bại!");
