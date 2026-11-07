@@ -48,7 +48,7 @@
         }
         
         .stage-inner { 
-            position: relative; 
+            position: relative;
             display: flex; 
             align-items: center; 
             justify-content: center; 
@@ -160,27 +160,29 @@
             transform: scale(1.1);
         }
         #viewerHeartBtn {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            width: 44px;
-            height: 44px;
-            background: rgba(0, 0, 0, 0.7);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 20px;
-            cursor: pointer;
-            z-index: 4600;
-            transition: 0.2s;
-        }
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 40px;
+        height: 40px;
+        background: rgba(0, 0, 0, 0.6);
+        border: 1.5px solid rgba(255, 255, 255, 0.4);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 18px;
+        cursor: pointer;
+        z-index: 50; /* Nằm đè lên trên ảnh */
+        transition: 0.2s;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
         #viewerHeartBtn.selected {
             background: var(--primary);
             color: #000;
             border-color: var(--primary);
+            transform: scale(1.1);
         }
     </style>
 </head>
@@ -211,9 +213,9 @@
         <div id="photoViewer">
             <div class="stage">
                 <div id="photoInfoBadge">0/0</div>
-                <div id="viewerHeartBtn" onclick="togSel()"><i class="fas fa-heart"></i></div>
                 <div class="stage-inner">
                     <img id="mainImg" src="">
+                    <div id="viewerHeartBtn" onclick="togSel()"><i class="fas fa-heart"></i></div>
                     <div id="clientWatermarkContainer"></div>
                 </div>
             </div>
@@ -407,7 +409,8 @@
                     </div>
                 `;
                 
-                item.onclick = () => { cur = i; setView('viewer'); };
+                item.onclick = () => { cur = i; syncGridUI(); };
+                item.ondblclick = () => { cur = i; setView('viewer'); };
                 grid.appendChild(item);
             });
             syncGridUI();
