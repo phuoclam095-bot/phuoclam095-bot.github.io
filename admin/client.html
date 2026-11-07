@@ -267,12 +267,13 @@ function setView(v) {
     } else if(v === 'viewer') {
         viewerEl.style.display = 'flex';
         showViewer();
-    } else if(v === '3d') {
+    }else if(v === '3d') {
         if(view3D) {
+            // Hiển thị khung chứa trước tiên để trình duyệt tính toán kích thước px
             view3D.style.display = 'flex';
         }
 
-        // Hủy bỏ instance cũ của thư viện 3D nếu tồn tại để tránh rác bộ nhớ
+        // Hủy bỏ instance cũ của thư viện 3D nếu tồn tại
         if (pageFlipInstance) {
             try {
                 pageFlipInstance.destroy();
@@ -283,13 +284,11 @@ function setView(v) {
         const bookContainer = document.getElementById('dynamic-book');
         if (bookContainer) bookContainer.innerHTML = '';
 
-        // 🌟 Khắc phục triệt để lỗi giật hình và màn hình đen:
-        // Đợi khung hình hiển thị mượt mà trên DOM mobile rồi mới kích hoạt render sách 3D
-        requestAnimationFrame(() => {
-            setTimeout(() => {
-                initPhotobook3D();
-                if(view3D) view3D.style.opacity = '1'; // Fade-in mượt mà không bị giật
-            }, 50);
+        // 🌟 Bắt buộc phải có khoảng độ trễ (100ms - 150ms) để DOM kịp render kích thước khung chứa, tránh tuyệt đối lỗi màn hình đen
+        setTimeout(() => {
+            initPhotobook3D();
+        }, 150);
+    }
         });
     }
 }
