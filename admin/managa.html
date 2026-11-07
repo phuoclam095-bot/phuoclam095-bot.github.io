@@ -739,30 +739,29 @@ function closeZipLoading() {
             const watermarkEnabled = document.getElementById('editWatermarkEnabled').checked; 
             const watermarkLogo = editStoredLogoBase64;
             
-            console.log("Trạng thái công tắc gửi đi:", watermarkEnabled); 
-        
             showToast("Đang lưu cấu hình...");
             try {
                 const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/update-album-settings', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        folderId, 
-                        limitPhotos, 
-                        download, 
-                        comment, 
-                        watermarkEnabled, 
-                        watermarkLogo 
-                    })
+                    body: JSON.stringify({ folderId, limitPhotos, download, comment, watermarkEnabled, watermarkLogo })
                 });
                 const result = await res.json();
                 if(result.success) {
                     showToast("Cập nhật thành công!");
                     
-                    sessionStorage.removeItem('cache_albums');
+                    // Cập nhật ngầm vào mảng dữ liệu RAM hiện tại (không cần reload lại trang)
+                    const targetAlbum = allAlbums.find(a => (a.folder_id || a.folderId || a.id) === folderId);
+                    if (targetAlbum) {
+                        targetAlbum.limit_photos = limitPhotos;
+                        targetAlbum.allow_download = download;
+                        targetAlbum.allow_comment = comment;
+                        targetAlbum.watermark_enabled = watermarkEnabled;
+                        if(watermarkLogo) targetAlbum.watermark_logo = watermarkLogo;
+                    }
+                    sessionStorage.setItem('cache_albums', JSON.stringify(allAlbums));
                     
                     bootstrap.Modal.getInstance(document.getElementById('settingsModal')).hide();
-                    setTimeout(() => location.reload(), 1000); 
                 } else {
                     alert("Lưu thất bại!");
                 }
