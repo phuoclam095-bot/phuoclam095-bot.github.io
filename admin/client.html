@@ -188,14 +188,108 @@
     }
         
 
-        function setView(v) {
-            currentView = v;
-            document.getElementById('photoGrid').style.display = (v === 'grid') ? 'grid' : 'none';
-            document.getElementById('photoViewer').style.display = (v === 'viewer') ? 'flex' : 'none';
-            document.getElementById('btnGrid').style.color = (v === 'grid') ? 'var(--primary)' : '#666';
-            document.getElementById('btnViewer').style.color = (v === 'viewer') ? 'var(--primary)' : '#666';
-            if(v === 'viewer') showViewer(); else syncGridUI();
-        }
+        let pageFlipInstance = null;
+
+// Mở rộng hàm setView để quản lý thêm chế độ '3d'
+function setView(v) {
+    currentView = v;
+    document.getElementById('photoGrid').style.display = (v === 'grid') ? 'grid' : 'none';
+    document.getElementById('photoViewer').style.display = (v === 'viewer') ? 'flex' : 'none';
+    const view3D = document.getElementById('photo3DView');
+    if(view3D) view3D.style.display = (v === '3d') ? 'flex' : 'none';
+
+    document.getElementById('btnGrid').style.color = (v === 'grid') ? 'var(--primary)' : '#666';
+    document.getElementById('btnViewer').style.color = (v === 'viewer') ? 'var(--primary)' : '#666';
+    const btn3D = document.getElementById('btn3D');
+    if(btn3D) btn3D.style.color = (v === '3d') ? 'var(--primary)' : '#666';
+
+    if(v === 'viewer') showViewer(); 
+    else if(v === '3d') initPhotobook3D();
+    else syncGridUI();
+}
+
+function initPhotobook3D() {
+    const bookContainer = document.getElementById('dynamic-book');
+    bookContainer.innerHTML = '';
+
+    // Lọc danh sách ảnh: Ưu tiên ảnh khách đã chọn, nếu chưa chọn thì lấy toàn bộ ảnh trong album
+    let sourcePhotos = photos.filter(p => selectedIds.includes(p.id));
+    if (sourcePhotos.length === 0) {
+        sourcePhotos = photos; // Lấy toàn bộ nếu khách chưa chọn ảnh nào
+    }
+
+    // Tạo trang bìa đầu tiên
+    let pagesHTML = `
+        <div class="page" style="background: #111; color: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; border-right: 1px solid #333;">
+            <div style="border: 2px solid var(--primary); padding: 20px; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 10px;">
+                <span style="color: var(--primary); font-size: 0.65rem; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;">PHOTOBOOK PREVIEW</span>
+                <h3 style="font-size: 1.1rem; font-weight: 900; margin: 10px 0;">${document.getElementById('albumTitle').innerText}</h3>
+                <p style="font-size: 0.55rem; color: #aaa;">Xem trước album cá nhân hóa của bạn</p>
+            </div>
+        </div>
+    `;
+
+    // Tự động ghép ảnh vào các trang sách (Mỗi trang 1 ảnh hoặc tự động dàn trải)
+    sourcePhotos.forEach((p, idx) => {
+        pagesHTML += `
+            <div class="page" style="background: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; border-right: 1px solid #ddd;">
+                <div style="width: 100%; height: 85%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #000; border-radius: 8px;">
+                    <img src="${getLink(p.id, 's800')}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                </div>
+                <div style="margin-top: 8px; color: #333; font-weight: 700; font-size: 0.65rem;">
+                    Trang ${idx + 1} / ${sourcePhotos.length}
+                </div>
+            </div>
+        `;
+    });
+
+    // Tạo trang bìa sau
+    pagesHTML += `
+        <div class="page" style="background: #111; color: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center;">
+            <h4 style="color: var(--primary); font-size: 0.9rem; font-weight: 900;">CHONANHNHANH.VN</h4>
+            <p style="font-size: 0.55rem; color: #777; margin-top: 5px;">Cảm ơn quý khách đã sử dụng dịch vụ!</p>
+        </div>
+    `;
+
+    bookContainer.innerHTML = pagesHTML;
+
+    // Khởi tạo thư viện lật trang StPageFlip
+    if (pageFlipInstance) {
+        pageFlipInstance.destroy();
+    }
+
+    try {
+        pageFlipInstance = new St.PageFlip(bookContainer, {
+            width: 350,
+            height: 480,
+            size: "stretch",
+            minWidth: 250,
+            maxWidth: 500,
+            minHeight: 350,
+            maxHeight: 600,
+            maxShadowOpacity: 0.5,
+            showCover: true,
+            mobileScrollSupport: false
+        });
+
+        pageFlipInstance.loadFromHTML(bookContainer.querySelectorAll('.page'));
+        
+        pageFlipInstance.on('flip', (e) => {
+            const ind = document.getElementById('pageIndicator3D');
+            if(ind) ind.innerText = `Trang ${e.data + 1} / ${pageFlipInstance.getPageCount()}`;
+        });
+    } catch(err) {
+        console.log("Lỗi khởi tạo 3D flipbook: ", err);
+    }
+}
+
+function nextPage3D() {
+    if (pageFlipInstance) pageFlipInstance.flipNext();
+}
+
+function prevPage3D() {
+    if (pageFlipInstance) pageFlipInstance.flipPrev();
+}
 
         
        function syncGridUI() {
