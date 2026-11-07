@@ -702,35 +702,7 @@ function closeZipLoading() {
                     window.location.href = 'copy_local';
                 }
             }
-        function openSettingsModal(folderId, limitVal, downloadVal, commentVal, watermarkEnabledVal, watermarkLogoVal) {
-            document.getElementById('editFolderId').value = folderId;
-            document.getElementById('editLimitPhotos').value = (limitVal && limitVal > 0) ? limitVal : '';
-            
-            document.getElementById('editAllowDownload').checked = (downloadVal === true || downloadVal === 'true' || downloadVal === 1);
-            document.getElementById('editAllowComment').checked = (commentVal === true || commentVal === 'true' || commentVal === 1);
-            const isWatermarkOn = watermarkEnabledVal === true || 
-                                  String(watermarkEnabledVal).toLowerCase() === 'true' || 
-                                  watermarkEnabledVal === 1 || 
-                                  watermarkEnabledVal === '1';
-                                  
-            document.getElementById('editWatermarkEnabled').checked = isWatermarkOn;
-            editStoredLogoBase64 = watermarkLogoVal || '';
-            const preview = document.getElementById('editLogoPreview');
-            if (editStoredLogoBase64 && editStoredLogoBase64 !== 'null' && editStoredLogoBase64 !== 'undefined') {
-                preview.src = editStoredLogoBase64;
-                const el = document.getElementById('elementId');
-                if (el) {
-                        el.style.display = 'block';
-                    }
-            } else {
-                editStoredLogoBase64 = '';
-                preview.src = '';
-                preview.style.display = 'none';
-            }
-            toggleEditWatermarkInput();
-        
-            new bootstrap.Modal(document.getElementById('settingsModal')).show();
-        }
+       folderId, limitVal, downloadVal, commentVal, watermarkEnabledVal, watermarkLogoVal
        async function saveAlbumSettings() {
             const folderId = document.getElementById('editFolderId').value;
             const limitPhotos = parseInt(document.getElementById('editLimitPhotos').value) || 0;
@@ -749,8 +721,6 @@ function closeZipLoading() {
                 const result = await res.json();
                 if(result.success) {
                     showToast("Cập nhật thành công!");
-                    
-                    // Cập nhật trực tiếp vào mảng dữ liệu RAM và Cache ngay lập tức
                     const targetAlbum = allAlbums.find(a => String(a.folder_id || a.folderId || a.id) === String(folderId));
                     if (targetAlbum) {
                         targetAlbum.limit_photos = limitPhotos;
@@ -767,8 +737,6 @@ function closeZipLoading() {
                         }
                     }
                     sessionStorage.setItem('cache_albums', JSON.stringify(allAlbums));
-                    
-                    // Đóng modal cấu hình
                     bootstrap.Modal.getInstance(document.getElementById('settingsModal')).hide();
                 } else {
                     alert("Lưu thất bại!");
