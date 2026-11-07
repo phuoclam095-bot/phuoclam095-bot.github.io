@@ -422,14 +422,23 @@
 
     const PATH_ZIP_DOWNLOAD = 'https://wsm.congtubaclieu.com.vn/webhook/download-selected-zip';
 
-    async function downloadSelectedZip(folderId, albumName) {
-    // 1. Hiển thị bảng loading vòng xoay
+   async function downloadSelectedZip(folderId, albumName, buttonElement) {
+    const btn = event ? event.currentTarget : null;
+    
+    const oldBtnContent = btn ? btn.innerHTML : '';
+    
+    // Khóa nút lại và đổi thành hiệu ứng đang chạy
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Đang nén ZIP...`;
+    }
+
     const loadingModal = document.getElementById('zipLoadingModal');
     const statusText = document.getElementById('zipStatusText');
     if (loadingModal) loadingModal.style.display = 'flex';
     
     if (statusText) {
-        statusText.innerHTML = `Đang đóng gói album <b>"${albumName}"</b>.<br>Tốc độ nhanh hay chậm phụ thuộc vào đường truyền mạng của bạn...`;
+        statusText.innerHTML = `Đang đóng gói album <b>"${albumName}"</b>.<br>Tốc độ nhanh hay chậm phụ thuộc vào đường truyền mạng và dung lượng ảnh...`;
     }
 
     try {
@@ -446,7 +455,6 @@
             throw new Error("File ZIP trả về trống hoặc không có dữ liệu!");
         }
         
-        // 2. Kích hoạt tải file xuống
         const downloadUrl = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = downloadUrl;
@@ -454,18 +462,21 @@
         document.body.appendChild(a);
         a.click();
         
-        // Dọn dẹp bộ nhớ
         a.remove();
         window.URL.revokeObjectURL(downloadUrl);
         
-        showToast("Tải file ZIP thành công!", { bg: 'success' });
+        showToast("Tải file ZIP thành công!");
         
     } catch (error) {
         console.error("Lỗi tải ZIP:", error);
         alert(`Không thể tải file ZIP: ${error.message}`);
     } finally {
-        // 3. Tắt bảng loading khi hoàn tất
+        // 4. Tắt bảng loading và PHỤC HỒI LẠI NÚT BẤM
         if (loadingModal) loadingModal.style.display = 'none';
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = oldBtnContent;
+        }
     }
 }
 
