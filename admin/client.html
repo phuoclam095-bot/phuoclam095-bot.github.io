@@ -231,12 +231,10 @@
             if (!id) return '';
             const cleanId = String(id).trim();
             
-            // Thay đổi tham số thumbnail nhỏ từ h150 sang w200 để Google Drive trả ảnh ổn định hơn, tránh lỗi [?]
             if (sz === 's100') return `https://drive.google.com/thumbnail?id=${cleanId}&sz=w200`;
             if (sz === 's400') return `https://drive.google.com/thumbnail?id=${cleanId}&sz=w400`;
-            return `https://drive.google.com/thumbnail?id=${cleanId}&sz=w1200`; // Nâng cấp ảnh to lên sz=w1200 để hiển thị sắc nét hơn trên màn hình độ phân giải cao
+            return `https://drive.google.com/thumbnail?id=${cleanId}&sz=w800`;
         }
-
 let pageFlipInstance = null;
 let selectedCoverId = localStorage.getItem('anh_bia_cua_khach_' + fid) || null;
 
@@ -337,7 +335,7 @@ function initPhotobook3D() {
         coverPhoto = sourcePhotos[0]; 
     }
 
-    // 1. TRANG BÌA ĐẦU TIÊN (Kích thước cân đối, tinh tế)
+    // 1. TRANG BÌA ĐẦU TIÊN
     let pagesHTML = `
         <div class="page" style="background: #111; color: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; text-align: center; border-right: 1px solid #333;">
             <div style="border: 1.5px solid var(--primary); padding: 8px; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; align-items: center; border-radius: 6px; background: #000;">
@@ -367,34 +365,36 @@ function initPhotobook3D() {
     // Hủy instance cũ nếu có
     if (pageFlipInstance) {
         try { pageFlipInstance.destroy(); } catch(e) {}
+        pageFlipInstance = null;
     }
 
-    try {
-        // Cố định kích thước chuẩn pixel để thư viện StPageFlip render chính xác, không bị lỗi đen
-        pageFlipInstance = new St.PageFlip(bookContainer, {
-            width: 320,
-            height: 440,
-            size: "fixed",
-            minWidth: 280,
-            maxWidth: 400,
-            minHeight: 380,
-            maxHeight: 550,
-            maxShadowOpacity: 0.4,
-            showCover: true,
-            mobileScrollSupport: false
-        });
+    // Đợi khung hình 3D thực sự render ổn định trên Mobile rồi mới khởi tạo thư viện lật trang
+    setTimeout(() => {
+        try {
+            pageFlipInstance = new St.PageFlip(bookContainer, {
+                width: 320,
+                height: 440,
+                size: "fixed",
+                minWidth: 280,
+                maxWidth: 400,
+                minHeight: 380,
+                maxHeight: 550,
+                maxShadowOpacity: 0.4,
+                showCover: true,
+                mobileScrollSupport: false
+            });
 
-        pageFlipInstance.loadFromHTML(bookContainer.querySelectorAll('.page'));
-        
-        pageFlipInstance.on('flip', (e) => {
-            const ind = document.getElementById('pageIndicator3D');
-            if(ind) ind.innerText = `Trang ${e.data + 1} / ${pageFlipInstance.getPageCount()}`;
-        });
-    } catch(err) {
-        console.log("Lỗi khởi tạo 3D flipbook: ", err);
-    }
+            pageFlipInstance.loadFromHTML(bookContainer.querySelectorAll('.page'));
+            
+            pageFlipInstance.on('flip', (e) => {
+                const ind = document.getElementById('pageIndicator3D');
+                if(ind) ind.innerText = `Trang ${e.data + 1} / ${pageFlipInstance.getPageCount()}`;
+            });
+        } catch(err) {
+            console.log("Lỗi khởi tạo 3D flipbook: ", err);
+        }
+    }, 100);
 }
-
 function nextPage3D() {
     if (pageFlipInstance) pageFlipInstance.flipNext();
 }
