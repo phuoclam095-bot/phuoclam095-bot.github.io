@@ -48,14 +48,13 @@
         }
         
         .stage-inner { 
-            position: relative !important; 
-            display: flex !important; 
+            position: relative; 
+            display: flex; 
             align-items: center; 
             justify-content: center; 
-            max-width: 100%;
-            max-height: 100%;
-            width: 100%;
-            height: 100%;
+            width: 100%; 
+            height: 100%; 
+            min-height: 0; 
         }
         
         #mainImg {
@@ -134,72 +133,6 @@
             user-select: none;
             -webkit-user-select: none;
         }
-
-        .heart-btn {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            width: 36px;
-            height: 36px;
-            background: rgba(0, 0, 0, 0.6);
-            border: 1.5px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 16px;
-            cursor: pointer;
-            z-index: 30;
-            transition: 0.2s;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .heart-btn.selected {
-            background: var(--primary);
-            color: #000;
-            border-color: var(--primary);
-            transform: scale(1.1);
-        }
-       .stage-inner { 
-    position: relative; /* Cực kỳ quan trọng để nút con absolute căn theo khung ảnh */
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    width: 100%; 
-    height: 100%; 
-    min-height: 0; 
-}
-
-#viewerHeartBtn {
-    position: absolute !important;
-    top: 20px !important;
-    right: 20px !important;
-    width: 44px;
-    height: 44px;
-    background: rgba(0, 0, 0, 0.7);
-    border: 2px solid rgba(255, 255, 255, 0.4);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-size: 20px;
-    cursor: pointer;
-    z-index: 5000;
-    transition: 0.2s;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-    -webkit-tap-highlight-color: transparent;
-}
-
-#viewerHeartBtn.selected {
-    background: var(--primary) !important;
-    color: #000 !important;
-    border-color: var(--primary) !important;
-    transform: scale(1.1);
-}
-        .bottom-bar .d-flex {
-    gap: 6px !important; 
-}
     </style>
 </head>
 <body>
@@ -229,10 +162,8 @@
         <div id="photoViewer">
             <div class="stage">
                 <div id="photoInfoBadge">0/0</div>
-                
                 <div class="stage-inner">
                     <img id="mainImg" src="">
-                    <div id="viewerHeartBtn" onclick="togSel()"><i class="fas fa-heart"></i></div>
                     <div id="clientWatermarkContainer"></div>
                 </div>
             </div>
@@ -250,11 +181,12 @@
             <button class="btn-action btn-sq bg-danger-vip" onclick="clearAll()"><i class="fas fa-undo-alt"></i></button>
             <button class="btn-action btn-sq bg-gray" id="btnFilter" onclick="toggleFilter()"><i class="fas fa-eye"></i></button>
         
-            <button class="btn-action btn-sq bg-gray" id="btnDownload" onclick="downloadPhoto()" style="display: flex;" title="Tải ảnh gốc"><i class="fas fa-download"></i></button>
-            <button class="btn-action btn-sq bg-gray" id="btnComment" onclick="commentPhoto()" style="display: flex;" title="Thêm ghi chú"><i class="fas fa-comment-dots"></i></button>
+            <button class="btn-action btn-sq bg-gray" id="btnDownload" onclick="downloadPhoto()" style="display:none;"><i class="fas fa-download"></i></button>
+            <button class="btn-action btn-sq bg-gray" id="btnComment" onclick="commentPhoto()" style="display:none;"><i class="fas fa-comment-dots"></i></button>
         </div>
         <div class="d-flex gap-2">
-            <button class="btn-action btn-text bg-gradient-vip" onclick="finalCommit()">Chốt Chọn (<span id="totalPhotos">0</span>)</button>
+            <button class="btn-action btn-text bg-gray" id="btnSel" onclick="togSel()">CHỌN</button>
+            <button class="btn-action btn-text bg-gradient-vip" onclick="finalCommit()">LƯU (<span id="totalPhotos">0</span>)</button>
         </div>
     </div>
 
@@ -305,44 +237,38 @@
         }
         
        function syncGridUI() {
-        if(currentView !== 'grid') return;
-        const pCurrent = photos[cur];
-        if(pCurrent) document.getElementById('displayFileName').innerText = pCurrent.name || "UNNAMED";
-        
-        photos.forEach((p, i) => {
-            const el = document.getElementById(`item-${i}`); if(!el) return;
-            const isSel = selectedIds.includes(p.id);
-            const hasNote = p.note && p.note.trim() !== '';
-            
-            el.classList.toggle('focused', i === cur);
-            el.classList.toggle('selected', isSel);
-            const heartIcon = el.querySelector('.heart-btn');
-            if(heartIcon) {
-                heartIcon.classList.toggle('selected', isSel);
-            }
-    
-            let noteIcon = el.querySelector('.note-badge');
-            if(hasNote) {
-                if(!noteIcon) el.insertAdjacentHTML('beforeend', `<div class="note-badge" title="Xem ghi chú" onclick="event.stopPropagation(); openViewNoteModal('${p.id}');"><i class="fas fa-comment-alt"></i></div>`);
-            } else if(noteIcon) {
-                noteIcon.remove();
-            }
-            el.style.display = (isFiltering && !isSel) ? 'none' : 'block';
-        });
-        updateInfo();
-    }
+            if(currentView !== 'grid') return;
+            const pCurrent = photos[cur];
+            if(pCurrent) document.getElementById('displayFileName').innerText = pCurrent.name || "UNNAMED";
+            const notesMap = JSON.parse(localStorage.getItem('ghi_chu_anh_' + fid) || '{}');
+            photos.forEach((p, i) => {
+                const el = document.getElementById(`item-${i}`); if(!el) return;
+                const isSel = selectedIds.includes(p.id);
+                const hasNote = p.note && p.note.trim() !== '';
+                el.classList.toggle('focused', i === cur);
+                el.classList.toggle('selected', isSel);
+                let dot = el.querySelector('.vip-dot');
+                if(isSel) {
+                    const num = selectedIds.indexOf(p.id) + 1;
+                    if(!dot) el.insertAdjacentHTML('beforeend', `<div class="vip-dot">${num}</div>`);
+                    else dot.innerText = num;
+                } else if(dot) dot.remove();
+                let noteIcon = el.querySelector('.note-badge');
+                if(hasNote) {
+                    if(!noteIcon) el.insertAdjacentHTML('beforeend', `<div class="note-badge" title="Xem ghi chú" onclick="event.stopPropagation(); openViewNoteModal('${p.id}');"><i class="fas fa-comment-alt"></i></div>`);
+                } else if(noteIcon) {
+                    noteIcon.remove();
+                }
+                el.style.display = (isFiltering && !isSel) ? 'none' : 'block';
+            });
+            updateInfo();
+        }
       function showViewer() {
         const p = photos[cur]; 
         if(!p) return;
         
         document.getElementById('displayFileName').innerText = p.name || "UNNAMED";
         document.getElementById('photoInfoBadge').innerText = `${cur + 1} / ${photos.length}`;
-    
-        const isSel = selectedIds.includes(p.id);
-        const viewerHeart = document.getElementById('viewerHeartBtn');
-        if(viewerHeart) {
-            viewerHeart.classList.toggle('selected', isSel);
-        }
     
         const watermarkContainer = document.getElementById('clientWatermarkContainer');
         if (watermarkContainer) {
@@ -352,18 +278,23 @@
         const mainImg = document.getElementById('mainImg');
         if(mainImg) {
             const targetUrl = getLink(p.id, 's800');
+
             if (imageCache[targetUrl]) {
                 mainImg.src = targetUrl;
             } else {
                 mainImg.src = targetUrl;
                 const preloader = new Image();
                 preloader.src = targetUrl;
-                preloader.onload = () => { imageCache[targetUrl] = true; };
+                preloader.onload = () => {
+                    imageCache[targetUrl] = true;
+                };
             }
+            
             mainImg.onerror = function() {
                 this.src = `https://lh3.googleusercontent.com/d/${p.id}=s400`;
             };
         }
+
         [cur + 1, cur + 2, cur - 1].forEach(index => {
             if (photos[index]) {
                 const nextUrl = getLink(photos[index].id, 's800');
@@ -378,12 +309,12 @@
         const strip = document.getElementById('strip'); 
         strip.innerHTML = '';    
         photos.forEach((photoItem, i) => {
-            const isSelThumb = selectedIds.includes(photoItem.id);
+            const isSel = selectedIds.includes(photoItem.id);
             const hasNote = photoItem.note && photoItem.note.trim() !== '';
-            if(isFiltering && !isSelThumb) return;
+            if(isFiltering && !isSel) return;
             
             const th = document.createElement('div');
-            th.className = `th-vip ${i === cur ? 'act' : ''} ${isSelThumb ? 'sel' : ''}`;
+            th.className = `th-vip ${i === cur ? 'act' : ''} ${isSel ? 'sel' : ''}`;
             
             const thumbImg = document.createElement('img');
             thumbImg.src = getLink(photoItem.id, 's100');
@@ -391,8 +322,10 @@
                 this.src = `https://lh3.googleusercontent.com/d/${photoItem.id}=w400`;
             };
             th.appendChild(thumbImg);
-            if(isSelThumb) {
-                th.insertAdjacentHTML('beforeend', `<div class="vip-dot" style="width:16px; height:16px; font-size:8px; top:2px; right:2px; background:var(--primary); color:#000;"><i class="fas fa-heart" style="font-size:7px;"></i></div>`);
+    
+            if(isSel) {
+                const num = selectedIds.indexOf(photoItem.id) + 1;
+                th.insertAdjacentHTML('beforeend', `<div class="vip-dot" style="width:14px; height:14px; font-size:7px; top:2px; right:2px;">${num}</div>`);
             }
             
             if(hasNote) {
@@ -417,13 +350,9 @@
                 item.className = 'grid-item'; 
                 item.id = `item-${i}`;
                 
-                const isSel = selectedIds.includes(p.id);
-                
                 item.innerHTML = `
                     <img src="${getLink(p.id, 's400')}" loading="lazy">
-                    <div class="heart-btn ${isSel ? 'selected' : ''}" onclick="event.stopPropagation(); quickToggleSel('${p.id}')">
-                        <i class="fas fa-heart"></i>
-                    </div>
+                   
                 `;
                 
                 item.onclick = () => { cur = i; syncGridUI(); };
@@ -431,26 +360,6 @@
                 grid.appendChild(item);
             });
             syncGridUI();
-        }
-        
-        function quickToggleSel(photoId) {
-            const p = photos.find(x => x.id === photoId);
-            if (!p) return;
-            const idx = selectedIds.indexOf(photoId);
-            
-            if (idx === -1) {
-                if (albumSettings.limitPhotos > 0 && selectedIds.length >= albumSettings.limitPhotos) {
-                    return alert(`Dạ, album này được giới hạn chọn tối đa ${albumSettings.limitPhotos} ảnh ạ!`);
-                }
-                selectedIds.push(photoId);
-            } else {
-                selectedIds.splice(idx, 1);
-            }
-            
-            localStorage.setItem('anh_da_chon_cua_khach_' + fid, JSON.stringify(selectedIds));
-            syncGridUI();
-            if(currentView === 'viewer') showViewer();
-            fetch(PATHS.SAVE, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id: photoId, selected: idx === -1}) });
         }
         async function saveCurrentComment() {
             const p = photos[cur];
@@ -491,12 +400,11 @@
         }
        function togSel() {
             const p = photos[cur];
-            if (!p) return;
             const idx = selectedIds.indexOf(p.id);
             
             if (idx === -1) {
                 if (albumSettings.limitPhotos > 0 && selectedIds.length >= albumSettings.limitPhotos) {
-                    return alert(`Dạ, album này được giới hạn chọn tối đa ${albumSettings.limitPhotos} ảnh ạ!`);
+                    return alert (`Dạ, album này được giới hạn chọn tối đa ${albumSettings.limitPhotos} ảnh ạ!`);
                 }
                 selectedIds.push(p.id);
             } else {
@@ -504,11 +412,9 @@
             }
             
             localStorage.setItem('anh_da_chon_cua_khach_' + fid, JSON.stringify(selectedIds));
-            showViewer();
-            fetch(PATHS.SAVE, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id: p.id, selected: idx === -1}) });
+            currentView === 'grid' ? syncGridUI() : showViewer();
+            fetch(PATHS.SAVE, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected: idx === -1}) });
         }
-        
-        
         function openViewNoteModal(photoId) {
             const p = photos.find(x => x.id === photoId);
             if (!p) return;
@@ -530,11 +436,14 @@
         function clearAll() { if(confirm("Xóa toàn bộ ảnh đã chọn?")) { selectedIds = []; localStorage.setItem('anh_da_chon_cua_khach_' + fid, "[]"); isFiltering = false; syncGridUI(); } }
 
         function updateInfo() {
-            const totalEl = document.getElementById('totalPhotos');
-            if (totalEl) {
-                totalEl.innerText = selectedIds.length;
-            }
+            const p = photos[cur]; if(!p) return;
+            const isSel = selectedIds.includes(p.id);
+            document.getElementById('totalPhotos').innerText = selectedIds.length;
+            const btn = document.getElementById('btnSel');
+            btn.className = isSel ? 'btn-action btn-text bg-primary' : 'btn-action btn-text bg-gray';
+            btn.innerText = isSel ? 'ĐÃ CHỌN' : 'CHỌN';
         }
+
         async function finalCommit(){
             if(selectedIds.length === 0) return alert("Dạ khách chưa chọn ảnh nào ạ!");
             if(confirm(`Gửi ${selectedIds.length} ảnh đã chọn?`)) {
@@ -593,87 +502,76 @@
         }
 
     async function init() {
-    const errorBox = document.getElementById('errorNotificationBox');
-    const errorText = document.getElementById('errorMessageText');
-    const loadOverlay = document.getElementById('loadOverlay');
+        const errorBox = document.getElementById('errorNotificationBox');
+        const errorText = document.getElementById('errorMessageText');
+        const loadOverlay = document.getElementById('loadOverlay');
 
-    try {
-        const urlParams = new URLSearchParams(window.location.search);
-        const albumSlug = urlParams.get('album');
-        const studioSlug = urlParams.get('studio');
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            const albumSlug = urlParams.get('album');
+            const studioSlug = urlParams.get('studio');
 
-        if (!albumSlug) {
-            throw new Error("Không tìm thấy đường dẫn định danh album trên trình duyệt.");
-        }
+            if (!albumSlug) {
+                throw new Error("Không tìm thấy đường dẫn định danh album trên trình duyệt.");
+            }
 
-        const res = await fetch(`${PATHS.GET}?studio=${studioSlug}&album=${albumSlug}`);
-        if (!res.ok) {
-            throw new Error(`Máy chủ phản hồi lỗi (Mã trạng thái: ${res.status}). Album có thể không tồn tại.`);
-        }
+            const res = await fetch(`${PATHS.GET}?studio=${studioSlug}&album=${albumSlug}`);
+            if (!res.ok) {
+                throw new Error(`Máy chủ phản hồi lỗi (Mã trạng thái: ${res.status}). Album có thể không tồn tại.`);
+            }
 
-        const rawData = await res.json();
-        const data = Array.isArray(rawData) ? rawData[0] : rawData;
-        
-        if (!data) {
-            throw new Error("Dữ liệu trả về từ máy chủ trống.");
-        }
+            const rawData = await res.json();
+            const data = Array.isArray(rawData) ? rawData[0] : rawData;
+            
+            if (!data) {
+                throw new Error("Dữ liệu trả về từ máy chủ trống.");
+            }
 
-        photos = data.photos || [];
-        albumSettings = data.settings || albumSettings;
-        
-        window.fid = data.folder_id || albumSlug; 
-        fid = window.fid;
-        if (photos.length === 0) {
-            throw new Error("Album này hiện tại chưa có bức ảnh nào hoặc đang trong quá trình đồng bộ.");
-        }
+            photos = data.photos || [];
+            albumSettings = data.settings || albumSettings;
+            
+            window.fid = data.folder_id || albumSlug; 
+            fid = window.fid;
+            if (photos.length === 0) {
+                throw new Error("Album này hiện tại chưa có bức ảnh nào hoặc đang trong quá trình đồng bộ.");
+            }
 
-        const clientLogo = albumSettings.watermark_logo || '';
-        const isWatermarkOn = albumSettings.watermark_enabled !== false;
-        
-        watermarkHTML = (isWatermarkOn && clientLogo) ? `<div class="watermark-overlay"><img src="${clientLogo}" alt="Logo"></div>` : '';
-        
-        // 🌟 XỬ LÝ CHUẨN XÁC THEO SERVER (Ép kiểu boolean để xử lý cả dạng chuỗi "true"/"false" từ API)
-        const allowDownload = (albumSettings.download === true || albumSettings.download === 'true' || albumSettings.download === 1);
-        const allowComment = (albumSettings.comment === true || albumSettings.comment === 'true' || albumSettings.comment === 1);
+            const clientLogo = albumSettings.watermark_logo || '';
+            const isWatermarkOn = albumSettings.watermark_enabled !== false;
+            
+            watermarkHTML = (isWatermarkOn && clientLogo) ? `<div class="watermark-overlay"><img src="${clientLogo}" alt="Logo"></div>` : '';
+            
+            if (albumSettings.download) document.getElementById('btnDownload').style.display = 'flex';
+            if (albumSettings.comment) document.getElementById('btnComment').style.display = 'flex';
 
-        const btnDownloadEl = document.getElementById('btnDownload');
-        const btnCommentEl = document.getElementById('btnComment');
+            let folderName = photos[0].folderName || "VIP ALBUM";
+            let studioFullName = data.studioName || data.name || data.studio_name || data.studio_slug || "";
+            if ((!studioFullName || studioFullName.toLowerCase() === 'studio') && studioSlug && studioSlug.toLowerCase() !== 'studio') {
+                studioFullName = studioSlug;
+            }
+            if (studioFullName && studioFullName.toLowerCase() !== 'studio') {
+                document.title = `${studioFullName.toUpperCase()} - ${folderName}`;
+                document.getElementById('albumTitle').innerText = `${studioFullName.toUpperCase()} - ${folderName}`;
+            } else {
+                document.title = folderName;
+                document.getElementById('albumTitle').innerText = folderName;
+            }
 
-        if (btnDownloadEl) {
-            btnDownloadEl.style.setProperty('display', allowDownload ? 'flex' : 'none', 'important');
-        }
-        if (btnCommentEl) {
-            btnCommentEl.style.setProperty('display', allowComment ? 'flex' : 'none', 'important');
-        }
-
-        let folderName = photos[0].folderName || "VIP ALBUM";
-        let studioFullName = data.studioName || data.name || data.studio_name || data.studio_slug || "";
-        if ((!studioFullName || studioFullName.toLowerCase() === 'studio') && studioSlug && studioSlug.toLowerCase() !== 'studio') {
-            studioFullName = studioSlug;
-        }
-        if (studioFullName && studioFullName.toLowerCase() !== 'studio') {
-            document.title = `${studioFullName.toUpperCase()} - ${folderName}`;
-            document.getElementById('albumTitle').innerText = `${studioFullName.toUpperCase()} - ${folderName}`;
-        } else {
-            document.title = folderName;
-            document.getElementById('albumTitle').innerText = folderName;
-        }
-
-        const local = localStorage.getItem('anh_da_chon_cua_khach_' + (window.fid || albumSlug));
-        if (local) selectedIds = JSON.parse(local);
-        
-        loadOverlay.style.display = 'none';
-        initGrid(); 
-        
-    } catch(e) { 
-        console.error(e);
-        loadOverlay.style.display = 'none';
-        if (errorText) errorText.innerText = e.message || "Không tìm thấy album hoặc tên đường dẫn không tồn tại.";
-        if (errorBox) {
-            errorBox.style.setProperty('display', 'flex', 'important');
+            const local = localStorage.getItem('anh_da_chon_cua_khach_' + (window.fid || albumSlug));
+            if (local) selectedIds = JSON.parse(local);
+            
+            loadOverlay.style.display = 'none';
+            initGrid(); 
+            
+        } catch(e) { 
+            console.error(e);
+            loadOverlay.style.display = 'none';
+            if (errorText) errorText.innerText = e.message || "Không tìm thấy album hoặc tên đường dẫn không tồn tại.";
+            if (errorBox) {
+                errorBox.style.setProperty('display', 'flex', 'important');
+            }
         }
     }
-}
         init();
     </script>
     <div class="modal fade" id="viewNoteModal" tabindex="-1">
