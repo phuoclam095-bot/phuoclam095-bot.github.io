@@ -488,12 +488,7 @@
             fetch(PATHS.SAVE, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id: p.id, selected: idx === -1}) });
         }
         
-        function updateInfo() {
-            const totalEl = document.getElementById('totalPhotos');
-            if (totalEl) {
-                totalEl.innerText = selectedIds.length;
-            }
-        }
+        
         function openViewNoteModal(photoId) {
             const p = photos.find(x => x.id === photoId);
             if (!p) return;
@@ -515,14 +510,11 @@
         function clearAll() { if(confirm("Xóa toàn bộ ảnh đã chọn?")) { selectedIds = []; localStorage.setItem('anh_da_chon_cua_khach_' + fid, "[]"); isFiltering = false; syncGridUI(); } }
 
         function updateInfo() {
-            const p = photos[cur]; if(!p) return;
-            const isSel = selectedIds.includes(p.id);
-            document.getElementById('totalPhotos').innerText = selectedIds.length;
-            const btn = document.getElementById('btnSel');
-            btn.className = isSel ? 'btn-action btn-text bg-primary' : 'btn-action btn-text bg-gray';
-            btn.innerText = isSel ? 'ĐÃ CHỌN' : 'CHỌN';
+            const totalEl = document.getElementById('totalPhotos');
+            if (totalEl) {
+                totalEl.innerText = selectedIds.length;
+            }
         }
-
         async function finalCommit(){
             if(selectedIds.length === 0) return alert("Dạ khách chưa chọn ảnh nào ạ!");
             if(confirm(`Gửi ${selectedIds.length} ảnh đã chọn?`)) {
