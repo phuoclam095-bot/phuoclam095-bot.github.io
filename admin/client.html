@@ -232,12 +232,14 @@
             console.log("Đang xem album thuộc Studio: " + studioSlug);
         }
 
-        function getLink(id, sz) { 
-    
-        if (sz === 's100') return `https://drive.google.com/thumbnail?id=${id}&sz=h150`;
-        if (sz === 's400') return `https://drive.google.com/thumbnail?id=${id}&sz=w400`;
-        return `https://drive.google.com/thumbnail?id=${id}&sz=w1000`; 
-    }
+        function getLink(id, sz) {
+            if (!id) return '';
+            const cleanId = String(id).trim();
+            if (sz === 's100') return `https://drive.google.com/thumbnail?id=${cleanId}&sz=h150`;
+            if (sz === 's400') return `https://drive.google.com/thumbnail?id=${cleanId}&sz=w400`;
+            // Đối với ảnh lớn, ưu tiên dùng w800 thay vì w1000 để giảm tải cho mobile và tránh lỗi Drive thumbnail
+            return `https://drive.google.com/thumbnail?id=${cleanId}&sz=w800`;
+        }
 
 let pageFlipInstance = null;
 let selectedCoverId = localStorage.getItem('anh_bia_cua_khach_' + fid) || null;
@@ -247,11 +249,13 @@ function setView(v) {
     const gridEl = document.getElementById('photoGrid');
     const viewerEl = document.getElementById('photoViewer');
     const view3D = document.getElementById('photo3DView');
+
+    // Bật/tắt hiển thị các khung giao diện tương ứng
     gridEl.style.display = (v === 'grid') ? 'grid' : 'none';
     viewerEl.style.display = (v === 'viewer') ? 'flex' : 'none';
     if(view3D) view3D.style.display = (v === '3d') ? 'flex' : 'none';
 
-    // Đổi màu chữ trên navbar
+    // Đổi màu chữ trên thanh menu (navbar)
     document.getElementById('btnGrid').style.color = (v === 'grid') ? 'var(--primary)' : '#666';
     document.getElementById('btnViewer').style.color = (v === 'viewer') ? 'var(--primary)' : '#666';
     const btn3D = document.getElementById('btn3D');
@@ -260,6 +264,7 @@ function setView(v) {
     if(v === 'viewer') {
         showViewer();
     } else if(v === '3d') {
+        // 🔥 GIẢI PHÁP TRIỆT ĐỂ: Hủy bỏ đối tượng lật sách cũ trước khi tạo mới
         if (pageFlipInstance) {
             try {
                 pageFlipInstance.destroy();
@@ -269,7 +274,7 @@ function setView(v) {
             pageFlipInstance = null;
         }
 
-        // Chờ DOM hiển thị khung rồi mới khởi tạo sách 3D
+        // Đợi DOM render hiển thị khung chứa xong (150ms) rồi mới gọi khởi tạo 3D
         setTimeout(() => {
             initPhotobook3D();
         }, 150);
@@ -277,7 +282,6 @@ function setView(v) {
         syncGridUI();
     }
 }
-
 function setAsCoverPhoto() {
     const p = photos[cur];
     if (!p) return;
@@ -430,7 +434,7 @@ function prevPage3D() {
             });
             updateInfo();
         }
-       function showViewer() {
+      function showViewer() {
     const p = photos[cur]; 
     if(!p) return;
     
@@ -443,11 +447,21 @@ function prevPage3D() {
         watermarkContainer.innerHTML = watermarkHTML;
     }
 
-    // Gán source ảnh với độ trễ nhỏ giúp mobile render mượt mà, tránh màn hình đen
+    // Gán source ảnh với cơ chế dự phòng an toàn
     setTimeout(() => {
         const mainImg = document.getElementById('mainImg');
         if(mainImg) {
+            // Xóa sự kiện onerror cũ nếu có
+            mainImg.onerror = null;
+            
+            // Gán link ảnh lớn
             mainImg.src = getLink(p.id, 's800');
+            
+            // Nếu album nào bị lỗi không tải được ảnh lớn (sz=w800), tự động hạ cấp xuống sz=w400 để luôn xem được
+            mainImg.onerror = function() {
+                console.warn("Ảnh lớn lỗi, đang chuyển sang kích thước dự phòng cho ảnh:", p.id);
+                mainImg.src = getLink(p.id, 's400');
+            };
         }
     }, 50);
 
