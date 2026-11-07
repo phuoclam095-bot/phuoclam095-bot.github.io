@@ -623,20 +623,51 @@ function closeZipLoading() {
         }
         function copyFileNames() { const txt = document.getElementById('fileNamesOutput').value; if(!txt) return; navigator.clipboard.writeText(txt.split('\n').join(',')).then(() => { showToast("Đã sao chép danh sách"); }); }
 
-        async function deleteAlbum(id, name) {
-            if (!confirm(`Xóa album: ${name}?`)) return;
-            try {
-                const res = await fetch(PATHS.DELETE, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ folderId: id, adminEmail: adminEmail }) });
-                const data = await res.json();
-                if (data.success) { 
-                    allAlbums = allAlbums.filter(a => (a.folder_id || a.folderId || a.id) !== id);
-                    sessionStorage.setItem('cache_albums', JSON.stringify(allAlbums));
-                    
-                    renderAlbums(allAlbums); 
-                    showToast("Đã xóa album"); 
-                }
-            } catch (e) { showToast("Lỗi"); }
+       async function deleteAlbum(id, name) {
+    if (!confirm(`Bạn có chắc chắn muốn xóa album: "${name}" không?`)) return;
+
+    const cardEl = document.getElementById(`card-${id}`);
+    const deleteBtn = cardEl ? cardEl.querySelector('.v-delete') : null;
+
+    const oldBtnText = deleteBtn ? deleteBtn.innerHTML : '';
+    if (deleteBtn) {
+        deleteBtn.disabled = true;
+        deleteBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Đang xóa...`;
+    }
+
+    showToast(`Đang tiến hành xóa album "${name}"...`);
+
+    try {
+        const res = await fetch(PATHS.DELETE, { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json' }, 
+            body: JSON.stringify({ folderId: id, adminEmail: adminEmail }) 
+        });
+        const data = await res.json();
+        
+        if (data.success) { 
+            allAlbums = allAlbums.filter(a => (a.folder_id || a.folderId || a.id) !== id);
+            sessionStorage.setItem('cache_albums', JSON.stringify(allAlbums));
+            
+            renderAlbums(allAlbums); 
+            showToast("Đã xóa album !"); 
+        } else {
+            alert("Xóa thất bại: " + (data.message || "Lỗi máy chủ"));
+            if (deleteBtn) {
+                deleteBtn.disabled = false;
+                deleteBtn.innerHTML = oldBtnText;
+            }
         }
+    } catch (e) {
+        console.error(e);
+        showToast("Lỗi kết nối khi xóa album!");
+        // Phục hồi lại nút nếu lỗi kết nối
+        if (deleteBtn) {
+            deleteBtn.disabled = false;
+            deleteBtn.innerHTML = oldBtnText;
+        }
+    }
+}
         function updateHeaderUI() {
             const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
             const status = localStorage.getItem('admin_status') || 'new';
