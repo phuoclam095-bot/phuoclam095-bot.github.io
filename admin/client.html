@@ -260,7 +260,6 @@ function setView(v) {
     if(v === 'viewer') {
         showViewer();
     } else if(v === '3d') {
-        // 🔥 GIẢI PHÁP TRIỆT ĐỂ: Hủy bỏ đối tượng lật sách cũ trước khi tạo mới
         if (pageFlipInstance) {
             try {
                 pageFlipInstance.destroy();
@@ -270,7 +269,6 @@ function setView(v) {
             pageFlipInstance = null;
         }
 
-        // Đợi DOM render hiển thị khung chứa xong (150ms) rồi mới gọi khởi tạo 3D
         setTimeout(() => {
             initPhotobook3D();
         }, 150);
@@ -432,7 +430,10 @@ function prevPage3D() {
             });
             updateInfo();
         }
-     function showViewer() {
+     // Biến lưu trữ cache ảnh đã tải để không phải tải lại lần thứ hai
+const imageCache = {};
+
+function showViewer() {
     const p = photos[cur]; 
     if(!p) return;
     
@@ -444,18 +445,39 @@ function prevPage3D() {
         watermarkContainer.innerHTML = watermarkHTML;
     }
 
-    // Tải ảnh to độ nét cao (w1600)
-    setTimeout(() => {
-        const mainImg = document.getElementById('mainImg');
-        if(mainImg) {
-            mainImg.onerror = null;
-            mainImg.src = getLink(p.id, 's800'); // Gọi ảnh lớn sắc nét
-            mainImg.onerror = function() {
-                // Dự phòng nếu lỗi link lớn thì fallback về link gốc Google Drive
-                this.src = `https://drive.google.com/uc?export=view&id=${p.id}`;
+    const mainImg = document.getElementById('mainImg');
+    if(mainImg) {
+        const targetUrl = getLink(p.id, 's800');
+        
+        // Nếu ảnh đã có trong cache, hiển thị ngay lập tức không cần chờ mạng
+        if (imageCache[targetUrl]) {
+            mainImg.src = targetUrl;
+        } else {
+            // Nếu chưa, hiển thị tạm thumbnail cũ hoặc hiện trực tiếp, đồng thời lưu cache
+            mainImg.src = targetUrl;
+            const preloader = new Image();
+            preloader.src = targetUrl;
+            preloader.onload = () => {
+                imageCache[targetUrl] = true;
             };
         }
-    }, 50);
+        
+        mainImg.onerror = function() {
+            this.src = `https://lh3.googleusercontent.com/d/${p.id}=s400`;
+        };
+    }
+
+    // 🚀 TẢI NGẦM TRƯỚC (PRELOAD) 2 ảnh kế tiếp và 2 ảnh phía trước để bấm là ăn ngay lập tức
+    [cur + 1, cur + 2, cur - 1].forEach(index => {
+        if (photos[index]) {
+            const nextUrl = getLink(photos[index].id, 's800');
+            if (!imageCache[nextUrl]) {
+                const imgPre = new Image();
+                imgPre.src = nextUrl;
+                imgPre.onload = () => { imageCache[nextUrl] = true; };
+            }
+        }
+    });
 
     const strip = document.getElementById('strip'); 
     strip.innerHTML = '';    
@@ -467,11 +489,10 @@ function prevPage3D() {
         const th = document.createElement('div');
         th.className = `th-vip ${i === cur ? 'act' : ''} ${isSel ? 'sel' : ''}`;
         
-        // Tạo thẻ img cho thumbnail với cơ chế dự phòng chống lỗi [?] tuyệt đối
         const thumbImg = document.createElement('img');
         thumbImg.src = getLink(photoItem.id, 's100');
         thumbImg.onerror = function() {
-            this.src = `https://drive.google.com/uc?export=view&id=${photoItem.id}`;
+            this.src = `https://lh3.googleusercontent.com/d/${photoItem.id}=w400`;
         };
         th.appendChild(thumbImg);
 
@@ -492,7 +513,6 @@ function prevPage3D() {
     if(activeTh) setTimeout(() => activeTh.scrollIntoView({behavior:'smooth', inline:'center'}), 50);
     updateInfo();
 }
-
         async function saveCurrentComment() {
             const p = photos[cur];
             if (!p) return;
