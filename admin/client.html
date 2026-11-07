@@ -231,12 +231,10 @@
     if (!id) return '';
     const cleanId = String(id).trim();
     
-    // Thumbnail phía dưới dùng sz=w400 hoặc link view trực tiếp để không bao giờ bị lỗi [?]
     if (sz === 's100') return `https://drive.google.com/thumbnail?id=${cleanId}&sz=w400`;
     if (sz === 's400') return `https://drive.google.com/thumbnail?id=${cleanId}&sz=w400`;
-    
-    // Ảnh to ở chế độ chi tiết nâng cấp lên sz=w1600 để cực kỳ sắc nét, không bị mờ
-    return `https://drive.google.com/thumbnail?id=${cleanId}&sz=h1200`;
+    if (sz === 's800') return `https://drive.google.com/thumbnail?id=${cleanId}&sz=w800`;
+    return `https://drive.google.com/uc?export=view&id=${cleanId}`;
 }
 let pageFlipInstance = null;
 let selectedCoverId = localStorage.getItem('anh_bia_cua_khach_' + fid) || null;
