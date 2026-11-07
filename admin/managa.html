@@ -325,20 +325,15 @@
         function showToast(msg) { const t = document.getElementById('toastNotice'); t.innerText = msg; t.style.display = 'block'; setTimeout(() => { t.style.display = 'none'; }, 2200); }
         function filterAlbums() { const kw = document.getElementById('albumSearch').value.toLowerCase(); renderAlbums(allAlbums.filter(a => (a.folderName || a.name || '').toLowerCase().includes(kw))); }
         let displayedCount = 0;
-        const pageSize = 20; //
+        const pageSize = 20; 
         
         function renderAlbums(albums) {
             const grid = document.getElementById('albumGrid');
             if (!grid) return;
             
-            // Nếu là lần đầu hoặc tìm kiếm mới, làm sạch lưới
             grid.innerHTML = '';
             displayedCount = 0;
-            
-            // Lưu lại mảng hiện tại để dùng cho việc cuộn xem tiếp
             window._currentFilteredAlbums = albums;
-            
-            // Tiến hành vẽ nhóm đầu tiên
             appendMoreAlbums();
             
             document.getElementById('albumCount').innerText = albums.length;
@@ -359,8 +354,6 @@
             });
             
             grid.appendChild(fragment);
-            
-            // Đã sửa lỗi .size thành .length của mảng JavaScript
             displayedCount += nextBatch.length; 
         }
         window.addEventListener('scroll', () => {
@@ -424,10 +417,7 @@
 
    async function downloadSelectedZip(folderId, albumName, buttonElement) {
     const btn = event ? event.currentTarget : null;
-    
     const oldBtnContent = btn ? btn.innerHTML : '';
-    
-    // Khóa nút lại và đổi thành hiệu ứng đang chạy
     if (btn) {
         btn.disabled = true;
         btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Đang nén ZIP...`;
@@ -447,8 +437,6 @@
         if (!response.ok) {
             throw new Error(`Lỗi máy chủ: ${response.status}`);
         }
-        
-        // Nhận dữ liệu file dạng blob
         const blob = await response.blob();
         
         if (blob.size < 100) {
@@ -471,7 +459,6 @@
         console.error("Lỗi tải ZIP:", error);
         alert(`Không thể tải file ZIP: ${error.message}`);
     } finally {
-        // 4. Tắt bảng loading và PHỤC HỒI LẠI NÚT BẤM
         if (loadingModal) loadingModal.style.display = 'none';
         if (btn) {
             btn.disabled = false;
@@ -494,7 +481,7 @@ function closeZipLoading() {
     function copyLinkText(elementId) {
         const inputEl = document.getElementById(elementId);
         inputEl.select();
-        inputEl.setSelectionRange(0, 99999); // Hỗ trợ thiết bị di động
+        inputEl.setSelectionRange(0, 99999); 
         navigator.clipboard.writeText(inputEl.value).then(() => {
             showToast("Đã sao chép liên kết vào bộ nhớ tạm!");
         }).catch(err => {
@@ -536,8 +523,6 @@ function closeZipLoading() {
             currentLightboxPhotos.forEach((p, index) => {
                 const imgUrl = p.url || (p.id ? `https://drive.google.com/thumbnail?id=${p.id}&sz=h400` : '');
                 const imgName = p.name || `Ảnh ${index + 1}`;
-                
-                // CHÚ Ý: onclick CHỈ truyền ${index}, TUYỆT ĐỐI KHÔNG có chữ photos ở đây
                 grid.innerHTML += `
                     <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(0, 235, 176, 0.2); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; align-items: center; padding: 6px;">
                         <img src="${imgUrl}" style="width: 100%; height: 110px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer;" onclick="openClientLightbox(${index})" title="Xem chi tiết">
@@ -672,7 +657,6 @@ function closeZipLoading() {
     } catch (e) {
         console.error(e);
         showToast("Lỗi kết nối khi xóa album!");
-        // Phục hồi lại nút nếu lỗi kết nối
         if (deleteBtn) {
             deleteBtn.disabled = false;
             deleteBtn.innerHTML = oldBtnText;
@@ -943,8 +927,6 @@ function jumpToLightboxIndex(idx) {
             try { 
                 const res = await fetch(`${PATHS.LIST}?adminEmail=${adminEmail}`); 
                 allAlbums = await res.json(); 
-                
-                // Lưu lại cache mới
                 sessionStorage.setItem('cache_albums', JSON.stringify(allAlbums));
                 
                 renderAlbums(allAlbums); 
@@ -1059,8 +1041,6 @@ function jumpToLightboxIndex(idx) {
             </div>
             <div class="modal-body p-4">
                 <div class="alert alert-supreme text-center mb-4" id="linksModalAlbumName" style="font-size: 0.85rem;">Album: ...</div>
-                
-                <!-- Link Client (Chonanhnhanh.vn) -->
                 <div class="mb-3">
                     <label class="form-label text-primary fw-bold small text-uppercase">1. Link gửi khách chọn ảnh (Client)</label>
                     <div class="input-group">
@@ -1068,8 +1048,6 @@ function jumpToLightboxIndex(idx) {
                         <button class="btn btn-outline-primary" type="button" onclick="copyLinkText('inputClientLink')"><i class="fas fa-copy"></i> Sao chép</button>
                     </div>
                 </div>
-
-                <!-- Link Google Drive Gốc -->
                 <div class="mb-2">
                     <label class="form-label text-success fw-bold small text-uppercase">2. Link thư mục Google Drive gốc</label>
                     <div class="input-group">
@@ -1081,11 +1059,8 @@ function jumpToLightboxIndex(idx) {
         </div>
     </div>
 </div>
-
-    <!-- Modal / Khung Loading Chờ Tải ZIP -->
 <div id="zipLoadingModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center;">
     <div style="background: #1a1a2e; border: 1px solid rgba(0, 235, 176, 0.4); padding: 30px; border-radius: 15px; text-align: center; max-width: 400px; width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-        <!-- Vòng xoay loading -->
         <div class="spinner-border text-success mb-3" role="status" style="width: 3rem; height: 3rem;">
             <span class="visually-hidden">Loading...</span>
         </div>
