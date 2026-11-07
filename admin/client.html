@@ -47,29 +47,16 @@
     height: 100%;
 }
 
-/* Số đếm cố định góc trên bên phải của màn hình stage, không bị đè vào ảnh */
-#photoInfoBadge { 
-    position: absolute; 
-    top: 12px; 
-    right: 15px; 
-    background: rgba(0, 0, 0, 0.75); 
-    color: #fff; 
-    padding: 5px 14px; 
-    border-radius: 20px; 
-    font-weight: 800; 
-    font-size: 0.75rem; 
-    border: 1px solid rgba(255, 255, 255, 0.15); 
-    z-index: 4500; 
-    letter-spacing: 1px;
-}
-
+/* Ép khung stage-inner chỉ ôm khít đúng kích thước thực tế của ảnh bên trong */
 .stage-inner { 
     position: relative !important; 
     display: inline-flex !important; 
     align-items: center; 
     justify-content: center; 
-    max-width: 100%;
-    max-height: 100%;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    width: auto !important;
+    height: auto !important;
 }
 
 #mainImg {
@@ -82,7 +69,8 @@
     margin: auto; 
     -webkit-touch-callout: none; 
 }
-    
+
+
 
         .strip-luxury { height: var(--strip-h); background: #080808; border-top: 1px solid #222; display: flex; align-items: center; gap: 10px; padding: 0 15px; overflow-x: auto; scrollbar-width: none; flex-shrink: 0; }
         .th-vip { height: 65px; width: 65px; border-radius: 10px; flex-shrink: 0; overflow: hidden; border: 2px solid transparent; opacity: 0.7; transition: 0.2s; position: relative; cursor: pointer; }
@@ -118,72 +106,6 @@
         border: 1.5px solid #000;
         box-shadow: 0 2px 5px rgba(0,0,0,0.5);
     }
-
-        .stage-inner { 
-            position: relative; 
-            display: inline-flex; 
-            align-items: center; 
-            justify-content: center; 
-            max-width: 100%; 
-            max-height: 100%;
-            min-height: 0; 
-        }
-        
-        .watermark-overlay {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            pointer-events: none; 
-            z-index: 20;
-            overflow: hidden;
-        }
-        
-        .watermark-overlay img {
-            width: 45%; 
-            max-width: 250px; 
-            opacity: 0.35; 
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
-            user-select: none;
-            -webkit-user-select: none;
-        }
-
-        .heart-btn {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            width: 36px;
-            height: 36px;
-            background: rgba(0, 0, 0, 0.6);
-            border: 1.5px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 16px;
-            cursor: pointer;
-            z-index: 30;
-            transition: 0.2s;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .heart-btn.selected {
-            background: var(--primary);
-            color: #000;
-            border-color: var(--primary);
-            transform: scale(1.1);
-        }
-       .stage-inner { 
-    position: relative; /* Cực kỳ quan trọng để nút con absolute căn theo khung ảnh */
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    width: 100%; 
-    height: 100%; 
-    min-height: 0; 
-}
-
 .stage { 
     flex: 1; 
     min-height: 0; 
@@ -191,24 +113,27 @@
     align-items: center; 
     justify-content: center; 
     overflow: hidden; 
-    padding: 10px; 
+    padding: 15px; 
     position: relative; 
     width: 100%; 
     height: 100%;
 }
 
+/* Ép khung stage-inner chỉ ôm khít đúng kích thước thực tế của ảnh bên trong */
 .stage-inner { 
     position: relative !important; 
-    display: inline-flex !important; /* Ôm sát theo kích thước hiển thị của ảnh */
+    display: inline-flex !important; 
     align-items: center; 
     justify-content: center; 
-    max-width: 100%;
-    max-height: 100%;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    width: auto !important;
+    height: auto !important;
 }
 
 #mainImg {
     max-width: 100%; 
-    max-height: calc(100dvh - 180px); /* Giới hạn chiều cao để không bị che khuất bởi thanh thumbnail */
+    max-height: calc(100dvh - 170px); 
     width: auto; 
     height: auto; 
     object-fit: contain;
@@ -217,10 +142,11 @@
     -webkit-touch-callout: none; 
 }
 
+/* Nút trái tim sẽ bám sát tuyệt đối vào góc trên bên phải của khung ảnh */
 #viewerHeartBtn {
     position: absolute !important;
-    top: 10px !important;
-    right: 10px !important;
+    top: 8px !important;
+    right: 8px !important;
     width: 40px;
     height: 40px;
     background: rgba(0, 0, 0, 0.7);
