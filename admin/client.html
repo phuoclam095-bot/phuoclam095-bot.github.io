@@ -84,18 +84,19 @@
     height: 100%;
 }
 
-/* Ép khung stage-inner chỉ ôm khít đúng kích thước thực tế của ảnh bên trong */
+/* Khung bọc ảnh: Sử dụng flex column để ôm khít chiều rộng của ảnh bên trong */
 .stage-inner { 
     position: relative !important; 
     display: inline-flex !important; 
+    flex-direction: column;
     align-items: center; 
     justify-content: center; 
-    max-width: 100% !important;
-    max-height: 100% !important;
-    width: auto !important;
-    height: auto !important;
+    max-width: 100%;
+    max-height: 100%;
+    height: 100%;
 }
 
+/* Ảnh chính tự động co giãn tối đa trong khung mà vẫn giữ nguyên tỷ lệ */
 #mainImg {
     max-width: 100%; 
     max-height: calc(100dvh - 170px); 
@@ -107,11 +108,27 @@
     -webkit-touch-callout: none; 
 }
 
-/* Nút trái tim sẽ bám sát tuyệt đối vào góc trên bên phải của khung ảnh */
+/* Bộ đếm ảnh (0/0) đặt góc trên bên phải của màn hình stage, không bị che ảnh */
+#photoInfoBadge { 
+    position: absolute; 
+    top: 12px; 
+    right: 15px; 
+    background: rgba(0, 0, 0, 0.75); 
+    color: #fff; 
+    padding: 5px 14px; 
+    border-radius: 20px; 
+    font-weight: 800; 
+    font-size: 0.75rem; 
+    border: 1px solid rgba(255, 255, 255, 0.15); 
+    z-index: 4500; 
+    letter-spacing: 1px;
+}
+
+/* Nút trái tim nằm tuyệt đối góc trên bên phải của khung ảnh (cả ảnh đứng lẫn ảnh ngang) */
 #viewerHeartBtn {
     position: absolute !important;
-    top: 8px !important;
-    right: 8px !important;
+    top: 5px !important;
+    right: 5px !important;
     width: 40px;
     height: 40px;
     background: rgba(0, 0, 0, 0.7);
@@ -134,9 +151,6 @@
     color: #000 !important;
     border-color: var(--primary) !important;
     transform: scale(1.1);
-}
-        .bottom-bar .d-flex {
-    gap: 6px !important; 
 }
     </style>
 </head>
@@ -164,14 +178,15 @@
 
     <div class="content-area">
         <div id="photoGrid"></div>
-       <div id="photoViewer">
+      <div id="photoViewer">
             <div class="stage">
+                <!-- Số đếm hiển thị cố định ở góc trên giao diện xem -->
                 <div id="photoInfoBadge">0/0</div>
                 
                 <div class="stage-inner">
                     <img id="mainImg" src="">
                     <div id="clientWatermarkContainer"></div>
-                    <!-- Nút trái tim nằm ở đây để đi theo sát kích thước thực tế của ảnh -->
+                    <!-- Nút trái tim bám góc trên bên phải của khung ảnh -->
                     <div id="viewerHeartBtn" onclick="togSel()"><i class="fas fa-heart"></i></div>
                 </div>
             </div>
