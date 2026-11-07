@@ -207,29 +207,20 @@
         if (sz === 's400') return `https://drive.google.com/thumbnail?id=${id}&sz=w400`;
         return `https://drive.google.com/thumbnail?id=${id}&sz=w1000`; 
     }
-        
 
-
-
-// Mở rộng hàm setView để quản lý thêm chế độ '3d'
-
-
-
-// HÀM KHỞI TẠO PHOTOBOOK 3D ĐÃ FIX LỖI MÀN HÌNH ĐEN & THÊM TRANG BÌA ĐẦU TIÊN
 let pageFlipInstance = null;
 let selectedCoverId = localStorage.getItem('anh_bia_cua_khach_' + fid) || null;
 
-// Quản lý chuyển đổi chế độ xem
 function setView(v) {
     currentView = v;
     const gridEl = document.getElementById('photoGrid');
     const viewerEl = document.getElementById('photoViewer');
     const view3D = document.getElementById('photo3DView');
-
     gridEl.style.display = (v === 'grid') ? 'grid' : 'none';
     viewerEl.style.display = (v === 'viewer') ? 'flex' : 'none';
     if(view3D) view3D.style.display = (v === '3d') ? 'flex' : 'none';
 
+    // Đổi màu chữ trên navbar
     document.getElementById('btnGrid').style.color = (v === 'grid') ? 'var(--primary)' : '#666';
     document.getElementById('btnViewer').style.color = (v === 'viewer') ? 'var(--primary)' : '#666';
     const btn3D = document.getElementById('btn3D');
@@ -238,16 +229,24 @@ function setView(v) {
     if(v === 'viewer') {
         showViewer();
     } else if(v === '3d') {
-        // Bắt buộc chờ DOM hiển thị khung rồi mới gọi khởi tạo 3D để không bị lỗi màn hình đen
+        if (pageFlipInstance) {
+            try {
+                pageFlipInstance.destroy();
+            } catch(e) {
+                console.log("Lỗi hủy instance cũ:", e);
+            }
+            pageFlipInstance = null;
+        }
+
+        // Chờ DOM hiển thị khung rồi mới khởi tạo sách 3D
         setTimeout(() => {
             initPhotobook3D();
-        }, 100);
+        }, 150);
     } else {
         syncGridUI();
     }
 }
 
-// Hàm đặt ảnh hiện tại (đang xem hoặc đang chọn) làm ảnh bìa
 function setAsCoverPhoto() {
     const p = photos[cur];
     if (!p) return;
@@ -258,7 +257,6 @@ function setAsCoverPhoto() {
     if (currentView === 'viewer') showViewer();
 }
 
-// Khởi tạo lưới ảnh kèm huy hiệu "ẢNH BÌA" nhỏ gọn
 function initGrid() {
     const grid = document.getElementById('photoGrid'); 
     if (!grid) return;
@@ -291,7 +289,6 @@ function initGrid() {
     syncGridUI();
 }
 
-// KHỞI TẠO PHOTOBOOK 3D ĐÃ FIX TRIỆT ĐỂ LỖI MÀN HÌNH ĐEN
 function initPhotobook3D() {
     const bookContainer = document.getElementById('dynamic-book');
     if (!bookContainer) return;
