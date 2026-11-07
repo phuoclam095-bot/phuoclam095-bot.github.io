@@ -660,9 +660,18 @@ function prevPage3D() {
                 throw new Error("Không tìm thấy đường dẫn định danh album trên trình duyệt.");
             }
 
-            const res = await fetch(`${PATHS.GET}?studio=${studioSlug}&album=${albumSlug}`);
+           const res = await fetch(`${PATHS.GET}?studio=${studioSlug}&album=${albumSlug}`);
+            
             if (!res.ok) {
-                throw new Error(`Máy chủ phản hồi lỗi (Mã trạng thái: ${res.status}). Album có thể không tồn tại.`);
+                throw new Error(`Máy chủ phản hồi lỗi HTTP ${res.status}. Đường dẫn Webhook có thể không tồn tại.`);
+            }
+
+            // Kiểm tra xem server có thực sự trả về JSON không trước khi parse tránh lỗi thẻ '<'
+            const contentType = res.headers.get("content-type");
+            if (!contentType || !contentType.includes("application/json")) {
+                const htmlText = await res.text();
+                console.error("Server trả về HTML thay vì JSON:", htmlText);
+                throw new Error("Webhook đang trả về mã HTML (Trang lỗi). Vui lòng kiểm tra lại cấu hình n8n.");
             }
 
             const rawData = await res.json();
