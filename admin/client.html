@@ -176,7 +176,7 @@
         <div class="d-flex gap-2">
             <button class="btn-action btn-sq bg-danger-vip" onclick="clearAll()"><i class="fas fa-undo-alt"></i></button>
             <button class="btn-action btn-sq bg-gray" id="btnFilter" onclick="toggleFilter()"><i class="fas fa-eye"></i></button>
-        
+            <button class="btn-action btn-sq bg-gray text-warning" onclick="setAsCoverPhoto()" title="Đặt ảnh này làm bìa album"><i class="fas fa-star"></i></button>
             <button class="btn-action btn-sq bg-gray" id="btnDownload" onclick="downloadPhoto()" style="display:none;"><i class="fas fa-download"></i></button>
             <button class="btn-action btn-sq bg-gray" id="btnComment" onclick="commentPhoto()" style="display:none;"><i class="fas fa-comment-dots"></i></button>
         </div>
@@ -209,14 +209,25 @@
     }
         
 
-        let pageFlipInstance = null;
+
 
 // Mở rộng hàm setView để quản lý thêm chế độ '3d'
+
+
+
+// HÀM KHỞI TẠO PHOTOBOOK 3D ĐÃ FIX LỖI MÀN HÌNH ĐEN & THÊM TRANG BÌA ĐẦU TIÊN
+let pageFlipInstance = null;
+let selectedCoverId = localStorage.getItem('anh_bia_cua_khach_' + fid) || null;
+
+// Quản lý chuyển đổi chế độ xem
 function setView(v) {
     currentView = v;
-    document.getElementById('photoGrid').style.display = (v === 'grid') ? 'grid' : 'none';
-    document.getElementById('photoViewer').style.display = (v === 'viewer') ? 'flex' : 'none';
+    const gridEl = document.getElementById('photoGrid');
+    const viewerEl = document.getElementById('photoViewer');
     const view3D = document.getElementById('photo3DView');
+
+    gridEl.style.display = (v === 'grid') ? 'grid' : 'none';
+    viewerEl.style.display = (v === 'viewer') ? 'flex' : 'none';
     if(view3D) view3D.style.display = (v === '3d') ? 'flex' : 'none';
 
     document.getElementById('btnGrid').style.color = (v === 'grid') ? 'var(--primary)' : '#666';
@@ -224,45 +235,87 @@ function setView(v) {
     const btn3D = document.getElementById('btn3D');
     if(btn3D) btn3D.style.color = (v === '3d') ? 'var(--primary)' : '#666';
 
-    if(v === 'viewer') showViewer(); 
-    else if(v === '3d') initPhotobook3D();
-    else syncGridUI();
+    if(v === 'viewer') {
+        showViewer();
+    } else if(v === '3d') {
+        // Bắt buộc chờ DOM hiển thị khung rồi mới gọi khởi tạo 3D để không bị lỗi màn hình đen
+        setTimeout(() => {
+            initPhotobook3D();
+        }, 100);
+    } else {
+        syncGridUI();
+    }
 }
 
+// Hàm đặt ảnh hiện tại (đang xem hoặc đang chọn) làm ảnh bìa
 function setAsCoverPhoto() {
     const p = photos[cur];
     if (!p) return;
     selectedCoverId = p.id;
     localStorage.setItem('anh_bia_cua_khach_' + fid, selectedCoverId);
-    showToast("⭐ Đã đặt làm ảnh bìa thành công!");
+    showToast("⭐ Đã chọn làm ảnh bìa thành công!");
     initGrid();
+    if (currentView === 'viewer') showViewer();
 }
 
-// HÀM KHỞI TẠO PHOTOBOOK 3D ĐÃ FIX LỖI MÀN HÌNH ĐEN & THÊM TRANG BÌA ĐẦU TIÊN
+// Khởi tạo lưới ảnh kèm huy hiệu "ẢNH BÌA" nhỏ gọn
+function initGrid() {
+    const grid = document.getElementById('photoGrid'); 
+    if (!grid) return;
+    grid.innerHTML = '';
+    
+    photos.forEach((p, i) => {
+        const item = document.createElement('div');
+        item.className = 'grid-item'; 
+        item.id = `item-${i}`;
+        
+        const isCover = (selectedCoverId === p.id);
+        
+        item.innerHTML = `
+            <img src="${getLink(p.id, 's400')}" loading="lazy">
+            ${isCover ? '<div style="position: absolute; top: 6px; left: 6px; background: var(--primary); color: #000; padding: 2px 6px; border-radius: 4px; font-size: 8px; font-weight: 900; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.5);">BÌA</div>' : ''}
+        `;
+        
+        let touchTime = 0;
+        item.addEventListener('pointerdown', () => { touchTime = new Date().getTime(); });
+        item.addEventListener('pointerup', () => {
+            if (new Date().getTime() - touchTime < 250) {
+                cur = i; 
+                syncGridUI();
+            }
+        });
+
+        item.ondblclick = () => { cur = i; setView('viewer'); };
+        grid.appendChild(item);
+    });
+    syncGridUI();
+}
+
+// KHỞI TẠO PHOTOBOOK 3D ĐÃ FIX TRIỆT ĐỂ LỖI MÀN HÌNH ĐEN
 function initPhotobook3D() {
     const bookContainer = document.getElementById('dynamic-book');
     if (!bookContainer) return;
     bookContainer.innerHTML = '';
 
-    // Lọc danh sách ảnh: Ưu tiên ảnh khách đã chọn, nếu chưa chọn lấy toàn bộ
+    // Lọc danh sách ảnh: Ưu tiên ảnh khách đã chọn, nếu chưa chọn lấy toàn bộ album
     let sourcePhotos = photos.filter(p => selectedIds.includes(p.id));
     if (sourcePhotos.length === 0) {
         sourcePhotos = photos; 
     }
 
-    // Tìm ảnh bìa (Nếu khách đã chọn ảnh bìa, đưa lên đầu tiên)
+    // Xác định ảnh bìa
     let coverPhoto = sourcePhotos.find(p => p.id === selectedCoverId);
     if (!coverPhoto && sourcePhotos.length > 0) {
-        coverPhoto = sourcePhotos[0]; // Mặc định lấy ảnh đầu tiên làm bìa nếu chưa chọn
+        coverPhoto = sourcePhotos[0]; 
     }
 
-    // 1. TRANG BÌA ĐẦU TIÊN (Hiển thị ảnh bìa rõ ràng ở trang đầu tiên)
+    // 1. TRANG BÌA ĐẦU TIÊN (Kích thước cân đối, tinh tế)
     let pagesHTML = `
-        <div class="page" style="background: #111; color: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 15px; text-align: center; border-right: 1px solid #333;">
-            <div style="border: 2px solid var(--primary); padding: 10px; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; align-items: center; border-radius: 8px; background: #000;">
-                <span style="color: var(--primary); font-size: 0.6rem; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;">BÌA ALBUM CHÍNH</span>
-                ${coverPhoto ? `<div style="width: 100%; height: 70%; overflow: hidden; border-radius: 6px;"><img src="${getLink(coverPhoto.id, 's800')}" style="width:100%; height:100%; object-fit:contain;"></div>` : ''}
-                <h3 style="font-size: 0.85rem; font-weight: 900; margin: 5px 0; color: #fff;">${document.getElementById('albumTitle').innerText}</h3>
+        <div class="page" style="background: #111; color: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; text-align: center; border-right: 1px solid #333;">
+            <div style="border: 1.5px solid var(--primary); padding: 8px; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; align-items: center; border-radius: 6px; background: #000;">
+                <span style="color: var(--primary); font-size: 0.55rem; font-weight: 900; letter-spacing: 1.5px; text-transform: uppercase;">ẢNH BÌA CHÍNH</span>
+                ${coverPhoto ? `<div style="width: 100%; height: 72%; overflow: hidden; border-radius: 4px; display:flex; align-items:center; justify-content:center; background:#111;"><img src="${getLink(coverPhoto.id, 's800')}" style="max-width:100%; max-height:100%; object-fit:contain;"></div>` : ''}
+                <h3 style="font-size: 0.75rem; font-weight: 900; margin: 2px 0; color: #fff; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">${document.getElementById('albumTitle').innerText}</h3>
             </div>
         </div>
     `;
@@ -270,11 +323,11 @@ function initPhotobook3D() {
     // 2. CÁC TRANG NỘI DUNG TIẾP THEO
     sourcePhotos.forEach((p, idx) => {
         pagesHTML += `
-            <div class="page" style="background: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; border-right: 1px solid #ddd;">
-                <div style="width: 100%; height: 88%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #000; border-radius: 8px;">
+            <div class="page" style="background: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 8px; border-right: 1px solid #ddd;">
+                <div style="width: 100%; height: 90%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #000; border-radius: 6px;">
                     <img src="${getLink(p.id, 's800')}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
                 </div>
-                <div style="margin-top: 6px; color: #666; font-weight: 700; font-size: 0.55rem;">
+                <div style="margin-top: 4px; color: #555; font-weight: 700; font-size: 0.5rem;">
                     Trang ${idx + 1}
                 </div>
             </div>
@@ -283,37 +336,37 @@ function initPhotobook3D() {
 
     bookContainer.innerHTML = pagesHTML;
 
-    // Đảm bảo DOM đã render xong khung trước khi gọi thư viện 3D để tránh lỗi màn hình đen
-    setTimeout(() => {
-        if (pageFlipInstance) {
-            pageFlipInstance.destroy();
-        }
+    // Hủy instance cũ nếu có
+    if (pageFlipInstance) {
+        try { pageFlipInstance.destroy(); } catch(e) {}
+    }
 
-        try {
-            pageFlipInstance = new St.PageFlip(bookContainer, {
-                width: 350,
-                height: 480,
-                size: "stretch",
-                minWidth: 250,
-                maxWidth: 500,
-                minHeight: 350,
-                maxHeight: 600,
-                maxShadowOpacity: 0.5,
-                showCover: true,
-                mobileScrollSupport: false
-            });
+    try {
+        // Cố định kích thước chuẩn pixel để thư viện StPageFlip render chính xác, không bị lỗi đen
+        pageFlipInstance = new St.PageFlip(bookContainer, {
+            width: 320,
+            height: 440,
+            size: "fixed",
+            minWidth: 280,
+            maxWidth: 400,
+            minHeight: 380,
+            maxHeight: 550,
+            maxShadowOpacity: 0.4,
+            showCover: true,
+            mobileScrollSupport: false
+        });
 
-            pageFlipInstance.loadFromHTML(bookContainer.querySelectorAll('.page'));
-            
-            pageFlipInstance.on('flip', (e) => {
-                const ind = document.getElementById('pageIndicator3D');
-                if(ind) ind.innerText = `Trang ${e.data + 1} / ${pageFlipInstance.getPageCount()}`;
-            });
-        } catch(err) {
-            console.log("Lỗi khởi tạo 3D flipbook: ", err);
-        }
-    }, 150); // Độ trễ nhỏ giúp loại bỏ hoàn toàn hiện tượng khung đen
+        pageFlipInstance.loadFromHTML(bookContainer.querySelectorAll('.page'));
+        
+        pageFlipInstance.on('flip', (e) => {
+            const ind = document.getElementById('pageIndicator3D');
+            if(ind) ind.innerText = `Trang ${e.data + 1} / ${pageFlipInstance.getPageCount()}`;
+        });
+    } catch(err) {
+        console.log("Lỗi khởi tạo 3D flipbook: ", err);
+    }
 }
+
 function nextPage3D() {
     if (pageFlipInstance) pageFlipInstance.flipNext();
 }
@@ -321,7 +374,6 @@ function nextPage3D() {
 function prevPage3D() {
     if (pageFlipInstance) pageFlipInstance.flipPrev();
 }
-
         
        function syncGridUI() {
             if(currentView !== 'grid') return;
@@ -387,42 +439,7 @@ function prevPage3D() {
             if(activeTh) setTimeout(() => activeTh.scrollIntoView({behavior:'smooth', inline:'center'}), 50);
             updateInfo();
         }
-       let selectedCoverId = localStorage.getItem('anh_bia_cua_khach_' + fid) || null;
 
-function initGrid() {
-    const grid = document.getElementById('photoGrid'); 
-    if (!grid) return;
-    grid.innerHTML = '';
-    
-    photos.forEach((p, i) => {
-        const item = document.createElement('div');
-        item.className = 'grid-item'; 
-        item.id = `item-${i}`;
-        
-        // Kiểm tra xem ảnh này có đang được chọn làm ảnh bìa không
-        const isCover = (selectedCoverId === p.id);
-        
-        item.innerHTML = `
-            <img src="${getLink(p.id, 's400')}" loading="lazy">
-            ${isCover ? '<div style="position: absolute; top: 6px; left: 6px; background: var(--primary); color: #000; padding: 2px 8px; border-radius: 6px; font-size: 9px; font-weight: 900; z-index: 10;">ẢNH BÌA</div>' : ''}
-        `;
-        
-        // Bắt sự kiện chạm mượt mà trên Mobile & PC
-        let touchTime = 0;
-        item.addEventListener('pointerdown', () => { touchTime = new Date().getTime(); });
-        item.addEventListener('pointerup', () => {
-            if (new Date().getTime() - touchTime < 250) {
-                cur = i; 
-                syncGridUI();
-            }
-        });
-
-        item.ondblclick = () => { cur = i; setView('viewer'); };
-        grid.appendChild(item);
-    });
-    syncGridUI();
-}
-        
 
         async function saveCurrentComment() {
             const p = photos[cur];
