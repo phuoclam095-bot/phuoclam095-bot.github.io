@@ -109,6 +109,14 @@
             user-select: none;
             -webkit-user-select: none;
         }
+        .grid-item {
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+.cover-select-btn {
+    pointer-events: auto !important;
+    z-index: 30;
+}
     </style>
 </head>
 <body>
@@ -396,7 +404,7 @@ function prevPage3D() {
             if(activeTh) setTimeout(() => activeTh.scrollIntoView({behavior:'smooth', inline:'center'}), 50);
             updateInfo();
         }
-        function initGrid() {
+       function initGrid() {
             const grid = document.getElementById('photoGrid'); 
             if (!grid) return;
             grid.innerHTML = '';
@@ -405,17 +413,44 @@ function prevPage3D() {
                 const item = document.createElement('div');
                 item.className = 'grid-item'; 
                 item.id = `item-${i}`;
+                const isCover = (window.currentCoverId === p.id);
                 
                 item.innerHTML = `
                     <img src="${getLink(p.id, 's400')}" loading="lazy">
-                   
+                    <button type="button" class="cover-btn" title="Chọn làm ảnh bìa" onclick="event.stopPropagation(); setCoverPhoto('${p.id}')" style="position: absolute; top: 6px; left: 6px; background: ${isCover ? 'var(--primary)' : 'rgba(0,0,0,0.6)'}; color: ${isCover ? '#000' : '#fff'}; border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 10px; display: flex; align-items: center; justify-content: center; z-index: 15;">
+                        <i class="fas fa-star"></i>
+                    </button>
                 `;
-                
-                item.onclick = () => { cur = i; syncGridUI(); };
+
+                let touchTime = 0;
+                item.addEventListener('pointerdown', (e) => {
+                    touchTime = new Date().getTime();
+                });
+        
+                item.addEventListener('pointerup', (e) => {
+                    let clickDuration = new Date().getTime() - touchTime;
+                    if (clickDuration < 250) {
+                        cur = i; 
+                        syncGridUI();
+                    }
+                });
+        
                 item.ondblclick = () => { cur = i; setView('viewer'); };
+                
                 grid.appendChild(item);
             });
             syncGridUI();
+        }
+        
+        function setCoverPhoto(photoId) {
+            window.currentCoverId = photoId;
+            localStorage.setItem('anh_bia_cua_khach_' + fid, photoId);
+            if (typeof showToast === 'function') {
+                showToast("⭐ Đã đặt làm ảnh bìa thành công!");
+            } else {
+                alert("Đã đặt làm ảnh bìa thành công!");
+            }
+            initGrid(); 
         }
         async function saveCurrentComment() {
             const p = photos[cur];
@@ -500,7 +535,24 @@ function prevPage3D() {
             btn.innerText = isSel ? 'ĐÃ CHỌN' : 'CHỌN';
         }
 
-        async function finalCommit(){
+        function selectCoverPhoto(photoId) {
+            currentCoverId = photoId;
+            localStorage.setItem('anh_bia_cua_khach_' + fid, currentCoverId);
+            
+            // Hiển thị thông báo nhỏ gọn cho khách
+            showToast("Đã chọn làm ảnh bìa thành công!");
+            
+            // Đồng bộ lại giao diện lưới hoặc chi tiết
+            currentView === 'grid' ? syncGridUI() : showViewer();
+            
+            // Gửi ngầm về server/webhook nếu cần
+            fetch(PATHS.SAVE, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ id: fid, cover_photo_id: photoId })
+            }).catch(e => console.log("Lỗi đồng bộ ngầm ảnh bìa"));
+        }
+                async function finalCommit(){
             if(selectedIds.length === 0) return alert("Dạ khách chưa chọn ảnh nào ạ!");
             if(confirm(`Gửi ${selectedIds.length} ảnh đã chọn?`)) {
                 try { await fetch(PATHS.DONE, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ id: fid, selected_ids: selectedIds, count: selectedIds.length }) }); alert("✅ Tuyệt vời! Yêu cầu đã được lưu."); } catch(e) { alert("Lỗi gửi!"); }
