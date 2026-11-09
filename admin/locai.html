@@ -1,0 +1,641 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Công cụ tìm kiếm khuôn mặt AI</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.js"></script>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f3f5f9;
+  color: #202938;
+}
+
+.container {
+  max-width: 1250px;
+  margin: auto;
+  padding: 20px;
+}
+
+h1 { font-size: 25px; }
+
+.panel {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 18px;
+  box-shadow: 0 2px 10px #0000000b;
+}
+
+.uploads {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.upload-box {
+  border: 2px dashed #cbd5e1;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+}
+
+input[type=file] {
+  width: 100%;
+  margin-top: 12px;
+}
+
+button {
+  border: 0;
+  padding: 12px 22px;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 15px;
+}
+
+.progress {
+  height: 12px;
+  background: #e5e7eb;
+  border-radius: 20px;
+  overflow: hidden;
+  margin: 12px 0;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: #2563eb;
+  transition: width .15s;
+}
+
+.stats {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.stat {
+  flex: 1;
+  min-width: 130px;
+  padding: 15px;
+  border-radius: 9px;
+  background: #f1f5f9;
+}
+
+.stat strong {
+  display: block;
+  font-size: 25px;
+  margin-top: 5px;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+  gap: 12px;
+}
+
+.photo {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 9px;
+  overflow: hidden;
+}
+
+.photo img {
+  width: 100%;
+  height: 155px;
+  object-fit: cover;
+}
+
+.photo-info {
+  padding: 9px;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.matched {
+  color: #15803d;
+  font-weight: bold;
+}
+
+.unmatched {
+  color: #64748b;
+}
+
+#status {
+  color: #475569;
+  font-size: 14px;
+}
+
+input[type=range] { width: 100%; }
+
+@media(max-width: 600px) {
+  .uploads { grid-template-columns: 1fr; }
+  .container { padding: 12px; }
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h1>🔍 AI tìm kiếm khuôn mặt</h1>
+<p>Chọn ảnh mẫu và tìm người tương ứng trong tối đa 1.000 ảnh.</p>
+
+<div class="panel">
+  <h3>1. Chọn ảnh khuôn mặt mẫu</h3>
+  <div class="upload-box">
+    <div>Ảnh người cần tìm</div>
+    <input type="file" id="reference" accept="image/*">
+    <div id="referencePreview"></div>
+  </div>
+</div>
+
+<div class="panel">
+  <h3>2. Chọn ảnh cần tìm kiếm</h3>
+  <div class="upload-box">
+    <div>Chọn tối đa 1.000 ảnh</div>
+    <input type="file" id="photos" accept="image/*" multiple>
+    <p id="fileCount">Chưa chọn ảnh</p>
+  </div>
+</div>
+
+<div class="panel">
+  <h3>3. Độ nhạy nhận diện</h3>
+  <label>
+    Ngưỡng khoảng cách:
+    <strong id="thresholdValue">0.50</strong>
+  </label>
+  <input
+    type="range"
+    id="threshold"
+    min="0.35"
+    max="0.75"
+    step="0.01"
+    value="0.50"
+  >
+  <p style="font-size:12px;color:#64748b">
+    Ngưỡng thấp: chặt chẽ hơn, ít nhận nhầm.
+    Ngưỡng cao: dễ chấp nhận ảnh khác góc chụp hơn,
+    nhưng tăng nguy cơ nhận nhầm.
+  </p>
+
+  <div class="actions">
+    <button id="start">BẮT ĐẦU TÌM KIẾM</button>
+    <button id="stop" disabled style="background:#dc2626">
+      DỪNG
+    </button>
+    <button id="reset" style="background:#64748b">
+      XÓA KẾT QUẢ
+    </button>
+  </div>
+</div>
+
+<div class="panel">
+  <h3>4. Tiến trình xử lý</h3>
+  <div id="status">Đang chờ dữ liệu...</div>
+  <div class="progress">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      Đã xử lý
+      <strong id="processed">0</strong>
+    </div>
+    <div class="stat">
+      Tìm thấy
+      <strong id="found">0</strong>
+    </div>
+    <div class="stat">
+      Không khớp
+      <strong id="notFound">0</strong>
+    </div>
+    <div class="stat">
+      Không có mặt
+      <strong id="noFace">0</strong>
+    </div>
+  </div>
+</div>
+
+<div class="panel">
+  <h3>5. Ảnh tìm thấy</h3>
+  <div id="results" class="gallery"></div>
+</div>
+
+<div class="panel">
+  <h3>6. Ảnh không khớp</h3>
+  <div id="others" class="gallery"></div>
+</div>
+
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+const referenceInput = $("reference");
+const photosInput = $("photos");
+
+let referenceDescriptor = null;
+let referenceURL = null;
+let running = false;
+let stopRequested = false;
+
+const MAX_IMAGES = 1000;
+
+// Giới hạn kích thước ảnh trước khi đưa vào AI
+const MAX_SIDE = 960;
+
+// Chọn ngưỡng nhận diện
+function threshold() {
+  return Number($("threshold").value);
+}
+
+$("threshold").oninput = () => {
+  $("thresholdValue").textContent =
+    threshold().toFixed(2);
+};
+
+// Nạp model AI
+async function loadModels() {
+  $("status").textContent = "Đang tải AI models...";
+
+  const MODEL =
+    "https://cdn.jsdelivr.net/gh/vladmandic/face-api/model";
+
+  await faceapi.tf.ready();
+
+  // Ưu tiên WebGL
+  try {
+    await faceapi.tf.setBackend("webgl");
+    await faceapi.tf.ready();
+  } catch(e) {
+    console.warn("Sử dụng backend hiện tại", e);
+  }
+
+  await Promise.all([
+    faceapi.nets.tinyFaceDetector.loadFromUri(MODEL),
+    faceapi.nets.faceLandmark68TinyNet.loadFromUri(MODEL),
+    faceapi.nets.faceRecognitionNet.loadFromUri(MODEL)
+  ]);
+
+  $("status").textContent = "AI đã sẵn sàng!";
+}
+
+// Tạo canvas từ file, giảm kích thước ảnh
+async function createImageCanvas(file) {
+  const bitmap = await createImageBitmap(file);
+
+  const scale = Math.min(
+    1,
+    MAX_SIDE / Math.max(bitmap.width, bitmap.height)
+  );
+
+  const canvas = document.createElement("canvas");
+
+  canvas.width = Math.max(
+    1, Math.round(bitmap.width * scale)
+  );
+
+  canvas.height = Math.max(
+    1, Math.round(bitmap.height * scale)
+  );
+
+  const ctx = canvas.getContext("2d", {
+    willReadFrequently: true
+  });
+
+  ctx.drawImage(
+    bitmap, 0, 0, canvas.width, canvas.height
+  );
+
+  bitmap.close();
+
+  return canvas;
+}
+
+// Nhận diện tất cả khuôn mặt trong ảnh
+async function getFaces(file) {
+  const canvas = await createImageCanvas(file);
+
+  try {
+    const detections = await faceapi
+      .detectAllFaces(
+        canvas,
+        new faceapi.TinyFaceDetectorOptions({
+          inputSize: 320,
+          scoreThreshold: 0.4
+        })
+      )
+      .withFaceLandmarks(true)
+      .withFaceDescriptors();
+
+    return detections.map(item => ({
+      descriptor: item.descriptor,
+      area:
+        item.detection.box.width *
+        item.detection.box.height
+    }));
+
+  } finally {
+    canvas.width = 1;
+    canvas.height = 1;
+  }
+}
+
+// Chọn khuôn mặt lớn nhất trong ảnh mẫu
+function largestFace(faces) {
+  if (!faces.length) return null;
+
+  return faces.reduce((best, current) =>
+    current.area > best.area ? current : best
+  );
+}
+
+// Khoảng cách Euclidean giữa 2 vector
+function distance(a, b) {
+  let sum = 0;
+
+  for (let i = 0; i < a.length; i++) {
+    const diff = a[i] - b[i];
+    sum += diff * diff;
+  }
+
+  return Math.sqrt(sum);
+}
+
+// Hiển thị một ảnh trong gallery
+function addPhoto(container, file, url, dist) {
+  const card = document.createElement("div");
+  card.className = "photo";
+
+  const img = document.createElement("img");
+  img.src = url;
+  img.alt = file.name;
+  img.loading = "lazy";
+
+  const info = document.createElement("div");
+  info.className = "photo-info";
+
+  const name = document.createElement("div");
+  name.textContent = file.name;
+
+  const score = document.createElement("div");
+
+  if (dist !== null) {
+    score.className = "matched";
+    score.textContent =
+      "Khoảng cách: " + dist.toFixed(3);
+  } else {
+    score.className = "unmatched";
+    score.textContent = "Không khớp";
+  }
+
+  info.append(name, score);
+  card.append(img, info);
+  container.append(card);
+}
+
+// Đọc ảnh mẫu
+referenceInput.addEventListener("change", async () => {
+  const file = referenceInput.files[0];
+
+  if (!file) return;
+
+  try {
+    $("status").textContent =
+      "Đang nhận diện ảnh mẫu...";
+
+    const faces = await getFaces(file);
+    const best = largestFace(faces);
+
+    if (!best) {
+      referenceDescriptor = null;
+      alert("Không tìm thấy khuôn mặt trong ảnh mẫu.");
+      return;
+    }
+
+    referenceDescriptor = best.descriptor;
+
+    if (referenceURL) {
+      URL.revokeObjectURL(referenceURL);
+    }
+
+    referenceURL = URL.createObjectURL(file);
+
+    $("referencePreview").innerHTML = "";
+
+    const img = document.createElement("img");
+    img.src = referenceURL;
+    img.style.cssText =
+      "max-width:180px;max-height:180px;margin-top:12px;border-radius:8px";
+
+    $("referencePreview").append(img);
+
+    $("status").textContent =
+      "Đã nhận diện ảnh mẫu thành công.";
+
+  } catch(error) {
+    console.error(error);
+    alert("Lỗi đọc ảnh mẫu: " + error.message);
+  }
+});
+
+// Đếm số ảnh
+photosInput.addEventListener("change", () => {
+  const count = photosInput.files.length;
+
+  $("fileCount").textContent =
+    "Đã chọn " + count + " ảnh";
+
+  if (count > MAX_IMAGES) {
+    $("fileCount").textContent =
+      "Bạn đã chọn quá 1.000 ảnh!";
+  }
+});
+
+// Bắt đầu tìm kiếm
+$("start").addEventListener("click", async () => {
+  if (running) return;
+
+  if (!referenceDescriptor) {
+    alert("Vui lòng chọn ảnh mẫu trước.");
+    return;
+  }
+
+  const files = Array.from(photosInput.files)
+    .filter(file => file.type.startsWith("image/*"))
+    .slice(0, MAX_IMAGES);
+
+  // Một số trình duyệt không khớp MIME image/*
+  const validFiles = files.length
+    ? files
+    : Array.from(photosInput.files)
+        .filter(file => file.type.startsWith("image/"))
+        .slice(0, MAX_IMAGES);
+
+  if (!validFiles.length) {
+    alert("Vui lòng chọn ảnh cần tìm.");
+    return;
+  }
+
+  running = true;
+  stopRequested = false;
+
+  $("start").disabled = true;
+  $("stop").disabled = false;
+
+  $("results").innerHTML = "";
+  $("others").innerHTML = "";
+
+  let processed = 0;
+  let found = 0;
+  let notFound = 0;
+  let noFace = 0;
+
+  try {
+    await loadModels();
+
+    const total = validFiles.length;
+
+    for (let i = 0; i < total; i++) {
+      if (stopRequested) break;
+
+      const file = validFiles[i];
+
+      try {
+        const faces = await getFaces(file);
+
+        if (!faces.length) {
+          noFace++;
+        } else {
+          // Nếu có nhiều người trong ảnh,
+          // chọn khoảng cách gần nhất với ảnh mẫu.
+          let minDistance = Infinity;
+
+          for (const face of faces) {
+            const d = distance(
+              referenceDescriptor,
+              face.descriptor
+            );
+
+            if (d < minDistance) {
+              minDistance = d;
+            }
+          }
+
+          const url = URL.createObjectURL(file);
+
+          if (minDistance <= threshold()) {
+            found++;
+            addPhoto(
+              $("results"),
+              file,
+              url,
+              minDistance
+            );
+          } else {
+            notFound++;
+            URL.revokeObjectURL(url);
+          }
+        }
+
+      } catch(error) {
+        console.warn(
+          "Không xử lý được:",
+          file.name,
+          error
+        );
+        notFound++;
+      }
+
+      processed++;
+
+      $("processed").textContent = processed;
+      $("found").textContent = found;
+      $("notFound").textContent = notFound;
+      $("noFace").textContent = noFace;
+
+      const percent =
+        (processed / total) * 100;
+
+      $("progressBar").style.width =
+        percent + "%";
+
+      $("status").textContent =
+        `Đang xử lý ${processed}/${total} ảnh (${percent.toFixed(1)}%)`;
+
+      // Cho trình duyệt cập nhật giao diện
+      await new Promise(resolve =>
+        setTimeout(resolve, 0)
+      );
+    }
+
+    $("status").textContent = stopRequested
+      ? "Đã dừng xử lý."
+      : "Hoàn thành tìm kiếm!";
+
+  } catch(error) {
+    console.error(error);
+
+    $("status").textContent =
+      "Lỗi: " + error.message;
+
+    alert("Không thể chạy AI: " + error.message);
+
+  } finally {
+    running = false;
+    $("start").disabled = false;
+    $("stop").disabled = true;
+  }
+});
+
+// Dừng xử lý
+$("stop").addEventListener("click", () => {
+  stopRequested = true;
+  $("status").textContent =
+    "Đang dừng sau ảnh hiện tại...";
+});
+
+// Xóa kết quả
+$("reset").addEventListener("click", () => {
+  if (running) {
+    alert("Hãy dừng xử lý trước khi xóa.");
+    return;
+  }
+
+  $("results").innerHTML = "";
+  $("others").innerHTML = "";
+
+  $("processed").textContent = "0";
+  $("found").textContent = "0";
+  $("notFound").textContent = "0";
+  $("noFace").textContent = "0";
+
+  $("progressBar").style.width = "0%";
+  $("status").textContent = "Đã xóa kết quả.";
+});
+</script>
+</body>
+</html>
