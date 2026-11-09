@@ -479,8 +479,26 @@ photosInput.addEventListener("change", () => {
 $("start").addEventListener("click", async () => {
   if (running) return;
 
+  // Kiểm tra nếu đang chọn file nhưng AI chưa xử lý xong thì đợi một chút hoặc báo lỗi
+  const refFile = referenceInput.files[0];
+  if (!referenceDescriptor && refFile) {
+    $("status").textContent = "Đang xử lý ảnh mẫu, vui lòng đợi giây lát...";
+    try {
+      if (!faceapi.nets.faceRecognitionNet.isLoaded) {
+        await loadModels();
+      }
+      const faces = await getFaces(refFile);
+      const best = largestFace(faces);
+      if (best) {
+        referenceDescriptor = best.descriptor;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   if (!referenceDescriptor) {
-    alert("Vui lòng chọn ảnh mẫu trước.");
+    alert("Vui lòng chọn ảnh khuôn mặt mẫu hợp lệ (có chứa khuôn mặt).");
     return;
   }
 
