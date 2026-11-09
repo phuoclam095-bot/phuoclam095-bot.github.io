@@ -567,17 +567,12 @@ $("start").addEventListener("click", async () => {
 
           if (minDistance <= threshold()) {
             found++;
-            addPhoto(
-              $("results"),
-              file,
-              url,
-              minDistance
-            );
-          } else {
+            addPhoto($("results"), file, url, minDistance);
+        } else {
             notFound++;
-            URL.revokeObjectURL(url);
-          }
+            URL.revokeObjectURL(url); 
         }
+                }
 
       } catch(error) {
         console.warn(
