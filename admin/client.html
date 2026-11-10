@@ -589,18 +589,38 @@
         }
 
 
-        // Gọi hàm này ngay sau khi client tải xong danh sách ảnh từ Google Drive của album
 function setupDriveCoverImage(photosArray, albumData) {
     const coverScreen = document.getElementById('welcomeCoverScreen');
+    if (!coverScreen) return;
     
     if (photosArray && photosArray.length > 0) {
-        const firstPhoto = photosArray[0];
-        const coverImgUrl = firstPhoto.url || `https://drive.google.com/thumbnail?id=${firstPhoto.id}&sz=w1600`;
+        let coverImgUrl = '';
         
-        document.getElementById('coverMainImage').src = coverImgUrl;
-        document.getElementById('coverBgBlur').style.backgroundImage = `url('${coverImgUrl}')`;
-        document.getElementById('coverAlbumTitle').innerText = albumData.folderName || albumData.name || 'Album VIP';
-        document.getElementById('coverStudioName').innerText = albumData.studio_name || albumData.studioName || 'ChonAnhNhanh.vn';
+        // 1. Kiểm tra xem admin đã chọn ảnh bìa cụ thể nào chưa
+        const customCoverId = albumData.cover_image_id || albumData.coverImageId;
+        
+        if (customCoverId) {
+            const foundPhoto = photosArray.find(p => String(p.id) === String(customCoverId));
+            if (foundPhoto) {
+                coverImgUrl = foundPhoto.url || `https://drive.google.com/thumbnail?id=${foundPhoto.id}&sz=w1600`;
+            }
+        }
+        
+        if (!coverImgUrl) {
+            const firstPhoto = photosArray[0];
+            coverImgUrl = firstPhoto.url || `https://drive.google.com/thumbnail?id=${firstPhoto.id}&sz=w1600`;
+        }
+        
+        // Gán ảnh và thông tin vào giao diện màn hình chào mừng
+        const mainImgEl = document.getElementById('coverMainImage');
+        const bgBlurEl = document.getElementById('coverBgBlur');
+        const titleEl = document.getElementById('coverAlbumTitle');
+        const studioEl = document.getElementById('coverStudioName');
+
+        if (mainImgEl) mainImgEl.src = coverImgUrl;
+        if (bgBlurEl) bgBlurEl.style.backgroundImage = `url('${coverImgUrl}')`;
+        if (titleEl) titleEl.innerText = albumData.folderName || albumData.name || 'ALBUM VIP';
+        if (studioEl) studioEl.innerText = albumData.studio_name || albumData.studioName || 'ChonAnhNhanh.vn';
         coverScreen.style.display = 'flex';
     } else {
         coverScreen.style.display = 'none';
@@ -677,6 +697,7 @@ function dismissWelcomeCover() {
             setupDriveCoverImage(photos, {
                 folderName: folderName,
                 studio_name: studioFullName
+                cover_image_id: data.cover_image_id || data.coverImageId || albumSettings.cover_image_id || albumSettings.coverImageId
             });
             loadOverlay.style.display = 'none';
             initGrid(); 
