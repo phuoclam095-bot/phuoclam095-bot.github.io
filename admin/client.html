@@ -681,7 +681,10 @@ function dismissWelcomeCover() {
 
             const local = localStorage.getItem('anh_da_chon_cua_khach_' + (window.fid || albumSlug));
             if (local) selectedIds = JSON.parse(local);
-            
+            setupDriveCoverImage(photos, {
+                folderName: folderName,
+                studio_name: studioFullName
+            });
             loadOverlay.style.display = 'none';
             initGrid(); 
             
