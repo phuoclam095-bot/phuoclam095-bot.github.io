@@ -867,7 +867,6 @@ function closeZipLoading() {
 
         let currentCoverFolderId = '';
 
-// 1. Mở Modal và tải toàn bộ ảnh của album đó lên
 async function openDirectCoverModal(folderId, albumName) {
     currentCoverFolderId = folderId;
     document.getElementById('directCoverModalInfo').innerText = `Album: ${albumName}`;
@@ -879,7 +878,19 @@ async function openDirectCoverModal(folderId, albumName) {
 
     try {
         const res = await fetch(`https://wsm.congtubaclieu.com.vn/webhook/get-photos?album=${folderId}`);
-        const data = await res.json();
+        
+        // Kiểm tra nếu HTTP status không thành công
+        if (!res.ok) {
+            throw new Error(`Lỗi máy chủ: ${res.status}`);
+        }
+
+        // Đọc text trước để phòng hờ trường hợp server trả về rỗng hoặc không phải JSON
+        const textData = await res.text();
+        if (!textData || textData.trim() === '') {
+            throw new Error("Máy chủ trả về dữ liệu trống.");
+        }
+
+        const data = JSON.parse(textData);
         const photos = data.photos || (Array.isArray(data) ? data[0]?.photos : []) || [];
         
         grid.innerHTML = '';
@@ -894,7 +905,6 @@ async function openDirectCoverModal(folderId, albumName) {
             item.style.cssText = `position: relative; aspect-ratio: 1/1; border-radius: 8px; overflow: hidden; cursor: pointer; border: 2px solid transparent; transition: 0.2s;`;
             item.innerHTML = `<img src="${thumbUrl}" style="width: 100%; height: 100%; object-fit: cover;">`;
             
-            // Khi bấm vào một ảnh bất kỳ -> lưu làm ảnh bìa ngay lập tức
             item.onclick = () => selectThisAsCover(p.id);
             item.onmouseover = () => item.style.borderColor = 'var(--primary)';
             item.onmouseout = () => item.style.borderColor = 'transparent';
@@ -902,11 +912,10 @@ async function openDirectCoverModal(folderId, albumName) {
             grid.appendChild(item);
         });
     } catch (e) {
-        console.error(e);
-        grid.innerHTML = `<div class="text-danger text-center py-4" style="grid-column: 1 / -1;">Không thể tải danh sách ảnh!</div>`;
+        console.error("Lỗi tải ảnh:", e);
+        grid.innerHTML = `<div class="text-danger text-center py-4" style="grid-column: 1 / -1;">Không thể tải danh sách ảnh (${e.message})</div>`;
     }
 }
-
 async function selectThisAsCover(photoId) {
     showToast("Đang cập nhật ảnh bìa mới...");
     try {
