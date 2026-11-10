@@ -878,19 +878,13 @@ async function openDirectCoverModal(folderId, albumName) {
     new bootstrap.Modal(document.getElementById('directCoverModal')).show();
 
     try {
-        const res = await fetch(`https://wsm.congtubaclieu.com.vn/webhook/get-photos?album=${folderId}`);
+        const res = await fetch(`https://wsm.congtubaclieu.com.vn/webhook/get-photos?folderId=${folderId}`);
+        if (!res.ok) throw new Error(`Lỗi máy chủ: ${res.status}`);
+
+        const data = await res.json();
         
-        if (!res.ok) {
-            throw new Error(`Lỗi máy chủ: ${res.status}`);
-        }
-
-        const textData = await res.text();
-        if (!textData || textData.trim() === '') {
-            throw new Error("Máy chủ trả về dữ liệu trống.");
-        }
-
-        const data = JSON.parse(textData);
-        const photos = data.photos || (Array.isArray(data) ? data[0]?.photos : []) || [];
+        // Hứng trực tiếp mảng trả về hoặc bóc tách linh hoạt
+        const photos = Array.isArray(data) ? data : (data.photos || data.data || []);
         
         grid.innerHTML = '';
         if (photos.length === 0) {
