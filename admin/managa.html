@@ -278,8 +278,9 @@
 
         </div>
     </nav>
+
     <div class="modal fade" id="directCoverModal" tabindex="-1">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 1100px; width: 95%;">
             <div class="modal-content" style="background: #0a0f1e; border: 2px solid var(--primary); border-radius: 20px;">
                 <div class="modal-header border-0">
                     <h5 class="modal-title text-primary fw-900" style="font-size: 1rem;">ĐỔI ẢNH BÌA ALBUM</h5>
@@ -289,8 +290,8 @@
                     <div class="alert alert-supreme text-center mb-3" id="directCoverModalInfo">Album: ...</div>
                     <div style="font-size: 0.8rem; color: #aaa; margin-bottom: 10px;">Chọn bức ảnh ưng ý nhất bên dưới để làm ảnh bìa chào mừng cho khách:</div>
                     
-                    <div id="directCoverGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; max-height: 70vh; overflow-y: auto; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
-                        <div class="text-center text-secondary py-4" style="grid-column: span 4;">Đang tải danh sách ảnh...</div>
+                    <div id="directCoverGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; max-height: 72vh; overflow-y: auto; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+                        <div class="text-center text-secondary py-4" style="grid-column: 1 / -1;">Đang tải danh sách ảnh...</div>
                     </div>
                 </div>
             </div>
@@ -879,12 +880,10 @@ async function openDirectCoverModal(folderId, albumName) {
     try {
         const res = await fetch(`https://wsm.congtubaclieu.com.vn/webhook/get-photos?album=${folderId}`);
         
-        // Kiểm tra nếu HTTP status không thành công
         if (!res.ok) {
             throw new Error(`Lỗi máy chủ: ${res.status}`);
         }
 
-        // Đọc text trước để phòng hờ trường hợp server trả về rỗng hoặc không phải JSON
         const textData = await res.text();
         if (!textData || textData.trim() === '') {
             throw new Error("Máy chủ trả về dữ liệu trống.");
@@ -900,7 +899,7 @@ async function openDirectCoverModal(folderId, albumName) {
         }
 
         photos.forEach(p => {
-            const thumbUrl = `https://drive.google.com/thumbnail?id=${p.id}&sz=h200`;
+            const thumbUrl = `https://drive.google.com/thumbnail?id=${p.id}&sz=w400`;
             const item = document.createElement('div');
             item.style.cssText = `position: relative; aspect-ratio: 1/1; border-radius: 8px; overflow: hidden; cursor: pointer; border: 2px solid transparent; transition: 0.2s;`;
             item.innerHTML = `<img src="${thumbUrl}" style="width: 100%; height: 100%; object-fit: cover;">`;
@@ -908,7 +907,7 @@ async function openDirectCoverModal(folderId, albumName) {
             item.onclick = () => selectThisAsCover(p.id);
             item.onmouseover = () => item.style.borderColor = 'var(--primary)';
             item.onmouseout = () => item.style.borderColor = 'transparent';
-
+        
             grid.appendChild(item);
         });
     } catch (e) {
@@ -1097,15 +1096,18 @@ function jumpToLightboxIndex(idx) {
 
 
 <div class="modal fade" id="selectedPhotosModal" tabindex="-1">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 1100px; width: 95%;">
+        <div class="modal-content" style="background: #0a0f1e; border: 2px solid var(--primary); border-radius: 20px;">
             <div class="modal-header border-0">
                 <h5 class="modal-title">DANH SÁCH ẢNH KHÁCH ĐÃ CHỌN</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
                 <div class="alert alert-supreme text-center mb-3" id="selectedModalInfo">Album: ...</div>
-                <div id="selectedPhotosGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; max-height: 500px; overflow-y: auto; padding: 5px;"></div>
+                
+                <div id="selectedPhotosGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; max-height: 72vh; overflow-y: auto; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+                    <div class="text-center text-secondary py-4" style="grid-column: 1 / -1;">Đang tải danh sách ảnh...</div>
+                </div>
             </div>
         </div>
     </div>
