@@ -2,32 +2,43 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Đang chuyển hướng...</title>
+    <title>ChonAnhNhanh.VN - Đang tải album...</title>
     <script>
-        async function redirectToClient() {
+        async function handleRedirect() {
             const pathSegments = window.location.pathname.split('/').filter(Boolean);
             
-            if (pathSegments.length >= 1) {
-                const albumSlug = pathSegments[pathSegments.length - 1].replace(/[^0-9a-z]/g, '');
+            if (pathSegments.length >= 2) {
+                const studioSlug = pathSegments[0].replace(/[^0-9a-z]/g, '');
+                const albumSlug = pathSegments[1].replace(/[^0-9a-z]/g, '');
                 
-                try {
-                    const res = await fetch(`https://wsm.congtubaclieu.com.vn/webhook/get-photos?album=${albumSlug}`);
-                    const rawData = await res.json();
-                    const data = Array.isArray(rawData) ? rawData[0] : rawData;
-                    
-                    const realStudioSlug = data && data.studio_slug ? data.studio_slug : 'studio';
-                    
-                    window.location.replace(`/admin/client?album=${albumSlug}&studio=${realStudioSlug}`);
-                } catch (e) {
-                    let fallbackStudio = pathSegments.length >= 2 ? pathSegments[pathSegments.length - 2].replace(/[^0-9a-z]/g, '') : 'studio';
-                    window.location.replace(`/admin/client?album=${albumSlug}&studio=${fallbackStudio}`);
+                // Kiểm tra xem trình duyệt đang truy cập có phải là Bot Zalo/Facebook hay không
+                const ua = navigator.userAgent.toLowerCase();
+                const isBot = /facebookexternalhit|zalo|bot|crawler|spider|robot|crawling/i.test(ua);
+
+                if (isBot) {
+                    // Nếu là Bot của Zalo/Facebook: Chuyển hướng trực tiếp sang Webhook n8n 
+                    // để Webhook n8n trả về mã HTML có sẵn các thẻ og:image cho Bot cào ảnh bìa
+                    window.location.replace(`https://wsm.congtubaclieu.com.vn/webhook/share?studio=${studioSlug}&album=${albumSlug}`);
+                } else {
+                    // Nếu là Người dùng thật: Gọi API lấy studio chuẩn rồi đá thẳng vào trang client chính
+                    try {
+                        const res = await fetch(`https://wsm.congtubaclieu.com.vn/webhook/get-photos?album=${albumSlug}`);
+                        const rawData = await res.json();
+                        const data = Array.isArray(rawData) ? rawData[0] : rawData;
+                        
+                        const realStudioSlug = data && data.studio_slug ? data.studio_slug : studioSlug;
+                        
+                        window.location.replace(`/admin/client?album=${albumSlug}&studio=${realStudioSlug}`);
+                    } catch (e) {
+                        window.location.replace(`/admin/client?album=${albumSlug}&studio=${studioSlug}`);
+                    }
                 }
             } else {
                 window.location.replace('/');
             }
         }
 
-        redirectToClient();
+        handleRedirect();
     </script>
 </head>
 <body>
