@@ -279,7 +279,7 @@
         </div>
     </nav>
     <div class="modal fade" id="directCoverModal" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content" style="background: #0a0f1e; border: 2px solid var(--primary); border-radius: 20px;">
                 <div class="modal-header border-0">
                     <h5 class="modal-title text-primary fw-900" style="font-size: 1rem;">ĐỔI ẢNH BÌA ALBUM</h5>
@@ -289,8 +289,7 @@
                     <div class="alert alert-supreme text-center mb-3" id="directCoverModalInfo">Album: ...</div>
                     <div style="font-size: 0.8rem; color: #aaa; margin-bottom: 10px;">Chọn bức ảnh ưng ý nhất bên dưới để làm ảnh bìa chào mừng cho khách:</div>
                     
-                    <!-- Lưới hiển thị toàn bộ ảnh trong album -->
-                    <div id="directCoverGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; max-height: 400px; overflow-y: auto; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+                    <div id="directCoverGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; max-height: 70vh; overflow-y: auto; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
                         <div class="text-center text-secondary py-4" style="grid-column: span 4;">Đang tải danh sách ảnh...</div>
                     </div>
                 </div>
@@ -389,7 +388,8 @@
     const folderName = album.folderName || album.name || 'VIP Album';
     const albumTitle = folderName.replace(/'/g, "\\'");
     
-    const img = album.thumbnailFileId ? `https://drive.google.com/thumbnail?id=${album.thumbnailFileId}&sz=w400` : 'https://images.unsplash.com/photo-1542838132-e0c19b48b940?auto=format&fit=crop&w=600&q=80';
+    const coverId = album.cover_image_id || album.coverImageId || album.thumbnailFileId;
+    const img = coverId ? `https://drive.google.com/thumbnail?id=${coverId}&sz=w400` : 'https://images.unsplash.com/photo-1542838132-e0c19b48b940?auto=format&fit=crop&w=600&q=80';
     
     const limitVal = album.limit_photos ?? album.limitPhotos ?? 0;
     const downloadVal = album.allow_download ?? album.allowDownload ?? false;
