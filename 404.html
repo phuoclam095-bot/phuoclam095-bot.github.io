@@ -2,70 +2,26 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChonAnhNhanh.VN - Đang tải album...</title>
-    
-    <!-- CÁC THẺ META MẶC ĐỊNH ĐỂ PHÒNG HỜ -->
-    <meta property="og:type" content="website">
-    <meta property="og:title" id="ogTitle" content="Lựa Chọn Ảnh - ChonAnhNhanh.VN">
-    <meta property="og:description" id="ogDesc" content="Mời bạn xem và lựa chọn những bức ảnh đẹp nhất trong album.">
-    <meta property="og:image" id="ogImage" content="https://chonanhnhanh.vn/default-cover.jpg">
-    <meta property="og:url" id="ogUrl" content="">
-
+    <title>Đang chuyển hướng...</title>
     <script>
-        async function initPage() {
-            const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        // Phân tách đường dẫn trên URL (Ví dụ: /phuoclam/tatnienctbl)
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        
+        // Kiểm tra nếu là đường dẫn album công khai (không phải thư mục /admin)
+        if (pathSegments.length >= 2 && !window.location.pathname.startsWith('/admin')) {
+            const studioSlug = pathSegments[pathSegments.length - 2];
+            const albumSlug = pathSegments[pathSegments.length - 1];
             
-            // Nếu đường dẫn có dạng /studio/album (ví dụ: /phuoclam/bac2)
-            if (pathSegments.length >= 2) {
-                const studioSlug = pathSegments[0].replace(/[^0-9a-z]/g, '');
-                const albumSlug = pathSegments[1].replace(/[^0-9a-z]/g, '');
-                
-                // Cập nhật lại thẻ og:url cho chuẩn xác
-                document.getElementById('ogUrl').setAttribute('content', window.location.href);
-
-                try {
-                    // Gọi API lấy thông tin album và ảnh bìa từ n8n/Database của bạn
-                    const res = await fetch(`https://wsm.congtubaclieu.com.vn/webhook/get-photos?studio=${studioSlug}&album=${albumSlug}`);
-                    const rawData = await res.json();
-                    const data = Array.isArray(rawData) ? rawData[0] : rawData;
-                    
-                    if (data) {
-                        const folderName = data.folderName || data.name || "Album VIP";
-                        const coverId = data.cover_image_id || data.coverImageId || (data.photos && data.photos[0] ? data.photos[0].id : '');
-                        const realStudio = data.studio_slug || studioSlug;
-
-                        // Tạo link ảnh bìa chuẩn nét căng
-                        if (coverId) {
-                            const coverUrl = `https://lh3.googleusercontent.com/d/${coverId}=w1200`;
-                            document.getElementById('ogImage').setAttribute('content', coverUrl);
-                        }
-
-                        // Cập nhật tiêu đề hiển thị trên Zalo/Facebook
-                        document.getElementById('ogTitle').setAttribute('content', `${realStudio.toUpperCase()} - ${folderName}`);
-                        document.getElementById('ogDesc').setAttribute('content', `Mời bạn xem album "${folderName}" từ ${realStudio}. Nhấn vào đây để xem chi tiết!`);
-                        document.title = `${realStudio.toUpperCase()} - ${folderName}`;
-
-                        // Kiểm tra xem trình duyệt truy cập có phải là Bot mạng xã hội hay không
-                        const ua = navigator.userAgent.toLowerCase();
-                        const isBot = /facebookexternalhit|zalo|bot|crawler|spider|robot|crawling/i.test(ua);
-
-                        if (!isBot) {
-                            // Nếu là người dùng thật: Tự động chuyển hướng mượt mà vào giao diện chọn ảnh chính
-                            window.location.replace(`/admin/client.html?studio=${realStudio}&album=${albumSlug}`);
-                        }
-                    }
-                } catch (e) {
-                    console.error("Lỗi tải thông tin album", e);
-                }
-            }
+            // Chuyển hướng chính xác đến /admin/client.html kèm đúng tham số studio và album
+            window.location.replace(`/admin/client.html?studio=${studioSlug}&album=${albumSlug}`);
+        } else {
+            window.location.replace('/');
         }
-
-        initPage();
     </script>
 </head>
-<body style="background: #050a14; color: #fff; text-align: center; padding-top: 20vh; font-family: sans-serif;">
-    <h3 style="color: #00ebb0;">Đang tải album, vui lòng đợi trong giây lát...</h3>
-    <p style="font-size: 0.85rem; color: #aaa;">Hệ thống đang đồng bộ dữ liệu hình ảnh...</p>
+<body>
+    <div style="text-align:center; margin-top:20vh; font-family:sans-serif; color:#00ebb0;">
+        <h3>Đang tải không gian Studio...</h3>
+    </div>
 </body>
 </html>
