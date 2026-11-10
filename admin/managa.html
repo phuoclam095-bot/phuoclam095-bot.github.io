@@ -278,7 +278,25 @@
 
         </div>
     </nav>
-
+    <div class="modal fade" id="directCoverModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content" style="background: #0a0f1e; border: 2px solid var(--primary); border-radius: 20px;">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title text-primary fw-900" style="font-size: 1rem;">ĐỔI ẢNH BÌA ALBUM</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="alert alert-supreme text-center mb-3" id="directCoverModalInfo">Album: ...</div>
+                    <div style="font-size: 0.8rem; color: #aaa; margin-bottom: 10px;">Chọn bức ảnh ưng ý nhất bên dưới để làm ảnh bìa chào mừng cho khách:</div>
+                    
+                    <!-- Lưới hiển thị toàn bộ ảnh trong album -->
+                    <div id="directCoverGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; max-height: 400px; overflow-y: auto; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+                        <div class="text-center text-secondary py-4" style="grid-column: span 4;">Đang tải danh sách ảnh...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="container-fluid">
         <div class="mt-3"><h1 class="supreme-title">Quản Lý Album</h1></div>
         <div id="vipExpiredBlockNotice" style="display: none; max-width: 500px; margin: 40px auto 0; background: rgba(255, 71, 87, 0.1); border: 1.5px dashed #ff4757; border-radius: 24px; padding: 40px 20px; text-align: center; box-shadow: 0 10px 30px rgba(255, 71, 87, 0.1);">
@@ -369,6 +387,8 @@
         card.id = `card-${id}`;
         
         const img = album.thumbnailFileId ? `https://drive.google.com/thumbnail?id=${album.thumbnailFileId}&sz=w400` : 'https://images.unsplash.com/photo-1542838132-e0c19b48b940?auto=format&fit=crop&w=600&q=80';
+
+card.innerHTML = `<div class="card-img-header" style="background-image: url('${img}'); cursor: pointer;" onclick="openDirectCoverModal('${id}', '${albumTitle}')" title="Bấm để đổi ảnh bìa"><div class="album-vip-title">${folderName}</div></div>...`
         
         const limitVal = album.limit_photos ?? album.limitPhotos ?? 0;
         const downloadVal = album.allow_download ?? album.allowDownload ?? false;
@@ -848,7 +868,82 @@ function closeZipLoading() {
     }
     modalInstance.show();
 }
+
+
+        let currentCoverFolderId = '';
+
+// 1. Mở Modal và tải toàn bộ ảnh của album đó lên
+async function openDirectCoverModal(folderId, albumName) {
+    currentCoverFolderId = folderId;
+    document.getElementById('directCoverModalInfo').innerText = `Album: ${albumName}`;
+    
+    const grid = document.getElementById('directCoverGrid');
+    grid.innerHTML = `<div class="text-secondary text-center py-4" style="grid-column: 1 / -1;">Đang tải ảnh từ Google Drive...</div>`;
+    
+    new bootstrap.Modal(document.getElementById('directCoverModal')).show();
+
+    try {
+        const res = await fetch(`https://wsm.congtubaclieu.com.vn/webhook/get-photos?album=${folderId}`);
+        const data = await res.json();
+        const photos = data.photos || (Array.isArray(data) ? data[0]?.photos : []) || [];
         
+        grid.innerHTML = '';
+        if (photos.length === 0) {
+            grid.innerHTML = `<div class="text-secondary text-center py-4" style="grid-column: 1 / -1;">Album chưa có ảnh nào.</div>`;
+            return;
+        }
+
+        photos.forEach(p => {
+            const thumbUrl = `https://drive.google.com/thumbnail?id=${p.id}&sz=h200`;
+            const item = document.createElement('div');
+            item.style.cssText = `position: relative; aspect-ratio: 1/1; border-radius: 8px; overflow: hidden; cursor: pointer; border: 2px solid transparent; transition: 0.2s;`;
+            item.innerHTML = `<img src="${thumbUrl}" style="width: 100%; height: 100%; object-fit: cover;">`;
+            
+            // Khi bấm vào một ảnh bất kỳ -> lưu làm ảnh bìa ngay lập tức
+            item.onclick = () => selectThisAsCover(p.id);
+            item.onmouseover = () => item.style.borderColor = 'var(--primary)';
+            item.onmouseout = () => item.style.borderColor = 'transparent';
+
+            grid.appendChild(item);
+        });
+    } catch (e) {
+        console.error(e);
+        grid.innerHTML = `<div class="text-danger text-center py-4" style="grid-column: 1 / -1;">Không thể tải danh sách ảnh!</div>`;
+    }
+}
+
+async function selectThisAsCover(photoId) {
+    showToast("Đang cập nhật ảnh bìa mới...");
+    try {
+        const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/update-album-settings', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                folderId: currentCoverFolderId, 
+                coverImageId: photoId 
+            })
+        });
+        const result = await res.json();
+        
+        if (result.success || res.ok) {
+            showToast("Đã đổi ảnh bìa thành công!");
+            
+            const targetAlbum = allAlbums.find(a => String(a.folder_id || a.folderId || a.id) === String(currentCoverFolderId));
+            if (targetAlbum) {
+                targetAlbum.cover_image_id = photoId;
+                targetAlbum.thumbnailFileId = photoId; 
+            }
+            sessionStorage.setItem('cache_albums', JSON.stringify(allAlbums));
+            renderAlbums(allAlbums);
+            bootstrap.Modal.getInstance(document.getElementById('directCoverModal')).hide();
+        } else {
+            alert("Lưu ảnh bìa thất bại!");
+        }
+    } catch (e) {
+        console.error(e);
+        alert("Lỗi kết nối máy chủ khi lưu ảnh bìa!");
+    }
+}
         function renderLightboxCurrent() {
             if (currentLightboxPhotos.length === 0) return;
             const p = currentLightboxPhotos[currentIndex];
