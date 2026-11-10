@@ -879,16 +879,22 @@ async function openDirectCoverModal(folderId, albumName) {
 
     try {
         const res = await fetch(`https://wsm.congtubaclieu.com.vn/webhook/get-photos?folderId=${folderId}`);
-        if (!res.ok) throw new Error(`Lỗi máy chủ: ${res.status}`);
-
-        const data = await res.json();
         
-        // Hứng trực tiếp mảng trả về hoặc bóc tách linh hoạt
+        if (!res.ok) {
+            throw new Error(`Lỗi máy chủ: ${res.status}`);
+        }
+
+        const textData = await res.text();
+        if (!textData || textData.trim() === '') {
+            throw new Error("Webhook n8n trả về dữ liệu trống (rỗng).");
+        }
+
+        const data = JSON.parse(textData);
         const photos = Array.isArray(data) ? data : (data.photos || data.data || []);
         
         grid.innerHTML = '';
         if (photos.length === 0) {
-            grid.innerHTML = `<div class="text-secondary text-center py-4" style="grid-column: 1 / -1;">Album chưa có ảnh nào.</div>`;
+            grid.innerHTML = `<div class="text-secondary text-center py-4" style="grid-column: 1 / -1;">Album chưa có ảnh nào hoặc n8n chưa trả về danh sách ảnh.</div>`;
             return;
         }
 
