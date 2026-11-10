@@ -705,9 +705,18 @@ function dismissWelcomeCover() {
             if ((!studioFullName || studioFullName.toLowerCase() === 'studio') && studioSlug && studioSlug.toLowerCase() !== 'studio') {
                 studioFullName = studioSlug;
             }
+            
+            // Nếu vẫn rỗng, lấy luôn studioSlug từ URL
+            if (!studioFullName && studioSlug) {
+                studioFullName = studioSlug;
+            }
+            
+            // Viết hoa toàn bộ tên studio cho chuyên nghiệp
+            const finalStudioName = studioFullName ? studioFullName.toUpperCase() : "CHONANHNHANH.VN";
+
             if (studioFullName && studioFullName.toLowerCase() !== 'studio') {
-                document.title = `${studioFullName.toUpperCase()} - ${folderName}`;
-                document.getElementById('albumTitle').innerText = `${studioFullName.toUpperCase()} - ${folderName}`;
+                document.title = `${finalStudioName} - ${folderName}`;
+                document.getElementById('albumTitle').innerText = `${finalStudioName} - ${folderName}`;
             } else {
                 document.title = folderName;
                 document.getElementById('albumTitle').innerText = folderName;
@@ -715,9 +724,11 @@ function dismissWelcomeCover() {
 
             const local = localStorage.getItem('anh_da_chon_cua_khach_' + (window.fid || albumSlug));
             if (local) selectedIds = JSON.parse(local);
+            
+            // TRUYỀN ĐÚNG BIẾN finalStudioName VÀO ĐÂY ĐỂ HIỆN Ở MÀN HÌNH CHÀO MỪNG
             setupDriveCoverImage(photos, {
                 folderName: folderName,
-                studio_name: studioFullName,
+                studio_name: finalStudioName,
                 cover_image_id: foundCoverId
             });
             loadOverlay.style.display = 'none';
