@@ -935,6 +935,14 @@ async function selectThisAsCover(photoId) {
             if (targetAlbum) {
                 targetAlbum.cover_image_id = photoId;
                 targetAlbum.thumbnailFileId = photoId; 
+
+                const localStudioSlug = localStorage.getItem('admin_studio_slug');
+                let rawStudio = localStudioSlug || targetAlbum.studio_slug || targetAlbum.studioSlug || targetAlbum.studio || 'studio';
+                const studioSlug = createSlug(rawStudio);
+                const folderName = targetAlbum.folderName || targetAlbum.name || 'album';
+                const albumSlug = targetAlbum.album_slug || targetAlbum.albumSlug || createSlug(folderName);
+                
+                fetch(`https://chonanhnhanh.vn/${studioSlug}/${albumSlug}`).catch(() => {});
             }
             sessionStorage.setItem('cache_albums', JSON.stringify(allAlbums));
             renderAlbums(allAlbums);
