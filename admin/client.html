@@ -652,17 +652,17 @@ function dismissWelcomeCover() {
             }
 
             const rawData = await res.json();
+            
+            // Xử lý dữ liệu an toàn tránh lỗi biến undefined
+            let data = {};
             if (Array.isArray(rawData)) {
-                photos = rawData;
-            } else if (rawData && rawData.photos) {
-                photos = rawData.photos;
-                albumSettings = rawData.settings || albumSettings;
-            } else if (rawData && rawData[0] && rawData[0].photos) {
-                photos = rawData[0].photos;
-                albumSettings = rawData[0].settings || albumSettings;
+                data = rawData[0] || {};
+                data.photos = rawData; // Nếu n8n trả về mảng danh sách ảnh trực tiếp
             } else {
-                photos = rawData ? [rawData] : [];
+                data = rawData || {};
             }
+
+            photos = data.photos || (Array.isArray(rawData) ? rawData : []);
             albumSettings = data.settings || albumSettings;
             
             window.fid = data.folder_id || albumSlug; 
