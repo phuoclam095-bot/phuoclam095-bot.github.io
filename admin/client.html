@@ -654,10 +654,20 @@ function dismissWelcomeCover() {
             const rawData = await res.json();
             
             let data = {};
+            let foundCoverId = '';
+
             if (Array.isArray(rawData)) {
+                // Tự động tìm xem có item nào trong mảng chứa cover_image_id không
+                const itemWithCover = rawData.find(item => item.cover_image_id || item.coverImageId);
+                if (itemWithCover) {
+                    foundCoverId = itemWithCover.cover_image_id || itemWithCover.coverImageId;
+                }
+                
                 data = rawData[0] || {};
-                data.photos = rawData; 
-                data = rawData || {};
+                data.photos = rawData;
+            } else {
+                data = rawData;
+                foundCoverId = data.cover_image_id || data.coverImageId;
             }
 
             photos = data.photos || (Array.isArray(rawData) ? rawData : []);
@@ -665,7 +675,10 @@ function dismissWelcomeCover() {
             
             window.fid = data.folder_id || albumSlug; 
             fid = window.fid;
-            const activeCoverId = data.cover_image_id || data.coverImageId || albumSettings.cover_image_id || (photos[0] ? photos[0].id : '');
+
+            // Ưu tiên tuyệt đối lấy cover ID đã tìm thấy
+            const activeCoverId = foundCoverId || albumSettings.cover_image_id || (photos[0] ? photos[0].id : '');
+            
             if (activeCoverId) {
                 const directImageUrl = `https://lh3.googleusercontent.com/d/${activeCoverId}=w1200`;
                 const ogImgMeta = document.getElementById('metaOgImage');
@@ -705,7 +718,7 @@ function dismissWelcomeCover() {
             setupDriveCoverImage(photos, {
                 folderName: folderName,
                 studio_name: studioFullName,
-                cover_image_id: data.cover_image_id || data.coverImageId || albumSettings.cover_image_id || albumSettings.coverImageId
+                cover_image_id: foundCoverId
             });
             loadOverlay.style.display = 'none';
             initGrid(); 
