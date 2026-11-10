@@ -2,10 +2,55 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0;url=admin/index">
-    <title>Chonanhnhanh.vn</title>
+    <title>Chonanhnhanh.vn - Quản lý khách hàng và chọn ảnh nhanh</title>
+    <!-- Các thẻ Meta mặc định cho trang chủ -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://chonanhnhanh.vn/">
+    <meta property="og:title" content="Chonanhnhanh.vn - Chọn Ảnh Nhanh">
+    <meta property="og:description" content="Hệ thống quản lý khách hàng và chọn ảnh nhanh chóng, chuyên nghiệp qua link Google Drive.">
+    <meta property="og:image" content="https://chonanhnhanh.vn/default-cover.jpg">
 </head>
 <body>
-    <p>Đang chuyển hướng đến trang quản trị...</p>
+    <p>Đang chuyển hướng...</p>
+
+    <script>
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        
+        // Kiểm tra nếu là đường dẫn album (ví dụ: /phuoclam/pdttp)
+        if (pathSegments.length === 2 && !window.location.pathname.startsWith('/admin')) {
+            const studio = pathSegments[0].toUpperCase();
+            const album = pathSegments[1];
+
+            // Đổi tiêu đề và mô tả động cho album
+            document.title = `${studio} - Album Lựa Chọn Ảnh`;
+            
+            const updateMeta = (property, content) => {
+                let element = document.querySelector(`meta[property="${property}"]`) || document.querySelector(`meta[name="${property}"]`);
+                if (!element) {
+                    element = document.createElement('meta');
+                    element.setAttribute(property.startsWith('og:') ? 'property' : 'name', property);
+                    document.head.appendChild(element);
+                }
+                element.content = content;
+            };
+
+            updateMeta('og:title', `${studio} - Album Lựa Chọn Ảnh`);
+            updateMeta('og:description', `Mời bạn xem và lựa chọn những khoảnh khắc đẹp nhất từ ${studio}. Nhấn vào đây để xem chi tiết album!`);
+            updateMeta('og:image', 'https://chonanhnhanh.vn/default-cover.jpg');
+            updateMeta('og:url', window.location.href);
+
+            // Kiểm tra xem có phải Bot mạng xã hội quét link không
+            const ua = navigator.userAgent.toLowerCase();
+            const isBot = /facebookexternalhit|zalo|bot|crawler|spider|robot|whatsapp|telegram|preview/i.test(ua);
+            
+            // Nếu là người dùng thật, tự động chuyển hướng mượt mà sang trang client chọn ảnh
+            if (!isBot) {
+                window.location.replace(`https://chonanhnhanh.vn/admin/client.html?studio=${pathSegments[0]}&album=${album}`);
+            }
+        } else {
+            // Nếu truy cập trang chủ bình thường, giữ nguyên logic chuyển hướng cũ vào trang quản trị
+            window.location.replace('admin/index');
+        }
+    </script>
 </body>
 </html>
