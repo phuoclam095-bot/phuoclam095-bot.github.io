@@ -794,6 +794,7 @@ async function activateFreeTrial() {
         document.getElementById('resultBox').style.display = 'block';
 
         showInlineMessage("Khởi tạo Album thành công!", "success");
+        fetch(`https://chonanhnhanh.vn/${studioSlug}/${albumSlug}`).catch(() => {});
 
     } catch (err) {
         console.error("Lỗi tạo album:", err);
