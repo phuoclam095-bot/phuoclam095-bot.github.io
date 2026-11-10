@@ -653,12 +653,10 @@ function dismissWelcomeCover() {
 
             const rawData = await res.json();
             
-            // Xử lý dữ liệu an toàn tránh lỗi biến undefined
             let data = {};
             if (Array.isArray(rawData)) {
                 data = rawData[0] || {};
-                data.photos = rawData; // Nếu n8n trả về mảng danh sách ảnh trực tiếp
-            } else {
+                data.photos = rawData; 
                 data = rawData || {};
             }
 
