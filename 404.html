@@ -13,7 +13,7 @@
             const albumSlug = pathSegments[pathSegments.length - 1];
             
             // Chuyển hướng chính xác đến /admin/client.html kèm đúng tham số studio và album
-            window.location.replace(`/admin/client.html?studio=${studioSlug}&album=${albumSlug}`);
+            window.location.replace(`/admin/client?studio=${studioSlug}&album=${albumSlug}`);
         } else {
             window.location.replace('/');
         }
