@@ -618,13 +618,17 @@ function setupDriveCoverImage(photosArray, albumData) {
         if (mainImgEl) mainImgEl.src = coverImgUrl;
         if (bgBlurEl) bgBlurEl.style.backgroundImage = `url('${coverImgUrl}')`;
         if (titleEl) titleEl.innerText = albumData.folderName || albumData.name || 'ALBUM VIP';
-        if (studioEl) studioEl.innerText = albumData.studio_name || albumData.studioName || 'ChonAnhNhanh.vn';
+        
+        // BẮT BUỘC LẤY ĐÚNG TỪ albumData.studio_name, TUYỆT ĐỐI KHÔNG LẤY TÊN ẢNH
+        if (studioEl) {
+            studioEl.innerText = albumData.studio_name || "CHONANHNHANH.VN";
+        }
+        
         coverScreen.style.display = 'flex';
     } else {
         coverScreen.style.display = 'none';
     }
 }
-
 function dismissWelcomeCover() {
     const coverScreen = document.getElementById('welcomeCoverScreen');
     coverScreen.style.opacity = '0';
