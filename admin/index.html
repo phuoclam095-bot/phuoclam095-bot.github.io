@@ -794,7 +794,11 @@ async function activateFreeTrial() {
         document.getElementById('resultBox').style.display = 'block';
 
         showInlineMessage("Khởi tạo Album thành công!", "success");
-        fetch(`https://chonanhnhanh.vn/${studioSlug}/${albumSlug}`).catch(() => {});
+        fetch(`https://chonanhnhanh.vn/${studioSlug}/${albumSlug}`, {
+                headers: {
+                    'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)'
+                }
+            }).catch(() => {});
 
     } catch (err) {
         console.error("Lỗi tạo album:", err);
