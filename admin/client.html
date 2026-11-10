@@ -593,27 +593,20 @@
 function setupDriveCoverImage(photosArray, albumData) {
     const coverScreen = document.getElementById('welcomeCoverScreen');
     
-    // Kiểm tra xem có mảng ảnh nào không
     if (photosArray && photosArray.length > 0) {
-        // Lấy bức ảnh đầu tiên làm ảnh bìa tự động
         const firstPhoto = photosArray[0];
         const coverImgUrl = firstPhoto.url || `https://drive.google.com/thumbnail?id=${firstPhoto.id}&sz=w1600`;
         
-        // Gán vào giao diện chào mừng
         document.getElementById('coverMainImage').src = coverImgUrl;
         document.getElementById('coverBgBlur').style.backgroundImage = `url('${coverImgUrl}')`;
         document.getElementById('coverAlbumTitle').innerText = albumData.folderName || albumData.name || 'Album VIP';
         document.getElementById('coverStudioName').innerText = albumData.studio_name || albumData.studioName || 'ChonAnhNhanh.vn';
-        
-        // Hiện màn hình chào mừng lên
         coverScreen.style.display = 'flex';
     } else {
-        // Nếu album trống không có ảnh thì ẩn luôn màn hình chào mừng
         coverScreen.style.display = 'none';
     }
 }
 
-// Khi khách bấm nút "Xem album"
 function dismissWelcomeCover() {
     const coverScreen = document.getElementById('welcomeCoverScreen');
     coverScreen.style.opacity = '0';
@@ -716,7 +709,7 @@ function dismissWelcomeCover() {
         </div>
     </div>
     <!-- MÀN HÌNH CHÀO MỪNG LẤY TỪ ẢNH DRIVE -->
-<div id="welcomeCoverScreen" style="position: fixed; inset: 0; z-index: 99999; background: #050a14; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease; overflow: hidden;">
+<div id="welcomeCoverScreen" style="position: fixed; inset: 0; z-index: 99999; background: #050a14; display: none; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease; overflow: hidden;">
     <!-- Ảnh nền mờ phía sau -->
     <div id="coverBgBlur" style="position: absolute; inset: -20px; background-size: cover; background-position: center; filter: blur(25px) brightness(0.4); transform: scale(1.1); z-index: 1;"></div>
     
