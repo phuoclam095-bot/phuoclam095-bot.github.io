@@ -402,7 +402,7 @@
     let rawStudio = localStudioSlug || album.studio_slug || album.studioSlug || album.studio || 'studio';
     
     const studioSlug = toSlug(rawStudio);
-    const albumSlug = album.album_slug || album.albumSlug || toSlug(folderName);
+    const albumSlug = album.album_slug || album.albumSlug || albumToSlug(folderName);
     
     const clientPageUrl = `${PATHS.CLIENT}${studioSlug}/${albumSlug}`;
     const driveFolderUrl = `https://drive.google.com/drive/folders/${id}`;
@@ -987,9 +987,8 @@ async function selectThisAsCover(photoId) {
         .normalize('NFD') 
         .replace(/[\u0300-\u036f]/g, '') 
         .replace(/[đĐ]/g, 'd') 
-        .replace(/([^0-9a-z-\s])/g, '')
-        .replace(/\s+/g, '-') 
-        .replace(/-+/g, '-'); 
+        .replace(/([^0-9a-z])/g, '') 
+        .trim();
 }
 
 function jumpToLightboxIndex(idx) {
