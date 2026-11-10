@@ -709,13 +709,9 @@ function dismissWelcomeCover() {
             // Lấy tên thư mục / tên album
             let folderName = photos[0].folderName || data.folderName || "VIP ALBUM";
 
-            // XÂY DỰNG TÊN STUDIO CHUẨN XÁC: Ưu tiên dữ liệu từ DB, nếu không có lấy từ URL (`studioSlug`)
-            let rawStudioName = data.studioName || data.name || data.studio_name || data.studio_slug || "";
+           let rawStudioName = studioSlug || data.studio_slug || data.studioName || data.studio_name || "";
             
-            if ((!rawStudioName || rawStudioName.toLowerCase() === 'studio') && studioSlug && studioSlug.toLowerCase() !== 'studio') {
-                rawStudioName = studioSlug;
-            }
-            if (!rawStudioName && studioSlug) {
+            if (rawStudioName.toLowerCase() === 'studio' && studioSlug) {
                 rawStudioName = studioSlug;
             }
 
@@ -730,7 +726,6 @@ function dismissWelcomeCover() {
                 document.title = folderName;
                 document.getElementById('albumTitle').innerText = folderName;
             }
-
             // Khôi phục trạng thái ảnh đã chọn của khách từ LocalStorage
             const local = localStorage.getItem('anh_da_chon_cua_khach_' + (window.fid || albumSlug));
             if (local) selectedIds = JSON.parse(local);
