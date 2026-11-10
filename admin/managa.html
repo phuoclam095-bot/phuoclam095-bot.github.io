@@ -942,7 +942,12 @@ async function selectThisAsCover(photoId) {
                 const folderName = targetAlbum.folderName || targetAlbum.name || 'album';
                 const albumSlug = targetAlbum.album_slug || targetAlbum.albumSlug || createSlug(folderName);
                 
-                fetch(`https://chonanhnhanh.vn/${studioSlug}/${albumSlug}`).catch(() => {});
+                // === GỌI NGẨM SANG N8N ĐỂ LÀM NÓNG LẠI CACHE KHI ĐỔI ẢNH BÌA ===
+                fetch('https://wsm.congtubaclieu.com.vn/webhook/warmup-cache', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ studioSlug: studioSlug, albumSlug: albumSlug })
+                }).catch(() => {});
             }
             sessionStorage.setItem('cache_albums', JSON.stringify(allAlbums));
             renderAlbums(allAlbums);
