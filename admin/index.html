@@ -794,11 +794,11 @@ async function activateFreeTrial() {
         document.getElementById('resultBox').style.display = 'block';
 
         showInlineMessage("Khởi tạo Album thành công!", "success");
-        fetch(`https://chonanhnhanh.vn/${studioSlug}/${albumSlug}`, {
-                headers: {
-                    'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)'
-                }
-            }).catch(() => {});
+        fetch('https://wsm.congtubaclieu.com.vn/webhook/warmup-cache', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ studioSlug: studioSlug, albumSlug: albumSlug })
+        }).catch(() => {});
 
     } catch (err) {
         console.error("Lỗi tạo album:", err);
