@@ -1,183 +1,404 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trình Xem Trước Album Photobook 3D - ChonAnhNhanh.vn</title>
-    <!-- Tailwind CSS cho giao diện hiện đại -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Thư viện StPageFlip cho hiệu ứng lật trang sách 3D -->
-    <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
-    <!-- FontAwesome cho icon -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body {
-            background-color: #0f172a;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        /* Tùy chỉnh vùng chứa sách 3D */
-        #book-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 550px;
-        }
-        .page {
-            background-color: white;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Công cụ Studio Pro - ChonAnhNhanh.vn</title>
+
+<!-- Thư viện face-api.js -->
+<script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.js"></script>
+
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Arial, sans-serif; background: #f3f5f9; color: #202938; }
+.container { max-width: 1300px; margin: auto; padding: 20px; }
+h1 { font-size: 24px; }
+.panel { background: white; padding: 20px; border-radius: 12px; margin-bottom: 18px; box-shadow: 0 2px 10px #0000000b; }
+
+/* Tabs điều hướng */
+.tabs { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+.tab-btn { background: #e2e8f0; color: #475569; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; border: none; }
+.tab-btn.active { background: #2563eb; color: white; }
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+
+.upload-box { border: 2px dashed #cbd5e1; border-radius: 10px; padding: 20px; text-align: center; background: #fafafa; }
+input[type=file] { width: 100%; margin-top: 10px; }
+button { border: 0; padding: 12px 22px; border-radius: 8px; background: #2563eb; color: white; font-weight: bold; cursor: pointer; }
+button:disabled { background: #94a3b8; cursor: not-allowed; }
+
+.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-top: 15px; }
+.photo { background: white; border: 1px solid #e2e8f0; border-radius: 9px; overflow: hidden; position: relative; }
+.photo img { width: 100%; height: 150px; object-fit: cover; }
+.photo-info { padding: 8px; font-size: 11px; overflow-wrap: anywhere; background: #fff; }
+.badge { position: absolute; top: 6px; left: 6px; background: rgba(0,0,0,0.8); color: white; padding: 3px 6px; font-size: 10px; border-radius: 4px; font-weight: bold; }
+
+.dup-group { border: 2px solid #d97706; margin-bottom: 20px; padding: 15px; border-radius: 10px; background: #fffbeb; }
+.progress { height: 12px; background: #e5e7eb; border-radius: 20px; overflow: hidden; margin: 12px 0; }
+.progress-bar { height: 100%; width: 0%; background: #2563eb; transition: width .1s; }
+</style>
 </head>
-<body class="text-slate-100 flex flex-col min-h-screen">
 
-    <!-- Header -->
-    <header class="bg-slate-900 border-b border-slate-800 py-4 px-6 flex justify-between items-center shadow-md">
-        <div class="flex items-center space-x-3">
-            <span class="bg-orange-500 text-white font-bold p-2 rounded-lg text-lg"><i class="fa-solid fa-camera"></i></span>
-            <div>
-                <h1 class="text-xl font-bold tracking-wide">CHONANHNHANH.VN <span class="text-orange-400 text-sm font-normal">| Smart Photobook 3D</span></h1>
-                <p class="text-xs text-slate-400">Trình xem trước layout album cưới / kỷ niệm tương tác cao</p>
-            </div>
-        </div>
-        <div class="flex items-center space-x-3">
-            <span class="text-sm bg-slate-800 px-3 py-1.5 rounded-full border border-slate-700">Mã Album: <strong class="text-orange-400">#CANH-9281</strong></span>
-            <button onclick="alert('Đã gửi yêu cầu duyệt layout về hệ thống Studio thành công!')" class="bg-orange-600 hover:bg-orange-500 text-white px-4 py-2 rounded-lg text-sm font-semibold transition shadow-lg flex items-center space-x-2">
-                <i class="fa-solid fa-check-double"></i> <span>Duyệt Layout In Ấn</span>
-            </button>
-        </div>
-    </header>
+<body>
+<div class="container">
 
-    <!-- Main Content -->
-    <main class="flex-1 flex flex-col items-center justify-center p-6 max-w-6xl mx-auto w-full">
-        
-        <!-- Bảng điều khiển thông minh (Smart Toolbar) -->
-        <div class="bg-slate-800/80 backdrop-blur border border-slate-700 rounded-xl p-3 mb-6 flex flex-wrap justify-between items-center w-full gap-4 shadow-lg">
-            <div class="flex items-center space-x-4">
-                <span class="text-sm font-medium text-slate-300"><i class="fa-solid fa-wand-magic-sparkles text-orange-400 mr-1.5"></i> Chế độ xem:</span>
-                <button onclick="setMode('auto')" id="btn-auto" class="text-xs bg-orange-500 text-white px-3 py-1.5 rounded-md font-medium transition">Smart Auto-Flow</button>
-                <button onclick="setMode('grid')" id="btn-grid" class="text-xs bg-slate-700 text-slate-300 hover:bg-slate-600 px-3 py-1.5 rounded-md font-medium transition">Xem Lưới Nhanh</button>
-            </div>
-            <div class="flex items-center space-x-3 text-sm">
-                <button onclick="prevPage()" class="bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-lg transition"><i class="fa-solid fa-chevron-left"></i> Trang trước</button>
-                <span id="page-indicator" class="font-semibold text-orange-400 px-2">Trang 1 / 4</span>
-                <button onclick="nextPage()" class="bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-lg transition">Trang sau <i class="fa-solid fa-chevron-right"></i></button>
-            </div>
-        </div>
+<h1>📸 Hệ Thống Studio Chuyên Biệt (Tối Ưu Hóa Tốc Độ)</h1>
 
-        <!-- Khung hiển thị sách 3D (Interactive Flipbook) -->
-        <div class="w-full flex justify-center relative bg-slate-950/40 p-6 rounded-2xl border border-slate-800 shadow-2xl">
-            <div id="book-container">
-                <!-- Sách sẽ được render tự động bằng thư viện StPageFlip qua JavaScript -->
-                <div id="demo-book">
-                    <!-- Trang 1: Bìa -->
-                    <div class="page bg-slate-900 text-white p-8 text-center border-r border-slate-800">
-                        <div class="border-2 border-orange-500/50 p-6 h-full flex flex-col justify-center items-center rounded-lg">
-                            <span class="text-orange-400 uppercase tracking-widest text-xs mb-2 font-semibold">Wedding Photobook</span>
-                            <h2 class="text-2xl font-serif font-bold mb-3">HẠNH PHÚC LỨA ĐÔI</h2>
-                            <p class="text-xs text-slate-400">Khổ trải chuẩn 60x20 cm</p>
-                            <div class="mt-8 text-xs bg-orange-600/30 text-orange-300 px-3 py-1 rounded-full border border-orange-500/30">Chạm hoặc vuốt góc để lật sách ➔</div>
-                        </div>
-                    </div>
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('faceTab')">🔍 1. Tìm Kiếm Khuôn Mặt (Chống Treo)</button>
+  <button class="tab-btn" onclick="switchTab('dupTab')">👥 2. Lọc & Rút Gọn Ảnh Trùng (Burst)</button>
+  <button class="tab-btn" onclick="switchTab('blurTab')">⚠️ 3. Lọc Ảnh Nhòe / Out Nét</button>
+</div>
 
-                    <!-- Trang 2: Spread 1 (Ảnh đôi) -->
-                    <div class="page p-4 bg-white text-slate-800 border-r border-slate-200">
-                        <div class="w-full h-full flex flex-col justify-between">
-                            <div class="h-[80%] overflow-hidden rounded-md shadow-inner bg-slate-100">
-                                <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover" alt="Album 1">
-                            </div>
-                            <div class="py-2 text-center">
-                                <p class="text-xs text-slate-500 italic">Khoảnh khắc thiêng liêng - Trang 01</p>
-                            </div>
-                        </div>
-                    </div>
+<!-- ================= TAB 1: KHUÔN MẶT CHỐNG TREO ================= -->
+<div id="faceTab" class="tab-pane active">
+  <div class="panel">
+    <h3>Bước 1: Chọn ảnh khuôn mặt mẫu</h3>
+    <div class="upload-box">
+      <input type="file" id="reference" accept="image/*">
+      <div id="referencePreview" style="margin-top:10px;"></div>
+    </div>
+  </div>
 
-                    <!-- Trang 3: Spread 2 (Ảnh ghép) -->
-                    <div class="page p-4 bg-white text-slate-800 border-r border-slate-200">
-                        <div class="grid grid-cols-2 gap-2 h-[80%]">
-                            <div class="overflow-hidden rounded-md bg-slate-100">
-                                <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=500&q=80" class="w-full h-full object-cover" alt="Detail 1">
-                            </div>
-                            <div class="overflow-hidden rounded-md bg-slate-100">
-                                <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=500&q=80" class="w-full h-full object-cover" alt="Detail 2">
-                            </div>
-                        </div>
-                        <div class="py-2 text-center">
-                            <p class="text-xs text-slate-500 italic">Chi tiết lễ cưới - Trang 02</p>
-                        </div>
-                    </div>
+  <div class="panel">
+    <h3>Bước 2: Chọn danh sách ảnh quét (Tối đa 1.000 ảnh)</h3>
+    <div class="upload-box">
+      <input type="file" id="photos" accept="image/*" multiple>
+      <p id="fileCount" style="font-size:12px; color:#64748b">Chưa chọn ảnh</p>
+    </div>
+  </div>
 
-                    <!-- Trang 4: Bìa sau -->
-                    <div class="page bg-slate-900 text-white p-8 text-center">
-                        <h3 class="text-lg font-bold text-orange-400 mb-2">CHONANHNHANH.VN</h3>
-                        <p class="text-xs text-slate-400">Được thiết kế và đồng bộ tự động bởi hệ thống CRM Studio</p>
-                        <div class="mt-6 text-xs text-slate-500">Hết album</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <div class="panel">
+    <h3>Bước 3: Thực thi</h3>
+    <label>Ngưỡng khoảng cách: <strong id="thresholdValue">0.50</strong></label>
+    <input type="range" id="threshold" min="0.35" max="0.75" step="0.01" value="0.50" style="width:100%; margin:10px 0;">
+    
+    <div style="display:flex; gap:10px;">
+      <button id="startFace">BẮT ĐẦU TÌM KHUÔN MẶT</button>
+      <button id="stopFace" disabled style="background:#dc2626">DỪNG</button>
+    </div>
 
-        <!-- Hướng dẫn nhanh phía dưới -->
-        <div class="mt-6 text-center text-xs text-slate-400 flex items-center justify-center space-x-6">
-            <span><i class="fa-solid fa-hand-pointer text-orange-400 mr-1"></i> Kéo hoặc click các góc trang sách để lật</span>
-            <span><i class="fa-solid fa-shield-halved text-orange-400 mr-1"></i> Bảo mật bản quyền tự động</span>
-            <span><i class="fa-solid fa-bolt text-orange-400 mr-1"></i> Tốc độ render siêu mượt</span>
-        </div>
-    </main>
+    <div style="margin-top:15px;">
+      <div id="faceStatus" style="font-size:13px; color:#475569;">Trạng thái: Đang chờ...</div>
+      <div class="progress"><div class="progress-bar" id="faceBar"></div></div>
+    </div>
+  </div>
 
-    <!-- JavaScript Khởi tạo hiệu ứng lật trang 3D -->
-    <script>
-        let pageFlip;
+  <div class="panel">
+    <h3>Kết quả khớp khuôn mặt</h3>
+    <div id="results" class="gallery"></div>
+  </div>
+</div>
 
-        document.addEventListener('DOMContentLoaded', function () {
-            // Khởi tạo thư viện StPageFlip
-            pageFlip = new St.PageFlip(document.getElementById('demo-book'), {
-                width: 450,
-                height: 550,
-                size: "stretch",
-                minWidth: 300,
-                maxWidth: 600,
-                minHeight: 400,
-                maxHeight: 700,
-                maxShadowOpacity: 0.5,
-                showCover: true,
-                mobileScrollSupport: false
-            });
+<!-- ================= TAB 2: LỌC TRÙNG & RÚT GỌN 1000 XUỐNG VÀI TRĂM ================= -->
+<div id="dupTab" class="tab-pane">
+  <div class="panel">
+    <h3>Gom nhóm & Tự động đề xuất giữ lại ảnh nét nhất trong chuỗi nháy liên tục</h3>
+    <p style="font-size:13px; color:#64748b;">Hệ thống sẽ quét các nhóm bấm liên tiếp (Burst) cùng một góc, tự động chấm điểm độ nét (Laplacian) để giữ lại tấm đẹp nhất và gom các tấm rác/trùng vào một chỗ để anh bấm nút bớt.</p>
+    <div class="upload-box">
+      <input type="file" id="dupPhotos" accept="image/*" multiple>
+      <p id="dupFileCount" style="font-size:12px; color:#64748b">Chưa chọn ảnh</p>
+    </div>
+    <div style="margin-top:15px;">
+      <button id="startDup">QUÉT & GOM NHÓM TRÙNG GÓC</button>
+    </div>
+  </div>
+  <div class="panel">
+    <h3>Danh sách các nhóm trùng (Chọn giữ tấm tốt, bỏ tấm thừa)</h3>
+    <div id="dupContainer"></div>
+  </div>
+</div>
 
-            // Load các trang vào hiệu ứng
-            pageFlip.loadFromHTML(document.querySelectorAll('.page'));
+<!-- ================= TAB 3: LỌC NHÒE ================= -->
+<div id="blurTab" class="tab-pane">
+  <div class="panel">
+    <h3>Quét độ nét Laplacian Variance</h3>
+    <div class="upload-box">
+      <input type="file" id="blurPhotos" accept="image/*" multiple>
+      <p id="blurFileCount" style="font-size:12px; color:#64748b">Chưa chọn ảnh</p>
+    </div>
+    <div style="margin-top:12px;">
+      <label>Ngưỡng nhòe: <strong id="blurVal">40</strong></label>
+      <input type="range" id="blurThreshold" min="15" max="100" step="5" value="40" style="width:100%; margin-top:5px;">
+    </div>
+    <div style="margin-top:15px;">
+      <button id="startBlur">QUÉT ẢNH NHÒE NGAY</button>
+    </div>
+  </div>
+  <div class="panel">
+    <h3>Danh sách ảnh bị nhòe / out nét</h3>
+    <div id="blurResults" class="gallery"></div>
+  </div>
+</div>
 
-            // Cập nhật số trang khi lật
-            pageFlip.on('flip', (e) => {
-                document.getElementById('page-indicator').innerText = `Trang ${e.data + 1} / ${pageFlip.getPageCount()}`;
-            });
-        });
+</div>
 
-        function nextPage() {
-            if(pageFlip) pageFlip.flipNext();
+<script>
+const $ = id => document.getElementById(id);
+
+function switchTab(paneId) {
+  document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  $(paneId).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+// ==========================================
+// TAB 1: KHUÔN MẶT (TỐI ƯU KHÔNG BỊ TREO)
+// ==========================================
+let refDescriptor = null;
+let stopFaceRunning = false;
+
+$("threshold").oninput = () => { $("thresholdValue").textContent = Number($("threshold").value).toFixed(2); };
+$("photos").onchange = () => { $("fileCount").textContent = "Đã chọn " + $("photos").files.length + " ảnh"; };
+
+async function loadModelsFast() {
+  if (faceapi.nets.tinyFaceDetector.params) return;
+  const MODEL = "https://cdn.jsdelivr.net/gh/vladmandic/face-api/model";
+  await faceapi.tf.ready();
+  try { await faceapi.tf.setBackend("webgl"); await faceapi.tf.ready(); } catch(e){}
+  await Promise.all([
+    faceapi.nets.tinyFaceDetector.loadFromUri(MODEL),
+    faceapi.nets.faceLandmark68TinyNet.loadFromUri(MODEL),
+    faceapi.nets.faceRecognitionNet.loadFromUri(MODEL)
+  ]);
+}
+
+// Hàm thu nhỏ ảnh cực mạnh trước khi đưa qua AI giúp chống treo máy hoàn toàn
+async function createOptimizedCanvas(file) {
+  const bitmap = await createImageBitmap(file);
+  const maxDim = 640; // Giảm xuống 640px để AI quét siêu tốc và không nghẽn RAM
+  const scale = Math.min(1, maxDim / Math.max(bitmap.width, bitmap.height));
+  
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+  canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+  const ctx = canvas.getContext("2d", { willReadFrequently: true });
+  ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  bitmap.close();
+  return canvas;
+}
+
+$("reference").onchange = async () => {
+  const file = $("reference").files[0];
+  if (!file) return;
+  $("faceStatus").textContent = "Đang tải mô hình AI & phân tích ảnh mẫu...";
+  await loadModelsFast();
+  const canvas = await createOptimizedCanvas(file);
+  const face = await faceapi.detectSingleFace(canvas, new faceapi.TinyFaceDetectorOptions({ inputSize: 224 })).withFaceLandmarks().withFaceDescriptor();
+  
+  if (!face) {
+    alert("Không tìm thấy khuôn mặt trong ảnh mẫu! Hãy chọn ảnh rõ mặt hơn.");
+    refDescriptor = null;
+    return;
+  }
+  refDescriptor = face.descriptor;
+  $("referencePreview").innerHTML = `<img src="${URL.createObjectURL(file)}" style="max-height:100px;border-radius:6px;">`;
+  $("faceStatus").textContent = "Đã nhận diện ảnh mẫu thành công. Sẵn sàng quét!";
+};
+
+$("startFace").onclick = async () => {
+  if (!refDescriptor) { alert("Vui lòng chọn ảnh mẫu có khuôn mặt trước!"); return; }
+  const files = Array.from($("photos").files).slice(0, 1000);
+  if (!files.length) { alert("Vui lòng chọn danh sách ảnh cần quét!"); return; }
+
+  $("results").innerHTML = "";
+  stopFaceRunning = false;
+  $("startFace").disabled = true;
+  $("stopFace").disabled = false;
+
+  let processed = 0, found = 0;
+  for (let file of files) {
+    if (stopFaceRunning) break;
+    try {
+      const canvas = await createOptimizedCanvas(file);
+      const detections = await faceapi.detectAllFaces(canvas, new faceapi.TinyFaceDetectorOptions({ inputSize: 224, scoreThreshold: 0.35 })).withFaceLandmarks().withFaceDescriptors();
+      
+      let matched = false;
+      for (let d of detections) {
+        let dist = faceapi.euclideanDistance(refDescriptor, d.descriptor);
+        if (dist <= Number($("threshold").value)) {
+          matched = true;
+          break;
         }
+      }
 
-        function prevPage() {
-            if(pageFlip) pageFlip.flipPrev();
-        }
+      if (matched) {
+        found++;
+        const url = URL.createObjectURL(file);
+        const card = document.createElement("div");
+        card.className = "photo";
+        card.innerHTML = `<div class="badge" style="background:#15803d">Khớp</div><img src="${url}" loading="lazy"><div class="photo-info">${file.name}</div>`;
+        $("results").append(card);
+      }
+    } catch(e) {}
 
-        function setMode(mode) {
-            const btnAuto = document.getElementById('btn-auto');
-            const btnGrid = document.getElementById('btn-grid');
-            if(mode === 'auto') {
-                btnAuto.className = "text-xs bg-orange-500 text-white px-3 py-1.5 rounded-md font-medium transition";
-                btnGrid.className = "text-xs bg-slate-700 text-slate-300 hover:bg-slate-600 px-3 py-1.5 rounded-md font-medium transition";
-                alert("Đã chuyển sang chế độ Smart Auto-Flow (Tự động dàn trang thông minh bằng AI)");
-            } else {
-                btnGrid.className = "text-xs bg-orange-500 text-white px-3 py-1.5 rounded-md font-medium transition";
-                btnAuto.className = "text-xs bg-slate-700 text-slate-300 hover:bg-slate-600 px-3 py-1.5 rounded-md font-medium transition";
-                alert("Đã chuyển sang chế độ Xem Lưới Nhanh toàn bộ trang album");
-            }
+    processed++;
+    $("faceBar").style.width = (processed / files.length) * 100 + "%";
+    $("faceStatus").textContent = `Đang xử lý ${processed}/${files.length} ảnh. Tìm thấy khớp: ${found}`;
+    
+    // Nhường luồng cho trình duyệt thở, chống treo cứng
+    await new Promise(r => setTimeout(r, 4));
+  }
+
+  $("faceStatus").textContent = "Hoàn tất tìm kiếm khuôn mặt!";
+  $("startFace").disabled = false;
+  $("stopFace").disabled = true;
+};
+
+$("stopFace").onclick = () => { stopFaceRunning = true; $("faceStatus").textContent = "Đã dừng xử lý."; };
+
+// ==========================================
+// TAB 2: LỌC TRÙNG VÀ RÚT GỌN 1000 XUỐNG VÀI TRĂM (BURST + LAPLACIAN SCORE)
+// ==========================================
+$("dupPhotos").onchange = () => { $("dupFileCount").textContent = "Đã chọn " + $("dupPhotos").files.length + " ảnh"; };
+
+// Hàm tính nhanh điểm nét để so sánh trong nhóm trùng
+function getQuickSharpnessScore(imgEl) {
+  let canvas = document.createElement("canvas");
+  canvas.width = 80; canvas.height = 80;
+  let ctx = canvas.getContext("2d");
+  ctx.drawImage(imgEl, 0, 0, 80, 80);
+  let data = ctx.getImageData(0, 0, 80, 80).data;
+  let gray = [];
+  for (let i = 0; i < data.length; i += 4) gray.push(data[i]*0.299 + data[i+1]*0.587 + data[i+2]*0.114);
+  let sum = 0, values = [];
+  for (let y = 1; y < 79; y++) {
+    for (let x = 1; x < 79; x++) {
+      let idx = y * 80 + x;
+      let val = -gray[idx-80] - gray[idx-1] + 4*gray[idx] - gray[idx+1] - gray[idx+80];
+      values.push(val); sum += val;
+    }
+  }
+  let mean = sum / values.length;
+  let variance = 0;
+  for (let v of values) variance += Math.pow(v - mean, 2);
+  return Math.round(variance / values.length);
+}
+
+$("startDup").onclick = async () => {
+  const files = Array.from($("dupPhotos").files);
+  if (!files.length) { alert("Vui lòng chọn ảnh để lọc trùng!"); return; }
+
+  $("dupContainer").innerHTML = "<p>Đang phân tích chuỗi chụp liên tục...</p>";
+
+  // Sắp xếp theo tên file chuẩn tự nhiên
+  files.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
+
+  let groups = [];
+  let currentGroup = [files[0]];
+
+  for (let i = 1; i < files.length; i++) {
+    let prev = files[i - 1];
+    let curr = files[i];
+
+    let prevBase = prev.name.substring(0, prev.name.lastIndexOf('.')) || prev.name;
+    let currBase = curr.name.substring(0, curr.name.lastIndexOf('.')) || curr.name;
+    let prevNumMatch = prevBase.match(/\d+$/);
+    let currNumMatch = currBase.match(/\d+$/);
+    
+    let isClose = false;
+    if (prevNumMatch && currNumMatch) {
+      if (Math.abs(parseInt(prevNumMatch[0]) - parseInt(currNumMatch[0])) <= 3) isClose = true;
+    }
+    let isSameSize = Math.abs(prev.size - curr.size) < 30000;
+
+    if (isClose || isSameSize) {
+      currentGroup.push(curr);
+    } else {
+      if (currentGroup.length > 1) groups.push(currentGroup);
+      currentGroup = [curr];
+    }
+  }
+  if (currentGroup.length > 1) groups.push(currentGroup);
+
+  $("dupContainer").innerHTML = "";
+  if (!groups.length) {
+    $("dupContainer").innerHTML = "<p>Không tìm thấy chuỗi ảnh trùng/chụp liên tục nào.</p>";
+    return;
+  }
+
+  // Duyệt qua từng nhóm để chấm điểm độ nét tự động đề xuất giữ tấm tốt nhất
+  for (let idx = 0; idx < groups.length; idx++) {
+    let group = groups[idx];
+    let scoredGroup = [];
+
+    for (let f of group) {
+      let url = URL.createObjectURL(f);
+      let score = await new Promise(res => {
+        let im = new Image();
+        im.src = url;
+        im.onload = () => res(getQuickSharpnessScore(im));
+        im.onerror = () => res(0);
+      });
+      scoredGroup.push({ file: f, url, score });
+    }
+
+    // Sắp xếp tìm tấm nét nhất trong nhóm lên đầu
+    scoredGroup.sort((a, b) => b.score - a.score);
+
+    const box = document.createElement("div");
+    box.className = "dup-group";
+    box.innerHTML = `<h4 style="margin:0 0 8px 0; color:#b45309;">Nhóm chụp liên tục #${idx + 1} (${scoredGroup.length} tấm). 🌟 <span style="color:#15803d">Hệ thống đề xuất giữ tấm nét nhất đầu tiên</span></h4>`;
+    
+    const subGallery = document.createElement("div");
+    subGallery.className = "gallery";
+
+    scoredGroup.forEach((item, itemIdx) => {
+      const card = document.createElement("div");
+      card.className = "photo";
+      let isBest = itemIdx === 0;
+      card.innerHTML = `
+        <div class="badge" style="background:${isBest ? '#15803d' : '#dc2626'}">${isBest ? 'Đề xuất giữ' : 'Trùng / Bỏ'} (${item.score}đ)</div>
+        <img src="${item.url}" loading="lazy">
+        <div class="photo-info">${item.file.name}</div>
+      `;
+      subGallery.append(card);
+    });
+
+    box.append(subGallery);
+    $("dupContainer").append(box);
+  }
+
+  alert(`Đã quét xong! Gom được ${groups.length} nhóm chụp liên tục. Anh có thể xem và bớt các tấm không cần thiết.`);
+};
+
+// ==========================================
+// TAB 3: LỌC NHÒE ĐỘC LẬP
+// ==========================================
+$("blurPhotos").onchange = () => { $("blurFileCount").textContent = "Đã chọn " + $("blurPhotos").files.length + " ảnh"; };
+$("blurThreshold").oninput = () => { $("blurVal").textContent = $("blurThreshold").value; };
+
+$("startBlur").onclick = async () => {
+  const files = Array.from($("blurPhotos").files);
+  if (!files.length) { alert("Vui lòng chọn ảnh để quét nhòe!"); return; }
+
+  $("blurResults").innerHTML = "<p>Đang quét độ nét toàn bộ ảnh...</p>";
+  let limit = Number($("blurThreshold").value);
+  let count = 0;
+  $("blurResults").innerHTML = "";
+
+  for (let file of files) {
+    const url = URL.createObjectURL(file);
+    await new Promise(resolve => {
+      const img = new Image();
+      img.src = url;
+      img.onload = () => {
+        let score = getQuickSharpnessScore(img);
+        if (score < limit) {
+          count++;
+          const card = document.createElement("div");
+          card.className = "photo";
+          card.innerHTML = `<div class="badge" style="background:#dc2626">Nhòe (${score}đ)</div><img src="${url}" loading="lazy"><div class="photo-info">${file.name}</div>`;
+          $("blurResults").append(card);
         }
-    </script>
+        resolve();
+      };
+      img.onerror = () => resolve();
+    });
+  }
+  alert(`Đã quét xong! Phát hiện ${count} ảnh nhòe/out nét.`);
+};
+</script>
 </body>
 </html>
