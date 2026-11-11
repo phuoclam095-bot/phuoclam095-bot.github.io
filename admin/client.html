@@ -591,25 +591,18 @@ function setupDriveCoverImage(photosArray, albumData) {
     const coverScreen = document.getElementById('welcomeCoverScreen');
     if (!coverScreen) return;
     
-    if (photosArray && photosArray.length > 0) {
-        let coverImgUrl = '';
-        
-        // 1. Kiểm tra xem admin đã chọn ảnh bìa cụ thể nào chưa
-        const customCoverId = albumData.cover_image_id || albumData.coverImageId;
-        
-        if (customCoverId) {
-            const foundPhoto = photosArray.find(p => String(p.id) === String(customCoverId));
-            if (foundPhoto) {
-                coverImgUrl = foundPhoto.url || `https://drive.google.com/thumbnail?id=${foundPhoto.id}&sz=w1600`;
-            }
-        }
-        
-        if (!coverImgUrl) {
-            const firstPhoto = photosArray[0];
-            coverImgUrl = firstPhoto.url || `https://drive.google.com/thumbnail?id=${firstPhoto.id}&sz=w1600`;
-        }
-        
-        // Gán ảnh và thông tin vào giao diện màn hình chào mừng
+    // Ưu tiên hiển thị ngay lập tức nếu có ảnh bìa chỉ định hoặc ảnh đầu tiên
+    let coverImgUrl = '';
+    const customCoverId = albumData.cover_image_id || albumData.coverImageId;
+    
+    if (customCoverId) {
+        // Dùng sz=w800 để tải nhanh hơn thay vì w1600
+        coverImgUrl = `https://lh3.googleusercontent.com/d/${customCoverId}=w800`;
+    } else if (photosArray && photosArray.length > 0) {
+        coverImgUrl = `https://lh3.googleusercontent.com/d/${photosArray[0].id}=w800`;
+    }
+    
+    if (coverImgUrl) {
         const mainImgEl = document.getElementById('coverMainImage');
         const bgBlurEl = document.getElementById('coverBgBlur');
         const titleEl = document.getElementById('coverAlbumTitle');
@@ -617,139 +610,129 @@ function setupDriveCoverImage(photosArray, albumData) {
 
         if (mainImgEl) mainImgEl.src = coverImgUrl;
         if (bgBlurEl) bgBlurEl.style.backgroundImage = `url('${coverImgUrl}')`;
-        if (titleEl) titleEl.innerText = albumData.folderName || albumData.name || 'ALBUM VIP';
-        
-        // BẮT BUỘC LẤY ĐÚNG TỪ albumData.studio_name, TUYỆT ĐỐI KHÔNG LẤY TÊN ẢNH
+        if (titleEl) titleEl.innerText = albumData.folderName || 'ALBUM VIP';
         if (studioEl) {
             studioEl.innerText = albumData.studio_name || "CHONANHNHANH.VN";
         }
         
+        // Hiển thị ngay màn hình chào mừng không cần chờ đợi render lưới ảnh nặng phía sau
         coverScreen.style.display = 'flex';
     } else {
         coverScreen.style.display = 'none';
     }
 }
+
 function dismissWelcomeCover() {
     const coverScreen = document.getElementById('welcomeCoverScreen');
+    if(!coverScreen) return;
     coverScreen.style.opacity = '0';
     setTimeout(() => {
         coverScreen.style.display = 'none';
     }, 500);
 }
-   async function init() {
-        const errorBox = document.getElementById('errorNotificationBox');
-        const errorText = document.getElementById('errorMessageText');
-        const loadOverlay = document.getElementById('loadOverlay');
 
-        try {
-            const urlParams = new URLSearchParams(window.location.search);
-            const albumSlug = urlParams.get('album');
-            const studioSlug = urlParams.get('studio');
+async function init() {
+    const errorBox = document.getElementById('errorNotificationBox');
+    const errorText = document.getElementById('errorMessageText');
+    const loadOverlay = document.getElementById('loadOverlay');
 
-            if (!albumSlug) {
-                throw new Error("Không tìm thấy đường dẫn định danh album trên trình duyệt.");
+    try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const albumSlug = urlParams.get('album');
+        const studioSlug = urlParams.get('studio');
+
+        if (!albumSlug) {
+            throw new Error("Không tìm thấy đường dẫn định danh album trên trình duyệt.");
+        }
+
+        const res = await fetch(`${PATHS.GET}?studio=${encodeURIComponent(studioSlug)}&album=${encodeURIComponent(albumSlug)}`);
+        if (!res.ok) {
+            throw new Error(`Máy chủ phản hồi lỗi (Mã trạng thái: ${res.status}). Album có thể không tồn tại.`);
+        }
+
+        const rawData = await res.json();
+        
+        let data = {};
+        let foundCoverId = '';
+
+        if (Array.isArray(rawData)) {
+            const itemWithCover = rawData.find(item => item.cover_image_id || item.coverImageId);
+            if (itemWithCover) {
+                foundCoverId = itemWithCover.cover_image_id || itemWithCover.coverImageId;
             }
+            data = rawData[0] || {};
+            data.photos = rawData;
+        } else {
+            data = rawData;
+            foundCoverId = data.cover_image_id || data.coverImageId;
+        }
 
-            const res = await fetch(`${PATHS.GET}?studio=${encodeURIComponent(studioSlug)}&album=${encodeURIComponent(albumSlug)}`);
-            if (!res.ok) {
-                throw new Error(`Máy chủ phản hồi lỗi (Mã trạng thái: ${res.status}). Album có thể không tồn tại.`);
-            }
+        photos = data.photos || (Array.isArray(rawData) ? rawData : []);
+        albumSettings = data.settings || albumSettings;
+        
+        window.fid = data.folder_id || albumSlug; 
+        fid = window.fid;
 
-            const rawData = await res.json();
-            
-            let data = {};
-            let foundCoverId = '';
+        if (photos.length === 0) {
+            throw new Error("Album này hiện tại chưa có bức ảnh nào hoặc đang trong quá trình đồng bộ.");
+        }
 
-            // Xử lý dữ liệu trả về dạng mảng (danh sách ảnh) hoặc object đơn lẻ
-            if (Array.isArray(rawData)) {
-                const itemWithCover = rawData.find(item => item.cover_image_id || item.coverImageId);
-                if (itemWithCover) {
-                    foundCoverId = itemWithCover.cover_image_id || itemWithCover.coverImageId;
-                }
-                
-                data = rawData[0] || {};
-                data.photos = rawData;
-            } else {
-                data = rawData;
-                foundCoverId = data.cover_image_id || data.coverImageId;
-            }
+        let folderName = photos[0].folderName || data.folderName || "VIP ALBUM";
+        let rawStudioName = studioSlug || data.studio_slug || data.studioName || data.studio_name || "";
+        
+        if (rawStudioName.toLowerCase() === 'studio' && studioSlug) {
+            rawStudioName = studioSlug;
+        }
 
-            photos = data.photos || (Array.isArray(rawData) ? rawData : []);
-            albumSettings = data.settings || albumSettings;
-            
-            window.fid = data.folder_id || albumSlug; 
-            fid = window.fid;
+        const finalStudioName = rawStudioName ? String(rawStudioName).toUpperCase() : "CHONANHNHANH.VN";
 
-            // Lấy ID ảnh bìa ưu tiên tuyệt đối
-            const activeCoverId = foundCoverId || albumSettings.cover_image_id || (photos[0] ? photos[0].id : '');
-            
-            if (activeCoverId) {
-                const directImageUrl = `https://lh3.googleusercontent.com/d/${activeCoverId}=w1200`;
-                const ogImgMeta = document.getElementById('metaOgImage');
-                if (ogImgMeta) ogImgMeta.content = directImageUrl;
-            }
-            const ogUrlMeta = document.getElementById('metaOgUrl');
-            if (ogUrlMeta) ogUrlMeta.content = window.location.href;
+        if (rawStudioName && rawStudioName.toLowerCase() !== 'studio') {
+            document.title = `${finalStudioName} - ${folderName}`;
+            document.getElementById('albumTitle').innerText = `${finalStudioName} - ${folderName}`;
+        } else {
+            document.title = folderName;
+            document.getElementById('albumTitle').innerText = folderName;
+        }
 
-            if (photos.length === 0) {
-                throw new Error("Album này hiện tại chưa có bức ảnh nào hoặc đang trong quá trình đồng bộ.");
-            }
+        // 1. TẮT NGAY LẬP TỨC OVERLAY XOAY XOAY VÀ HIỆN MÀN HÌNH CHÀO MỪNG CỰC NHANH
+        loadOverlay.style.display = 'none';
 
-            const clientLogo = albumSettings.watermark_logo || '';
-            const isWatermarkOn = albumSettings.watermark_enabled !== false;
-            
-            watermarkHTML = (isWatermarkOn && clientLogo) ? `<div class="watermark-overlay"><img src="${clientLogo}" alt="Logo"></div>` : '';
-            
-            const allowDownload = Boolean(albumSettings.download === true || albumSettings.download === 'true' || albumSettings.download === 1);
-            const allowComment = Boolean(albumSettings.comment === true || albumSettings.comment === 'true' || albumSettings.comment === 1);
-            
-            document.getElementById('btnDownload').style.display = allowDownload ? 'flex' : 'none';
-            document.getElementById('btnComment').style.display = allowComment ? 'flex' : 'none';
+        // Khôi phục trạng thái ảnh đã chọn của khách từ LocalStorage
+        const local = localStorage.getItem('anh_da_chon_cua_khach_' + (window.fid || albumSlug));
+        if (local) selectedIds = JSON.parse(local);
 
-            // Lấy tên thư mục / tên album
-            let folderName = photos[0].folderName || data.folderName || "VIP ALBUM";
+        // Hiển thị màn hình chào mừng ngay lập tức
+        setupDriveCoverImage(photos, {
+            folderName: folderName,
+            studio_name: finalStudioName,
+            cover_image_id: foundCoverId
+        });
 
-           let rawStudioName = studioSlug || data.studio_slug || data.studioName || data.studio_name || "";
-            
-            if (rawStudioName.toLowerCase() === 'studio' && studioSlug) {
-                rawStudioName = studioSlug;
-            }
+        // 2. Đưa việc khởi tạo lưới ảnh (initGrid) xuống chạy ngầm hoặc sau một nhịp để không nghẽn luồng chính
+        setTimeout(() => {
+            initGrid();
+        }, 50);
 
-            // Ép thành chữ in hoa toàn bộ để hiển thị đẹp mắt
-            const finalStudioName = rawStudioName ? String(rawStudioName).toUpperCase() : "CHONANHNHANH.VN";
+        const clientLogo = albumSettings.watermark_logo || '';
+        const isWatermarkOn = albumSettings.watermark_enabled !== false;
+        watermarkHTML = (isWatermarkOn && clientLogo) ? `<div class="watermark-overlay"><img src="${clientLogo}" alt="Logo"></div>` : '';
+        
+        const allowDownload = Boolean(albumSettings.download === true || albumSettings.download === 'true' || albumSettings.download === 1);
+        const allowComment = Boolean(albumSettings.comment === true || albumSettings.comment === 'true' || albumSettings.comment === 1);
+        
+        document.getElementById('btnDownload').style.display = allowDownload ? 'flex' : 'none';
+        document.getElementById('btnComment').style.display = allowComment ? 'flex' : 'none';
 
-            // Gán tiêu đề trang và tiêu đề trên thanh Header
-            if (rawStudioName && rawStudioName.toLowerCase() !== 'studio') {
-                document.title = `${finalStudioName} - ${folderName}`;
-                document.getElementById('albumTitle').innerText = `${finalStudioName} - ${folderName}`;
-            } else {
-                document.title = folderName;
-                document.getElementById('albumTitle').innerText = folderName;
-            }
-            // Khôi phục trạng thái ảnh đã chọn của khách từ LocalStorage
-            const local = localStorage.getItem('anh_da_chon_cua_khach_' + (window.fid || albumSlug));
-            if (local) selectedIds = JSON.parse(local);
-            
-            // Khởi tạo màn hình chào mừng (Welcome Cover) với đúng tên Studio sạch sẽ
-            setupDriveCoverImage(photos, {
-                folderName: folderName,
-                studio_name: finalStudioName,
-                cover_image_id: foundCoverId
-            });
-
-            loadOverlay.style.display = 'none';
-            initGrid(); 
-            
-        } catch(e) { 
-            console.error(e);
-            loadOverlay.style.display = 'none';
-            if (errorText) errorText.innerText = e.message || "Không tìm thấy album hoặc tên đường dẫn không tồn tại.";
-            if (errorBox) {
-                errorBox.style.setProperty('display', 'flex', 'important');
-            }
+    } catch(e) { 
+        console.error(e);
+        loadOverlay.style.display = 'none';
+        if (errorText) errorText.innerText = e.message || "Không tìm thấy album hoặc tên đường dẫn không tồn tại.";
+        if (errorBox) {
+            errorBox.style.setProperty('display', 'flex', 'important');
         }
     }
-        init();
+}
+init();
     </script>
     <div class="modal fade" id="viewNoteModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
