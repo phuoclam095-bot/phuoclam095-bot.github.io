@@ -737,6 +737,18 @@ async function init() {
     }
 }
 init();
+        if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').then(reg => {
+        reg.addEventListener('updatefound', () => {
+            const newWorker = reg.installing;
+            newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    window.location.reload();
+                }
+            });
+        });
+    });
+}
     </script>
     <div class="modal fade" id="viewNoteModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
