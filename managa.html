@@ -3,138 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CHONANHNHANH.VN - QUẢN LÝ ALBUM VIP</title>
+    <title>CHONANHNHANH.VN - QUẢN LÝ ALBUM</title>
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root { 
-            
-            --primary: #00ebb0; 
-            --bg-deep: #050a14; 
+        :root {  
+            --primary: #00ebb0;  
+            --accent: #51ff7d;
+            --bg-deep: #050a14;  
             --neon: 0 0 20px rgba(0, 235, 176, 0.4);
             --rainbow: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000);
         }
-        .album-card-vip, 
-            .album-vip-title, 
-            .stats-grid, 
-            .stat-pill, 
-            .stat-val, 
-            .stat-lab,
-            .supreme-title {
-                user-select: none !important;
-                -webkit-user-select: none !important;
-                -moz-user-select: none !important;
-                -ms-user-select: none !important;
-                cursor: default !important; /* Biến con nháy nhập liệu thành mũi tên chuột thông thường */
-            }
-            
-            /* Riêng các nút bấm hoặc các ô số liệu có link click thì hiện hình bàn tay */
-            .stat-pill, .btn-vip, .nav-link {
-                cursor: pointer !important;
-            }
         
-        body { 
-            background-color: var(--bg-deep); 
-            background-image: linear-gradient(to bottom, rgba(5, 10, 20, 0.6) 0%, rgba(5, 10, 20, 0.8) 100%), 
+        .album-card-vip,  
+        .album-vip-title,  
+        .stats-grid,  
+        .stat-pill, .stat-val, .stat-lab,
+        .supreme-title {
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            cursor: default !important;
+        }
+        
+        .stat-pill, .btn-vip, .nav-link {
+            cursor: pointer !important;
+        }
+    
+        body {  
+            background-color: var(--bg-deep);  
+            background-image: linear-gradient(to bottom, rgba(5, 10, 20, 0.6) 0%, rgba(5, 10, 20, 0.8) 100%),  
                               url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
             background-size: cover; background-position: center; background-attachment: fixed;
-            color: #fff; font-family: 'Montserrat', sans-serif; min-height: 100vh; padding-top: 130px; overflow-x: hidden;
+            color: #fff; font-family: 'Roboto', sans-serif; min-height: 100vh; padding-top: 100px; overflow-x: hidden;
         }
+
         @media (min-width: 992px) {
-            .nav-center-container { 
-                position: absolute !important; 
-                left: 50% !important; 
+            .nav-center-container {  
+                position: absolute !important;  
+                left: 50% !important;  
                 top: 50% !important;
-                transform: translate(-50%, -50%) !important; 
-                display: flex !important; 
-                align-items: center !important; 
-                justify-content: center !important; 
-                width: max-content !important; 
-                z-index: 5; 
+                transform: translate(-50%, -50%) !important;  
+                display: flex !important;  
+                align-items: center !important;  
+                justify-content: center !important;  
+                width: max-content !important;  
+                z-index: 5;  
             }
-            .nav-link.active::after { 
-                content: ''; 
-                position: absolute; 
-                width: 30%; 
-                height: 2px; 
-                bottom: 5px; 
-                left: 35%; 
-                background: var(--primary); 
-                box-shadow: var(--neon); 
+            .nav-link.active::after {  
+                content: '';  
+                position: absolute;  
+                width: 30%;  
+                height: 2px;  
+                bottom: 5px;  
+                left: 35%;  
+                background: var(--primary);  
+                box-shadow: 0 0 10px var(--primary);  
             }
         }
-        
-        /* --- LOADING FLOATING & PULSE --- */
         #loadOverlay { position: fixed; inset: 0; background: #050a14; z-index: 20000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .load-logo { font-weight: 900; font-size: 2.5rem; color: var(--primary); text-shadow: var(--neon); letter-spacing: 5px; animation: floating 3s ease-in-out infinite; }
         @keyframes floating { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
         .pulse-shadow { width: 100px; height: 10px; background: rgba(0,235,176,0.2); border-radius: 50%; margin-top: 20px; animation: shadow-pulse 3s ease-in-out infinite; }
         @keyframes shadow-pulse { 0%, 100% { transform: scale(1); opacity: 0.3; } 50% { transform: scale(1.5); opacity: 0.1; } }
+        .navbar { 
+            background: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.5) 100%); 
+            backdrop-filter: blur(25px); 
+            border-bottom: 1px solid rgba(255,255,255,0.05); 
+            min-height: 95px; 
+            position: fixed; 
+            width: 100%; 
+            top: 0; 
+            z-index: 1000; 
+        }
+        
+        .navbar-brand img {  
+            height: 42px;  
+            width: auto;  
+            cursor: pointer;  
+        }
 
-        /* --- NAVBAR ĐỒNG BỘ ADMIN --- */
-        .navbar { background: rgba(5, 10, 20, 0.9); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); min-height: 95px; position: fixed; width: 100%; top: 0; z-index: 1000; }
-       .navbar-brand { 
-            font-weight: 900 !important; 
-            color: var(--primary) !important; 
-            text-shadow: var(--neon) !important; 
-            font-size: 1.2rem !important; /* Kích thước gốc hoàn hảo nét căng trên PC */
-            text-decoration: none !important;
-            white-space: nowrap !important;  /* 1. Ép chữ nằm trên một hàng, cấm tự động xuống dòng */
-            flex-shrink: 0 !important;       /* 2. Cấm tuyệt đối việc hệ thống ép dẹt hay bóp méo hình dạng chữ */
-            display: flex !important;
-            align-items: center !important;
-            
-            /* Giữ nguyên hiệu ứng nhịp thở nảy nảy nhẹ nhàng thương hiệu */
-            animation: breathing 3s ease-in-out infinite !important; 
-        }
-        @keyframes breathing { 
-            0%, 100% { transform: scale(1); filter: brightness(1); } 
-            50% { transform: scale(1.03); filter: brightness(1.2); } 
-        }
-        /* ĐƯA MENU RA GIỮA TRÊN MÁY TÍNH GIỐNG ADMIN */
-        .nav-center-container { 
-            position: absolute !important; 
-            left: 50% !important; 
-            top: 50% !important;
-            transform: translate(-50%, -50%) !important; /* Dịch chuyển chuẩn theo cả 2 trục X và Y */
-            display: flex !important; 
-            align-items: center !important; 
-            justify-content: center !important; 
-            width: max-content !important; 
-            z-index: 5; 
-        }
         .navbar-nav { display: flex; flex-direction: row; gap: 5px; list-style: none; margin: 0; padding: 0; }
         .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.72rem; text-transform: uppercase; padding: 10px 12px !important; cursor: pointer; transition: 0.3s ease; position: relative; white-space: nowrap; }
         .nav-link:hover, .nav-link.active { color: var(--primary) !important; }
-        .nav-link.active::after { 
-            content: ''; 
-            position: absolute; 
-            width: 30%; 
-            height: 2px; 
-            bottom: 5px; 
-            left: 35%; 
-            background: var(--primary); 
-            box-shadow: var(--neon); 
+        .user-pill {  
+            background: rgba(255,255,255,0.05);  
+            padding: 5px 15px;  
+            border-radius: 50px;  
+            display: flex;  
+            align-items: center;  
+            gap: 10px;  
+            height: 48px;  
+            min-width: 180px;  
         }
+        #avatarPlaceholder { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--primary); background: #000; flex-shrink: 0; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(0, 235, 176, 0.3); }
+        #avatarPlaceholder img { width: 100%; height: 100%; object-fit: cover; }
+        .status-tag { font-size: 0.55rem; padding: 2px 8px; border-radius: 4px; font-weight: 900; text-transform: uppercase; text-align: center; display: block; margin-top: 1px; line-height: 1.2; }
+        .tag-active { background: var(--primary); color: #000; }
+        .tag-new { background: #ff9f43; color: #000; }
+        .tag-expired { background: #ff4757; color: #fff; }
 
-        /* --- USER CONTROL --- */
-        #authControl { 
-            display: none !important; 
+        .btn-login-rainbow {  
+            cursor: pointer;  
+            background: var(--rainbow);  
+            background-size: 200% auto;  
+            padding: 2px;  
+            border-radius: 50px;  
+            animation: rainbow-move 3s linear infinite;  
+            transition: transform 0.2s;
+        }
+        #loggedInNav {
             border: 1.5px solid var(--primary);
             border-radius: 50px;
-            padding-right: 12px;
-            background: rgba(0, 0, 0, 0.3);
-            align-items: center;
+            padding-right: 10px;
+            background: rgba(0, 0, 0, 0.2);
         }
-        .user-status-box { padding: 5px 12px; display: flex; align-items: center; gap: 12px; height: 48px; }
-        #avatarPlaceholder { width: 32px; height: 32px; border-radius: 50%; overflow: hidden; border: 1.5px solid var(--primary); background: #000; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-        #avatarPlaceholder img { width: 100%; height: 100%; object-fit: cover; }
-        .status-tag { font-size: 0.55rem; padding: 2px 8px; border-radius: 4px; font-weight: 900; text-transform: uppercase; line-height: 1; }
-        #userExpiryText { font-size: 0.75rem !important; color: #fff !important; font-weight: 800 !important; }
-
-        /* --- TITLE --- */
-        .supreme-title { 
+        .btn-login-rainbow:hover { transform: scale(1.05); }
+        .btn-login-rainbow span { background: #fff; color: #000; font-weight: 900; padding: 8px 25px; border-radius: 50px; display: block; font-size: 0.85rem; }
+        .supreme-title {  
+            font-family: 'Montserrat', sans-serif;
             font-weight: 900; font-size: 2.5rem; text-transform: uppercase; letter-spacing: 10px; text-align: center; margin-bottom: 35px;
             background: linear-gradient(90deg, #fff, var(--primary), #fff);
             background-size: 200% auto;
@@ -144,15 +138,23 @@
             filter: drop-shadow(0 0 5px rgba(0, 235, 176, 0.3));
         }
         @keyframes text-shine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
-
-        /* --- SEARCH --- */
+        @keyframes rainbow-move { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
         .search-wrapper { max-width: 500px; margin: 0 auto 40px; padding: 2px; border-radius: 50px; background: var(--rainbow); background-size: 200% auto; animation: rainbow-run 4s linear infinite; }
         @keyframes rainbow-run { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
         .search-inner { background: #080d1a; border-radius: 50px; display: flex; align-items: center; padding: 2px 20px; }
         .search-inner input { background: transparent; border: none; color: #fff !important; width: 100%; padding: 10px; font-weight: 700; outline: none; }
-
-        /* --- ALBUM GRID --- */
-        #albumGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; padding: 0 20px; }
+       #albumGrid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+            gap: 20px; 
+            padding: 0 20px; 
+        }
+        @media (max-width: 1200px) {
+        #albumGrid { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 768px) {
+            #albumGrid { grid-template-columns: repeat(1, 1fr); }
+        }
         .album-card-vip { background: rgba(10, 20, 40, 0.7); backdrop-filter: blur(15px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); transition: 0.3s; }
         .album-card-vip:hover { border-color: var(--primary); box-shadow: var(--neon); transform: translateY(-5px); }
         .card-img-header { height: 210px; background-size: cover; background-position: center; position: relative; border-radius: 20px 20px 0 0; }
@@ -167,8 +169,6 @@
         .btn-vip { height: 38px; border: none; border-radius: 10px; font-weight: 900; font-size: 0.65rem; text-transform: uppercase; color: #fff; }
         .v-view { background: #3b82f6; } .v-drive { background: #10b981; } .v-export { background: #f59e0b; color: #000; }
         .v-delete { background: rgba(255, 71, 87, 0.1); color: #ff4757; border: 1px solid #ff4757; grid-column: span 3; margin-top: 4px; height: 32px; }
-
-        /* --- MODAL XUẤT FILE --- */
         .modal-content { background: #0a0f1e !important; border: 2px solid var(--primary) !important; border-radius: 30px !important; box-shadow: 0 0 50px rgba(0, 235, 176, 0.15); }
         .modal-header { border-bottom: 1px solid rgba(255,255,255,0.05) !important; }
         .modal-title { color: var(--primary) !important; font-weight: 900 !important; font-size: 1.1rem; text-transform: uppercase; }
@@ -180,117 +180,138 @@
         #toastNotice { position: fixed; top: 110px; right: 30px; background: var(--primary); color: #000; padding: 12px 30px; border-radius: 12px; z-index: 10000; font-weight: 900; display: none; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
 
         @media (max-width: 991.98px) {
-            body { padding-top: 150px; }
-            .navbar { padding: 10px 0; min-height: auto; }
-           .navbar-brand {
-                display: flex !important; 
-                font-size: clamp(0.7rem, 3.5vw, 0.95rem) !important; /* Hạ thấp cận dưới xuống 0.7rem cho máy siêu nhỏ như iPhone SE */
-                letter-spacing: -0.5px !important; 
-                max-width: 48% !important; 
-                overflow: hidden !important;
+            body { padding-top: 140px; }
+            .navbar { min-height: auto; padding: 10px 0; }
+            .nav-center-container { 
+                position: static !important; transform: none !important; width: 100% !important; margin-top: 12px !important; order: 3; display: flex !important; overflow-x: auto !important; -webkit-overflow-scrolling: touch; justify-content: flex-start !important; padding: 0 15px !important; 
             }
-            /* Giải phóng hoàn toàn Khối Center khỏi Absolute trên điện thoại */
-            .nav-center-container {
-                position: static !important;
-                transform: none !important;
-                width: 100% !important;
-                margin-top: 12px !important;
-                order: 3; 
-                padding: 0 15px !important; 
-                display: flex !important;
-                justify-content: center !important; 
-                align-items: center !important;
-            }
-
-            .navbar-nav {
-                display: flex !important;
-                flex-direction: row !important;
-                flex-wrap: nowrap !important;
-                gap: 8px !important;
-                width: max-content !important;
-                justify-content: center !important;
-            }
-
-            .nav-link {
-                font-size: 0.72rem !important;
-                padding: 8px 14px !important;
-                background: rgba(255, 255, 255, 0.05) !important;
-                border-radius: 10px !important;
-                border: 1px solid rgba(0, 235, 176, 0.15) !important;
-            }
-            .nav-link.active {
-                background: rgba(0, 235, 176, 0.15) !important;
-                border-color: var(--primary) !important;
-            }
-
-            #authControl { padding-right: 8px; }
-            .user-status-box { padding: 5px 8px; gap: 8px; height: 42px; }
-            #avatarPlaceholder { width: 28px; height: 28px; }
-            #userNameDisplay { font-size: 0.7rem !important; }
-            #userExpiryText { font-size: 0.65rem !important; }
+            .nav-center-container::-webkit-scrollbar { display: none !important; }
+            .navbar-nav { display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; gap: 8px !important; width: max-content !important; justify-content: flex-start !important; margin: 0 !important; }
+            .nav-link { font-size: 0.72rem !important; padding: 8px 14px !important; background: rgba(255, 255, 255, 0.05) !important; border-radius: 10px !important; border: 1px solid rgba(0, 235, 176, 0.15) !important; }
+            .nav-link.active { background: rgba(0, 235, 176, 0.15) !important; border-color: var(--primary) !important; }
+            .nav-link.active::after { display: none !important; }
+            #loggedInNav { padding-right: 8px; }
+            .user-pill { min-width: auto; height: 42px; padding: 5px 8px; }
             .supreme-title { font-size: 1.8rem; letter-spacing: 4px; }
         }
         .nav-link, .btn-vip, .stat-pill, .btn-copy-action {
-    user-select: none;
-    -webkit-user-select: none;
-    cursor: pointer;
-}
+            user-select: none;
+            -webkit-user-select: none;
+            cursor: pointer;
+        }
+
+        .navbar-brand-left {
+            font-weight: 900;
+            color: var(--primary) !important;
+            font-size: 1.2rem;
+            text-decoration: none;
+            text-shadow: 0 0 20px rgba(0, 235, 176, 0.4);
+            z-index: 10;
+            white-space: nowrap;
+        }
+        .zip-tip-box {
+            background: #2b2b40 !important;
+            border: 1px solid #ffc107 !important; 
+            color: #fff !important;
+        }
+        .zip-tip-box p, .zip-tip-box small {
+            color: #e2e8f0 !important; 
+        }
+        
+        .stats-grid .stat-pill:first-child, 
+        .stats-grid .stat-pill:last-child {
+            border: 1px solid rgba(0, 235, 176, 0.25) !important;
+            border-radius: 12px;
+            transition: all 0.25s ease-in-out;
+            cursor: pointer !important;
+        }
+        .stats-grid .stat-pill:first-child:hover, 
+        .stats-grid .stat-pill:last-child:hover {
+            border-color: var(--primary) !important;
+            background: rgba(0, 235, 176, 0.1) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 235, 176, 0.2);
+        }
+        .stats-grid .stat-pill:first-child, 
+        .stats-grid .stat-pill:last-child {
+            cursor: pointer !important;
+        }
     </style>
 </head>
 <body>
-
-    <div id="loadOverlay">
-        <div class="load-logo">CHONANHNHANH.VN</div>
-        <div class="pulse-shadow"></div>
-    </div>
-
     <div id="toastNotice"></div>
-
     <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
         <div class="container-fluid px-3 px-lg-5 d-flex flex-wrap align-items-center justify-content-between">
-            
+            <a class="navbar-brand-left m-0" href="index">CHONANHNHANH<span style="color:#f0c300">.VN</span></a>
             <div class="d-flex align-items-center ms-auto order-lg-3">
-                <div id="authControl">
-                    <div class="user-status-box">
-                        <div id="avatarPlaceholder" class="avt-circle"></div>
-                        <div class="d-flex flex-column">
-                            <span id="userNameDisplay">...</span>
-                            <div class="d-flex align-items-center gap-2">
-                                <span id="badgeStatus" class="status-tag" style="background:var(--primary); color:#000;">...</span>
-                                <span id="userExpiryText"></span>
+                <div id="loggedOutNav" style="display: none;">
+                    <div class="btn-login-rainbow" onclick="startGoogleLogin()">
+                        <span>LOGIN VIP</span>
+                    </div>
+                </div>
+                <div id="loggedInNav" class="d-flex align-items-center" style="display: none;">
+                        <div class="user-pill">
+                            <div id="avatarPlaceholder"></div>
+                            <div class="d-flex flex-column overflow-hidden">
+                                <span id="userNameDisplay" style="font-weight:900; font-size:0.75rem; line-height:1"></span>
+                                <div style="margin-top: 3px;">
+                                    <span id="badgeStatus" class="status-tag tag-active">...</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()"><i class="fas fa-power-off"></i></button>
+                    <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()" style="cursor:pointer" title="Đăng xuất">
+                        <i class="fas fa-power-off"></i>
+                    </button>
                 </div>
             </div>
 
             <div class="nav-center-container" id="navCenterArea">
                 <ul class="navbar-nav" id="adminNavLinks">
-                    <li class="nav-item"><a href="admin.html" class="nav-link">Tạo Album</a></li>
-                    <!-- 🌟 ĐÃ FIX: Đổi href thành javascript:void(0) kết hợp onclick ngăn chặn triệt để chuyển hướng trên Mobile -->
-                    
-                    <li class="nav-item"><a href="managa.html" class="nav-link active">Quản Lý</a></li>
-                    <li class="nav-item"><a href="javascript:void(0);" class="nav-link" onclick="handleCopyTabClick(event)">Sao Chép</a></li>
+                    <li><a href="index" class="nav-link">Tạo Album</a></li>
+                    <li><a href="managa" class="nav-link active">Quản Lý</a></li>
+                    <li><a href="crm" class="nav-link">Lịch</a></li>
+                    <li><a href="copy_local" class="nav-link" onclick="handleCopyTabClick(event)">Sao Chép</a></li>
+                    <li><a href="blog" class="nav-link">Blog</a></li>
+                    <li><a href="alarm" class="nav-link">Báo Thức</a></li>
+                    <li><a href="payment" class="nav-link">Gia Hạn</a></li>
+                    <li><a href="lienhe" class="nav-link">Liên Hệ</a></li>
+                    <li><a href="guide" class="nav-link">Hướng Dẫn</a></li>
+                    <li><a href="fedback" class="nav-link">Góp Ý Và Báo Lỗi</a></li>
+                    <li><a href="privacy" class="nav-link">Chính Sách Bảo Mật</a></li>
                 </ul>
             </div>
 
         </div>
     </nav>
 
+    <div class="modal fade" id="directCoverModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 1100px; width: 95%;">
+            <div class="modal-content" style="background: #0a0f1e; border: 2px solid var(--primary); border-radius: 20px;">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title text-primary fw-900" style="font-size: 1rem;">ĐỔI ẢNH BÌA ALBUM</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="alert alert-supreme text-center mb-3" id="directCoverModalInfo">Album: ...</div>
+                    <div style="font-size: 0.8rem; color: #aaa; margin-bottom: 10px;">Chọn bức ảnh ưng ý nhất bên dưới để làm ảnh bìa chào mừng cho khách:</div>
+                    
+                    <div id="directCoverGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; max-height: 72vh; overflow-y: auto; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+                        <div class="text-center text-secondary py-4" style="grid-column: 1 / -1;">Đang tải danh sách ảnh...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="container-fluid">
-        <div class="mt-5"><h1 class="supreme-title">Quản Lý Album</h1></div>
-        <!-- THÊM: Khung thông báo Khóa VIP (giống hệt trang copy) -->
+        <div class="mt-3"><h1 class="supreme-title">Quản Lý Album</h1></div>
         <div id="vipExpiredBlockNotice" style="display: none; max-width: 500px; margin: 40px auto 0; background: rgba(255, 71, 87, 0.1); border: 1.5px dashed #ff4757; border-radius: 24px; padding: 40px 20px; text-align: center; box-shadow: 0 10px 30px rgba(255, 71, 87, 0.1);">
             <i class="fas fa-lock fa-3x text-danger mb-3"></i>
             <h4 class="fw-bold text-white mb-2">TÍNH NĂNG ĐANG BỊ KHÓA</h4>
             <p class="text-secondary small mb-4" style="line-height: 1.6;">
                 Tài khoản của bạn đã hết hạn dùng thử hoặc chưa nâng cấp lên gói VIP. Vui lòng gia hạn để tiếp tục sử dụng tính năng quản lý.
             </p>
-            <a href="payment.html" class="btn fw-900 px-4 py-2 rounded-pill text-black text-uppercase" style="background: var(--primary); border: none; font-size: 0.85rem; text-decoration: none;">Gia Hạn VIP Ngay</a>
+            <a href="payment" class="btn fw-900 px-4 py-2 rounded-pill text-black text-uppercase" style="background: var(--primary); border: none; font-size: 0.85rem; text-decoration: none;">Gia Hạn VIP Ngay</a>
         </div>
-
-        <!-- THÊM: Bọc Thanh Tìm Kiếm và Grid vào thẻ div mainWorkGrid -->
         <div id="mainWorkGrid">
             <div class="search-wrapper">
                 <div class="search-inner">
@@ -302,8 +323,6 @@
             <div id="albumGrid"></div>
         </div>
     </div>
-
-    <!-- MODAL XEM GHI CHÚ CỦA KHÁCH -->
     <div class="modal fade" id="noteModal" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
@@ -312,11 +331,8 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
-                    <!-- THẺ NÀY ĐANG BỊ THIẾU NÊN GÂY RA LỖI NULL -->
                     <div class="alert alert-supreme text-center mb-3" id="noteModalInfo">Album: ...</div>
-                    
                     <div id="noteListContainer" style="max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;">
-                        <!-- Danh sách ghi chú sẽ đổ vào đây -->
                     </div>
                 </div>
             </div>
@@ -325,72 +341,233 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const PATHS = { LIST: 'https://wsm.congtubaclieu.com.vn/webhook/get-album-list', DELETE: 'https://wsm.congtubaclieu.com.vn/webhook/delete-album', EXPORT: 'https://wsm.congtubaclieu.com.vn/webhook/export_filenames', CLIENT: 'https://phuoclam095-bot.github.io/' };
+        const PATHS = { LIST: 'https://wsm.congtubaclieu.com.vn/webhook/get-album-list', DELETE: 'https://wsm.congtubaclieu.com.vn/webhook/delete-album', EXPORT: 'https://wsm.congtubaclieu.com.vn/webhook/export_filenames',SELECTED_PHOTOS: 'https://wsm.congtubaclieu.com.vn/webhook/get-selected-photos', NOTES: 'https://wsm.congtubaclieu.com.vn/webhook/get-album-notes', CLIENT: 'https://chonanhnhanh.vn/' };
+        
         let adminEmail = localStorage.getItem('admin_email'), allAlbums = [];
 
         function showToast(msg) { const t = document.getElementById('toastNotice'); t.innerText = msg; t.style.display = 'block'; setTimeout(() => { t.style.display = 'none'; }, 2200); }
         function filterAlbums() { const kw = document.getElementById('albumSearch').value.toLowerCase(); renderAlbums(allAlbums.filter(a => (a.folderName || a.name || '').toLowerCase().includes(kw))); }
-        function renderAlbums(albums) { const grid = document.getElementById('albumGrid'); grid.innerHTML = ''; albums.forEach(a => grid.appendChild(createAlbumCard(a))); document.getElementById('albumCount').innerText = albums.length; }
-
-       function createAlbumCard(album) {
-            const card = document.createElement('div');  
-            const id = album.folder_id || album.folderId || album.id;  
-            card.className = 'album-card-vip';  
-            card.id = `card-${id}`;
+        let displayedCount = 0;
+        const pageSize = 20; 
+        
+        function renderAlbums(albums) {
+            const grid = document.getElementById('albumGrid');
+            if (!grid) return;
             
-            const img = album.thumbnailFileId ? `https://drive.google.com/thumbnail?id=${album.thumbnailFileId}&sz=w600` : 'https://images.unsplash.com/photo-1542838132-e0c19b48b940?auto=format&fit=crop&w=600&q=80';
+            grid.innerHTML = '';
+            displayedCount = 0;
+            window._currentFilteredAlbums = albums;
+            appendMoreAlbums();
             
-            const limitVal = album.limit_photos ?? album.limitPhotos ?? 0;
-            const downloadVal = album.allow_download ?? album.allowDownload ?? false;
-            const commentVal = album.allow_comment ?? album.allowComment ?? false;
-            const rawWatermark = album.watermark_enabled ?? album.watermarkEnabled;
-            const watermarkEnabledVal = (album.watermark_enabled === true || album.watermark_enabled === 'true' || album.watermark_enabled === 1) ? 'true' : 'false';
-            const watermarkLogoVal = album.watermark_logo ?? album.watermarkLogo ?? '';
-            // 🌟 Khai báo folderName trước tiên
-            const folderName = album.folderName || album.name || 'VIP Album';
-            const albumTitle = folderName.replace(/'/g, "\\'");
-            let rawStudio = localStorage.getItem('admin_studio_slug') || album.studio_slug || album.studioSlug || 'studio';
-            const sSlug = rawStudio.replace(/-+/g, '-').replace(/^-|-$/g, '') || 'studio';
-            
-            // Tạo slug không có dấu gạch ngang (viết liền)
-            const aSlug = album.album_slug || album.albumSlug || createSlug(folderName);
-            
-            // Link client dạng URL thân thiện
-            const clientPageUrl = `${PATHS.CLIENT}${sSlug}/${aSlug}`;
-
-            card.innerHTML = `<div class="card-img-header" style="background-image: url('${img}');"><div class="album-vip-title">${folderName}</div></div>
-                <div class="stats-grid">
-                    <div class="stat-pill" onclick="window.open('${clientPageUrl}?mode=selected', '_blank')"><span class="stat-val">${album.selected_photos || 0}</span><span class="stat-lab">Chọn</span></div>
-                    <div class="stat-pill"><span class="stat-val text-white">${album.total_photos || 0}</span><span class="stat-lab">Tổng</span></div>
-                    <div class="stat-pill" onclick="openNoteModal('${id}', '${albumTitle}')"><span class="stat-val text-info">${album.comments || 0}</span><span class="stat-lab">Note</span></div>
-                </div>
-                <div class="vip-actions-grid">
-                    <button class="btn-vip v-view" onclick="window.open('${clientPageUrl}', '_blank')"><i class="fas fa-eye"></i></button>
-                    <button class="btn-vip v-drive" onclick="window.open('https://drive.google.com/drive/folders/${id}', '_blank')"><i class="fab fa-google-drive"></i></button>
-                    <button class="btn-vip v-export" onclick="handleExportClick('${id}', '${albumTitle}')"><i class="fas fa-file-export"></i></button>  
-                    <button class="btn-vip" style="background: #8b5cf6; grid-column: span 3;" onclick="openSettingsModal('${id}', ${limitVal}, ${downloadVal}, ${commentVal}, ${watermarkEnabledVal}, '${watermarkLogoVal}')">
-                        <i class="fas fa-sliders-h me-1"></i> Cài đặt cấu hình album
-                    </button>
-                    <button class="btn-vip v-delete" onclick="deleteAlbum('${id}', '${albumTitle}')">Xóa album</button>
-                </div>`;
-            return card;
+            document.getElementById('albumCount').innerText = albums.length;
         }
+        
+        function appendMoreAlbums() {
+            const grid = document.getElementById('albumGrid');
+            const albums = window._currentFilteredAlbums || [];
+            
+            if (displayedCount >= albums.length) return;
+            
+            const nextBatch = albums.slice(displayedCount, displayedCount + pageSize);
+            const fragment = document.createDocumentFragment(); // Viết gọn chuẩn DOM Fragment
+            
+            nextBatch.forEach(a => {
+                const cardNode = createAlbumCard(a);
+                fragment.appendChild(cardNode);
+            });
+            
+            grid.appendChild(fragment);
+            displayedCount += nextBatch.length; 
+        }
+        window.addEventListener('scroll', () => {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 300) {
+                appendMoreAlbums();
+            }
+        });
+
+      function createAlbumCard(album) {
+    const card = document.createElement('div');  
+    const id = album.folder_id || album.folderId || album.id;  
+    card.className = 'album-card-vip';  
+    card.id = `card-${id}`;
+    
+    const folderName = album.folderName || album.name || 'VIP Album';
+    const albumTitle = folderName.replace(/'/g, "\\'");
+    
+    const coverId = album.cover_image_id || album.coverImageId || album.thumbnailFileId;
+    const img = coverId ? `https://drive.google.com/thumbnail?id=${coverId}&sz=w400` : 'https://images.unsplash.com/photo-1542838132-e0c19b48b940?auto=format&fit=crop&w=600&q=80';
+    
+    const limitVal = album.limit_photos ?? album.limitPhotos ?? 0;
+    const downloadVal = album.allow_download ?? album.allowDownload ?? false;
+    const commentVal = album.allow_comment ?? album.allowComment ?? false;
+    const watermarkEnabledVal = album.watermark_enabled ?? album.watermarkEnabled ?? false;
+    const watermarkLogoVal = album.watermark_logo ?? album.watermarkLogo ?? '';
+    
+    const localStudioSlug = localStorage.getItem('admin_studio_slug');
+    let rawStudio = localStudioSlug || album.studio_slug || album.studioSlug || album.studio || 'studio';
+    
+    const studioSlug = toSlug(rawStudio);
+    const albumSlug = album.album_slug || album.albumSlug || createSlug(folderName);
+    
+    const clientPageUrl = `${PATHS.CLIENT}${studioSlug}/${albumSlug}`;
+    const driveFolderUrl = `https://drive.google.com/drive/folders/${id}`;
+
+    card.innerHTML = `<div class="card-img-header" style="background-image: url('${img}'); cursor: pointer;" onclick="openDirectCoverModal('${id}', '${albumTitle}')" title="Bấm để đổi ảnh bìa"><div class="album-vip-title">${folderName}</div></div>
+        <div class="stats-grid">
+            <div class="stat-pill" onclick="openSelectedPhotosModal('${id}', '${albumTitle}')">
+                <span class="stat-val">${album.selected_photos || 0}</span>
+                <span class="stat-lab">Chọn</span>
+            </div>
+            <div class="stat-pill"><span class="stat-val text-white">${album.total_photos || 0}</span><span class="stat-lab">Tổng</span></div>
+            <div class="stat-pill" onclick="openNoteModal('${id}', '${albumTitle}')"><span class="stat-val text-info">${album.comments || 0}</span><span class="stat-lab">Note</span></div>
+        </div>
+        <div class="vip-actions-grid">
+            <button class="btn-vip" style="background: #10b981; color: #fff;" onclick="downloadSelectedZip('${id}', '${albumTitle}')" title="Tải tất cả ảnh đã chọn kèm ghi chú thành file ZIP"><i class="fas fa-file-archive"></i> TẢI FINAL</button>
+            <button class="btn-vip" style="background: #0ea5e9; color: #fff;" onclick="openAlbumLinksModal('${albumTitle}', '${clientPageUrl}', '${driveFolderUrl}')" title="Xem và sao chép liên kết truy cập album"><i class="fas fa-link"></i> LINK</button>
+            <button class="btn-vip v-export" onclick="handleExportClick('${id}', '${albumTitle}')" title="Trích xuất tên file" style="color: #ffffff !important;">
+                <i class="fa-regular fa-copy" style="color: #ffffff !important;"></i> Copy
+            </button>
+            <button class="btn-vip" style="background: #8b5cf6; grid-column: span 3;" onclick="openSettingsModal('${id}')">
+                <i class="fas fa-sliders-h me-1"></i> Cài đặt cấu hình album
+            </button>
+            <button class="btn-vip v-delete" onclick="deleteAlbum('${id}', '${albumTitle}')">Xóa album</button>
+        </div>`;
+    return card;
+}
+    const PATH_ZIP_DOWNLOAD = 'https://wsm.congtubaclieu.com.vn/webhook/download-selected-zip';
+
+   async function downloadSelectedZip(folderId, albumName, buttonElement) {
+    const btn = event ? event.currentTarget : null;
+    const oldBtnContent = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Đang nén ZIP...`;
+    }
+
+    const loadingModal = document.getElementById('zipLoadingModal');
+    const statusText = document.getElementById('zipStatusText');
+    if (loadingModal) loadingModal.style.display = 'flex';
+    
+    if (statusText) {
+        statusText.innerHTML = `Đang đóng gói album <b>"${albumName}"</b>.<br>Tốc độ nhanh hay chậm phụ thuộc vào đường truyền mạng và dung lượng ảnh...`;
+    }
+
+    try {
+        const response = await fetch(`${PATH_ZIP_DOWNLOAD}?folderId=${folderId}`);
+        
+        if (!response.ok) {
+            throw new Error(`Lỗi máy chủ: ${response.status}`);
+        }
+        const blob = await response.blob();
+        
+        if (blob.size < 100) {
+            throw new Error("File ZIP trả về trống hoặc không có dữ liệu!");
+        }
+        
+        const downloadUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = `${albumName || 'album'}_chon_anh.zip`;
+        document.body.appendChild(a);
+        a.click();
+        
+        a.remove();
+        window.URL.revokeObjectURL(downloadUrl);
+        
+        showToast("Tải file ZIP thành công!");
+        
+    } catch (error) {
+        console.error("Lỗi tải ZIP:", error);
+        alert(`Không thể tải file ZIP: ${error.message}`);
+    } finally {
+        if (loadingModal) loadingModal.style.display = 'none';
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = oldBtnContent;
+        }
+    }
+}
+
+function closeZipLoading() {
+    const loadingModal = document.getElementById('zipLoadingModal');
+    if (loadingModal) loadingModal.style.display = 'none';
+}
+    function openAlbumLinksModal(albumName, clientUrl, driveUrl) {
+        document.getElementById('linksModalAlbumName').innerText = `Album: ${albumName}`;
+        document.getElementById('inputClientLink').value = clientUrl;
+        document.getElementById('inputDriveLink').value = driveUrl;
+        
+        new bootstrap.Modal(document.getElementById('albumLinksModal')).show();
+    }
+    function copyLinkText(elementId) {
+        const inputEl = document.getElementById(elementId);
+        inputEl.select();
+        inputEl.setSelectionRange(0, 99999); 
+        navigator.clipboard.writeText(inputEl.value).then(() => {
+            showToast("Đã sao chép liên kết vào bộ nhớ tạm!");
+        }).catch(err => {
+            console.error("Lỗi khi sao chép: ", err);
+            showToast("Không thể sao chép liên kết!");
+        });
+    }
+
         function createSlug(str) {
             if (!str) return 'album';
-            return str.toLowerCase()
+            return str.toString().toLowerCase()
                 .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '') 
-                .replace(/[đĐ]/g, 'd')          
-                .replace(/[^0-9a-z]/g, '')    
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[đĐ]/g, 'd')
+                .replace(/([^0-9a-z])/g, '')
                 .trim();
         }
+        async function openSelectedPhotosModal(folderId, albumName) {
+    showToast("Đang tải danh sách ảnh đã chọn...");
+    try {
+        const res = await fetch(`${PATHS.SELECTED_PHOTOS}?folderId=${folderId}`);
+        const data = await res.json();
+
+        currentLightboxPhotos = Array.isArray(data) ? data : (data.photos || data.data || data.items || [data]);
+        
+        const infoEl = document.getElementById('selectedModalInfo');
+        if (infoEl) {
+            infoEl.innerText = `Album: ${albumName || 'Chi tiết'} (Đã chọn: ${currentLightboxPhotos.length} ảnh)`;
+        }
+        
+        const grid = document.getElementById('selectedPhotosGrid');
+        if (!grid) return;
+        
+        grid.innerHTML = '';
+        
+        if (currentLightboxPhotos.length === 0 || !currentLightboxPhotos[0].id) {
+            grid.innerHTML = `<div class="text-center text-secondary py-4" style="grid-column: 1 / -1;">Khách hàng chưa chọn bức ảnh nào.</div>`;
+        } else {
+            currentLightboxPhotos.forEach((p, index) => {
+               const imgUrl = p.url || (p.id ? `https://drive.google.com/thumbnail?id=${p.id}&sz=w400` : '');
+                const imgName = p.name || `Ảnh ${index + 1}`;
+                grid.innerHTML += `
+                <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(0, 235, 176, 0.2); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; align-items: center; padding: 8px;">
+                    <img src="${imgUrl}" style="width: 100%; height: 140px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer;" onclick="openClientLightbox(${index})" title="Xem chi tiết">
+                    <span style="font-size: 0.7rem; color: var(--primary); margin-top: 8px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;" title="${imgName}">${imgName}</span>
+                </div>
+            `;
+            });
+        }
+        
+        const modalEl = document.getElementById('selectedPhotosModal');
+        if (modalEl) {
+            new bootstrap.Modal(modalEl).show();
+        }
+    } catch(e) {
+        console.error("Lỗi:", e);
+        showToast("Không thể tải danh sách ảnh đã chọn!");
+    }
+}
        async function openNoteModal(folderId, albumName) {
             showToast("Đang tải ghi chú...");
             try {
-                const res = await fetch(`https://wsm.congtubaclieu.com.vn/webhook/get-photos?id=${folderId}`);
+                const res = await fetch(`${PATHS.NOTES}?folderId=${folderId}`);
                 const data = await res.json();
-                const rootObj = Array.isArray(data) ? data[0] : data;
-                const photos = rootObj.photos || [];
+                const photos = Array.isArray(data) ? data : (data.photos || data.data || []);
                 
                 document.getElementById('noteModalInfo').innerText = `Album: ${albumName}`;
                 const container = document.getElementById('noteListContainer');
@@ -398,14 +575,14 @@
                 
                 let hasNote = false;
                 photos.forEach(p => {
-                    const contentNote = p.note || p.memo || p.ghi_chu;
+                    const contentNote = p.note;
                     if (contentNote && String(contentNote).trim() !== '') {
                         hasNote = true;
                         container.innerHTML += `
                             <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(0, 235, 176, 0.2); padding: 15px; border-radius: 15px; margin-bottom: 10px;">
                                 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                                    <img src="https://drive.google.com/thumbnail?id=${p.id || p.file_id}&sz=w100" style="width: 40px; height: 40px; object-fit: cover; border-radius: 8px; border: 1px solid var(--primary);">
-                                    <div style="font-size: 0.8rem; color: var(--primary); font-weight: 800;">📷 Tên ảnh: ${p.name || 'Không có tên'}</div>
+                                    <img src="https://drive.google.com/thumbnail?id=${p.id}&sz=w100" style="width: 40px; height: 40px; object-fit: cover; border-radius: 8px; border: 1px solid var(--primary);">
+                                    <div style="font-size: 0.8rem; color: var(--primary); font-weight: 800;">📷 Tên ảnh: ${p.name}</div>
                                 </div>
                                 <div style="font-size: 0.9rem; color: #fff; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 10px; border-left: 3px solid var(--primary);">
                                     <b>Ghi chú:</b> ${contentNote}
@@ -425,7 +602,6 @@
                 showToast("Không thể tải ghi chú!");
             }
         }
-
         async function handleExportClick(id, name) {
             showToast("Đang trích xuất dữ liệu...");
             try {
@@ -451,11 +627,6 @@
                 showToast("Khách chưa chọn ảnh"); 
             }
         }
-
-        
-
-       
-        
         function getExpiryTimestamp() {
             let raw = localStorage.getItem('admin_expiry');
             if (!raw) return 0;
@@ -469,119 +640,186 @@
         }
         function copyFileNames() { const txt = document.getElementById('fileNamesOutput').value; if(!txt) return; navigator.clipboard.writeText(txt.split('\n').join(',')).then(() => { showToast("Đã sao chép danh sách"); }); }
 
-        async function deleteAlbum(id, name) {
-            if (!confirm(`Xóa album: ${name}?`)) return;
-            try {
-                const res = await fetch(PATHS.DELETE, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ folderId: id, adminEmail: adminEmail }) });
-                if ((await res.json()).success) { document.getElementById(`card-${id}`).remove(); showToast("Đã xóa album"); }
-            } catch (e) { showToast("Lỗi"); }
-        }
+       async function deleteAlbum(id, name) {
+    if (!confirm(`Bạn có chắc chắn muốn xóa album: "${name}" không?`)) return;
 
+    const cardEl = document.getElementById(`card-${id}`);
+    const deleteBtn = cardEl ? cardEl.querySelector('.v-delete') : null;
+
+    const oldBtnText = deleteBtn ? deleteBtn.innerHTML : '';
+    if (deleteBtn) {
+        deleteBtn.disabled = true;
+        deleteBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Đang xóa...`;
+    }
+
+    showToast(`Đang tiến hành xóa album "${name}"...`);
+
+    try {
+        const res = await fetch(PATHS.DELETE, { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json' }, 
+            body: JSON.stringify({ folderId: id, adminEmail: adminEmail }) 
+        });
+        const data = await res.json();
+        
+        if (data.success) { 
+            allAlbums = allAlbums.filter(a => (a.folder_id || a.folderId || a.id) !== id);
+            sessionStorage.setItem('cache_albums', JSON.stringify(allAlbums));
+            
+            renderAlbums(allAlbums); 
+            showToast("Đã xóa album !"); 
+        } else {
+            alert("Xóa thất bại: " + (data.message || "Lỗi máy chủ"));
+            if (deleteBtn) {
+                deleteBtn.disabled = false;
+                deleteBtn.innerHTML = oldBtnText;
+            }
+        }
+    } catch (e) {
+        console.error(e);
+        showToast("Lỗi kết nối khi xóa album!");
+        if (deleteBtn) {
+            deleteBtn.disabled = false;
+            deleteBtn.innerHTML = oldBtnText;
+        }
+    }
+}
         function updateHeaderUI() {
-            if (localStorage.getItem('admin_is_logged_in') === 'true') {
-                const name = localStorage.getItem('admin_name');
+            const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
+            const status = localStorage.getItem('admin_status') || 'new';
+            const expiry = getExpiryTimestamp();
+            const name = localStorage.getItem('admin_name') || 'Anh/Chị';
+            const isVIP = (status === 'active' && expiry > Date.now());
+            const navLinks = document.getElementById('adminNavLinks');
+            const loggedInNav = document.getElementById('loggedInNav');
+            const loggedOutNav = document.getElementById('loggedOutNav');
+            const mainWorkGrid = document.getElementById('mainWorkGrid');
+            const vipExpiredBlockNotice = document.getElementById('vipExpiredBlockNotice');
+            if (isLoggedIn) {
+                if(navLinks) navLinks.style.setProperty('display', 'flex', 'important');
+                if(loggedInNav) loggedInNav.style.setProperty('display', 'flex', 'important');
+                if(loggedOutNav) loggedOutNav.style.setProperty('display', 'none', 'important');
+                const nameDisplay = document.getElementById('userNameDisplay');
+                if (nameDisplay) nameDisplay.innerText = name;
+                const avatarPlaceholder = document.getElementById('avatarPlaceholder');
                 const av = localStorage.getItem('admin_avatar');
-                const status = localStorage.getItem('admin_status') || 'new';
-                
-                const expiry = getExpiryTimestamp();
-                
-                document.getElementById('userNameDisplay').innerText = name;
-                document.getElementById('avatarPlaceholder').innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:32px; color:var(--primary)"></i>`;
-                
+                if (avatarPlaceholder) {
+                    avatarPlaceholder.innerHTML = av && av !== 'null' ? `<img src="${av}">` : `<i class="fas fa-user-circle" style="font-size:30px; color:var(--primary)"></i>`;
+                }
                 const badge = document.getElementById('badgeStatus'); 
                 const expText = document.getElementById('userExpiryText');
-                
-                const mainWorkGrid = document.getElementById('mainWorkGrid');
-                const vipExpiredBlockNotice = document.getElementById('vipExpiredBlockNotice');
-        
-                if (status === 'active' && expiry > Date.now()) { 
-
-                    badge.innerText = "ACTIVE"; 
-                    badge.style.background = "var(--primary)";
-                    badge.style.color = "#000";
-                    expText.innerText = "Hạn: " + new Date(expiry).toLocaleDateString('vi-VN'); 
-                    
+                if (isVIP) {
+                    if (isVIP) {
+                        if (badge) {
+                            badge.className = "status-tag tag-active";
+                            badge.innerText = "ACTIVE - Hạn: " + new Date(expiry).toLocaleDateString('vi-VN');
+                        }
+                        if (expText) expText.innerText = "";
+                        
+                        if (mainWorkGrid) mainWorkGrid.style.setProperty('display', 'block', 'important');
+                        if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'none', 'important');
+                    }           
                     if (mainWorkGrid) mainWorkGrid.style.setProperty('display', 'block', 'important');
                     if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'none', 'important');
-                } else { 
-                    badge.innerText = status === 'new' ? "MỚI" : "EXPIRED"; 
-                    badge.style.background = "#ff4757"; 
-                    badge.style.color = "#fff";
-                    expText.innerText = "";
+                } else {
+                    if (badge) {
+                        badge.className = "status-tag tag-expired";
+                        badge.innerText = status === 'new' ? "MỚI" : "EXPIRED";
+                    }
+                    if (expText) expText.innerText = expiry > 0 ? " - Hết hạn" : "";
                     
-                    if (mainWorkGrid) mainWorkGrid.innerHTML = '';
+                    if (mainWorkGrid) mainWorkGrid.style.setProperty('display', 'none', 'important');
                     if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'block', 'important');
                 }
-                document.getElementById('authControl').style.setProperty('display', 'flex', 'important');
-            } else { 
-                window.location.href = 'admin.html'; 
+                } else { 
+                    if(navLinks) navLinks.style.setProperty('display', 'none', 'important');
+                    if(loggedInNav) loggedInNav.style.setProperty('display', 'none', 'important');
+                    if(loggedOutNav) loggedOutNav.style.setProperty('display', 'block', 'important');
+                    if(mainWorkGrid) mainWorkGrid.style.setProperty('display', 'none', 'important');
+                    if(vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'block', 'important');
+                }
             }
-        }
-        function handleCopyTabClick(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            if (window.innerWidth <= 991.98) {
-                alert("Xin lỗi tính năng này không thể sử dụng trên điện thoại");
-            } else {
-                window.location.href = 'copy_local.html';
+            function handleCopyTabClick(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                if (window.innerWidth <= 991.98) {
+                    alert("Xin lỗi tính năng này không thể sử dụng trên điện thoại");
+                } else {
+                    window.location.href = 'copy_local';
+                }
             }
-        }
-        function openSettingsModal(folderId, limitVal, downloadVal, commentVal, watermarkEnabledVal, watermarkLogoVal) {
+           function openSettingsModal(folderId) {
+            const album = allAlbums.find(a => String(a.folder_id || a.folderId || a.id) === String(folderId));
+            if (!album) return;
+        
+            const limitVal = album.limit_photos ?? album.limitPhotos ?? 0;
+            const downloadVal = album.allow_download ?? album.allowDownload ?? false;
+            const commentVal = album.allow_comment ?? album.allowComment ?? false;
+            const watermarkEnabledVal = album.watermark_enabled ?? album.watermarkEnabled ?? false;
+            const watermarkLogoVal = album.watermark_logo ?? album.watermarkLogo ?? '';
+        
             document.getElementById('editFolderId').value = folderId;
             document.getElementById('editLimitPhotos').value = (limitVal && limitVal > 0) ? limitVal : '';
             
-            document.getElementById('editAllowDownload').checked = (downloadVal === true || downloadVal === 'true' || downloadVal === 1);
-            document.getElementById('editAllowComment').checked = (commentVal === true || commentVal === 'true' || commentVal === 1);
+            document.getElementById('editAllowDownload').checked = Boolean(downloadVal);
+            document.getElementById('editAllowComment').checked = Boolean(commentVal);
             
-            // 🌟 Bắt chính xác giá trị 'true' hoặc true
-            document.getElementById('editWatermarkEnabled').checked = (watermarkEnabledVal === true || watermarkEnabledVal === 'true');
-            
+            const isWatermarkOn = watermarkEnabledVal === true || 
+                                String(watermarkEnabledVal).toLowerCase() === 'true' || 
+                                watermarkEnabledVal === 1 || 
+                                watermarkEnabledVal === '1';
+                                
+            document.getElementById('editWatermarkEnabled').checked = isWatermarkOn;
             editStoredLogoBase64 = watermarkLogoVal || '';
+            
             const preview = document.getElementById('editLogoPreview');
-            if (editStoredLogoBase64) {
+            if (editStoredLogoBase64 && editStoredLogoBase64 !== 'null' && editStoredLogoBase64 !== 'undefined') {
                 preview.src = editStoredLogoBase64;
                 preview.style.display = 'block';
             } else {
+                editStoredLogoBase64 = '';
                 preview.src = '';
                 preview.style.display = 'none';
             }
             toggleEditWatermarkInput();
-        
             new bootstrap.Modal(document.getElementById('settingsModal')).show();
         }
-
        async function saveAlbumSettings() {
             const folderId = document.getElementById('editFolderId').value;
             const limitPhotos = parseInt(document.getElementById('editLimitPhotos').value) || 0;
             const download = document.getElementById('editAllowDownload').checked;
             const comment = document.getElementById('editAllowComment').checked;
-            
-            // 🌟 Kiểm tra kỹ xem đúng ID của công tắc watermark chưa
             const watermarkEnabled = document.getElementById('editWatermarkEnabled').checked; 
             const watermarkLogo = editStoredLogoBase64;
             
-            console.log("Trạng thái công tắc gửi đi:", watermarkEnabled); // Bật F12 xem console log này là true hay false
-        
             showToast("Đang lưu cấu hình...");
             try {
                 const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/update-album-settings', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        folderId, 
-                        limitPhotos, 
-                        download, 
-                        comment, 
-                        watermarkEnabled, 
-                        watermarkLogo 
-                    })
+                    body: JSON.stringify({ folderId, limitPhotos, download, comment, watermarkEnabled, watermarkLogo })
                 });
                 const result = await res.json();
                 if(result.success) {
                     showToast("Cập nhật thành công!");
+                    const targetAlbum = allAlbums.find(a => String(a.folder_id || a.folderId || a.id) === String(folderId));
+                    if (targetAlbum) {
+                        targetAlbum.limit_photos = limitPhotos;
+                        targetAlbum.limitPhotos = limitPhotos;
+                        targetAlbum.allow_download = download;
+                        targetAlbum.allowDownload = download;
+                        targetAlbum.allow_comment = comment;
+                        targetAlbum.allowComment = comment;
+                        targetAlbum.watermark_enabled = watermarkEnabled;
+                        targetAlbum.watermarkEnabled = watermarkEnabled;
+                        if(watermarkLogo) {
+                            targetAlbum.watermark_logo = watermarkLogo;
+                            targetAlbum.watermarkLogo = watermarkLogo;
+                        }
+                    }
+                    sessionStorage.setItem('cache_albums', JSON.stringify(allAlbums));
                     bootstrap.Modal.getInstance(document.getElementById('settingsModal')).hide();
-                    setTimeout(() => location.reload(), 1000); 
                 } else {
                     alert("Lưu thất bại!");
                 }
@@ -589,15 +827,12 @@
                 alert("Lỗi kết nối máy chủ!");
             }
         }
-        let editStoredLogoBase64 = ''; // Biến lưu tạm base64 logo đang sửa
+        let editStoredLogoBase64 = ''; 
 
-        // 🌟 Hàm ẩn/hiện ô chọn file logo khi cấu hình album
         function toggleEditWatermarkInput() {
             const isChecked = document.getElementById('editWatermarkEnabled').checked;
             document.getElementById('editLogoUploadContainer').style.display = isChecked ? 'block' : 'none';
         }
-
-        // 🌟 Hàm xử lý đọc file logo tải lên từ máy tính cho album cụ thể
         function processEditLogoFile(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -618,26 +853,207 @@
             };
             reader.readAsDataURL(file);
         }
+
+
+        let currentLightboxPhotos = [];
+        let currentIndex = 0;
+        
+        function openClientLightbox(index) {
+    currentIndex = index;
+    renderLightboxCurrent();
+    
+    let lightboxEl = document.getElementById('clientLightboxModal');
+    let modalInstance = bootstrap.Modal.getInstance(lightboxEl);
+    if (!modalInstance) {
+        modalInstance = new bootstrap.Modal(lightboxEl);
+    }
+    modalInstance.show();
+}
+
+
+        let currentCoverFolderId = '';
+
+async function openDirectCoverModal(folderId, albumName) {
+    currentCoverFolderId = folderId;
+    document.getElementById('directCoverModalInfo').innerText = `Album: ${albumName}`;
+    
+    const grid = document.getElementById('directCoverGrid');
+    grid.innerHTML = `<div class="text-secondary text-center py-4" style="grid-column: 1 / -1;">Đang tải ảnh từ Google Drive...</div>`;
+    
+    new bootstrap.Modal(document.getElementById('directCoverModal')).show();
+
+    try {
+        const res = await fetch(`https://wsm.congtubaclieu.com.vn/webhook/get-photos?folderId=${folderId}`);
+        
+        if (!res.ok) {
+            throw new Error(`Lỗi máy chủ: ${res.status}`);
+        }
+
+        const textData = await res.text();
+        if (!textData || textData.trim() === '') {
+            throw new Error("Webhook n8n trả về dữ liệu trống (rỗng).");
+        }
+
+        const data = JSON.parse(textData);
+        const photos = Array.isArray(data) ? data : (data.photos || data.data || []);
+        
+        grid.innerHTML = '';
+        if (photos.length === 0) {
+            grid.innerHTML = `<div class="text-secondary text-center py-4" style="grid-column: 1 / -1;">Album chưa có ảnh nào hoặc n8n chưa trả về danh sách ảnh.</div>`;
+            return;
+        }
+
+        photos.forEach(p => {
+            const thumbUrl = `https://drive.google.com/thumbnail?id=${p.id}&sz=w400`;
+            const item = document.createElement('div');
+            item.style.cssText = `position: relative; aspect-ratio: 1/1; border-radius: 8px; overflow: hidden; cursor: pointer; border: 2px solid transparent; transition: 0.2s;`;
+            item.innerHTML = `<img src="${thumbUrl}" style="width: 100%; height: 100%; object-fit: cover;">`;
+            
+            item.onclick = () => selectThisAsCover(p.id);
+            item.onmouseover = () => item.style.borderColor = 'var(--primary)';
+            item.onmouseout = () => item.style.borderColor = 'transparent';
+        
+            grid.appendChild(item);
+        });
+    } catch (e) {
+        console.error("Lỗi tải ảnh:", e);
+        grid.innerHTML = `<div class="text-danger text-center py-4" style="grid-column: 1 / -1;">Không thể tải danh sách ảnh (${e.message})</div>`;
+    }
+}
+async function selectThisAsCover(photoId) {
+    showToast("Đang cập nhật ảnh bìa mới...");
+    try {
+        const res = await fetch('https://wsm.congtubaclieu.com.vn/webhook/update-album-settings', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                folderId: currentCoverFolderId, 
+                coverImageId: photoId 
+            })
+        });
+        const result = await res.json();
+        
+        if (result.success || res.ok) {
+            showToast("Đã đổi ảnh bìa thành công!");
+            
+            const targetAlbum = allAlbums.find(a => String(a.folder_id || a.folderId || a.id) === String(currentCoverFolderId));
+            if (targetAlbum) {
+                targetAlbum.cover_image_id = photoId;
+                targetAlbum.thumbnailFileId = photoId; 
+
+                const localStudioSlug = localStorage.getItem('admin_studio_slug');
+                let rawStudio = localStudioSlug || targetAlbum.studio_slug || targetAlbum.studioSlug || targetAlbum.studio || 'studio';
+                const studioSlug = createSlug(rawStudio);
+                const folderName = targetAlbum.folderName || targetAlbum.name || 'album';
+                const albumSlug = targetAlbum.album_slug || targetAlbum.albumSlug || createSlug(folderName);
+                
+                // === GỌI NGẨM SANG N8N ĐỂ LÀM NÓNG LẠI CACHE KHI ĐỔI ẢNH BÌA ===
+                fetch('https://wsm.congtubaclieu.com.vn/webhook/warmup-cache', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ studioSlug: studioSlug, albumSlug: albumSlug })
+                }).catch(() => {});
+            }
+            sessionStorage.setItem('cache_albums', JSON.stringify(allAlbums));
+            renderAlbums(allAlbums);
+            bootstrap.Modal.getInstance(document.getElementById('directCoverModal')).hide();
+        } else {
+            alert("Lưu ảnh bìa thất bại!");
+        }
+    } catch (e) {
+        console.error(e);
+        alert("Lỗi kết nối máy chủ khi lưu ảnh bìa!");
+    }
+}
+        function renderLightboxCurrent() {
+            if (currentLightboxPhotos.length === 0) return;
+            const p = currentLightboxPhotos[currentIndex];
+            const imgUrl = p.url || (p.id ? `https://drive.google.com/thumbnail?id=${p.id}&sz=w1600` : '');
+            const imgName = p.name || `Ảnh ${currentIndex + 1}`;
+            
+            document.getElementById('lightboxMainImage').src = imgUrl;
+            document.getElementById('lightboxPhotoName').innerText = `${imgName}  (${currentIndex + 1} / ${currentLightboxPhotos.length})`;
+            
+            const thumbBar = document.getElementById('lightboxThumbnailsBar');
+            if (!thumbBar) return;
+            
+            thumbBar.innerHTML = '';
+            
+            currentLightboxPhotos.forEach((item, idx) => {
+                const tUrl = item.url || (item.id ? `https://drive.google.com/thumbnail?id=${item.id}&sz=h200` : '');
+                const isActive = idx === currentIndex ? 'border: 2px solid var(--primary); transform: scale(1.1);' : 'border: 1px solid rgba(255,255,255,0.2); opacity: 0.6;';
+        
+                thumbBar.innerHTML += `
+                    <img src="${tUrl}" onclick="jumpToLightboxIndex(${idx})" style="width: 55px; height: 55px; object-fit: cover; border-radius: 6px; cursor: pointer; transition: 0.2s; ${isActive}" title="${item.name || ''}">
+                `;
+            });
+        }
+        
+        function changeLightboxImage(direction) {
+    currentIndex += direction;
+    if (currentIndex < 0) {
+        currentIndex = currentLightboxPhotos.length - 1;
+    } else if (currentIndex >= currentLightboxPhotos.length) {
+        currentIndex = 0;
+    }
+    renderLightboxCurrent();
+}
+
+        function toSlug(str) {
+    if (!str) return '';
+    return str.toString().toLowerCase()
+        .normalize('NFD') 
+        .replace(/[\u0300-\u036f]/g, '') 
+        .replace(/[đĐ]/g, 'd') 
+        .replace(/([^0-9a-z])/g, '') 
+        .trim();
+}
+
+function jumpToLightboxIndex(idx) {
+    currentIndex = idx;
+    renderLightboxCurrent();
+}
+
+        
+        function hideLoadOverlay() {
+            const overlay = document.getElementById('loadOverlay');
+            if (overlay) {
+                overlay.style.display = 'none';
+            }
+        }
         async function init() { 
             updateHeaderUI(); 
             if (!document.getElementById('mainWorkGrid') || document.getElementById('mainWorkGrid').innerHTML === '') {
-                setTimeout(() => { document.getElementById('loadOverlay').style.display = 'none'; }, 500); 
+                setTimeout(hideLoadOverlay, 500); 
                 return;
             }
             
+            const cachedAlbums = sessionStorage.getItem('cache_albums');
+            if (cachedAlbums) {
+                try {
+                    allAlbums = JSON.parse(cachedAlbums);
+                    renderAlbums(allAlbums); 
+                    hideLoadOverlay(); 
+                } catch(err) {
+                    console.error("Lỗi đọc cache", err);
+                }
+            }
+        
             try { 
                 const res = await fetch(`${PATHS.LIST}?adminEmail=${adminEmail}`); 
                 allAlbums = await res.json(); 
+                sessionStorage.setItem('cache_albums', JSON.stringify(allAlbums));
+                
                 renderAlbums(allAlbums); 
-                setTimeout(() => { document.getElementById('loadOverlay').style.display = 'none'; }, 500); 
+                hideLoadOverlay();
             } catch (e) { 
-                document.getElementById('loadOverlay').style.display = 'none'; 
+                console.error("Lỗi tải danh sách album ngầm:", e);
+                hideLoadOverlay(); 
             } 
         }
-        function logoutAdmin() { localStorage.clear(); window.location.href = 'admin'; }
+        function logoutAdmin() { localStorage.clear(); window.location.href = 'index'; }
         document.addEventListener('DOMContentLoaded', init);
     </script>
-    <!-- MODAL CHỈNH SỬA CẤU HÌNH ALBUM -->
     <div class="modal fade" id="settingsModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -660,8 +1076,6 @@
                         <input class="form-check-input" type="checkbox" id="editAllowComment">
                         <label class="form-check-label fw-bold text-white small" for="editAllowComment">Cho phép khách viết ghi chú / bình luận</label>
                     </div>
-
-                    <!-- 🌟 BỔ SUNG CÔNG TẮC ĐÓNG DẤU LOGO VÀ TẢI ẢNH LOGO -->
                     <div class="form-check form-switch mb-3">
                         <input class="form-check-input" type="checkbox" id="editWatermarkEnabled" onchange="toggleEditWatermarkInput()">
                         <label class="form-check-label fw-bold text-white small" for="editWatermarkEnabled">Đóng dấu bản quyền Logo</label>
@@ -675,8 +1089,6 @@
                             <img id="editLogoPreview" src="" style="max-height: 40px; display: none; border-radius: 4px; border: 1px solid var(--primary);">
                         </div>
                     </div>
-                    <!-- 🌟 KẾT THÚC PHẦN BỔ SUNG GIAO DIỆN LOGO -->
-
                     <button type="button" class="btn btn-copy-action w-100" onclick="saveAlbumSettings()">LƯU THAY ĐỔI</button>
                 </div>
             </div>
@@ -690,7 +1102,6 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
-                    <!-- THẺ NÀY ĐANG BỊ THIẾU NÊN GÂY RA LỖI NULL -->
                     <div class="alert alert-supreme text-center mb-4" id="modalInfo"></div>
                     
                     <textarea id="fileNamesOutput" class="form-control mb-4" rows="12" readonly></textarea>
@@ -699,5 +1110,94 @@
             </div>
         </div>
     </div>
+
+
+<div class="modal fade" id="selectedPhotosModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 1100px; width: 95%;">
+        <div class="modal-content" style="background: #0a0f1e; border: 2px solid var(--primary); border-radius: 20px;">
+            <div class="modal-header border-0">
+                <h5 class="modal-title">DANH SÁCH ẢNH KHÁCH ĐÃ CHỌN</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="alert alert-supreme text-center mb-3" id="selectedModalInfo">Album: ...</div>
+                <div id="selectedPhotosGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; max-height: 72vh; overflow-y: auto; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+                    <div class="text-center text-secondary py-4" style="grid-column: 1 / -1;">Đang tải danh sách ảnh...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="clientLightboxModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content bg-black text-white border-0 position-relative d-flex flex-column h-100">
+            <div class="d-flex justify-content-between align-items-center p-3 w-100" style="z-index: 10; background: rgba(0,0,0,0.8);">
+                <div id="lightboxPhotoName" class="fw-bold text-primary" style="font-size: 0.9rem;">TEN_ANH.JPG</div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="d-flex align-items-center justify-content-center flex-grow-1 position-relative p-2" style="overflow: hidden; padding-bottom: 90px !important;">
+                <button class="btn btn-dark position-absolute start-0 ms-3 rounded-circle text-white" onclick="changeLightboxImage(-1)" style="width: 45px; height: 45px; z-index: 5;"><i class="fas fa-chevron-left"></i></button>
+                
+                <img id="lightboxMainImage" src="" class="img-fluid" style="max-height: 78vh; max-width: 90vw; object-fit: contain; border-radius: 8px;" alt="Chi tiết ảnh">
+                
+                <button class="btn btn-dark position-absolute end-0 me-3 rounded-circle text-white" onclick="changeLightboxImage(1)" style="width: 45px; height: 45px; z-index: 5;"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="position-absolute bottom-0 start-0 end-0 p-2" style="background: rgba(0,0,0,0.9); z-index: 10;">
+                <div id="lightboxThumbnailsBar" class="d-flex align-items-center gap-2 overflow-auto justify-content-center py-1" style="max-width: 100%; white-space: nowrap;">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <div class="modal fade" id="albumLinksModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title">LIÊN KẾT TRUY CẬP ALBUM</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="alert alert-supreme text-center mb-4" id="linksModalAlbumName" style="font-size: 0.85rem;">Album: ...</div>
+                <div class="mb-3">
+                    <label class="form-label text-primary fw-bold small text-uppercase">1. Link gửi khách chọn ảnh (Client)</label>
+                    <div class="input-group">
+                        <input type="text" id="inputClientLink" class="form-control bg-dark text-white border-secondary" readonly style="font-size: 0.8rem;">
+                        <button class="btn btn-outline-primary" type="button" onclick="copyLinkText('inputClientLink')"><i class="fas fa-copy"></i> Sao chép</button>
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label text-success fw-bold small text-uppercase">2. Link thư mục Google Drive gốc</label>
+                    <div class="input-group">
+                        <input type="text" id="inputDriveLink" class="form-control bg-dark text-white border-secondary" readonly style="font-size: 0.8rem;">
+                        <button class="btn btn-outline-success" type="button" onclick="copyLinkText('inputDriveLink')"><i class="fas fa-copy"></i> Sao chép</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="zipLoadingModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center;">
+    <div style="background: #1a1a2e; border: 1px solid rgba(0, 235, 176, 0.4); padding: 30px; border-radius: 15px; text-align: center; max-width: 400px; width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+        <div class="spinner-border text-success mb-3" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <h5 style="color: #fff; font-weight: bold; margin-bottom: 10px;">Đang chuẩn bị gói ZIP...</h5>
+        <p id="zipStatusText" style="color: #a0aec0; font-size: 0.9rem; margin-bottom: 15px;">Hệ thống đang tải ảnh từ máy chủ và đóng gói. Quá trình này phụ thuộc vào tốc độ mạng của bạn.</p>
+        
+        <div class="zip-tip-box p-3 rounded-3 mb-3 text-start" style="background: #2b2b40; border: 1px dashed #ffc107;">
+            <div class="d-flex align-items-start">
+                <div class="me-2 fs-5">💡</div>
+                <div>
+                    <span style="color: #ffc107; font-weight: bold;">Mẹo xử lý nhanh khi mạng chậm:</span>
+                    <p style="color: #cbd5e1; font-size: 0.85rem; margin-bottom: 0; margin-top: 4px;">
+                        Thay vì đợi hệ thống đóng gói và tải file ZIP nặng, nếu bạn còn file gốc trên máy tính, bạn hãy bấm vào <b>icon COPY Bên Phải</b> của album, sau đó chuyển sang tab <b>SAO CHÉP</b> để lấy danh sách tên file ảnh xuất ra, giúp bạn lọc và trích xuất file gốc trên máy tính một cách nhanh chóng hơn!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <button onclick="closeZipLoading()" class="btn btn-outline-light btn-sm w-100">Ẩn thông báo (chạy ngầm)</button>
+    </div>
+</div>
 </body>
 </html>
