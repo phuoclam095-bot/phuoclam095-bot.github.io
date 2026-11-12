@@ -1098,17 +1098,18 @@ async function checkAccountStatusLive() {
 
     // 5. Đăng ký Service Worker và kiểm tra Controller
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js').then(reg => {
-            console.log("Service Worker đăng ký thành công với scope:", reg.scope);
-            if (!navigator.serviceWorker.controller) {
-                navigator.serviceWorker.addEventListener('controllerchange', () => {
-                    window.location.reload();
-                });
-            }
-        }).catch(err => {
-            console.error("Lỗi đăng ký Service Worker: ", err);
+    // Đăng ký Service Worker với scope tuyệt đối cho thư mục admin
+    navigator.serviceWorker.register('/sw.js', { scope: '/admin/' }).then(reg => {
+      console.log("Service Worker đã bám đúng scope quản trị:", reg.scope);
+      if (!navigator.serviceWorker.controller) {
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          window.location.reload();
         });
-    }
+      }
+    }).catch(err => {
+      console.error("Lỗi đăng ký Service Worker: ", err);
+    });
+  }
 </script>
 </body>
 </html>
