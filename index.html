@@ -1102,13 +1102,7 @@ async function checkAccountStatusLive() {
         alert("Sếp vui lòng bấm vào biểu tượng 3 chấm ở góc trên bên phải Chrome -> Chọn 'Cài đặt ChonAnhNhanh...' để cài ngay lập tức nhé!");
     }
 }
-```[cite: 7]
 
-### Tại sao cách này xử lý dứt điểm tình trạng của sếp?
-* Khi sự kiện ngầm chưa kịp kích hoạt trên máy tính, thay vì chỉ hiện dòng thông báo `alert` làm gián đoạn trải nghiệm, nút bấm sẽ **tự động bung ngay cái Modal hướng dẫn trực quan (`installAppModal`)** có sẵn trong giao diện của sếp ra giữa màn hình.
-* Giúp nhân viên hoặc người sử dụng thấy rõ ràng các bước thực hiện trên thiết bị của họ mà không bị trạng thái "bấm vào không thấy phản ứng gì"[cite: 7].
-
-    // 3. Ẩn banner khi bấm "Để sau"
     function dismissInstall() {
         const promptBanner = document.getElementById('install-prompt');
         if (promptBanner) {
