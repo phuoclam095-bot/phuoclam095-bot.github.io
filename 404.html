@@ -2,26 +2,36 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Đang chuyển hướng...</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chonanhnhanh.vn - Hệ Thống Quản Lý Studio</title>
+    
+    <!-- CÁC THẺ META CHO BOT MẠNG XÃ HỘI (ZALO, FACEBOOK) -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://chonanhnhanh.vn/">
+    <meta property="og:title" content="Chonanhnhanh.vn - Chọn Ảnh Nhanh">
+    <meta property="og:description" content="Hệ thống quản lý khách hàng và chọn ảnh nhanh chóng qua link Google Drive.">
+    <meta property="og:image" content="https://chonanhnhanh.vn/default-cover.jpg">
+
     <script>
-        // Phân tách đường dẫn trên URL (Ví dụ: /phuoclam/tatnienctbl)
         const pathSegments = window.location.pathname.split('/').filter(Boolean);
         
-        // Kiểm tra nếu là đường dẫn album công khai (không phải thư mục /admin)
-        if (pathSegments.length >= 2 && !window.location.pathname.startsWith('/admin')) {
-            const studioSlug = pathSegments[pathSegments.length - 2];
-            const albumSlug = pathSegments[pathSegments.length - 1];
-            
-            // Chuyển hướng chính xác đến /admin/client.html kèm đúng tham số studio và album
-            window.location.replace(`/admin/client?studio=${studioSlug}&album=${albumSlug}`);
+        if (pathSegments.length === 2) {
+            const studioSlug = pathSegments[0];
+            const albumSlug = pathSegments[1];
+        
+            const ua = navigator.userAgent.toLowerCase();
+            const isBot = /facebookexternalhit|zalo|bot|crawler|spider|robot|whatsapp|telegram|preview/i.test(ua);
+
+            if (!isBot) {
+                window.location.replace(`/client?studio=${studioSlug}&album=${albumSlug}`);
+            }
         } else {
-            window.location.replace('/');
         }
     </script>
 </head>
 <body>
     <div style="text-align:center; margin-top:20vh; font-family:sans-serif; color:#00ebb0;">
-        <h3>Đang tải không gian Studio...</h3>
+        <h3>Đang tải không gian Quản Trị Studio...</h3>
     </div>
 </body>
 </html>
