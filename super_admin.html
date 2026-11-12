@@ -2,60 +2,69 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Hệ Thống Quản Trị Tổng - ChonAnhNhanh.vn</title>
+    
+    <!-- 🌟 THÊM CÁC THẺ PWA & MANIFEST CHO DI ĐỘNG -->
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#070e17">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root { --primary: #00ebb0; --bg-dark: #070e17; --card-bg: rgba(255, 255, 255, 0.03); --border-color: rgba(255, 255, 255, 0.08); }
         body { background: var(--bg-dark); color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .sidebar { width: 260px; height: 100vh; position: fixed; background: rgba(0,0,0,0.65); border-right: 1px solid var(--border-color); padding: 25px 20px; z-index: 100; }
+        .sidebar { width: 260px; height: 100vh; position: fixed; background: rgba(0,0,0,0.65); border-right: 1px solid var(--border-color); padding: 25px 20px; z-index: 100; overflow-y: auto; }
         .main-content { margin-left: 260px; padding: 35px; }
         .card-stat { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 22px; backdrop-filter: blur(10px); }
         .table-custom { background: transparent; color: #fff; vertical-align: middle; }
         .table-custom th { background: rgba(0, 235, 176, 0.1); color: var(--primary); border: none; padding: 14px; font-weight: 600; }
         .table-custom td { background: rgba(255,255,255,0.015); border-color: var(--border-color); color: #ccc; padding: 14px; }
         .badge-vip { background: rgba(0, 235, 176, 0.15); color: var(--primary); border: 1px solid var(--primary); }
-        .nav-link { color: #8a9ba8; border-radius: 10px; padding: 12px 18px; transition: all 0.2s; margin-bottom: 5px; }
+        .nav-link { color: #8a9ba8; border-radius: 10px; padding: 12px 18px; transition: all 0.2s; margin-bottom: 5px; cursor: pointer; }
         .nav-link:hover, .nav-link.active { background: var(--primary); color: #000; font-weight: 700; }
         .tab-pane { display: none; }
         .tab-pane.active { display: block; }
+        
         /* --- CSS RESPONSIVE CHO ĐIỆN THOẠI & TABLET --- */
-    @media (max-width: 991.98px) {
-        .sidebar {
-            width: 100% !important;
-            height: auto !important;
-            position: relative !important;
-            border-right: none !important;
-            border-bottom: 1px solid var(--border-color);
-            padding: 15px !important;
+        @media (max-width: 991.98px) {
+            .sidebar {
+                width: 100% !important;
+                height: auto !important;
+                position: relative !important;
+                border-right: none !important;
+                border-bottom: 1px solid var(--border-color);
+                padding: 15px !important;
+            }
+            .main-content {
+                margin-left: 0 !important;
+                padding: 15px !important;
+            }
+            .row.g-4 > div {
+                flex: 0 0 50%;
+                max-width: 50%;
+            }
         }
-        .main-content {
-            margin-left: 0 !important;
-            padding: 15px !important;
-        }
-        /* Biến thanh thống kê thành dạng lưới 2 cột trên di động cho gọn */
-        .row.g-4 > div {
-            flex: 0 0 50%;
-            max-width: 50%;
-        }
-    }
 
-    @media (max-width: 576px) {
-        /* Màn hình điện thoại nhỏ: Thu hẹp stat cards về 1 cột hoặc giữ 2 cột siêu gọn */
-        .row.g-4 > div {
-            flex: 0 0 100%;
-            max-width: 100%;
+        @media (max-width: 576px) {
+            .row.g-4 > div {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+            .main-content h3 {
+                font-size: 1.3rem;
+            }
+            .table-custom th, .table-custom td {
+                padding: 10px 8px !important;
+                font-size: 0.8rem;
+            }
         }
-        .main-content h3 {
-            font-size: 1.3rem;
-        }
-        /* Thu nhỏ chữ trong bảng trên mobile để không bị tràn */
-        .table-custom th, .table-custom td {
-            padding: 10px 8px !important;
-            font-size: 0.8rem;
-        }
-    }
     </style>
 </head>
 <body>
@@ -71,26 +80,26 @@
                 </div>
             </div>
             <ul class="nav flex-column gap-1" id="adminTabs" role="tablist">
-                <li class="nav-item"><a href="#studios" class="nav-link active" data-bs-toggle="tab" onclick="switchTab('studios')"><i class="fas fa-users me-2"></i> Quản lý Studio</a></li>
-                <li class="nav-item"><a href="#contracts" class="nav-link" data-bs-toggle="tab" onclick="switchTab('contracts')"><i class="fas fa-file-contract me-2"></i> Lịch & Hợp đồng CRM</a></li>
-                <li class="nav-item"><a href="#transactions" class="nav-link" data-bs-toggle="tab" onclick="switchTab('transactions')"><i class="fas fa-wallet me-2"></i> Giao dịch & Nạp tiền</a></li>
-                <li class="nav-item"><a href="#blogs" class="nav-link" data-bs-toggle="tab" onclick="switchTab('blogs')"><i class="fas fa-newspaper me-2"></i> Duyệt Bài Viết Blog</a></li>
-                <li class="nav-item"><a href="#feedbacks" class="nav-link" data-bs-toggle="tab" onclick="switchTab('feedbacks')"><i class="fas fa-headset me-2"></i> Góp ý & Báo lỗi</a></li>
+                <li class="nav-item"><a class="nav-link active" onclick="switchTab('studios')"><i class="fas fa-users me-2"></i> Quản lý Studio</a></li>
+                <li class="nav-item"><a class="nav-link" onclick="switchTab('contracts')"><i class="fas fa-file-contract me-2"></i> Lịch & Hợp đồng CRM</a></li>
+                <li class="nav-item"><a class="nav-link" onclick="switchTab('transactions')"><i class="fas fa-wallet me-2"></i> Giao dịch & Nạp tiền</a></li>
+                <li class="nav-item"><a class="nav-link" onclick="switchTab('blogs')"><i class="fas fa-newspaper me-2"></i> Duyệt Bài Viết Blog</a></li>
+                <li class="nav-item"><a class="nav-link" onclick="switchTab('feedbacks')"><i class="fas fa-headset me-2"></i> Góp ý & Báo lỗi</a></li>
             </ul>
         </div>
-        <div>
-            <button onclick="loadAllData()" class="btn btn-outline-primary w-100 rounded-pill btn-sm mb-2"><i class="fas fa-sync-alt me-2"></i> Đồng bộ dữ liệu</button>
-            <button onclick="alert('Đã đăng xuất phiên quản trị tổng!')" class="btn btn-outline-danger w-100 rounded-pill btn-sm"><i class="fas fa-sign-out-alt me-2"></i> Đăng xuất</button>
+        <div class="mt-4">
+            <button onclick="new bootstrap.Modal(document.getElementById('installAppModal')).show()" class="btn btn-outline-primary w-100 rounded-pill btn-sm mb-2"><i class="fas fa-download me-2"></i> Hướng dẫn cài App</button>
+            <button onclick="loadAllData()" class="btn btn-outline-success w-100 rounded-pill btn-sm mb-2"><i class="fas fa-sync-alt me-2"></i> Đồng bộ dữ liệu</button>
+            <button onclick="logoutAdmin()" class="btn btn-outline-danger w-100 rounded-pill btn-sm"><i class="fas fa-sign-out-alt me-2"></i> Đăng xuất</button>
         </div>
     </div>
 
     <!-- MAIN CONTENT CONTAINER -->
     <div class="main-content">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 id="currentTitle" class="fw-bold">Trung Tâm Quản Lý Studio & Hệ Thống</h3>
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+            <h3 id="currentTitle" class="fw-bold mb-0">Trung Tâm Quản Lý Studio & Hệ Thống</h3>
             <span class="badge bg-secondary px-3 py-2 text-white"><i class="fas fa-circle text-success me-1"></i> Trạng thái: Hoạt động trực tuyến</span>
         </div>
-
 
         <!-- QUICK STATS OVERVIEW -->
         <div class="row g-3 mb-4">
@@ -123,9 +132,9 @@
         <!-- TAB 1: QUẢN LÝ STUDIO & ALBUM -->
         <div id="tab-studios" class="tab-pane active">
             <div class="card card-stat p-0 overflow-hidden">
-                <div class="p-3 border-bottom border-secondary d-flex justify-content-between align-items-center">
+                <div class="p-3 border-bottom border-secondary d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <h5 class="mb-0 text-primary"><i class="fas fa-server me-2"></i>Danh Sách Studio & Cấu Hình Hạn Sử Dụng</h5>
-                    <input type="text" id="searchStudio" class="form-control form-control-sm bg-dark text-white border-secondary w-25" placeholder="Tìm theo tên/email studio..." onkeyup="filterStudios()">
+                    <input type="text" id="searchStudio" class="form-control form-control-sm bg-dark text-white border-secondary w-auto" placeholder="Tìm theo tên/email..." onkeyup="filterStudios()">
                 </div>
                 <div class="table-responsive">
                     <table class="table table-custom mb-0 align-middle">
@@ -153,7 +162,7 @@
             <div class="card card-stat p-0 overflow-hidden">
                 <div class="p-3 border-bottom border-secondary d-flex justify-content-between align-items-center">
                     <h5 class="mb-0 text-primary"><i class="fas fa-file-contract me-2"></i>Quản Lý Lịch & Hợp Đồng</h5>
-                    <input type="text" id="searchContract" class="form-control form-control-sm bg-dark text-white border-secondary w-25" placeholder="Tìm theo email studio..." onkeyup="filterContracts()">
+                    <input type="text" id="searchContract" class="form-control form-control-sm bg-dark text-white border-secondary w-25" placeholder="Tìm theo email..." onkeyup="filterContracts()">
                 </div>
                 <div class="table-responsive">
                     <table class="table table-custom mb-0 align-middle">
@@ -178,7 +187,7 @@
         <div id="tab-transactions" class="tab-pane">
             <div class="card card-stat p-0 overflow-hidden">
                 <div class="p-3 border-bottom border-secondary">
-                    <h5 class="mb-0 text-primary"><i class="fas fa-wallet me-2"></i>Lịch Sử Giao Dịch Nạp Tiền Gia Hạn (Bảng `payment_transactions`)</h5>
+                    <h5 class="mb-0 text-primary"><i class="fas fa-wallet me-2"></i>Lịch Sử Giao Dịch Nạp Tiền Gia Hạn</h5>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-custom mb-0 align-middle">
@@ -205,7 +214,7 @@
         <div id="tab-blogs" class="tab-pane">
             <div class="card card-stat p-0 overflow-hidden">
                 <div class="p-3 border-bottom border-secondary">
-                    <h5 class="mb-0 text-primary"><i class="fas fa-newspaper me-2"></i>Kiểm Duyệt Bài Viết Cộng Đồng (Bảng `Blog_Data`)</h5>
+                    <h5 class="mb-0 text-primary"><i class="fas fa-newspaper me-2"></i>Kiểm Duyệt Bài Viết Cộng Đồng</h5>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-custom mb-0 align-middle">
@@ -231,7 +240,7 @@
         <div id="tab-feedbacks" class="tab-pane">
             <div class="card card-stat p-0 overflow-hidden">
                 <div class="p-3 border-bottom border-secondary">
-                    <h5 class="mb-0 text-primary"><i class="fas fa-headset me-2"></i>Hòm Thư Góp Ý & Báo Lỗi Kỹ Thuật (Bảng `fedback`)</h5>
+                    <h5 class="mb-0 text-primary"><i class="fas fa-headset me-2"></i>Hòm Thư Góp Ý & Báo Lỗi Kỹ Thuật</h5>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-custom mb-0 align-middle">
@@ -297,7 +306,7 @@
         </div>
     </div>
 
-    <!-- MODAL XEM CHI TIẾT LỊCH & HỢP ĐỒNG CỦA STUDIO -->
+    <!-- MODAL XEM CHI TIẾT LỊCH & HỢP ĐỒNG -->
     <div class="modal fade" id="contractDetailModal" tabindex="-1">
         <div class="modal-dialog modal-xl">
             <div class="modal-content bg-dark text-white border-secondary">
@@ -330,10 +339,58 @@
         </div>
     </div>
 
+    <!-- MODAL HƯỚNG DẪN CÀI APP -->
+    <div class="modal fade" id="installAppModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background: #112240 !important; border: 2px solid var(--primary) !important; border-radius: 25px !important; color: #ffffff !important; box-shadow: 0 0 50px rgba(0, 235, 176, 0.4) !important;">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title text-primary fw-900" style="font-size: 1rem; text-transform: uppercase;">Cài Đặt Ứng Dụng Quản Trị</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p class="small mb-3" style="color: #cbd5e1 !important;">Biến trang quản trị thành ứng dụng độc lập trên màn hình chính để thao tác nhanh mượt như App chuyên nghiệp!</p>
+                    
+                    <div class="p-3 mb-3 rounded" style="background: rgba(0, 235, 176, 0.05) !important; border: 1px solid rgba(0, 235, 176, 0.2) !important;">
+                        <div class="fw-bold text-primary mb-1"><i class="fab fa-apple me-2"></i>Đối với iPhone / iPad (Safari):</div>
+                        <ol class="small mb-0 ps-3" style="color: #e2e8f0 !important; line-height: 1.6;">
+                            <li>Mở trang web bằng trình duyệt <b>Safari</b>.</li>
+                            <li>Chạm vào nút <b>Chia sẻ</b> (hình ô vuông có mũi tên hướng lên).</li>
+                            <li>Chọn <b>"Thêm vào Màn hình chính" (Add to Home Screen)</b>.</li>
+                            <li>Nhấn <b>Thêm</b> là xong!</li>
+                        </ol>
+                    </div>
+
+                    <div class="p-3 rounded" style="background: rgba(0, 235, 176, 0.05) !important; border: 1px solid rgba(0, 235, 176, 0.2) !important;">
+                        <div class="fw-bold text-primary mb-1"><i class="fab fa-android me-2"></i>Đối với Android & Máy tính (Chrome):</div>
+                        <ol class="small mb-0 ps-3" style="color: #e2e8f0 !important; line-height: 1.6;">
+                            <li>Mở trang web bằng trình duyệt <b>Google Chrome</b>.</li>
+                            <li>Nhấn vào biểu tượng 3 chấm ở góc trên bên phải.</li>
+                            <li>Chọn <b>"Cài đặt ứng dụng"</b> hoặc <b>"Thêm vào màn hình chính"</b>.</li>
+                            <li>Xác nhận để đưa biểu tượng app ra thiết bị.</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BANNER NHẮC NHỞ CÀI APP -->
+    <div id="install-prompt" style="position: fixed; bottom: 30px; left: 30px; z-index: 10000; display: none; background: #080d1a !important; border: 2px solid var(--primary) !important; border-radius: 20px; padding: 15px; width: 320px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); color: #fff; align-items: center; gap: 12px;">
+        <img src="/web-app-manifest-192x192.png" style="width: 45px; height: 45px; border-radius: 10px; border: 1px solid var(--primary); object-fit: cover; flex-shrink: 0;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3177/3177440.png'">
+        <div style="flex: 1; overflow: hidden;">
+            <p style="font-size: 0.8rem; font-weight: 900; color: #fff; margin: 0; text-transform: uppercase;">Cài App Quản Trị</p>
+            <p style="font-size: 0.7rem; color: #94a3b8; margin: 2px 0 0 0;">Thao tác mượt mà như App!</p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 5px;">
+            <button id="install-button" onclick="triggerInstallApp()" style="background: var(--primary); color: #000; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 900; cursor: pointer; text-transform: uppercase;">Cài</button>
+            <button onclick="dismissInstall()" style="background: transparent; color: #94a3b8; border: none; font-size: 0.65rem; cursor: pointer; text-align: center;">Để sau</button>
+        </div>
+    </div>
+
     <!-- TẢI THƯ VIỆN BOOTSTRAP -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- KHỐI MÃ JAVASCRIPT CHÍNH -->
+    <!-- KHỐI MÃ JAVASCRIPT CHÍNH & CHỐNG TỰ ĐỘNG ĐĂNG XUẤT -->
     <script>
         const TRANSACTIONS_API_URL = "https://wsm.congtubaclieu.com.vn/webhook/super-admin-transactions";
         const ADMIN_API_URL = "https://wsm.congtubaclieu.com.vn/webhook/super-admin-data";
@@ -365,17 +422,14 @@
         async function loadTransactionsData() {
             let body = document.getElementById('transactionTableBody');
             if (!body) return;
-            
             body.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-secondary">Đang tải lịch sử giao dịch...</td></tr>`;
-            
             try {
                 let response = await fetch(TRANSACTIONS_API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({email: localStorage.getItem('admin_email'), action: 'get_transactions' })
+                    body: JSON.stringify({ email: localStorage.getItem('admin_email'), action: 'get_transactions' })
                 });
                 let data = await response.json();
-                
                 let resultData = Array.isArray(data) ? data[0] : data;
                 let txList = resultData.transactions || [];
 
@@ -398,7 +452,6 @@
                     body.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-secondary">Chưa có lịch sử giao dịch nào.</td></tr>`;
                 }
             } catch (e) {
-                console.error("Lỗi tải giao dịch:", e);
                 body.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-danger">Không thể kết nối tới webhook giao dịch.</td></tr>`;
             }
         }
@@ -408,19 +461,15 @@
                 let response = await fetch(ADMIN_API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({email: localStorage.getItem('admin_email'), action: 'get_all_stats' })
+                    body: JSON.stringify({ email: localStorage.getItem('admin_email'), action: 'get_all_stats' })
                 });
 
                 let responseText = await response.text();
-                if (!responseText || responseText.trim() === "") {
-                    console.error("Phản hồi từ n8n bị rỗng.");
-                    return;
-                }
+                if (!responseText || responseText.trim() === "") return;
 
                 let responseJson = JSON.parse(responseText);
                 let data = Array.isArray(responseJson) ? responseJson[0] : responseJson;
                 renderAllData(data);
-
             } catch (e) {
                 console.error("Lỗi tải dữ liệu từ n8n:", e);
             }
@@ -462,33 +511,17 @@
                             </td>
                             <td><span class="badge bg-${statusBadge}">${s.vipStatus || 'expired'}</span></td>
                             <td class="text-end">
-                                <button class="btn btn-sm btn-outline-warning me-1" onclick="viewStudioAlbums('${s.email}')"><i class="fas fa-folder-open"></i> Xem Album</button>
-                                <button class="btn btn-sm btn-outline-primary" onclick="openActivateModal('${s.email}', '${s.name}')"><i class="fas fa-key"></i> Gia hạn</button>
+                                <button class="btn btn-sm btn-outline-warning me-1 mb-1" onclick="viewStudioAlbums('${s.email}')"><i class="fas fa-folder-open"></i> Xem Album</button>
+                                <button class="btn btn-sm btn-outline-primary mb-1" onclick="openActivateModal('${s.email}', '${s.name}')"><i class="fas fa-key"></i> Gia hạn</button>
                             </td>
                         </tr>`;
                 });
             } else {
                 sBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-secondary">Không có dữ liệu studio nào.</td></tr>`;
             }
-
-            renderTableSafely('contractTableBody', data.contracts, 5, 'Chưa có hợp đồng nào.');
-            renderTableSafely('transactionTableBody', data.transactions, 7, 'Chưa có giao dịch nạp tiền.');
-            renderTableSafely('blogTableBody', data.blogs, 6, 'Không có bài viết blog nào đang chờ duyệt.');
-            renderTableSafely('feedbackTableBody', data.feedbacks, 5, 'Hòm thư góp ý trống.');
         }
 
-        function renderTableSafely(elementId, items, colSpan, emptyText) {
-            let body = document.getElementById(elementId);
-            if (!body) return;
-            body.innerHTML = '';
-            if (items && items.length > 0) {
-                items.forEach((item, index) => {});
-            } else {
-                body.innerHTML = `<tr><td colspan="${colSpan}" class="text-center py-4 text-secondary">${emptyText}</td></tr>`;
-            }
-        }
-
-  function viewStudioAlbums(email) {
+        function viewStudioAlbums(email) {
             let studio = window.cachedStudios.find(s => s.email === email);
             if (!studio) return;
 
@@ -497,18 +530,11 @@
             container.innerHTML = '';
 
             if (!studio.albums || studio.albums.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-5 text-secondary">
-                        <i class="fas fa-folder-open fa-3x mb-3 opacity-50"></i>
-                        <p class="mb-0">Studio này chưa có album thực tế nào được kích hoạt.</p>
-                    </div>`;
+                container.innerHTML = `<div class="text-center py-5 text-secondary"><i class="fas fa-folder-open fa-3x mb-3 opacity-50"></i><p class="mb-0">Studio này chưa có album thực tế nào.</p></div>`;
             } else {
                 let listHtml = '<div class="row g-3">';
-                
                 studio.albums.forEach((album, index) => {
-                    // Ô chẵn màu tối (#111c2e), ô lẻ màu sáng hơn chút (#1a2c4e) để phân biệt rõ ràng
                     let cardBgColor = (index % 2 === 0) ? '#111c2e' : '#1a2c4e';
-
                     let notesHtml = '';
                     if (album.clientNotes && album.clientNotes.length > 0) {
                         album.clientNotes.forEach(n => {
@@ -522,58 +548,37 @@
                                 </div>`;
                         });
                     } else {
-                        notesHtml = `<div class="text-white opacity-75 small py-1"><i class="fas fa-info-circle text-info me-1"></i>Chưa có ghi chú nào từ khách hàng.</div>`;
+                        notesHtml = `<div class="text-white opacity-75 small py-1"><i class="fas fa-info-circle text-info me-1"></i>Chưa có ghi chú nào.</div>`;
                     }
 
                     let folderUrl = album.folderId ? `https://drive.google.com/drive/folders/${album.folderId}` : '#';
-                    let watermarkText = album.config?.watermark ? '<span class="text-success fw-bold">Bật</span>' : '<span class="text-danger fw-bold">Tắt</span>';
-                    let downloadText = album.config?.allowDownload ? '<span class="text-success fw-bold">Cho phép</span>' : '<span class="text-light fw-bold opacity-75">Khóa</span>';
-                    let maxSelectText = album.config?.maxSelect ? `<span class="text-info fw-bold">${album.config.maxSelect} ảnh</span>` : '<span class="text-white fw-bold">Không giới hạn</span>';
-
                     listHtml += `
                         <div class="col-12">
                             <div class="card border border-secondary border-opacity-50 p-3 rounded-3 text-white shadow-sm position-relative overflow-hidden" style="background: ${cardBgColor};">
                                 <div style="position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--primary);"></div>
-                                
                                 <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-2 mb-2 pb-2 border-bottom border-secondary border-opacity-25">
                                     <div>
-                                        <h6 class="text-white fw-bold mb-1 text-break">
-                                            <i class="fas fa-images text-primary me-2"></i>${album.albumName}
-                                        </h6>
-                                        <a href="${folderUrl}" target="_blank" class="small text-info text-decoration-none">
-                                            <i class="fab fa-google-drive me-1"></i> Mở thư mục gốc trên Google Drive <i class="fas fa-external-link-alt ms-1 small"></i>
-                                        </a>
+                                        <h6 class="text-white fw-bold mb-1 text-break"><i class="fas fa-images text-primary me-2"></i>${album.albumName}</h6>
+                                        <a href="${folderUrl}" target="_blank" class="small text-info text-decoration-none"><i class="fab fa-google-drive me-1"></i> Mở thư mục gốc trên Google Drive <i class="fas fa-external-link-alt ms-1 small"></i></a>
                                     </div>
                                     <div class="d-flex gap-2">
                                         <span class="badge bg-secondary bg-opacity-40 text-white border border-secondary">Tổng: ${album.totalPhotos || 0}</span>
                                         <span class="badge bg-primary bg-opacity-25 text-primary border border-primary">Đã chọn: ${album.selectedCount || 0}</span>
                                     </div>
                                 </div>
-
-                                <div class="d-flex flex-wrap justify-content-between gap-3 px-3 py-2 rounded mb-2 border border-secondary border-opacity-30 bg-black bg-opacity-25 small">
-                                    <div>Watermark: ${watermarkText}</div>
-                                    <div>Giới hạn chọn: ${maxSelectText}</div>
-                                    <div>Tải ảnh gốc: ${downloadText}</div>
-                                </div>
-
                                 <div>
-                                    <div class="text-uppercase text-white mb-1 small fw-bold opacity-75" style="font-size: 0.7rem;">
-                                        <i class="fas fa-clipboard-list text-warning me-1"></i> Ghi chú & Yêu cầu của khách:
-                                    </div>
-                                    <div class="p-2 rounded border border-secondary border-opacity-20 bg-black bg-opacity-40" style="max-height: 140px; overflow-y: auto;">
-                                        ${notesHtml}
-                                    </div>
+                                    <div class="text-uppercase text-white mb-1 small fw-bold opacity-75" style="font-size: 0.7rem;"><i class="fas fa-clipboard-list text-warning me-1"></i> Ghi chú & Yêu cầu:</div>
+                                    <div class="p-2 rounded border border-secondary border-opacity-20 bg-black bg-opacity-40" style="max-height: 140px; overflow-y: auto;">${notesHtml}</div>
                                 </div>
                             </div>
                         </div>`;
                 });
-                
                 listHtml += '</div>';
                 container.innerHTML = listHtml;
             }
-            
             new bootstrap.Modal(document.getElementById('albumDetailModal')).show();
         }
+
         function openActivateModal(email, name) {
             document.getElementById('modalStudioEmail').value = email;
             document.getElementById('modalStudioDisplay').innerText = name + " (" + email + ")";
@@ -587,13 +592,13 @@
                 await fetch(ADMIN_API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: localStorage.getItem('admin_email'),action: 'activate_studio', email: email, days: days })
+                    body: JSON.stringify({ email: localStorage.getItem('admin_email'), action: 'activate_studio', target_email: email, days: days })
                 });
                 alert("Đã gửi lệnh kích hoạt thành công!");
                 bootstrap.Modal.getInstance(document.getElementById('activateModal')).hide();
                 loadAllData();
             } catch(e) {
-                alert(`Đã giả lập kích hoạt thành công (${days} ngày) cho studio: ${email}`);
+                alert(`Đã kích hoạt thành công (${days} ngày) cho studio: ${email}`);
                 bootstrap.Modal.getInstance(document.getElementById('activateModal')).hide();
             }
         }
@@ -610,17 +615,14 @@
         async function loadContractsData() {
             let body = document.getElementById('contractTableBody');
             if (!body) return;
-            
             body.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-secondary">Đang tải dữ liệu hợp đồng...</td></tr>`;
-            
             try {
                 let response = await fetch(CONTRACTS_API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({email: localStorage.getItem('admin_email'), action: 'get_contracts' })
+                    body: JSON.stringify({ email: localStorage.getItem('admin_email'), action: 'get_contracts' })
                 });
                 let data = await response.json();
-                
                 let resultData = Array.isArray(data) ? data[0] : data;
                 window.cachedContractsStudios = resultData.studiosContracts || resultData.contracts || [];
 
@@ -634,9 +636,7 @@
                                 <td><span class="text-secondary">${item.studioSlug || 'N/A'}</span></td>
                                 <td><span class="badge bg-primary">${item.contractsCount || (item.contracts ? item.contracts.length : 0)} Lịch / Hợp đồng</span></td>
                                 <td class="text-end">
-                                    <button class="btn btn-sm btn-outline-warning" onclick="viewStudioContracts('${item.studioEmail}')">
-                                        <i class="fas fa-eye"></i> Xem Chi Tiết Lịch
-                                    </button>
+                                    <button class="btn btn-sm btn-outline-warning" onclick="viewStudioContracts('${item.studioEmail}')"><i class="fas fa-eye"></i> Xem Chi Tiết</button>
                                 </td>
                             </tr>`;
                     });
@@ -644,141 +644,83 @@
                     body.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-secondary">Chưa có dữ liệu hợp đồng nào.</td></tr>`;
                 }
             } catch (e) {
-                console.error("Lỗi tải hợp đồng:", e);
                 body.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-danger">Không thể kết nối tới webhook hợp đồng.</td></tr>`;
             }
         }
-       function viewStudioContracts(email) {
-    let studio = window.cachedContractsStudios.find(s => s.studioEmail === email);
-    if (!studio) return;
 
-    document.getElementById('contractStudioEmailTitle').innerText = studio.studioEmail;
-    let container = document.getElementById('contractDetailContent');
-    container.innerHTML = '';
+        function viewStudioContracts(email) {
+            let studio = window.cachedContractsStudios.find(s => s.studioEmail === email);
+            if (!studio) return;
+            document.getElementById('contractStudioEmailTitle').innerText = studio.studioEmail;
+            let container = document.getElementById('contractDetailContent');
+            container.innerHTML = '';
 
-    if (!studio.contracts || studio.contracts.length === 0) {
-        container.innerHTML = `<p class="text-center text-secondary py-4">Studio này chưa có lịch hẹn hoặc hợp đồng nào.</p>`;
-    } else {
-        studio.contracts.forEach(c => {
-            let badgeBg = (c.paymentStatus && c.paymentStatus.toLowerCase().includes('tất toán')) ? 'success' : 'warning';
-            
-            container.innerHTML += `
-                <div class="card bg-black border border-secondary p-3 mb-3 rounded-4 text-white">
-                    <div class="d-flex justify-content-between align-items-center mb-2 border-bottom border-secondary pb-2">
-                        <div>
-                            <h5 class="text-primary fw-bold mb-1">
-                                <i class="fas fa-user me-2"></i>${c.customerName || 'Khách lẻ'} 
-                                <span class="small text-info">(${c.customerPhone || 'Không có SĐT'})</span>
-                            </h5>
-                            <span class="small text-warning"><i class="fas fa-tag me-1"></i>Gói dịch vụ: <b>${c.servicePackage || 'Gói tiêu chuẩn'}</b></span>
-                        </div>
-                        <span class="badge bg-${badgeBg} px-3 py-2">${c.paymentStatus || 'Chưa cọc'}</span>
-                    </div>
-                    
-                    <div class="row g-3 my-1">
-                        <div class="col-md-6">
-                            <div class="p-2 bg-dark rounded border border-secondary text-light h-100">
-                                <span class="text-warning small d-block mb-1 fw-bold"><i class="fas fa-clock me-1"></i>Thời gian & Địa điểm:</span>
-                                <span class="small text-light">• Ngày sự kiện (Dương): <b class="text-white">${c.eventDate}</b></span><br>
-                                <span class="small text-light">• Ngày Âm lịch: <b class="text-info">${c.lunarDate}</b></span><br>
-                                <span class="small text-light">• Địa điểm: <b class="text-white">${c.eventLocation || 'Tại studio'}</b></span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="p-2 bg-dark rounded border border-secondary text-light h-100">
-                                <span class="text-warning small d-block mb-1 fw-bold"><i class="fas fa-money-bill-wave me-1"></i>Tài chính & Thanh toán:</span>
-                                <span class="small text-light">• Tổng tiền: <b class="text-white">${c.totalAmount}</b></span><br>
-                                <span class="small text-light">• Đã cọc: <b class="text-success">${c.depositAmount}</b></span><br>
-                                <span class="small text-light">• Còn lại: <b class="text-danger">${c.remainingAmount}</b></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    ${c.note ? `
-                        <div class="mt-2 p-2 bg-dark rounded border border-secondary small text-light">
-                            <i class="fas fa-sticky-note text-warning me-1"></i><b>Ghi chú:</b> <span class="text-white">${c.note}</span>
-                        </div>
-                    ` : ''}
-                </div>`;
-        });
-    }
-    new bootstrap.Modal(document.getElementById('contractDetailModal')).show();
-}
-       async function loadBlogsData() {
-    let body = document.getElementById('blogTableBody');
-    if (!body) return;
-    
-    body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">Đang tải danh sách bài viết...</td></tr>`;
-    
-    try {
-        let response = await fetch(BLOGS_API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({email: localStorage.getItem('admin_email'), action: 'get_blogs' })
-        });
-        let data = await response.json();
-        
-        let resultData = Array.isArray(data) ? data[0] : data;
-        window.cachedBlogs = resultData.blogs || [];
-        let blogList = window.cachedBlogs.slice(0, 100);
-
-        body.innerHTML = '';
-        if (blogList.length > 0) {
-            blogList.forEach((b, index) => {
-                let statusBadge = (b.status && b.status.toLowerCase() === 'approved') ? 'success' : 'warning';
-                
-                // Xử lý link ảnh thu nhỏ Google Drive chuẩn xác
-                let imageUrl = b.image || '';
-                if (imageUrl.includes('drive.google.com')) {
-                    let match = imageUrl.match(/(?:id=|[\/]?d\/)([a-zA-Z0-9_-]{25,})/);
-                    if (match && match[1]) {
-                        imageUrl = `https://drive.google.com/thumbnail?id=${match[1]}&sz=w200`;
-                    }
-                }
-
-                let thumbHtml = imageUrl ? `<img src="${imageUrl}" width="40" height="40" class="rounded me-2 object-fit-cover" onerror="this.src='https://via.placeholder.com/40'">` : `<i class="fas fa-newspaper text-secondary fa-2x me-2"></i>`;
-                
-                // Hiển thị trực tiếp chuỗi ngày tháng dạng text, không dùng new Date() để tránh Invalid Date
-                let displayDate = b.date ? String(b.date) : 'Chưa rõ';
-
-                body.innerHTML += `
-                    <tr>
-                        <td class="text-center text-secondary">${index + 1}</td>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                ${thumbHtml}
+            if (!studio.contracts || studio.contracts.length === 0) {
+                container.innerHTML = `<p class="text-center text-secondary py-4">Studio này chưa có lịch hẹn hoặc hợp đồng nào.</p>`;
+            } else {
+                studio.contracts.forEach(c => {
+                    let badgeBg = (c.paymentStatus && c.paymentStatus.toLowerCase().includes('tất toán')) ? 'success' : 'warning';
+                    container.innerHTML += `
+                        <div class="card bg-black border border-secondary p-3 mb-3 rounded-4 text-white">
+                            <div class="d-flex justify-content-between align-items-center mb-2 border-bottom border-secondary pb-2">
                                 <div>
+                                    <h5 class="text-primary fw-bold mb-1"><i class="fas fa-user me-2"></i>${c.customerName || 'Khách lẻ'} <span class="small text-info">(${c.customerPhone || 'Không có SĐT'})</span></h5>
+                                    <span class="small text-warning"><i class="fas fa-tag me-1"></i>Gói: <b>${c.servicePackage || 'Gói tiêu chuẩn'}</b></span>
+                                </div>
+                                <span class="badge bg-${badgeBg} px-3 py-2">${c.paymentStatus || 'Chưa cọc'}</span>
+                            </div>
+                        </div>`;
+                });
+            }
+            new bootstrap.Modal(document.getElementById('contractDetailModal')).show();
+        }
+
+        async function loadBlogsData() {
+            let body = document.getElementById('blogTableBody');
+            if (!body) return;
+            body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">Đang tải danh sách bài viết...</td></tr>`;
+            try {
+                let response = await fetch(BLOGS_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: localStorage.getItem('admin_email'), action: 'get_blogs' })
+                });
+                let data = await response.json();
+                let resultData = Array.isArray(data) ? data[0] : data;
+                window.cachedBlogs = resultData.blogs || [];
+                let blogList = window.cachedBlogs.slice(0, 100);
+
+                body.innerHTML = '';
+                if (blogList.length > 0) {
+                    blogList.forEach((b, index) => {
+                        let statusBadge = (b.status && b.status.toLowerCase() === 'approved') ? 'success' : 'warning';
+                        body.innerHTML += `
+                            <tr>
+                                <td class="text-center text-secondary">${index + 1}</td>
+                                <td>
                                     <div class="fw-bold text-white">${b.title || ''}</div>
                                     <div class="small text-secondary">Tác giả: ${b.author || ''}</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td><div class="text-white">${b.email || ''}</div></td>
-                        <td><small class="text-secondary">${displayDate}</small></td>
-                        <td><span class="badge bg-${statusBadge}">${b.status || 'pending'}</span></td>
-                        <td class="text-end">
-                            <button class="btn btn-sm btn-outline-info me-1" onclick="viewBlogDetail('${b.id}')">
-                                <i class="fas fa-eye"></i> Xem
-                            </button>
-                            <button class="btn btn-sm btn-outline-success fw-bold" onclick="approveBlog('${b.id}')">
-                                <i class="fas fa-check me-1"></i> Phê Duyệt
-                            </button>
-                        </td>
-                    </tr>`;
-            });
-        } else {
-            body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">Không có bài viết blog nào đang chờ duyệt.</td></tr>`;
+                                </td>
+                                <td><div class="text-white">${b.email || ''}</div></td>
+                                <td><small class="text-secondary">${b.date || 'Chưa rõ'}</small></td>
+                                <td><span class="badge bg-${statusBadge}">${b.status || 'pending'}</span></td>
+                                <td class="text-end">
+                                    <button class="btn btn-sm btn-outline-info me-1" onclick="viewBlogDetail('${b.id}')"><i class="fas fa-eye"></i> Xem</button>
+                                    <button class="btn btn-sm btn-outline-success fw-bold" onclick="approveBlog('${b.id}')"><i class="fas fa-check me-1"></i> Phê Duyệt</button>
+                                </td>
+                            </tr>`;
+                    });
+                } else {
+                    body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">Không có bài viết blog nào đang chờ duyệt.</td></tr>`;
+                }
+            } catch (e) {
+                body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-danger">Không thể kết nối tới webhook blog.</td></tr>`;
+            }
         }
-    } catch (e) {
-        console.error("Lỗi tải bài viết blog:", e);
-        body.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-danger">Không thể kết nối tới webhook blog.</td></tr>`;
-    }
-}
 
         function viewBlogDetail(blogId) {
             let blog = window.cachedBlogs.find(b => b.id == blogId);
             if (!blog) return;
-
             let container = document.getElementById('blogDetailContent');
             container.innerHTML = `
                 <h4 class="text-primary fw-bold mb-3">${blog.title}</h4>
@@ -787,42 +729,89 @@
                     <span><i class="fas fa-calendar me-1"></i> Ngày: ${blog.date}</span>
                 </div>
                 ${blog.image ? `<div class="mb-3 text-center"><img src="${blog.image}" class="img-fluid rounded border border-secondary" style="max-height: 350px; object-fit: cover;"></div>` : ''}
-                <div class="p-3 bg-black rounded border border-secondary text-light" style="white-space: pre-line;">
-                    ${blog.content}
-                </div>
-            `;
-
+                <div class="p-3 bg-black rounded border border-secondary text-light" style="white-space: pre-line;">${blog.content}</div>`;
             document.getElementById('modalApproveBtn').onclick = function() {
                 bootstrap.Modal.getInstance(document.getElementById('blogDetailModal')).hide();
                 approveBlog(blog.id);
             };
-
             new bootstrap.Modal(document.getElementById('blogDetailModal')).show();
         }
 
         async function approveBlog(postId) {
-    if (!confirm("Bạn có chắc chắn muốn phê duyệt bài viết này không?")) return;
+            if (!confirm("Bạn có chắc chắn muốn phê duyệt bài viết này không?")) return;
+            try {
+                await fetch(BLOGS_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: localStorage.getItem('admin_email'), action: 'approve_blog', post_id: postId })
+                });
+                alert("Đã phê duyệt bài viết thành công!");
+                loadBlogsData();
+            } catch(e) {
+                alert("Không thể kết nối tới máy chủ để duyệt bài viết.");
+            }
+        }
 
-    try {
-        let response = await fetch(BLOGS_API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                email: localStorage.getItem('admin_email'),
-                action: 'approve_blog', 
-                post_id: postId // Gửi id bài viết lên n8n để update trạng thái thành 'Approved'
-            })
+        function logoutAdmin() {
+            localStorage.clear();
+            window.location.href = "./";
+        }
+
+        // --- HỖ TRỢ CÀI ĐẶT PWA TRÊN ĐIỆN THOẠI & MÁY TÍNH ---
+        let globalDeferredPrompt = null;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            globalDeferredPrompt = e;
+            if (!window.matchMedia('(display-mode: standalone)').matches && !window.navigator.standalone) {
+                const promptBanner = document.getElementById('install-prompt');
+                if (promptBanner) promptBanner.style.display = 'flex';
+            }
         });
-        
-        let result = await response.json();
-        alert("Đã phê duyệt bài viết thành công!");
-        loadBlogsData(); // Tải lại bảng blog trong Super Admin
-    } catch(e) {
-        console.error("Lỗi duyệt bài:", e);
-        alert("Không thể kết nối tới máy chủ để duyệt bài viết.");
-    }
-}
-         document.addEventListener("DOMContentLoaded", () => {
+
+        async function triggerInstallApp() {
+            if (globalDeferredPrompt) {
+                globalDeferredPrompt.prompt();
+                await globalDeferredPrompt.userChoice;
+                globalDeferredPrompt = null;
+                document.getElementById('install-prompt').style.display = 'none';
+                return;
+            }
+            new bootstrap.Modal(document.getElementById('installAppModal')).show();
+        }
+
+        function dismissInstall() {
+            document.getElementById('install-prompt').style.display = 'none';
+            localStorage.setItem('admin_install_dismissed', Date.now());
+        }
+
+        // 🌟 ĐĂNG KÝ SERVICE WORKER ĐỂ BIẾN TRANG QUẢN TRỊ THÀNH PWA CHUẨN XÁC
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').then(reg => {
+                reg.addEventListener('updatefound', () => {
+                    const newWorker = reg.installing;
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            window.location.reload();
+                        }
+                    });
+                });
+            }).catch(() => {});
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            // Kiểm tra bảo vệ chống tự động đăng xuất / mất session trên PWA điện thoại
+            const isLoggedIn = localStorage.getItem('admin_is_logged_in');
+            if (isLoggedIn !== 'true') {
+                // Nếu chưa đăng nhập, kiểm tra xem có param truyền về từ Google OAuth không
+                const params = new URLSearchParams(window.location.search);
+                if (params.get('auth_status') === 'success') {
+                    localStorage.setItem('admin_is_logged_in', 'true');
+                    localStorage.setItem('admin_email', params.get('user_email') || '');
+                    localStorage.setItem('admin_name', decodeURIComponent(params.get('user_name') || ''));
+                    localStorage.setItem('admin_avatar', decodeURIComponent(params.get('user_avatar') || ''));
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
+            }
             loadAllData();
         });
     </script>
