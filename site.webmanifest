@@ -1,8 +1,8 @@
 {
   "name": "ChonAnhNhanh.vn - Studio Workflow",
   "short_name": "ChonAnhNhanh",
-  "start_url": "/admin/index",
-  "scope": "/admin/",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#050a14",
   "theme_color": "#00ebb0",
