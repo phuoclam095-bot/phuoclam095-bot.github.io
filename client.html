@@ -3,64 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VIP Album Master - V21.1 ULTIMATE</title>
+    <title>Chọn Ảnh Nhanh</title>
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #00ebb0; --bg: #050a14; --header-h: 50px; --footer-h: 70px; --strip-h: 90px; }
-        body { background-color: var(--bg); color: #fff; font-family: 'Montserrat', sans-serif; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; margin: 0; }
-        
-        .navbar { height: var(--header-h); background: #000; border-bottom: 1px solid #222; padding: 0 15px; z-index: 5000; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; }
-        
-        /* 1 & 2. HIỂN THỊ TÊN ALBUM VÀ TÊN ẢNH GẦN NHAU */
-        .header-left { display: flex; flex-direction: column; max-width: 70%; }
-        .album-title { font-weight: 900; font-size: 0.8rem; color: var(--primary); text-transform: uppercase; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        #displayFileName { font-size: 0.55rem; color: #aaa; font-weight: 700; text-transform: uppercase; margin-top: -2px; }
+    :root { --primary: #00ebb0; --bg: #050a14; --header-h: 50px; --footer-h: 70px; --strip-h: 90px; }
+    body { background-color: var(--bg); color: #fff; font-family: 'Montserrat', sans-serif; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; margin: 0; }
+    
+    .navbar { height: var(--header-h); background: #000; border-bottom: 1px solid #222; padding: 0 15px; z-index: 5000; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; }
+    
+    .header-left { display: flex; flex-direction: column; max-width: 70%; }
+    .album-title { font-weight: 900; font-size: 0.8rem; color: var(--primary); text-transform: uppercase; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    #displayFileName { font-size: 0.55rem; color: #aaa; font-weight: 700; text-transform: uppercase; margin-top: -2px; }
 
-        .content-area { flex: 1; position: relative; overflow: hidden; display: flex; flex-direction: column; }
-        
-        #photoGrid { height: 100%; overflow-y: auto; padding: 10px; display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: min-content; gap: 10px; align-content: start; padding-bottom: 100px; -webkit-overflow-scrolling: touch; }
-        @media (min-width: 768px) { #photoGrid { grid-template-columns: repeat(6, 1fr); } }
+    .content-area { flex: 1; position: relative; overflow: hidden; display: flex; flex-direction: column; }
+    
+    #photoGrid { height: 100%; overflow-y: auto; padding: 10px; display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: min-content; gap: 10px; align-content: start; padding-bottom: 100px; -webkit-overflow-scrolling: touch; }
+    @media (min-width: 768px) { #photoGrid { grid-template-columns: repeat(6, 1fr); } }
 
-        .grid-item { position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 1/1; background: #111; border: 2px solid transparent; transition: 0.2s; }
-        .grid-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.4s; opacity: 0.85; }
-        .grid-item:hover { border-color: rgba(255,255,255,0.5); }
-        .grid-item:hover img { transform: scale(1.08); opacity: 1; }
-        .grid-item.focused { border-color: #fff; box-shadow: 0 0 15px rgba(255,255,255,0.2); }
-        .grid-item.selected { border-color: var(--primary); }
-        
-        .vip-dot { position: absolute; top: 6px; right: 6px; width: 20px; height: 20px; background: var(--primary); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 10px; z-index: 10; border: 1.5px solid #000; }
+    .grid-item { position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 1/1; background: #111; border: 2px solid transparent; transition: 0.2s; }
+    .grid-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.4s; opacity: 0.85; }
+    .grid-item:hover { border-color: rgba(255,255,255,0.5); }
+    .grid-item:hover img { transform: scale(1.08); opacity: 1; }
+    .grid-item.focused { border-color: #fff; box-shadow: 0 0 15px rgba(255,255,255,0.2); }
+    .grid-item.selected { border-color: var(--primary); }
+    
+    .vip-dot { position: absolute; top: 6px; right: 6px; width: 20px; height: 20px; background: var(--primary); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 10px; z-index: 10; border: 1.5px solid #000; }
 
-        #photoViewer { position: absolute; inset: 0; background: #000; z-index: 4000; display: none; flex-direction: column; }
-        .stage { flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 10px; position: relative; }
-        #mainImg { max-width: 100%; max-height: 100%; object-fit: contain; }
-        
-        #photoInfoBadge { position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.7); color: #fff; padding: 5px 15px; border-radius: 20px; font-weight: 800; font-size: 0.7rem; border: 1px solid rgba(255,255,255,0.1); z-index: 4500; }
+    #photoViewer { position: absolute; inset: 0; background: #000; z-index: 4000; display: none; flex-direction: column; width: 100%; height: 100%; overflow: hidden; }
+    
+    .stage { 
+        flex: 1; 
+        min-height: 0; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        overflow: hidden; 
+        padding: 10px; 
+        position: relative; 
+        width: 100%; 
+        height: 100%;
+    }
 
-        .strip-luxury { height: var(--strip-h); background: #080808; border-top: 1px solid #222; display: flex; align-items: center; gap: 10px; padding: 0 15px; overflow-x: auto; scrollbar-width: none; flex-shrink: 0; }
-        .th-vip { height: 65px; width: 65px; border-radius: 10px; flex-shrink: 0; overflow: hidden; border: 2px solid transparent; opacity: 0.7; transition: 0.2s; position: relative; cursor: pointer; }
-        .th-vip img { width: 100%; height: 100%; object-fit: cover; }
-        .th-vip.act { opacity: 1; border-color: #fff; transform: scale(1.05); }
-        .th-vip.sel { border-color: var(--primary); opacity: 1; }
+        #photoInfoBadge { 
+        position: absolute !important; 
+        top: 12px !important; 
+        right: 15px !important; 
+        background: rgba(0, 0, 0, 0.8) !important; 
+        color: #fff !important; 
+        padding: 4px 14px !important; 
+        border-radius: 20px !important; 
+        font-weight: 800 !important; 
+        font-size: 0.75rem !important; 
+        border: 1px solid rgba(255, 255, 255, 0.2) !important; 
+        z-index: 6000 !important; 
+    }
 
-        .bottom-bar { height: var(--footer-h); background: #000; border-top: 1px solid #222; padding: 0 15px; display: flex; align-items: center; justify-content: space-between; z-index: 5000; flex-shrink: 0; }
-        .btn-action { height: 42px; border-radius: 12px; font-weight: 900; border: none; display: flex; align-items: center; justify-content: center; transition: 0.2s; font-size: 0.75rem; }
-        .btn-sq { width: 42px; font-size: 1.1rem; }
-        .btn-text { padding: 0 20px; text-transform: uppercase; gap: 8px; }
-        
-        .bg-gray { background: #222; color: #fff; }
-        .bg-primary { background: var(--primary); color: #000; }
-        .bg-danger-vip { background: rgba(255, 71, 87, 0.15); color: #ff4757; border: 1px solid #ff4757; }
-        .bg-gradient-vip { background: linear-gradient(90deg, #00ebb0, #51ff7d); color: #000; }
+      .stage-inner { 
+        position: relative !important; 
+        display: inline-flex !important; 
+        align-items: center; 
+        justify-content: center; 
+        max-width: 100% !important; 
+        max-height: 100% !important;
+        width: auto !important; 
+        height: auto !important;
+    }
+    
+    #mainImg {
+        max-width: 100%; 
+        max-height: calc(100dvh - 170px); 
+        width: auto; 
+        height: auto; 
+        object-fit: contain;
+        display: block; 
+        margin: auto; 
+        -webkit-touch-callout: none; 
+    }
 
-        #loadOverlay { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .note-badge {
+       #viewerHeartBtn {
+    position: absolute !important;
+    top: 52px !important; 
+    right: 15px !important;
+    width: 40px !important;
+    height: 40px !important;
+    background: rgba(0, 0, 0, 0.75) !important;
+    border: 2px solid rgba(255, 255, 255, 0.5) !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #fff !important;
+    font-size: 16px !important;
+    cursor: pointer !important;
+    z-index: 5900 !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+    -webkit-tap-highlight-color: transparent;
+}
+
+#viewerHeartBtn.selected {
+    background: var(--primary) !important;
+    color: #000 !important;
+    border-color: var(--primary) !important;
+    transform: scale(1.1);
+}
+    .watermark-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none; 
+        z-index: 20;
+        overflow: hidden;
+    }
+    
+    .watermark-overlay img {
+        width: 45%; 
+        max-width: 250px; 
+        opacity: 0.35; 
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+        user-select: none;
+        -webkit-user-select: none;
+    }
+
+    .heart-btn {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 30px;
+        height: 30px;
+        background: rgba(0, 0, 0, 0.65);
+        border: 1.5px solid rgba(255, 255, 255, 0.4);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 13px;
+        cursor: pointer;
+        z-index: 20;
+        transition: 0.2s;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .heart-btn.selected {
+        background: var(--primary);
+        color: #000;
+        border-color: var(--primary);
+        transform: scale(1.1);
+    }
+
+    .strip-luxury { height: var(--strip-h); background: #080808; border-top: 1px solid #222; display: flex; align-items: center; gap: 10px; padding: 0 15px; overflow-x: auto; scrollbar-width: none; flex-shrink: 0; }
+    .th-vip { height: 65px; width: 65px; border-radius: 10px; flex-shrink: 0; overflow: hidden; border: 2px solid transparent; opacity: 0.7; transition: 0.2s; position: relative; cursor: pointer; }
+    .th-vip img { width: 100%; height: 100%; object-fit: cover; }
+    .th-vip.act { opacity: 1; border-color: #fff; transform: scale(1.05); }
+    .th-vip.sel { border-color: var(--primary); opacity: 1; }
+
+    .bottom-bar { height: var(--footer-h); background: #000; border-top: 1px solid #222; padding: 0 15px; display: flex; align-items: center; justify-content: space-between; z-index: 5000; flex-shrink: 0; }
+    .bottom-bar .d-flex { gap: 6px !important; }
+    
+    .btn-action { height: 42px; border-radius: 12px; font-weight: 900; border: none; display: flex; align-items: center; justify-content: center; transition: 0.2s; font-size: 0.75rem; }
+    .btn-sq { width: 42px; font-size: 1.1rem; }
+    .btn-text { padding: 0 20px; text-transform: uppercase; gap: 8px; }
+    
+    .bg-gray { background: #222; color: #fff; }
+    .bg-primary { background: var(--primary); color: #000; }
+    .bg-danger-vip { background: rgba(255, 71, 87, 0.15); color: #ff4757; border: 1px solid #ff4757; }
+    .bg-gradient-vip { background: linear-gradient(90deg, #00ebb0, #51ff7d); color: #000; }
+
+    #loadOverlay { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    
+    .note-badge {
         position: absolute;
         bottom: 6px;
         left: 6px;
-        background: #3b82f6; /* Màu xanh dương nổi bật */
+        background: #3b82f6; 
         color: #fff;
         border-radius: 50%;
         width: 22px;
@@ -73,34 +197,15 @@
         border: 1.5px solid #000;
         box-shadow: 0 2px 5px rgba(0,0,0,0.5);
     }
-        /* --- LỚP PHỦ LOGO WATERMARK MỜ 30% --- */
-        .watermark-overlay {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            pointer-events: none; /* Giúp khách vẫn bấm chọn ảnh bình thường xuyên qua logo */
-            z-index: 20;
-            overflow: hidden;
-        }
-        
-        .watermark-overlay img {
-            width: 35%; /* Kích thước logo trên ảnh */
-            opacity: 0.3; /* Độ mờ chuẩn 30% */
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
-            user-select: none;
-            -webkit-user-select: none;
-        }
-    </style>
+</style>
 </head>
 <body>
 
-    <div id="loadOverlay"><div class="spinner-border text-success mb-2"></div><div style="font-weight: 900; color: var(--primary); font-size: 0.7rem; letter-spacing: 2px;">V21.1 ULTIMATE</div></div>
+    <div id="loadOverlay"><div class="spinner-border text-success mb-2"></div><div style="font-weight: 900; color: var(--primary); font-size: 0.7rem; letter-spacing: 2px;">Chonanhnhanh.vn</div></div>
     <div id="errorNotificationBox" style="display: none; position: fixed; inset: 0; background: rgba(5, 10, 20, 0.95); z-index: 9999; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center;">
         <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
         <h3 class="fw-bold text-white mb-2">ĐÃ CÓ LỖI XẢY RA</h3>
-        <p id="errorMessageText" class="small mb-4" style="color: #ffc107; font-weight: 700; max-width: 400px; line-height: 1.6;">
+        <p id="errorMessageText" class="text-secondary small mb-4" style="max-width: 400px; line-height: 1.6;">
             Không thể tải dữ liệu album. Vui lòng kiểm tra lại đường dẫn hoặc thử tải lại trang.
         </p>
         <button class="btn fw-900 px-4 py-2 rounded-pill text-black text-uppercase" style="background: var(--primary); border: none;" onclick="location.reload()">Tải Lại Trang</button>
@@ -118,11 +223,13 @@
 
     <div class="content-area">
         <div id="photoGrid"></div>
-        <div id="photoViewer">
-            <div class="stage" style="position: relative; display: flex; align-items: center; justify-content: center;">
+       <div id="photoViewer">
+            <div class="stage">
                 <div id="photoInfoBadge">0/0</div>
-                <!-- Bọc chung ảnh và logo trong một khung tương đối -->
-                <div style="position: relative; display: inline-flex; max-width: 100%; max-height: 100%;">
+                
+                <div id="viewerHeartBtn" onclick="togSel()"><i class="fas fa-heart"></i></div>
+                
+                <div class="stage-inner">
                     <img id="mainImg" src="">
                     <div id="clientWatermarkContainer"></div>
                 </div>
@@ -140,121 +247,164 @@
         <div class="d-flex gap-2">
             <button class="btn-action btn-sq bg-danger-vip" onclick="clearAll()"><i class="fas fa-undo-alt"></i></button>
             <button class="btn-action btn-sq bg-gray" id="btnFilter" onclick="toggleFilter()"><i class="fas fa-eye"></i></button>
-            
-            <!-- THÊM 2 NÚT NÀY -->
-            <button class="btn-action btn-sq bg-gray" id="btnDownload" onclick="downloadPhoto()" style="display:none;"><i class="fas fa-download"></i></button>
-            <button class="btn-action btn-sq bg-gray" id="btnComment" onclick="commentPhoto()" style="display:none;"><i class="fas fa-comment-dots"></i></button>
+        
+            <button class="btn-action btn-sq bg-gray" id="btnDownload" onclick="downloadPhoto()" style="display: flex;" title="Tải ảnh gốc"><i class="fas fa-download"></i></button>
+            <button class="btn-action btn-sq bg-gray" id="btnComment" onclick="commentPhoto()" style="display: flex;" title="Thêm ghi chú"><i class="fas fa-comment-dots"></i></button>
         </div>
         <div class="d-flex gap-2">
-            <button class="btn-action btn-text bg-gray" id="btnSel" onclick="togSel()">CHỌN</button>
-            <button class="btn-action btn-text bg-gradient-vip" onclick="finalCommit()">LƯU (<span id="totalPhotos">0</span>)</button>
+            <button class="btn-action btn-text bg-gradient-vip" onclick="finalCommit()">Chốt Chọn (<span id="totalPhotos">0</span>)</button>
         </div>
     </div>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
-        const albumSlug = urlParams.get('album'); // Bắt tham số slug của album
+        const albumSlug = urlParams.get('album'); 
         const studioSlug = urlParams.get('studio');
         let fid = '';
         let albumSettings = { download: false, comment: false, limitPhotos: 0, watermark_enabled: true, watermark_logo: '' };
-        let watermarkHTML = ''; // Biến chứa HTML của logo
-        
+        let watermarkHTML = ''; 
         const PATHS = { GET: 'https://wsm.congtubaclieu.com.vn/webhook/get-photos', SAVE: 'https://wsm.congtubaclieu.com.vn/webhook/save-selection', DONE: 'https://wsm.congtubaclieu.com.vn/webhook/finish-selection' };
         let photos=[], cur=0, currentView='grid', selectedIds = [], isFiltering = false;
-        
+        let imageCache = {};
         if (studioSlug) {
             console.log("Đang xem album thuộc Studio: " + studioSlug);
         }
-        // ---------------------------------------
 
-        function getLink(id, sz) { return `https://drive.google.com/thumbnail?id=${id}&sz=${sz}`; }
+        function getLink(id, sz) {
+            if (!id) return '';
+            const cleanId = String(id).trim();
+            
+            if (sz === 's100') return `https://lh3.googleusercontent.com/d/${cleanId}=w400`;
+            if (sz === 's400') return `https://lh3.googleusercontent.com/d/${cleanId}=w400`;
+            if (sz === 's800') return `https://lh3.googleusercontent.com/d/${cleanId}=h1200`;
+            
+            return `https://lh3.googleusercontent.com/d/${cleanId}=s1200`;
+        }
+        
 
         function setView(v) {
             currentView = v;
-            document.getElementById('photoGrid').style.display = (v === 'grid') ? 'grid' : 'none';
-            document.getElementById('photoViewer').style.display = (v === 'viewer') ? 'flex' : 'none';
+            const gridEl = document.getElementById('photoGrid');
+            const viewerEl = document.getElementById('photoViewer');
+        
+            gridEl.style.display = 'none';
+            viewerEl.style.display = 'none';
+
             document.getElementById('btnGrid').style.color = (v === 'grid') ? 'var(--primary)' : '#666';
             document.getElementById('btnViewer').style.color = (v === 'viewer') ? 'var(--primary)' : '#666';
-            if(v === 'viewer') showViewer(); else syncGridUI();
-        }
 
+            if(v === 'grid') {
+                gridEl.style.display = 'grid';
+                syncGridUI();
+            } else if(v === 'viewer') {
+                viewerEl.style.display = 'flex';
+                showViewer();
+            }
+        }
         
        function syncGridUI() {
-            if(currentView !== 'grid') return;
-            const pCurrent = photos[cur];
-            if(pCurrent) document.getElementById('displayFileName').innerText = pCurrent.name || "UNNAMED";
+        if(currentView !== 'grid') return;
+        const pCurrent = photos[cur];
+        if(pCurrent) document.getElementById('displayFileName').innerText = pCurrent.name || "UNNAMED";
+        
+        photos.forEach((p, i) => {
+            const el = document.getElementById(`item-${i}`); if(!el) return;
+            const isSel = selectedIds.includes(p.id);
+            const hasNote = p.note && p.note.trim() !== '';
             
-            // Lấy danh sách ghi chú đang lưu trên trình duyệt của khách
-            const notesMap = JSON.parse(localStorage.getItem('ghi_chu_anh_' + fid) || '{}');
-            
-            photos.forEach((p, i) => {
-                const el = document.getElementById(`item-${i}`); if(!el) return;
-                const isSel = selectedIds.includes(p.id);
-                const hasNote = p.note && p.note.trim() !== '';
-                
-                el.classList.toggle('focused', i === cur);
-                el.classList.toggle('selected', isSel);
-                
-                let dot = el.querySelector('.vip-dot');
-                if(isSel) {
-                    const num = selectedIds.indexOf(p.id) + 1;
-                    if(!dot) el.insertAdjacentHTML('beforeend', `<div class="vip-dot">${num}</div>`);
-                    else dot.innerText = num;
-                } else if(dot) dot.remove();
-
-                // HIỂN THỊ HOẶC XÓA BIỂU TƯỢNG GHI CHÚ
-                let noteIcon = el.querySelector('.note-badge');
-                if(hasNote) {
-                    if(!noteIcon) el.insertAdjacentHTML('beforeend', `<div class="note-badge" title="Xem ghi chú" onclick="event.stopPropagation(); openViewNoteModal('${p.id}');"><i class="fas fa-comment-alt"></i></div>`);
-                } else if(noteIcon) {
-                    noteIcon.remove();
-                }
-
-                el.style.display = (isFiltering && !isSel) ? 'none' : 'block';
-            });
-            updateInfo();
-        }
-       function showViewer() {
-            const p = photos[cur]; 
-            if(!p) return;
-            
-            document.getElementById('mainImg').src = getLink(p.id, 's2000');
-            document.getElementById('displayFileName').innerText = p.name || "UNNAMED";
-            document.getElementById('photoInfoBadge').innerText = `${cur + 1} / ${photos.length}`;
-
-            const watermarkContainer = document.getElementById('clientWatermarkContainer');
-            if (watermarkContainer) {
-                watermarkContainer.innerHTML = watermarkHTML;
+            el.classList.toggle('focused', i === cur);
+            el.classList.toggle('selected', isSel);
+            const heartIcon = el.querySelector('.heart-btn');
+            if(heartIcon) {
+                heartIcon.classList.toggle('selected', isSel);
             }
-            const strip = document.getElementById('strip'); 
-            strip.innerHTML = '';
-            
-            photos.forEach((photoItem, i) => {
-                const isSel = selectedIds.includes(photoItem.id);
-                const hasNote = photoItem.note && photoItem.note.trim() !== '';
-                if(isFiltering && !isSel) return;
-                
-                const th = document.createElement('div');
-                th.className = `th-vip ${i === cur ? 'act' : ''} ${isSel ? 'sel' : ''}`;
-                th.innerHTML = `<img src="${getLink(photoItem.id, 's100')}">`;
-                
-                if(isSel) {
-                    const num = selectedIds.indexOf(photoItem.id) + 1;
-                    th.insertAdjacentHTML('beforeend', `<div class="vip-dot" style="width:14px; height:14px; font-size:7px; top:2px; right:2px;">${num}</div>`);
-                }
-                
-                if(hasNote) {
-                    th.insertAdjacentHTML('beforeend', `<div class="note-badge" title="Xem ghi chú" style="width:14px; height:14px; font-size:7px; bottom:2px; left:2px;" onclick="event.stopPropagation(); openViewNoteModal('${photoItem.id}');"><i class="fas fa-comment"></i></div>`);
-                }
-                
-                th.onclick = () => { cur = i; showViewer(); };
-                strip.appendChild(th);
-            });
-            
-            const activeTh = strip.querySelector('.act');
-            if(activeTh) setTimeout(() => activeTh.scrollIntoView({behavior:'smooth', inline:'center'}), 50);
-            updateInfo();
+    
+            let noteIcon = el.querySelector('.note-badge');
+            if(hasNote) {
+                if(!noteIcon) el.insertAdjacentHTML('beforeend', `<div class="note-badge" title="Xem ghi chú" onclick="event.stopPropagation(); openViewNoteModal('${p.id}');"><i class="fas fa-comment-alt"></i></div>`);
+            } else if(noteIcon) {
+                noteIcon.remove();
+            }
+            el.style.display = (isFiltering && !isSel) ? 'none' : 'block';
+        });
+        updateInfo();
+    }
+      function showViewer() {
+        const p = photos[cur]; 
+        if(!p) return;
+        
+        document.getElementById('displayFileName').innerText = p.name || "UNNAMED";
+        document.getElementById('photoInfoBadge').innerText = `${cur + 1} / ${photos.length}`;
+    
+        const isSel = selectedIds.includes(p.id);
+        const viewerHeart = document.getElementById('viewerHeartBtn');
+        if(viewerHeart) {
+            viewerHeart.classList.toggle('selected', isSel);
         }
+    
+        const watermarkContainer = document.getElementById('clientWatermarkContainer');
+        if (watermarkContainer) {
+            watermarkContainer.innerHTML = watermarkHTML;
+        }
+    
+        const mainImg = document.getElementById('mainImg');
+        if(mainImg) {
+            const targetUrl = getLink(p.id, 's800');
+            if (imageCache[targetUrl]) {
+                mainImg.src = targetUrl;
+            } else {
+                mainImg.src = targetUrl;
+                const preloader = new Image();
+                preloader.src = targetUrl;
+                preloader.onload = () => { imageCache[targetUrl] = true; };
+            }
+            mainImg.onerror = function() {
+                this.src = `https://lh3.googleusercontent.com/d/${p.id}=s400`;
+            };
+        }
+        [cur + 1, cur + 2, cur - 1].forEach(index => {
+            if (photos[index]) {
+                const nextUrl = getLink(photos[index].id, 's800');
+                if (!imageCache[nextUrl]) {
+                    const imgPre = new Image();
+                    imgPre.src = nextUrl;
+                    imgPre.onload = () => { imageCache[nextUrl] = true; };
+                }
+            }
+        });
+    
+        const strip = document.getElementById('strip'); 
+        strip.innerHTML = '';    
+        photos.forEach((photoItem, i) => {
+            const isSelThumb = selectedIds.includes(photoItem.id);
+            const hasNote = photoItem.note && photoItem.note.trim() !== '';
+            if(isFiltering && !isSelThumb) return;
+            
+            const th = document.createElement('div');
+            th.className = `th-vip ${i === cur ? 'act' : ''} ${isSelThumb ? 'sel' : ''}`;
+            
+            const thumbImg = document.createElement('img');
+            thumbImg.src = getLink(photoItem.id, 's100');
+            thumbImg.onerror = function() {
+                this.src = `https://lh3.googleusercontent.com/d/${photoItem.id}=w400`;
+            };
+            th.appendChild(thumbImg);
+            if(isSelThumb) {
+                th.insertAdjacentHTML('beforeend', `<div class="vip-dot" style="width:16px; height:16px; font-size:8px; top:2px; right:2px; background:var(--primary); color:#000;"><i class="fas fa-heart" style="font-size:7px;"></i></div>`);
+            }
+            
+            if(hasNote) {
+                th.insertAdjacentHTML('beforeend', `<div class="note-badge" title="Xem ghi chú" style="width:14px; height:14px; font-size:7px; bottom:2px; left:2px;" onclick="event.stopPropagation(); openViewNoteModal('${photoItem.id}');"><i class="fas fa-comment"></i></div>`);
+            }
+            
+            th.onclick = () => { cur = i; showViewer(); };
+            strip.appendChild(th);
+        });
+        
+        const activeTh = strip.querySelector('.act');
+        if(activeTh) setTimeout(() => activeTh.scrollIntoView({behavior:'smooth', inline:'center'}), 50);
+        updateInfo();
+    }
         function initGrid() {
             const grid = document.getElementById('photoGrid'); 
             if (!grid) return;
@@ -265,10 +415,13 @@
                 item.className = 'grid-item'; 
                 item.id = `item-${i}`;
                 
-                // 🌟 Hiển thị chuẩn ảnh và lớp phủ logo watermark nếu được bật
+                const isSel = selectedIds.includes(p.id);
+                
                 item.innerHTML = `
                     <img src="${getLink(p.id, 's400')}" loading="lazy">
-                   
+                    <div class="heart-btn ${isSel ? 'selected' : ''}" onclick="event.stopPropagation(); quickToggleSel('${p.id}')">
+                        <i class="fas fa-heart"></i>
+                    </div>
                 `;
                 
                 item.onclick = () => { cur = i; syncGridUI(); };
@@ -277,15 +430,33 @@
             });
             syncGridUI();
         }
-    // 3. HÀM XỬ LÝ KHI BẤM NÚT LƯU TRONG KHUNG GHI CHÚ
+        
+        function quickToggleSel(photoId) {
+            const p = photos.find(x => x.id === photoId);
+            if (!p) return;
+            const idx = selectedIds.indexOf(photoId);
+            
+            if (idx === -1) {
+                if (albumSettings.limitPhotos > 0 && selectedIds.length >= albumSettings.limitPhotos) {
+                    return alert(`Dạ, album này được giới hạn chọn tối đa ${albumSettings.limitPhotos} ảnh ạ!`);
+                }
+                selectedIds.push(photoId);
+            } else {
+                selectedIds.splice(idx, 1);
+            }
+            
+            localStorage.setItem('anh_da_chon_cua_khach_' + fid, JSON.stringify(selectedIds));
+            syncGridUI();
+            if(currentView === 'viewer') showViewer();
+            fetch(PATHS.SAVE, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id: photoId, selected: idx === -1}) });
+        }
         async function saveCurrentComment() {
             const p = photos[cur];
             if (!p) return;
             
             const inputEl = document.getElementById('photoCommentInput');
             const noteVal = inputEl ? inputEl.value.trim() : '';
-            
-            // Cập nhật lại LocalStorage
+
             const notesMap = JSON.parse(localStorage.getItem('ghi_chu_anh_' + fid) || '{}');
             if (noteVal) {
                 notesMap[p.id] = noteVal;
@@ -297,15 +468,12 @@
             localStorage.setItem('ghi_chu_anh_' + fid, JSON.stringify(notesMap));
             
             showToast("Đã cập nhật ghi chú thành công!");
-            
-            // Ẩn khung nhập sau khi lưu
+
             const container = document.getElementById('commentBoxContainer');
             if (container) container.style.display = 'none';
-            
-            // Cập nhật lại giao diện để hiển thị/làm mới icon ghi chú trên ảnh
+
             currentView === 'grid' ? syncGridUI() : showViewer();
             
-            // Đồng bộ ngầm bản chỉnh sửa lên n8n / Database Supabase
             try {
                 await fetch(PATHS.SAVE, { 
                     method: 'POST', 
@@ -321,12 +489,12 @@
         }
        function togSel() {
             const p = photos[cur];
+            if (!p) return;
             const idx = selectedIds.indexOf(p.id);
             
             if (idx === -1) {
-                // KIỂM TRA GIỚI HẠN SỐ LƯỢNG ẢNH TỪ ADMIN
                 if (albumSettings.limitPhotos > 0 && selectedIds.length >= albumSettings.limitPhotos) {
-                    return alert (`Dạ, album này được giới hạn chọn tối đa ${albumSettings.limitPhotos} ảnh ạ!`);
+                    return alert(`Dạ, album này được giới hạn chọn tối đa ${albumSettings.limitPhotos} ảnh ạ!`);
                 }
                 selectedIds.push(p.id);
             } else {
@@ -334,19 +502,16 @@
             }
             
             localStorage.setItem('anh_da_chon_cua_khach_' + fid, JSON.stringify(selectedIds));
-            currentView === 'grid' ? syncGridUI() : showViewer();
-            fetch(PATHS.SAVE, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:p.id, selected: idx === -1}) });
+            showViewer();
+            fetch(PATHS.SAVE, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id: p.id, selected: idx === -1}) });
         }
-        // HÀM MỞ MODAL XEM GHI CHÚ KHI NHẤP VÀO ICON NHỎ
+        
+        
         function openViewNoteModal(photoId) {
             const p = photos.find(x => x.id === photoId);
             if (!p) return;
-            
-            // Gán hình ảnh và nội dung ghi chú tương ứng của ảnh đó lên Modal
             document.getElementById('modalNoteImg').src = getLink(p.id, 's200');
             document.getElementById('modalNoteContent').innerText = p.note || "Không có ghi chú nào.";
-            
-            // Hiển thị Modal Bootstrap
             new bootstrap.Modal(document.getElementById('viewNoteModal')).show();
         }
         function toggleFilter() {
@@ -363,14 +528,11 @@
         function clearAll() { if(confirm("Xóa toàn bộ ảnh đã chọn?")) { selectedIds = []; localStorage.setItem('anh_da_chon_cua_khach_' + fid, "[]"); isFiltering = false; syncGridUI(); } }
 
         function updateInfo() {
-            const p = photos[cur]; if(!p) return;
-            const isSel = selectedIds.includes(p.id);
-            document.getElementById('totalPhotos').innerText = selectedIds.length;
-            const btn = document.getElementById('btnSel');
-            btn.className = isSel ? 'btn-action btn-text bg-primary' : 'btn-action btn-text bg-gray';
-            btn.innerText = isSel ? 'ĐÃ CHỌN' : 'CHỌN';
+            const totalEl = document.getElementById('totalPhotos');
+            if (totalEl) {
+                totalEl.innerText = selectedIds.length;
+            }
         }
-
         async function finalCommit(){
             if(selectedIds.length === 0) return alert("Dạ khách chưa chọn ảnh nào ạ!");
             if(confirm(`Gửi ${selectedIds.length} ảnh đã chọn?`)) {
@@ -389,16 +551,11 @@
             t.style.display = 'block';
             setTimeout(() => { t.style.display = 'none'; }, 2200);
         }
-        // 1. CHỨC NĂNG TẢI ẢNH GỐC (Tải ảnh hiện tại đang xem hoặc chọn)
         async function downloadPhoto() {
             const p = photos[cur];
             if (!p) return;
             showToast("Đang tải ảnh gốc...");
-            
-            // Tạo link tải trực tiếp file từ Google Drive
             const downloadUrl = `https://drive.google.com/uc?export=download&id=${p.id}`;
-            
-            // Mở tab ẩn hoặc tạo thẻ a tải trực tiếp
             const a = document.createElement('a');
             a.href = downloadUrl;
             a.download = p.name || `photo_${p.id}.jpg`;
@@ -406,31 +563,18 @@
             a.click();
             document.body.removeChild(a);
         }
-
-
         async function commentPhoto() {
-            // Lấy chính xác bức ảnh đang xem theo vị trí `cur`
             const p = photos[cur];
             if (!p) return;
-            
-            // Lấy thẳng ghi chú từ dữ liệu của tấm ảnh này (đã được tải sẵn khi mở trang)
             const currentNote = p.note || '';
-            
-            // Hiển thị hộp thoại prompt với đúng ghi chú riêng biệt của tấm ảnh đó
             const userNote = prompt(`Nhập ghi chú cho ảnh [${p.name || 'Ảnh'}]:`, currentNote);
             if (userNote === null) return; // Khách bấm Hủy thì thoát
             
             const trimmedNote = userNote.trim();
-            
-            // Cập nhật lại ngay vào đối tượng ảnh `p` hiện tại
             p.note = trimmedNote;
             
             showToast("Đang lưu ghi chú...");
-            
-            // Cập nhật lại giao diện lưới/chi tiết để hiện đúng icon tin nhắn trên ảnh đó
             currentView === 'grid' ? syncGridUI() : showViewer();
-            
-            // Đồng bộ ngầm bản ghi chú này lên Supabase thông qua webhook SAVE
             try {
                 await fetch(PATHS.SAVE, { 
                     method: 'POST', 
@@ -446,80 +590,154 @@
             }
         }
 
-    async function init() {
-        const errorBox = document.getElementById('errorNotificationBox');
-        const errorText = document.getElementById('errorMessageText');
-        const loadOverlay = document.getElementById('loadOverlay');
 
-        try {
-            const urlParams = new URLSearchParams(window.location.search);
-            const albumSlug = urlParams.get('album');
-            const studioSlug = urlParams.get('studio');
+function setupDriveCoverImage(photosArray, albumData) {
+    const coverScreen = document.getElementById('welcomeCoverScreen');
+    if (!coverScreen) return;
+    
+    // Ưu tiên hiển thị ngay lập tức nếu có ảnh bìa chỉ định hoặc ảnh đầu tiên
+    let coverImgUrl = '';
+    const customCoverId = albumData.cover_image_id || albumData.coverImageId;
+    
+    if (customCoverId) {
+        // Dùng sz=w800 để tải nhanh hơn thay vì w1600
+        coverImgUrl = `https://lh3.googleusercontent.com/d/${customCoverId}=w800`;
+    } else if (photosArray && photosArray.length > 0) {
+        coverImgUrl = `https://lh3.googleusercontent.com/d/${photosArray[0].id}=w800`;
+    }
+    
+    if (coverImgUrl) {
+        const mainImgEl = document.getElementById('coverMainImage');
+        const bgBlurEl = document.getElementById('coverBgBlur');
+        const titleEl = document.getElementById('coverAlbumTitle');
+        const studioEl = document.getElementById('coverStudioName');
 
-            if (!albumSlug) {
-                throw new Error("Không tìm thấy đường dẫn định danh album trên trình duyệt.");
-            }
+        if (mainImgEl) mainImgEl.src = coverImgUrl;
+        if (bgBlurEl) bgBlurEl.style.backgroundImage = `url('${coverImgUrl}')`;
+        if (titleEl) titleEl.innerText = albumData.folderName || 'ALBUM VIP';
+        if (studioEl) {
+            studioEl.innerText = albumData.studio_name || "CHONANHNHANH.VN";
+        }
+        
+        // Hiển thị ngay màn hình chào mừng không cần chờ đợi render lưới ảnh nặng phía sau
+        coverScreen.style.display = 'flex';
+    } else {
+        coverScreen.style.display = 'none';
+    }
+}
 
-            const res = await fetch(`${PATHS.GET}?studio=${studioSlug}&album=${albumSlug}`);
-            if (!res.ok) {
-                throw new Error(`Máy chủ phản hồi lỗi (Mã trạng thái: ${res.status}). Album không tồn tại.`);
-            }
+function dismissWelcomeCover() {
+    const coverScreen = document.getElementById('welcomeCoverScreen');
+    if(!coverScreen) return;
+    coverScreen.style.opacity = '0';
+    setTimeout(() => {
+        coverScreen.style.display = 'none';
+    }, 500);
+}
 
-            // Đọc dữ liệu dưới dạng text trước để tránh sập JSON khi server trả về rỗng
-            const responseText = await res.text();
-            if (!responseText || responseText.trim() === "") {
-                throw new Error(`Album [${albumSlug}] không tồn tại hoặc chưa đồng bộ xong.`);
-            }
+async function init() {
+    const errorBox = document.getElementById('errorNotificationBox');
+    const errorText = document.getElementById('errorMessageText');
+    const loadOverlay = document.getElementById('loadOverlay');
 
-            const jsonResponseData = JSON.parse(responseText);
-            const data = Array.isArray(jsonResponseData) ? jsonResponseData[0] : jsonResponseData;
-            
-            if (!data || !data.photos || data.photos.length === 0) {
-                throw new Error(`Album mã số [${albumSlug}] hiện tại không có bức ảnh nào!`);
-            }
+    try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const albumSlug = urlParams.get('album');
+        const studioSlug = urlParams.get('studio');
 
-            photos = data.photos || [];
-            albumSettings = data.settings || albumSettings;
-            
-            window.fid = data.folder_id || albumSlug; 
-            fid = window.fid;
-
-            const clientLogo = albumSettings.watermark_logo || '';
-            const isWatermarkOn = albumSettings.watermark_enabled !== false;
-            
-            watermarkHTML = (isWatermarkOn && clientLogo) ? `<div class="watermark-overlay"><img src="${clientLogo}" alt="Logo"></div>` : '';
-            
-            if (albumSettings.download) document.getElementById('btnDownload').style.display = 'flex';
-            if (albumSettings.comment) document.getElementById('btnComment').style.display = 'flex';
-
-            let folderName = photos[0].folderName || "VIP ALBUM";
-            if(studioSlug) {
-                document.getElementById('albumTitle').innerText = `${studioSlug.toUpperCase()} - ${folderName}`;
-            } else {
-                document.getElementById('albumTitle').innerText = folderName;
-            }
-
-            const local = localStorage.getItem('anh_da_chon_cua_khach_' + (window.fid || albumSlug));
-            if (local) selectedIds = JSON.parse(local);
-            
-            loadOverlay.style.display = 'none';
-            initGrid(); 
-            
-        } catch(e) { 
-            console.error(e);
-            loadOverlay.style.display = 'none';
-            if (errorText) errorText.innerText = e.message || "Không tìm thấy album hoặc tên đường dẫn không tồn tại.";
-            if (errorBox) {
-                errorBox.style.setProperty('display', 'flex', 'important');
-            }
+        if (!albumSlug) {
+            throw new Error("Không tìm thấy đường dẫn định danh album trên trình duyệt.");
         }
 
-            
+        const res = await fetch(`${PATHS.GET}?studio=${encodeURIComponent(studioSlug)}&album=${encodeURIComponent(albumSlug)}`);
+        if (!res.ok) {
+            throw new Error(`Máy chủ phản hồi lỗi (Mã trạng thái: ${res.status}). Album có thể không tồn tại.`);
+        }
+
+        const rawData = await res.json();
+        
+        let data = {};
+        let foundCoverId = '';
+
+        if (Array.isArray(rawData)) {
+            const itemWithCover = rawData.find(item => item.cover_image_id || item.coverImageId);
+            if (itemWithCover) {
+                foundCoverId = itemWithCover.cover_image_id || itemWithCover.coverImageId;
+            }
+            data = rawData[0] || {};
+            data.photos = rawData;
+        } else {
+            data = rawData;
+            foundCoverId = data.cover_image_id || data.coverImageId;
+        }
+
+        photos = data.photos || (Array.isArray(rawData) ? rawData : []);
+        albumSettings = data.settings || albumSettings;
+        
+        window.fid = data.folder_id || albumSlug; 
+        fid = window.fid;
+
+        if (photos.length === 0) {
+            throw new Error("Album này hiện tại chưa có bức ảnh nào hoặc đang trong quá trình đồng bộ.");
+        }
+
+        let folderName = photos[0].folderName || data.folderName || "VIP ALBUM";
+        let rawStudioName = studioSlug || data.studio_slug || data.studioName || data.studio_name || "";
+        
+        if (rawStudioName.toLowerCase() === 'studio' && studioSlug) {
+            rawStudioName = studioSlug;
+        }
+
+        const finalStudioName = rawStudioName ? String(rawStudioName).toUpperCase() : "CHONANHNHANH.VN";
+
+        if (rawStudioName && rawStudioName.toLowerCase() !== 'studio') {
+            document.title = `${finalStudioName} - ${folderName}`;
+            document.getElementById('albumTitle').innerText = `${finalStudioName} - ${folderName}`;
+        } else {
+            document.title = folderName;
+            document.getElementById('albumTitle').innerText = folderName;
+        }
+
+        // 1. TẮT NGAY LẬP TỨC OVERLAY XOAY XOAY VÀ HIỆN MÀN HÌNH CHÀO MỪNG CỰC NHANH
+        loadOverlay.style.display = 'none';
+
+        // Khôi phục trạng thái ảnh đã chọn của khách từ LocalStorage
+        const local = localStorage.getItem('anh_da_chon_cua_khach_' + (window.fid || albumSlug));
+        if (local) selectedIds = JSON.parse(local);
+
+        // Hiển thị màn hình chào mừng ngay lập tức
+        setupDriveCoverImage(photos, {
+            folderName: folderName,
+            studio_name: finalStudioName,
+            cover_image_id: foundCoverId
+        });
+
+        // 2. Đưa việc khởi tạo lưới ảnh (initGrid) xuống chạy ngầm hoặc sau một nhịp để không nghẽn luồng chính
+        setTimeout(() => {
+            initGrid();
+        }, 50);
+
+        const clientLogo = albumSettings.watermark_logo || '';
+        const isWatermarkOn = albumSettings.watermark_enabled !== false;
+        watermarkHTML = (isWatermarkOn && clientLogo) ? `<div class="watermark-overlay"><img src="${clientLogo}" alt="Logo"></div>` : '';
+        
+        const allowDownload = Boolean(albumSettings.download === true || albumSettings.download === 'true' || albumSettings.download === 1);
+        const allowComment = Boolean(albumSettings.comment === true || albumSettings.comment === 'true' || albumSettings.comment === 1);
+        
+        document.getElementById('btnDownload').style.display = allowDownload ? 'flex' : 'none';
+        document.getElementById('btnComment').style.display = allowComment ? 'flex' : 'none';
+
+    } catch(e) { 
+        console.error(e);
+        loadOverlay.style.display = 'none';
+        if (errorText) errorText.innerText = e.message || "Không tìm thấy album hoặc tên đường dẫn không tồn tại.";
+        if (errorBox) {
+            errorBox.style.setProperty('display', 'flex', 'important');
+        }
     }
-        // 🌟 BẮT BUỘC PHẢI CÓ DÒNG NÀY ĐỂ KÍCH HOẠT HỆ THỐNG KHI MỞ TRANG
-        init();
+}
+init();
     </script>
-    <!-- MODAL XEM GHI CHÚ CỦA ẢNH -->
     <div class="modal fade" id="viewNoteModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="background: #0a0f1e; border: 2px solid var(--primary); border-radius: 20px;">
@@ -536,5 +754,20 @@
             </div>
         </div>
     </div>
+    <!-- MÀN HÌNH CHÀO MỪNG LẤY TỪ ẢNH DRIVE -->
+<div id="welcomeCoverScreen" style="position: fixed; inset: 0; z-index: 99999; background: #050a14; display: none; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease; overflow: hidden;">
+    <!-- Ảnh nền mờ phía sau -->
+    <div id="coverBgBlur" style="position: absolute; inset: -20px; background-size: cover; background-position: center; filter: blur(25px) brightness(0.4); transform: scale(1.1); z-index: 1;"></div>
+    
+    <!-- Nội dung chính ở giữa -->
+    <div style="position: relative; z-index: 2; text-align: center; max-width: 600px; padding: 20px; display: flex; flex-direction: column; align-items: center;">
+        <img id="coverMainImage" src="" alt="Ảnh bìa album" style="max-height: 55vh; max-width: 85vw; border-radius: 16px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); border: 2px solid rgba(255,255,255,0.15); object-fit: contain; margin-bottom: 25px;">
+        <h2 id="coverAlbumTitle" style="font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 1.8rem; color: #fff; text-transform: uppercase; margin-bottom: 25px; text-shadow: 0 2px 10px rgba(0,0,0,0.8);">Tên Album</h2>
+        <button onclick="dismissWelcomeCover()" style="background: #fff; color: #000; border: none; padding: 14px 40px; border-radius: 50px; font-weight: 900; font-size: 1rem; text-transform: uppercase; cursor: pointer; box-shadow: 0 0 25px rgba(255,255,255,0.4); transition: 0.3s;">
+            Xem album
+        </button>
+        <div id="coverStudioName" style="margin-top: 20px; font-size: 0.8rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;">STUDIO NAME</div>
+    </div>
+</div>
 </body>
 </html>
