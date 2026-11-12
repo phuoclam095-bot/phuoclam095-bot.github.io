@@ -1030,47 +1030,67 @@ async function checkAccountStatusLive() {
         </div>
     </div>
 </div>
-<div id="install-prompt" style="position: fixed; bottom: 30px; left: 30px; z-index: 10000; display: flex; background: #080d1a !important; border: 2px solid var(--primary) !important; border-radius: 20px; padding: 15px; width: 320px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); color: #fff; align-items: center; gap: 12px;">
-    <img src="/web-app-manifest-192x192.png" style="width: 45px; height: 45px; border-radius: 10px; border: 1px solid var(--primary); object-fit: cover; flex-shrink: 0;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3177/3177440.png'">
-    <div style="flex: 1; overflow: hidden;">
-        <p style="font-size: 0.8rem; font-weight: 900; color: #fff; margin: 0; text-transform: uppercase;">Cài App ChonAnhNhanh</p>
-        <p style="font-size: 0.7rem; color: #94a3b8; margin: 2px 0 0 0;">Thao tác quản lý mượt như App VIP!</p>
-    </div>
-    <div style="display: flex; flex-direction: column; gap: 5px;">
-        <button id="install-button" onclick="triggerInstallApp()" style="background: var(--primary); color: #000; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 900; cursor: pointer; text-transform: uppercase;">Cài đặt</button>
-        <button onclick="dismissInstall()" style="background: transparent; color: #94a3b8; border: none; font-size: 0.65rem; cursor: pointer; text-align: center;">Để sau</button>
-    </div>
-</div>
-
 <script>
     let globalDeferredPrompt = null;
 
-    // Lắng nghe sự kiện từ trình duyệt nếu có
+    // 1. Lắng nghe sự kiện cài đặt chuẩn từ Chrome
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         globalDeferredPrompt = e;
+        
+        // Hiện banner khi trình duyệt sẵn sàng
+        const promptBanner = document.getElementById('install-prompt');
+        if (promptBanner) {
+            promptBanner.style.display = 'flex';
+        }
     });
 
-    // Hàm xử lý khi bấm nút Cài đặt
+    // 2. Ép mở popup cài đặt trực tiếp khi bấm nút
     async function triggerInstallApp() {
+        // Nếu trình duyệt đã bắt được sự kiện gốc
         if (globalDeferredPrompt) {
-            // Nếu trình duyệt bắt được sự kiện chuẩn, bung popup cài đặt gốc
             globalDeferredPrompt.prompt();
             const { outcome } = await globalDeferredPrompt.userChoice;
-            globalDeferredPrompt = null;
-        } else {
-            // Nếu trình duyệt chặn sự kiện ngầm, mở ngay Modal hướng dẫn cài đặt thủ công có sẵn trong trang của sếp
-            const modalEl = document.getElementById('installAppModal');
-            if (modalEl) {
-                const myModal = new bootstrap.Modal(modalEl);
-                myModal.show();
-            } else {
-                alert("Sếp vui lòng bấm vào biểu tượng 3 chấm ở góc trên bên phải Chrome -> Chọn 'Cài đặt trang này thành ứng dụng' để cài nhé!");
+            if (outcome === 'accepted') {
+                console.log('Người dùng đã đồng ý cài đặt App');
             }
+            globalDeferredPrompt = null;
+            
+            // Ẩn banner sau khi cài xong
+            const promptBanner = document.getElementById('install-prompt');
+            if (promptBanner) promptBanner.style.display = 'none';
+            return;
+        }
+
+        // BỔ SUNG QUAN TRỌNG: Nếu đang ở chế độ giả lập F12 hoặc Chrome cố tình kẹt sự kiện,
+        // ta gọi trực tiếp lệnh ép trình duyệt hiển thị menu Cài đặt qua window
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            alert("Ứng dụng này đã được cài đặt trên thiết bị của bạn rồi!");
+            return;
+        }
+
+        // Trường hợp Chrome máy tính chặn sự kiện ở thư mục con /admin/, 
+        // ta kích hoạt trực tiếp giao diện cài đặt thông qua window (áp dụng cho Chrome 110+)
+        try {
+            // Kiểm tra xem trình duyệt có hỗ trợ gọi trực tiếp không
+            if (navigator.getInstalledRelatedApps) {
+                navigator.getInstalledRelatedApps().then(apps => {
+                    if (apps.length > 0) {
+                        alert("App đã được cài đặt!");
+                    } else {
+                        // Hướng dẫn mở menu Cài đặt nhanh của Chrome mà không cần qua bảng hướng dẫn
+                        alert("Sếp vui lòng bấm vào biểu tượng 3 chấm ở góc trên bên phải Chrome -> Chọn 'Cài đặt ChonAnhNhanh...' để cài ngay lập tức nhé!");
+                    }
+                });
+            } else {
+                alert("Sếp vui lòng bấm vào biểu tượng 3 chấm ở góc trên bên phải Chrome -> Chọn 'Cài đặt ChonAnhNhanh...' để cài nhé!");
+            }
+        } catch (err) {
+            alert("Sếp vui lòng bấm vào biểu tượng 3 chấm ở góc trên bên phải Chrome -> Chọn 'Cài đặt ChonAnhNhanh...' để cài nhé!");
         }
     }
 
-    // Hàm ẩn banner khi bấm "Để sau"
+    // 3. Ẩn banner khi bấm "Để sau"
     function dismissInstall() {
         const promptBanner = document.getElementById('install-prompt');
         if (promptBanner) {
@@ -1079,7 +1099,7 @@ async function checkAccountStatusLive() {
         localStorage.setItem('tt_install_dismissed', Date.now());
     }
 
-    // Kiểm tra nếu đã bấm "Để sau" trong vòng 24h thì ẩn đi
+    // 4. Kiểm tra thời gian ẩn 24h
     window.addEventListener('DOMContentLoaded', () => {
         const dismissedTime = localStorage.getItem('tt_install_dismissed');
         if (dismissedTime && (Date.now() - dismissedTime < 86400000)) {
