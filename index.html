@@ -1130,15 +1130,12 @@ async function checkAccountStatusLive() {
 
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/sw.js').then(reg => {
-            console.log("Service Worker đã bám đúng scope gốc:", reg.scope);
             if (!navigator.serviceWorker.controller) {
                 navigator.serviceWorker.addEventListener('controllerchange', () => {
                     window.location.reload();
                 });
             }
-        }).catch(err => {
-            console.error("Lỗi đăng ký Service Worker: ", err);
-        });
+        }).catch(() => {});
     }
 </script>
 </body>
