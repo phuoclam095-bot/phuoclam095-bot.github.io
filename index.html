@@ -8,6 +8,17 @@
     <meta property="og:title" content="Chonanhnhanh.vn - Chọn Ảnh Nhanh">
     <meta property="og:description" content="Hệ thống quản lý khách hàng và chọn ảnh nhanh chóng qua link Google Drive.">
     <meta property="og:image" content="https://chonanhnhanh.vn/default-cover.jpg">
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').then(reg => {
+                    console.log("Root Service Worker active!");
+                }).catch(err => {
+                    console.error("SW registration failed", err);
+                });
+            });
+        }
+    </script>
 </head>
 <body>
     <p>Đang chuyển hướng hệ thống...</p>
