@@ -2,45 +2,26 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chonanhnhanh.vn - Đang chuyển hướng...</title>
-    
+    <title>Đang chuyển hướng...</title>
     <script>
-        // Lấy toàn bộ các phân đoạn trên đường dẫn URL
+        // Lấy các thành phần trên đường dẫn URL
         const pathSegments = window.location.pathname.split('/').filter(Boolean);
         
-        // Kiểm tra nếu đường dẫn chứa đúng 2 phân đoạn (ví dụ: /phuoclam/kimngan)
-        if (pathSegments.length === 2) {
-            const studioSlug = pathSegments[0];
-            const albumSlug = pathSegments[1];
-        
-            const ua = navigator.userAgent.toLowerCase();
-            const isBot = /facebookexternalhit|zalo|bot|crawler|spider|robot|whatsapp|telegram|preview/i.test(ua);
-
-            // Nếu là người dùng thật, chuyển hướng sang trang client với đúng thứ tự tham số
-            if (!isBot) {
-                window.location.replace(`https://chonanhnhanh.vn/client?studio=${studioSlug}&album=${albumSlug}`);
-            }
+        // Nếu đường dẫn có dạng /ten-studio/ten-album-slug
+        if (pathSegments.length >= 2) {
+            const studioSlug = pathSegments[pathSegments.length - 2];
+            const albumSlug = pathSegments[pathSegments.length - 1];
+            
+            // 🌟 ĐÃ SỬA LẠI ĐÚNG THỨ TỰ: studio đứng trước, album đứng sau
+            window.location.replace(`/client.html?studio=${studioSlug}&album=${albumSlug}`);
         } else {
-            // Nếu đường dẫn không phải dạng 2 cấp (ví dụ: đường dẫn rác hoặc gõ linh tinh), 
-            // KHÔNG tự động đá về trang chủ bằng window.location.replace để tránh kẹt vòng lặp vô tận.
-            // Thay vào đó, hiển thị thông báo lỗi trực tiếp trên trang 404 này.
-            document.addEventListener("DOMContentLoaded", function() {
-                document.getElementById("error-container").style.display = "block";
-            });
+            window.location.replace('/');
         }
     </script>
 </head>
-<body style="background-color: #050a14; color: #fff; font-family: sans-serif; text-align: center; padding-top: 20vh;">
-    <div id="loading-box">
-        <h3 style="color: #00ebb0;">Đang chuyển hướng đến album...</h3>
-    </div>
-    
-    <!-- Hiển thị thông báo nếu đường dẫn hoàn toàn không tồn tại -->
-    <div id="error-container" style="display: none; margin-top: 30px;">
-        <h2 style="color: #ff4757;">404 - Không tìm thấy trang</h2>
-        <p style="color: #94a3b8; margin-bottom: 20px;">Đường dẫn bạn truy cập không tồn tại hoặc đã bị thay đổi.</p>
-        <a href="https://chonanhnhanh.vn/" style="background: #00ebb0; color: #000; padding: 10px 25px; border-radius: 20px; text-decoration: none; font-weight: bold;">Về Trang Chủ</a>
+<body>
+    <div style="text-align:center; margin-top:20vh; font-family:sans-serif; color:#00ebb0;">
+        <h3>Đang chuyển hướng đến album...</h3>
     </div>
 </body>
 </html>
