@@ -257,21 +257,32 @@
     </div>
 
     <script>
+        <script>
         const urlParams = new URLSearchParams(window.location.search);
         let albumSlug = urlParams.get('album');  
         let studioSlug = urlParams.get('studio');
 
+        // Làm sạch các giá trị rác nếu lỡ dính
         if (!albumSlug || albumSlug === 'client.html' || albumSlug === 'index') {
             albumSlug = '';
         }
         if (!studioSlug || studioSlug === 'admin') {
             studioSlug = '';
         }
+
+        // Kiểm tra nếu thiếu tham số định danh
         if (!albumSlug || !studioSlug) {
-            document.getElementById('loadOverlay').style.display = 'none';
-            document.getElementById('errorMessageText').innerText = "Đường dẫn album không hợp lệ hoặc thiếu thông tin định danh từ Studio!";
-            document.getElementById('errorNotificationBox').style.setProperty('display', 'flex', 'important');
-            throw new Error("Thiếu tham số định danh hợp lệ.");
+            window.addEventListener('DOMContentLoaded', () => {
+                const overlay = document.getElementById('loadOverlay');
+                if (overlay) overlay.style.display = 'none';
+                
+                const errText = document.getElementById('errorMessageText');
+                if (errText) errText.innerText = "Đường dẫn album không hợp lệ hoặc thiếu thông tin định danh từ Studio! Vui lòng kiểm tra lại link chia sẻ.";
+                
+                const errBox = document.getElementById('errorNotificationBox');
+                if (errBox) errBox.style.setProperty('display', 'flex', 'important');
+            });
+            throw new Error("Dừng chạy: Thiếu tham số định danh hợp lệ.");
         }
         let fid = '';
         let albumSettings = { download: false, comment: false, limitPhotos: 0, watermark_enabled: true, watermark_logo: '' };
