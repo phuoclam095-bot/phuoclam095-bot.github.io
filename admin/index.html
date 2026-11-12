@@ -998,17 +998,18 @@ async function checkAccountStatusLive() {
 </div>
 <div class="modal fade" id="installAppModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="background: #080d1a; border: 2px solid var(--primary); border-radius: 25px; color: #fff; box-shadow: 0 20px 50px rgba(0,0,0,0.8);">
+        <!-- ĐÃ THÊM MÃ MÀU SÁNG HƠN VÀ DÙNG !IMPORTANT TRỰC TIẾP -->
+        <div class="modal-content" style="background: #112240 !important; border: 2px solid var(--primary) !important; border-radius: 25px !important; color: #ffffff !important; box-shadow: 0 0 50px rgba(0, 235, 176, 0.4) !important;">
             <div class="modal-header border-0 pb-0">
                 <h5 class="modal-title text-primary fw-900" style="font-size: 1rem; text-transform: uppercase;">Cài Đặt Ứng Dụng ChonAnhNhanh</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
-                <p class="small text-secondary mb-3">Biến website thành ứng dụng độc lập trên màn hình chính để thao tác nhanh mượt như App chuyên nghiệp!</p>
+                <p class="small mb-3" style="color: #cbd5e1 !important;">Biến website thành ứng dụng độc lập trên màn hình chính để thao tác nhanh mượt như App chuyên nghiệp!</p>
                 
-                <div class="p-3 mb-3 rounded" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
+                <div class="p-3 mb-3 rounded" style="background: rgba(0, 235, 176, 0.05) !important; border: 1px solid rgba(0, 235, 176, 0.2) !important;">
                     <div class="fw-bold text-primary mb-1"><i class="fab fa-apple me-2"></i>Đối với iPhone / iPad (Safari):</div>
-                    <ol class="small mb-0 ps-3 text-secondary" style="line-height: 1.6;">
+                    <ol class="small mb-0 ps-3" style="color: #e2e8f0 !important; line-height: 1.6;">
                         <li>Mở trang web bằng trình duyệt <b>Safari</b>.</li>
                         <li>Chạm vào nút <b>Chia sẻ</b> (hình ô vuông có mũi tên hướng lên ở thanh công cụ phía dưới).</li>
                         <li>Cuộn xuống và chọn <b>"Thêm vào Màn hình chính" (Add to Home Screen)</b>.</li>
@@ -1016,9 +1017,9 @@ async function checkAccountStatusLive() {
                     </ol>
                 </div>
 
-                <div class="p-3 rounded" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
+                <div class="p-3 rounded" style="background: rgba(0, 235, 176, 0.05) !important; border: 1px solid rgba(0, 235, 176, 0.2) !important;">
                     <div class="fw-bold text-primary mb-1"><i class="fab fa-android me-2"></i>Đối với Android & Máy tính (Chrome):</div>
-                    <ol class="small mb-0 ps-3 text-secondary" style="line-height: 1.6;">
+                    <ol class="small mb-0 ps-3" style="color: #e2e8f0 !important; line-height: 1.6;">
                         <li>Mở trang web bằng trình duyệt <b>Google Chrome</b>.</li>
                         <li>Chạm/bấm vào biểu tượng <b>3 chấm dọc</b> ở góc trên bên phải.</li>
                         <li>Chọn <b>"Cài đặt ứng dụng"</b> hoặc <b>"Thêm vào màn hình chính"</b>.</li>
@@ -1039,6 +1040,15 @@ async function checkAccountStatusLive() {
             });
         });
       }
+    </script>
+    <script>
+      let deferredPrompt;
+      window.addEventListener('beforeinstallprompt', (e) => {
+        // Ngăn Chrome tự động hiện banner mặc định (nếu muốn chủ động kiểm soát)
+        // e.preventDefault();
+        deferredPrompt = e;
+        console.log("Chrome đã ghi nhận sự kiện cài đặt PWA!");
+      });
     </script>
 </body>
 </html>
