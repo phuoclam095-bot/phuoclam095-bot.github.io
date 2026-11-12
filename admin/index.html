@@ -1030,25 +1030,60 @@ async function checkAccountStatusLive() {
         </div>
     </div>
 </div>
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js', { scope: '/admin/' })
-            .then(reg => {
-            })
-            .catch(err => {
-            });
-        });
-      }
-    </script>
-    <script>
-      let deferredPrompt;
-      window.addEventListener('beforeinstallprompt', (e) => {
-        // Ngăn Chrome tự động hiện banner mặc định (nếu muốn chủ động kiểm soát)
-        // e.preventDefault();
+    <!-- BANNER NỔI CÀI ĐẶT ỨNG DỤNG -->
+<div id="install-prompt" class="fixed bottom-5 left-4 right-4 bg-white p-4 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-sky-100 flex items-center justify-between z-[10000] hidden animate-bounce-subtle" style="max-width: 450px; margin: 0 auto; background: #0d1b2a !important; border: 1.5px solid var(--primary) !important;">
+    <div class="flex items-center gap-3">
+        <img src="/web-app-manifest-192x192.png" class="w-12 h-12 rounded-xl shadow-sm" style="object-fit:cover;">
+        <div>
+            <p class="text-[11px] font-black text-white uppercase italic" style="color: #fff !important;">ChonAnhNhanh Staff</p>
+            <p class="text-[9px] text-slate-400 font-bold" style="color: #94a3b8 !important;">Cài app để quản lý mượt hơn!</p>
+        </div>
+    </div>
+    <div class="flex gap-2">
+        <button onclick="dismissInstall()" class="text-[10px] font-bold text-slate-400 px-2" style="color: #94a3b8 !important; background: transparent; border: none; cursor: pointer;">Để sau</button>
+        <button id="install-button" class="bg-sky-500 text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase shadow-lg" style="background: var(--primary) !important; color: #000 !important; border: none; cursor: pointer; font-weight: 900;">Cài đặt</button>
+    </div>
+</div>
+
+<style>
+    @keyframes bounce-subtle {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+    }
+    .animate-bounce-subtle { animation: bounce-subtle 2s infinite; }
+</style>
+
+<script>
+    let deferredPrompt;
+    const promptEl = document.getElementById('install-prompt');
+    const installBtn = document.getElementById('install-button');
+
+    // Lắng nghe sự kiện trình duyệt sẵn sàng cài đặt PWA
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
         deferredPrompt = e;
-        console.log("Chrome đã ghi nhận sự kiện cài đặt PWA!");
-      });
-    </script>
+        // Hiện thông báo sau 2 giây khi vào web
+        setTimeout(() => {
+            const dismissed = localStorage.getItem('tt_install_dismissed');
+            if (!dismissed || (Date.now() - dismissed > 86400000)) {
+                promptEl.classList.remove('hidden');
+            }
+        }, 2000);
+    });
+
+    installBtn.addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+        promptEl.classList.add('hidden');
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        deferredPrompt = null;
+    });
+
+    function dismissInstall() {
+        promptEl.classList.add('hidden');
+        // Lưu vào máy để không làm phiền trong 24h tới
+        localStorage.setItem('tt_install_dismissed', Date.now());
+    }
+</script>
 </body>
 </html>
