@@ -21,9 +21,9 @@
         
             const ua = navigator.userAgent.toLowerCase();
             const isBot = /facebookexternalhit|zalo|bot|crawler|spider|robot|whatsapp|telegram|preview/i.test(ua);
-    
-            if (!isBot) {
 
+            if (!isBot) {
+                // ĐÃ SỬA LẠI ĐÚNG THỨ TỰ: studio trước, album sau
                 window.location.replace(`/client?studio=${studioSlug}&album=${albumSlug}`);
             }
         }
