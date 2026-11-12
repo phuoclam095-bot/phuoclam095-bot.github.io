@@ -31,5 +31,21 @@
       "type": "image/png",
       "purpose": "maskable"
     }
+  ],
+  "screenshots": [
+    {
+      "src": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=1280&h=800&fit=crop",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Giao diện Quản trị ChonAnhNhanh trên Máy tính"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=390&h=844&fit=crop",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Giao diện Quản trị ChonAnhNhanh trên Điện thoại"
+    }
   ]
 }
