@@ -21,11 +21,11 @@
         
             const ua = navigator.userAgent.toLowerCase();
             const isBot = /facebookexternalhit|zalo|bot|crawler|spider|robot|whatsapp|telegram|preview/i.test(ua);
-
+    
             if (!isBot) {
-                window.location.replace(`/client?album=${studioSlug}&studio=${albumSlug}`);
+
+                window.location.replace(`/client?studio=${studioSlug}&album=${albumSlug}`);
             }
-        } else {
         }
     </script>
 </head>
