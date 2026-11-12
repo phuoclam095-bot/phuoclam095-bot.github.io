@@ -7,12 +7,11 @@
     <script>
     const pathSegments = window.location.pathname.split('/').filter(Boolean);
         if (pathSegments.length === 2) {
-            const studio = pathSegments[0];
-            const album = pathSegments[1];
-            const ua = navigator.userAgent.toLowerCase();
-            const isBot = /facebookexternalhit|zalo|bot|crawler|spider|robot|whatsapp|telegram|preview/i.test(ua);
+            const studioSlug = pathSegments[0];
+            const albumSlug = pathSegments[1];
+            ...
             if (!isBot) {
-                window.location.replace(`https://chonanhnhanh.vn/client?studio=${studio}&album=${album}`);
+                window.location.replace(`/client?album=${albumSlug}&studio=${studioSlug}`);
             }
         }
     </script>
