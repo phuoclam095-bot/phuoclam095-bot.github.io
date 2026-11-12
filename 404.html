@@ -7,36 +7,21 @@
         // Lấy tất cả các phân đoạn trên đường dẫn URL
         const pathSegments = window.location.pathname.split('/').filter(Boolean);
         
-        // Kiểm tra xem trong đường dẫn có chữ "admin" hay không
+        // Kiểm tra xem đường dẫn có chứa chữ "admin" hay không
         const adminIndex = pathSegments.findIndex(segment => segment.toLowerCase() === 'admin');
 
         if (adminIndex !== -1) {
-            // Nếu có chữ "admin", ta tiến hành lọc bỏ chữ "admin" ra khỏi danh sách phân đoạn
-            // Đồng thời xử lý nếu đoạn tiếp theo là "client.html" hoặc "client" thì cũng lọc bỏ luôn
-            let cleanSegments = pathSegments.filter(segment => {
-                const lower = segment.toLowerCase();
-                return lower !== 'admin' && lower !== 'client.html' && lower !== 'client';
-            });
-
-            // Nếu sau khi lọc mà vẫn còn đủ studio và album (ít nhất 2 phần)
-            if (cleanSegments.length >= 2) {
-                const studioSlug = cleanSegments[cleanSegments.length - 2];
-                const albumSlug = cleanSegments[cleanSegments.length - 1];
-                
-                // Điều hướng về trang client sạch sẽ, bỏ hoàn toàn chữ admin và .html
-                window.location.replace(`/client?studio=${studioSlug}&album=${albumSlug}`);
-            } else {
-                // Nếu chỉ có mỗi admin đơn thuần, giữ nguyên hoặc trỏ về trang chủ quản trị
-                window.location.replace('/');
-            }
+            // Nếu là đường dẫn admin, giữ nguyên không chuyển hướng
         } 
-        // Xử lý các đường dẫn dạng thông thường khác: /studio/album
+        // Nếu đường dẫn có dạng /studio/album (từ 2 phân đoạn trở lên)
         else if (pathSegments.length >= 2) {
             const studioSlug = pathSegments[pathSegments.length - 2];
             const albumSlug = pathSegments[pathSegments.length - 1];
             
-            window.location.replace(`/client?studio=${studioSlug}&album=${albumSlug}`);
+            // 🌟 TRỎ ĐÚNG VỀ /client.html ĐỂ GITHUB PAGES KHÔNG BỊ LẶP LẠI LỖI 404
+            window.location.replace(`/client.html?studio=${studioSlug}&album=${albumSlug}`);
         } else {
+            // Các trường hợp khác về trang chủ
             window.location.replace('/');
         }
     </script>
