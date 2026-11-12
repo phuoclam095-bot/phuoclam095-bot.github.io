@@ -897,12 +897,20 @@ function showInlineMessage(text, type) {
                 localStorage.setItem('admin_avatar', decodeURIComponent(params.get('user_avatar') || ''));
                 localStorage.setItem('admin_status', params.get('user_status') || 'new');
                 localStorage.setItem('admin_expiry', params.get('user_expiry') || '0');
+                
                 const sSlug = params.get('studio_slug');
                 if (sSlug) localStorage.setItem('admin_studio_slug', sSlug);
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
+            const isLoggedIn = localStorage.getItem('admin_is_logged_in');
+            if (isLoggedIn !== 'true') {
+                console.log("Chưa phát hiện trạng thái đăng nhập hợp lệ.");
+            }
+
             updateUI();
-            if (localStorage.getItem('admin_is_logged_in') === 'true') checkAccountStatusLive();
+            if (localStorage.getItem('admin_is_logged_in') === 'true') {
+                checkAccountStatusLive();
+            }
 
             setTimeout(() => {
                 const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
