@@ -7,25 +7,36 @@
         // Lấy tất cả các phân đoạn trên đường dẫn URL
         const pathSegments = window.location.pathname.split('/').filter(Boolean);
         
-        // 🛑 1. TỐM NGAY LẬP TỨC NẾU CÓ CHỮ "admin"
-        // Kiểm tra xem trong đường dẫn có bất kỳ phân đoạn nào là "admin" hay không
-        const isAdminPath = pathSegments.some(segment => segment.toLowerCase() === 'admin');
+        // Kiểm tra xem trong đường dẫn có chữ "admin" hay không
+        const adminIndex = pathSegments.findIndex(segment => segment.toLowerCase() === 'admin');
 
-        if (isAdminPath) {
-            // Nếu là trang quản trị, giữ nguyên không chuyển hướng đi đâu cả
-            // Cho phép các file trong thư mục/đường dẫn admin hoạt động bình thường
-            // (Không làm gì cả, để trình duyệt tự render trang admin)
+        if (adminIndex !== -1) {
+            // Nếu có chữ "admin", ta tiến hành lọc bỏ chữ "admin" ra khỏi danh sách phân đoạn
+            // Đồng thời xử lý nếu đoạn tiếp theo là "client.html" hoặc "client" thì cũng lọc bỏ luôn
+            let cleanSegments = pathSegments.filter(segment => {
+                const lower = segment.toLowerCase();
+                return lower !== 'admin' && lower !== 'client.html' && lower !== 'client';
+            });
+
+            // Nếu sau khi lọc mà vẫn còn đủ studio và album (ít nhất 2 phần)
+            if (cleanSegments.length >= 2) {
+                const studioSlug = cleanSegments[cleanSegments.length - 2];
+                const albumSlug = cleanSegments[cleanSegments.length - 1];
+                
+                // Điều hướng về trang client sạch sẽ, bỏ hoàn toàn chữ admin và .html
+                window.location.replace(`/client?studio=${studioSlug}&album=${albumSlug}`);
+            } else {
+                // Nếu chỉ có mỗi admin đơn thuần, giữ nguyên hoặc trỏ về trang chủ quản trị
+                window.location.replace('/');
+            }
         } 
-        // 🌟 2. XỬ LÝ ĐƯỜNG DẪN ALBUM KHÁCH HÀNG: /studio/album
+        // Xử lý các đường dẫn dạng thông thường khác: /studio/album
         else if (pathSegments.length >= 2) {
             const studioSlug = pathSegments[pathSegments.length - 2];
             const albumSlug = pathSegments[pathSegments.length - 1];
             
-            // Chuyển hướng sang client với đúng thứ tự tham số: studio trước, album sau
-            window.location.replace(`/client.html?studio=${studioSlug}&album=${albumSlug}`);
-        } 
-        // 🏠 3. CÒN LẠI ĐÁ VỀ TRANG CHỦ
-        else {
+            window.location.replace(`/client?studio=${studioSlug}&album=${albumSlug}`);
+        } else {
             window.location.replace('/');
         }
     </script>
