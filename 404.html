@@ -3,18 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chonanhnhanh.vn - Hệ Thống Quản Lý Studio</title>
+    <title>Chonanhnhanh.vn - Đang chuyển hướng...</title>
     
-    <!-- CÁC THẺ META CHO BOT MẠNG XÃ HỘI (ZALO, FACEBOOK) -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://chonanhnhanh.vn/">
-    <meta property="og:title" content="Chonanhnhanh.vn - Chọn Ảnh Nhanh">
-    <meta property="og:description" content="Hệ thống quản lý khách hàng và chọn ảnh nhanh chóng qua link Google Drive.">
-    <meta property="og:image" content="https://chonanhnhanh.vn/default-cover.jpg">
-
     <script>
+        // Chỉ file 404 mới thực hiện bắt pathSegments khi GitHub Pages báo không tìm thấy đường dẫn
         const pathSegments = window.location.pathname.split('/').filter(Boolean);
         
+        // Nếu đường dẫn có đúng 2 phân đoạn chuẩn: /studio/album
         if (pathSegments.length === 2) {
             const studioSlug = pathSegments[0];
             const albumSlug = pathSegments[1];
@@ -22,16 +17,19 @@
             const ua = navigator.userAgent.toLowerCase();
             const isBot = /facebookexternalhit|zalo|bot|crawler|spider|robot|whatsapp|telegram|preview/i.test(ua);
 
+            // Nếu là người dùng thật, chuyển hướng thẳng sang client kèm tham số chuẩn xác
             if (!isBot) {
-                // ĐÃ SỬA LẠI ĐÚNG THỨ TỰ: studio trước, album sau
                 window.location.replace(`https://chonanhnhanh.vn/client?studio=${studioSlug}&album=${albumSlug}`);
             }
+        } else {
+            // Nếu không phải dạng đường dẫn album, đá về trang chủ gốc
+            window.location.replace('https://chonanhnhanh.vn/');
         }
     </script>
 </head>
 <body>
     <div style="text-align:center; margin-top:20vh; font-family:sans-serif; color:#00ebb0;">
-        <h3>Đang tải không gian Quản Trị Studio...</h3>
+        <h3>Đang tải không gian Chọn Ảnh Nhanh...</h3>
     </div>
 </body>
 </html>
