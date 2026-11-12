@@ -1,5 +1,5 @@
 // Tăng số phiên bản (v1 -> v2, v3...) mỗi khi sếp cập nhật code mới lên GitHub
-const CACHE_NAME = 'chonanhnhanh-v3';
+const CACHE_NAME = 'chonanhnhanh-v99';
 
 self.addEventListener('install', (e) => {
     // Buộc service worker mới thay thế ngay lập tức worker cũ đang chạy ngầm
