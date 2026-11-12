@@ -671,7 +671,7 @@ async function init() {
             throw new Error(`Máy chủ phản hồi lỗi (Mã trạng thái: ${res.status}). Album có thể không tồn tại.`);
         }
 
-        const rawData = await res.json();
+        const rawData = JSON.parse(textData);
         
         let data = {};
         let foundCoverId = '';
