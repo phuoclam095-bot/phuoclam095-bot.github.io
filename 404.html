@@ -4,40 +4,21 @@
     <meta charset="UTF-8">
     <title>Chonanhnhanh.vn - Đang điều hướng...</title>
     <script>
-        // Lấy tất cả các phân đoạn trên đường dẫn URL
         const pathSegments = window.location.pathname.split('/').filter(Boolean);
         
-        // Kiểm tra xem trong đường dẫn có chứa chữ "admin" hoặc "client.html" hay không
-        const adminIndex = pathSegments.findIndex(segment => segment.toLowerCase() === 'admin');
+        // Lọc bỏ các từ khóa rác, lấy đúng 2 phần tử cuối cùng làm studio và album
+        const cleanSegments = pathSegments.filter(segment => {
+            const lower = segment.toLowerCase();
+            return lower !== 'admin' && lower !== 'client.html' && lower !== 'client';
+        });
 
-        if (adminIndex !== -1) {
-            // Nếu có chữ "admin", ta bóc tách lấy 2 phần tử NẰM CUỐC CÙNG làm studio và album
-            // Bất kể đằng trước có bao nhiêu chữ rác (admin, client.html, v.v.)
-            const cleanSegments = pathSegments.filter(segment => {
-                const lower = segment.toLowerCase();
-                return lower !== 'admin' && lower !== 'client.html' && lower !== 'client';
-            });
-
-            if (cleanSegments.length >= 2) {
-                const studioSlug = cleanSegments[cleanSegments.length - 2];
-                const albumSlug = cleanSegments[cleanSegments.length - 1];
-                
-                // Điều hướng về link sạch không tì vết
-                window.location.replace(`https://chonanhnhanh.vn/client?studio=${studioSlug}&album=${albumSlug}`);
-            } else {
-                // Nếu đường dẫn chỉ có mỗi chữ /admin đơn thuần không có tên album phía sau
-                window.location.replace('https://chonanhnhanh.vn/');
-            }
-        } 
-        // Xử lý các đường dẫn dạng thông thường khác (ví dụ: /phuoclam/kimngan)
-        else if (pathSegments.length >= 2) {
-            const studioSlug = pathSegments[pathSegments.length - 2];
-            const albumSlug = pathSegments[pathSegments.length - 1];
+        if (cleanSegments.length >= 2) {
+            const studioSlug = cleanSegments[cleanSegments.length - 2];
+            const albumSlug = cleanSegments[cleanSegments.length - 1];
             
-            window.location.replace(`https://chonanhnhanh.vn/client?studio=${studioSlug}&album=${albumSlug}`);
-        } 
-        // Các trường hợp khác đá về trang chủ
-        else {
+            // 🌟 Điều hướng thẳng về file client.html ở thư mục gốc kèm tham số chuẩn
+            window.location.replace(`https://chonanhnhanh.vn/client.html?studio=${studioSlug}&album=${albumSlug}`);
+        } else {
             window.location.replace('https://chonanhnhanh.vn/');
         }
     </script>
