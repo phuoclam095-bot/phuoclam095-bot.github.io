@@ -645,16 +645,20 @@ async function init() {
         const albumSlug = urlParams.get('album');
         const studioSlug = urlParams.get('studio');
 
-        if (!albumSlug) {
-            throw new Error("Không tìm thấy đường dẫn định danh album trên trình duyệt.");
+        if (!albumSlug || !studioSlug) {
+            throw new Error("Đường dẫn thiếu thông tin định danh album hoặc studio.");
         }
 
         const res = await fetch(`${PATHS.GET}?studio=${encodeURIComponent(studioSlug)}&album=${encodeURIComponent(albumSlug)}`);
-        if (!res.ok) {
-            throw new Error(`Máy chủ phản hồi lỗi (Mã trạng thái: ${res.status}). Album có thể không tồn tại.`);
+        
+        // Đọc text an toàn trước để phòng hờ n8n trả về rỗng hoặc lỗi 404/500
+        const textData = await res.text();
+
+        if (!res.ok || !textData || textData.trim() === "") {
+            throw new Error("Không tìm thấy album trên hệ thống hoặc n8n chưa phản hồi dữ liệu!");
         }
 
-        const rawData = JSON.parse(textData);
+        const rawData = JSON.parse(textData); // Parse an toàn 100%
         
         let data = {};
         let foundCoverId = '';
@@ -678,7 +682,7 @@ async function init() {
         fid = window.fid;
 
         if (photos.length === 0) {
-            throw new Error("Album này hiện tại chưa có bức ảnh nào hoặc đang trong quá trình đồng bộ.");
+            throw new Error("Album này hiện tại chưa có bức ảnh nào hoặc tên đường dẫn không tồn tại.");
         }
 
         let folderName = photos[0].folderName || data.folderName || "VIP ALBUM";
@@ -698,21 +702,17 @@ async function init() {
             document.getElementById('albumTitle').innerText = folderName;
         }
 
-        // 1. TẮT NGAY LẬP TỨC OVERLAY XOAY XOAY VÀ HIỆN MÀN HÌNH CHÀO MỪNG CỰC NHANH
         loadOverlay.style.display = 'none';
 
-        // Khôi phục trạng thái ảnh đã chọn của khách từ LocalStorage
         const local = localStorage.getItem('anh_da_chon_cua_khach_' + (window.fid || albumSlug));
         if (local) selectedIds = JSON.parse(local);
 
-        // Hiển thị màn hình chào mừng ngay lập tức
         setupDriveCoverImage(photos, {
             folderName: folderName,
             studio_name: finalStudioName,
             cover_image_id: foundCoverId
         });
 
-        // 2. Đưa việc khởi tạo lưới ảnh (initGrid) xuống chạy ngầm hoặc sau một nhịp để không nghẽn luồng chính
         setTimeout(() => {
             initGrid();
         }, 50);
