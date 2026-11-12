@@ -1033,6 +1033,7 @@ async function checkAccountStatusLive() {
 <script>
     let globalDeferredPrompt = null;
 
+    // 1. Lắng nghe sự kiện cài đặt từ Chrome
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         globalDeferredPrompt = e;
@@ -1043,43 +1044,28 @@ async function checkAccountStatusLive() {
         }
     });
 
+    // 2. Xử lý khi bấm nút Cài đặt trên banner
     async function triggerInstallApp() {
-        // Nếu trình duyệt đã bắt được sự kiện gốc
         if (globalDeferredPrompt) {
             globalDeferredPrompt.prompt();
             const { outcome } = await globalDeferredPrompt.userChoice;
-            if (outcome === 'accepted') {
-                console.log('Người dùng đã đồng ý cài đặt App');
-            }
             globalDeferredPrompt = null;
             
-            // Ẩn banner sau khi cài xong
             const promptBanner = document.getElementById('install-prompt');
             if (promptBanner) promptBanner.style.display = 'none';
             return;
         }
+
         if (window.matchMedia('(display-mode: standalone)').matches) {
             alert("Ứng dụng này đã được cài đặt trên thiết bị của bạn rồi!");
             return;
         }
-        try {
-            // Kiểm tra xem trình duyệt có hỗ trợ gọi trực tiếp không
-            if (navigator.getInstalledRelatedApps) {
-                navigator.getInstalledRelatedApps().then(apps => {
-                    if (apps.length > 0) {
-                        alert("App đã được cài đặt!");
-                    } else {
 
-                        alert("Sếp vui lòng bấm vào biểu tượng 3 chấm ở góc trên bên phải Chrome -> Chọn 'Cài đặt ChonAnhNhanh...' để cài ngay lập tức nhé!");
-                    }
-                });
-            } else {
-                alert("Sếp vui lòng bấm vào biểu tượng 3 chấm ở góc trên bên phải Chrome -> Chọn 'Cài đặt ChonAnhNhanh...' để cài nhé!");
-            }
-        } catch (err) {
-            alert("Sếp vui lòng bấm vào biểu tượng 3 chấm ở góc trên bên phải Chrome -> Chọn 'Cài đặt ChonAnhNhanh...' để cài nhé!");
-        }
+        // Hướng dẫn mở nhanh menu Cài đặt thủ công của Chrome nếu bị kẹt sự kiện thư mục con
+        alert("Sếp vui lòng bấm vào biểu tượng 3 chấm ở góc trên bên phải Chrome -> Chọn 'Cài đặt ChonAnhNhanh...' để cài ngay lập tức nhé!");
     }
+
+    // 3. Ẩn banner khi bấm "Để sau"
     function dismissInstall() {
         const promptBanner = document.getElementById('install-prompt');
         if (promptBanner) {
@@ -1088,6 +1074,7 @@ async function checkAccountStatusLive() {
         localStorage.setItem('tt_install_dismissed', Date.now());
     }
 
+    // 4. Kiểm tra thời gian ẩn banner trong 24h
     window.addEventListener('DOMContentLoaded', () => {
         const dismissedTime = localStorage.getItem('tt_install_dismissed');
         if (dismissedTime && (Date.now() - dismissedTime < 86400000)) {
@@ -1097,21 +1084,20 @@ async function checkAccountStatusLive() {
             }
         }
     });
-    
-</script>
-    <script>
-      if ('serviceWorker' in navigator) {
+
+    // 5. Đăng ký Service Worker và kiểm tra Controller
+    if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/sw.js').then(reg => {
-          console.log("Service Worker đăng ký thành công với scope:", reg.scope);
-          if (!navigator.serviceWorker.controller) {
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-              window.location.reload();
-            });
-          }
+            console.log("Service Worker đăng ký thành công với scope:", reg.scope);
+            if (!navigator.serviceWorker.controller) {
+                navigator.serviceWorker.addEventListener('controllerchange', () => {
+                    window.location.reload();
+                });
+            }
         }).catch(err => {
-          console.error("Lỗi đăng ký Service Worker: ", err);
+            console.error("Lỗi đăng ký Service Worker: ", err);
         });
-      }
-    </script>
+    }
+</script>
 </body>
 </html>
