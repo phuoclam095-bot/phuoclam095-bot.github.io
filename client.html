@@ -260,6 +260,11 @@
         const urlParams = new URLSearchParams(window.location.search);
         const albumSlug = urlParams.get('album'); 
         const studioSlug = urlParams.get('studio');
+        if (!albumSlug || albumSlug === 'client.html') {
+            document.getElementById('errorNotificationBox').style.setProperty('display', 'flex', 'important');
+            document.getElementById('errorMessageText').innerText = "Đường dẫn album không hợp lệ hoặc thiếu thông tin định danh. Vui lòng kiểm tra lại link từ Studio!";
+            document.getElementById('loadOverlay').style.display = 'none';
+        }
         let fid = '';
         let albumSettings = { download: false, comment: false, limitPhotos: 0, watermark_enabled: true, watermark_logo: '' };
         let watermarkHTML = ''; 
