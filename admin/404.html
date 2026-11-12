@@ -13,7 +13,7 @@
         if (pathSegments.length >= 2) {
             const studioSlug = pathSegments[pathSegments.length - 2];
             const albumSlug = pathSegments[pathSegments.length - 1];
-            window.location.replace(`/client.html?album=${albumSlug}&studio=${studioSlug}`);
+            window.location.replace(`/client?album=${albumSlug}&studio=${studioSlug}`);
         } else {
             window.location.replace('/');
         }
