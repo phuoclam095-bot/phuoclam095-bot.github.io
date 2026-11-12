@@ -1,6 +1,12 @@
 {
-  "name": "ChonAnhNhanh",
+  "name": "ChonAnhNhanh.vn - Studio Workflow",
   "short_name": "ChonAnhNhanh",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#050a14",
+  "theme_color": "#00ebb0",
+  "orientation": "any",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
@@ -14,8 +20,5 @@
       "type": "image/png",
       "purpose": "maskable"
     }
-  ],
-  "theme_color": "#ffffff",
-  "background_color": "#ffffff",
-  "display": "standalone"
+  ]
 }
