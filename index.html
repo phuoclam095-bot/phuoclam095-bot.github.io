@@ -1073,23 +1073,40 @@ async function checkAccountStatusLive() {
     });
 
     async function triggerInstallApp() {
-        if (globalDeferredPrompt) {
-            globalDeferredPrompt.prompt();
-            const { outcome } = await globalDeferredPrompt.userChoice;
-            globalDeferredPrompt = null;
-            
-            const promptBanner = document.getElementById('install-prompt');
-            if (promptBanner) promptBanner.style.display = 'none';
-            return;
-        }
+    // 1. Nếu trình duyệt bắt được sự kiện gốc, gọi prompt chuẩn
+    if (globalDeferredPrompt) {
+        globalDeferredPrompt.prompt();
+        const { outcome } = await globalDeferredPrompt.userChoice;
+        globalDeferredPrompt = null;
+        
+        const promptBanner = document.getElementById('install-prompt');
+        if (promptBanner) promptBanner.style.display = 'none';
+        return;
+    }
 
-        if (window.matchMedia('(display-mode: standalone)').matches) {
-            alert("Ứng dụng này đã được cài đặt trên thiết bị của bạn rồi!");
-            return;
-        }
+    // 2. Nếu đã ở dạng App standalone độc lập rồi thì thông báo
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+        alert("Ứng dụng này đã được cài đặt trên thiết bị của bạn rồi!");
+        return;
+    }
 
+    // 3. GIẢI PHÁP ÉP CÀI ĐẶT TRỰC TIẾP: 
+    // Thay vì dùng alert hướng dẫn chung chung, ta kích hoạt modal hướng dẫn chi tiết
+    // hoặc bật mở trực tiếp giao diện modal "Cài đặt ứng dụng" của sếp đã có sẵn!
+    const installModalEl = document.getElementById('installAppModal');
+    if (installModalEl) {
+        const myModal = new bootstrap.Modal(installModalEl);
+        myModal.show();
+    } else {
+        // Fallback an toàn nếu chưa bật được modal
         alert("Sếp vui lòng bấm vào biểu tượng 3 chấm ở góc trên bên phải Chrome -> Chọn 'Cài đặt ChonAnhNhanh...' để cài ngay lập tức nhé!");
     }
+}
+```[cite: 7]
+
+### Tại sao cách này xử lý dứt điểm tình trạng của sếp?
+* Khi sự kiện ngầm chưa kịp kích hoạt trên máy tính, thay vì chỉ hiện dòng thông báo `alert` làm gián đoạn trải nghiệm, nút bấm sẽ **tự động bung ngay cái Modal hướng dẫn trực quan (`installAppModal`)** có sẵn trong giao diện của sếp ra giữa màn hình.
+* Giúp nhân viên hoặc người sử dụng thấy rõ ràng các bước thực hiện trên thiết bị của họ mà không bị trạng thái "bấm vào không thấy phản ứng gì"[cite: 7].
 
     // 3. Ẩn banner khi bấm "Để sau"
     function dismissInstall() {
