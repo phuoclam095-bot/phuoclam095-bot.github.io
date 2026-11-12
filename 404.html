@@ -4,25 +4,25 @@
     <meta charset="UTF-8">
     <title>Chonanhnhanh.vn - Đang điều hướng...</title>
     <script>
-        // Lấy tất cả các phân đoạn trên đường dẫn URL
+        // Lấy tất cả các đoạn trên đường dẫn hiện tại
         const pathSegments = window.location.pathname.split('/').filter(Boolean);
         
-        // Kiểm tra xem đường dẫn có chứa chữ "admin" hay không
-        const adminIndex = pathSegments.findIndex(segment => segment.toLowerCase() === 'admin');
+        // Lọc bỏ các từ khóa hệ thống rác nếu có
+        let cleanSegments = pathSegments.filter(segment => {
+            const lower = segment.toLowerCase();
+            return lower !== 'admin' && lower !== 'client.html' && lower !== 'client';
+        });
 
-        if (adminIndex !== -1) {
-            // Nếu là đường dẫn admin, giữ nguyên không chuyển hướng
-        } 
-        // Nếu đường dẫn có dạng /studio/album (từ 2 phân đoạn trở lên)
-        else if (pathSegments.length >= 2) {
-            const studioSlug = pathSegments[pathSegments.length - 2];
-            const albumSlug = pathSegments[pathSegments.length - 1];
+        // Nếu có đủ từ 2 phân đoạn trở lên (ví dụ: /phuoclam/kimngan)
+        if (cleanSegments.length >= 2) {
+            const studioSlug = cleanSegments[cleanSegments.length - 2];
+            const albumSlug = cleanSegments[cleanSegments.length - 1];
             
-            // 🌟 TRỎ ĐÚNG VỀ /client.html ĐỂ GITHUB PAGES KHÔNG BỊ LẶP LẠI LỖI 404
-            window.location.replace(`/client.html?studio=${studioSlug}&album=${albumSlug}`);
+            // 🌟 ÉP CỨNG ĐIỀU HƯỚNG VỀ ĐÚNG MẪU URL SẠCH SẼ MÀ KHÔNG CẦN DÙNG .HTML
+            window.location.replace(`https://chonanhnhanh.vn/client?studio=${studioSlug}&album=${albumSlug}`);
         } else {
-            // Các trường hợp khác về trang chủ
-            window.location.replace('/');
+            // Còn lại đá về trang chủ
+            window.location.replace('https://chonanhnhanh.vn/');
         }
     </script>
 </head>
