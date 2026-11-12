@@ -1,1 +1,34 @@
-
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đang chuyển hướng...</title>
+    <script>
+        // Lấy tất cả các phân đoạn trên đường dẫn URL
+        const pathSegments = window.location.pathname.split('/').filter(Boolean);
+        
+        // Kiểm tra nếu đường dẫn chứa chữ 'admin' (ví dụ: /admin/...)
+        if (pathSegments.length > 0 && pathSegments[0].toLowerCase() === 'admin') {
+            // Giữ nguyên hoặc trỏ về trang quản trị thực tế
+            // Không chuyển hướng sang client nếu đang vào khu vực admin
+            window.location.replace(window.location.href);
+        } 
+        // Nếu đường dẫn có dạng /ten-studio/ten-album (từ 2 phân đoạn trở lên)
+        else if (pathSegments.length >= 2) {
+            const studioSlug = pathSegments[pathSegments.length - 2];
+            const albumSlug = pathSegments[pathSegments.length - 1];
+            
+            // Chuyển hướng về client kèm đúng thứ tự: studio trước, album sau
+            window.location.replace(`/client.html?studio=${studioSlug}&album=${albumSlug}`);
+        } else {
+            // Trường hợp còn lại đá về trang chủ
+            window.location.replace('/');
+        }
+    </script>
+</head>
+<body>
+    <div style="text-align:center; margin-top:20vh; font-family:sans-serif; color:#00ebb0;">
+        <h3>Đang chuyển hướng đến album...</h3>
+    </div>
+</body>
+</html>
