@@ -1,28 +1,11 @@
-// Tăng số phiên bản (v1 -> v2, v3...) mỗi khi sếp cập nhật code mới lên GitHub
-const CACHE_NAME = 'chonanhnhanh-v99';
-
+// Service Worker cơ bản cho ChonAnhNhanh.vn
 self.addEventListener('install', (e) => {
-    // Buộc service worker mới thay thế ngay lập tức worker cũ đang chạy ngầm
-    self.skipWaiting();
+  self.skipWaiting();
 });
-
 self.addEventListener('activate', (e) => {
-    e.waitUntil(
-        caches.keys().then((cacheNames) => {
-            return Promise.all(
-                cacheNames.map((cache) => {
-                    // Xóa bỏ toàn bộ các kho cache phiên bản cũ khác tên
-                    if (cache !== CACHE_NAME) {
-                        return caches.delete(cache);
-                    }
-                })
-            );
-        }).then(() => clients.claim()) // Nắm quyền điều khiển toàn bộ tab ngay lập tức
-    );
+  return self.clients.claim();
 });
-
 self.addEventListener('fetch', (e) => {
-    e.respondWith(
-        fetch(e.request).catch(() => caches.match(e.request))
-    );
+  // Cho phép fetch bình thường qua mạng
+  e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
 });
