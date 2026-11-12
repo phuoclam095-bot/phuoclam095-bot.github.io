@@ -223,6 +223,17 @@
     cursor: pointer;
     flex-shrink: 0; 
 }
+    .modal-content {
+    background: #0d1b2a !important; 
+    border: 2px solid var(--primary) !important;
+    border-radius: 25px;
+    color: #fff;
+    box-shadow: 0 0 40px rgba(0, 235, 176, 0.25) !important; 
+}
+
+.modal-backdrop.show {
+    opacity: 0.6 !important; 
+}
     </style>
 </head>
 <body>
@@ -1014,5 +1025,14 @@ async function checkAccountStatusLive() {
         </div>
     </div>
 </div>
+    <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('ServiceWorker đăng ký thành công thành công: ', reg.scope))
+        .catch(err => console.log('ServiceWorker đăng ký thất bại: ', err));
+    });
+  }
+</script>
 </body>
 </html>
