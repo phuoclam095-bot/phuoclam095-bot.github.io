@@ -260,23 +260,6 @@
         const urlParams = new URLSearchParams(window.location.search);
         let albumSlug = urlParams.get('album');  
         let studioSlug = urlParams.get('studio');
-        
-        if (!albumSlug || albumSlug === 'client.html') {
-            const pathSegments = window.location.pathname.split('/').filter(Boolean);
-            if (pathSegments.length >= 2) {
-                studioSlug = pathSegments[pathSegments.length - 2];
-                albumSlug = pathSegments[pathSegments.length - 1];
-            } else if (pathSegments.length === 1 && pathSegments[0] !== 'client' && pathSegments[0] !== 'client.html') {
-                albumSlug = pathSegments[0];
-                studioSlug = 'studio';
-            }
-        }
-        
-        if (!albumSlug || albumSlug === 'client.html' || albumSlug === 'index') {
-            document.getElementById('errorNotificationBox').style.setProperty('display', 'flex', 'important');
-            document.getElementById('errorMessageText').innerText = "Đường dẫn album không hợp lệ hoặc thiếu thông tin định danh. Vui lòng kiểm tra lại link từ Studio!";
-            document.getElementById('loadOverlay').style.display = 'none';
-        }
         let fid = '';
         let albumSettings = { download: false, comment: false, limitPhotos: 0, watermark_enabled: true, watermark_logo: '' };
         let watermarkHTML = ''; 
