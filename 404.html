@@ -23,7 +23,7 @@
             const isBot = /facebookexternalhit|zalo|bot|crawler|spider|robot|whatsapp|telegram|preview/i.test(ua);
 
             if (!isBot) {
-                window.location.replace(`/client?album=${albumSlug}&studio=${studioSlug}`);
+                window.location.replace(`/client?album=${studioSlug}&studio=${albumSlug}`);
             }
         } else {
         }
