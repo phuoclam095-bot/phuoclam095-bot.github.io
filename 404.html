@@ -25,6 +25,18 @@
             // Nếu không phải dạng đường dẫn album, đá về trang chủ gốc
             window.location.replace('https://chonanhnhanh.vn/');
         }
+        if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').then(reg => {
+        reg.addEventListener('updatefound', () => {
+            const newWorker = reg.installing;
+            newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    window.location.reload();
+                }
+            });
+        });
+    });
+}
     </script>
 </head>
 <body>
