@@ -1,11 +1,16 @@
-// Service Worker cơ bản cho ChonAnhNhanh.vn
+// Service Worker cho ChonAnhNhanh.vn PWA
 self.addEventListener('install', (e) => {
-  self.skipWaiting();
+    // Buộc service worker mới thay thế ngay lập tức worker cũ đang chạy ngầm
+    self.skipWaiting();
 });
+
 self.addEventListener('activate', (e) => {
-  return self.clients.claim();
+    // Nắm quyền điều khiển toàn bộ các client/tab đang mở ngay lập tức
+    return e.waitUntil(clients.claim());
 });
+
 self.addEventListener('fetch', (e) => {
-  // Cho phép fetch bình thường qua mạng
-  e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+    e.respondWith(
+        fetch(e.request).catch(() => caches.match(e.request))
+    );
 });
