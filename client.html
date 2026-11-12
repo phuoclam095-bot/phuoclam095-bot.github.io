@@ -260,6 +260,19 @@
         const urlParams = new URLSearchParams(window.location.search);
         let albumSlug = urlParams.get('album');  
         let studioSlug = urlParams.get('studio');
+
+        if (!albumSlug || albumSlug === 'client.html' || albumSlug === 'index') {
+            albumSlug = '';
+        }
+        if (!studioSlug || studioSlug === 'admin') {
+            studioSlug = '';
+        }
+        if (!albumSlug || !studioSlug) {
+            document.getElementById('loadOverlay').style.display = 'none';
+            document.getElementById('errorMessageText').innerText = "Đường dẫn album không hợp lệ hoặc thiếu thông tin định danh từ Studio!";
+            document.getElementById('errorNotificationBox').style.setProperty('display', 'flex', 'important');
+            throw new Error("Thiếu tham số định danh hợp lệ.");
+        }
         let fid = '';
         let albumSettings = { download: false, comment: false, limitPhotos: 0, watermark_enabled: true, watermark_logo: '' };
         let watermarkHTML = ''; 
