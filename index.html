@@ -26,6 +26,7 @@
                 <a class="navbar-brand-left m-0" href="./">CHONANHNHANH<span style="color:#f0c300">.VN</span></a>
                 
                 
+                
                 <div class="d-flex align-items-center ms-auto order-lg-3">
                     <button class="btn btn-sm" onclick="toggleDarkMode()" title="Chuyển đổi Sáng / Tối" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(0,235,176,0.2); color: var(--primary); border-radius: 50%; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;">
                         <i class="fas fa-adjust"></i>
@@ -62,17 +63,17 @@
                     </div>
                     
                     <ul class="navbar-nav" id="adminNavLinks">
-                        <li><a href="./" class="nav-link active">Tạo Album</a></li>
-                        <li><a href="managa" class="nav-link">Quản Lý</a></li>
-                        <li><a href="crm" class="nav-link">Lịch</a></li>
-                        <li><a href="copy_local" class="nav-link">Sao Chép</a></li>
+                        <li><a href="./" class="nav-link active" data-i18n="nav_create">Tạo Album</a></li>
+                        <li><a href="managa" class="nav-link" data-i18n="nav_manage">Quản Lý</a></li>
+                        <li><a href="crm" class="nav-link" data-i18n="nav_calendar">Lịch</a></li>
+                        <li><a href="copy_local" class="nav-link" data-i18n="nav_copy">Sao Chép</a></li>
                         <li><a href="blog" class="nav-link">Blog</a></li>
-                        <li><a href="cull" class="nav-link">Lọc Ảnh</a></li>
-                        <li><a href="payment" class="nav-link">Gia Hạn</a></li>
-                        <li><a href="lienhe" class="nav-link">Liên Hệ</a></li>
-                        <li><a href="guide" class="nav-link">Hướng Dẫn</a></li>
-                        <li><a href="fedback" class="nav-link">Góp Ý Và Báo Lỗi</a></li>
-                        <li><a href="privacy" class="nav-link">Chính Sách Bảo Mật</a></li>
+                        <li><a href="cull" class="nav-link" data-i18n="nav_cull">Lọc Ảnh</a></li>
+                        <li><a href="payment" class="nav-link" data-i18n="nav_payment">Gia Hạn</a></li>
+                        <li><a href="lienhe" class="nav-link" data-i18n="nav_contact">Liên Hệ</a></li>
+                        <li><a href="guide" class="nav-link" data-i18n="nav_guide">Hướng Dẫn</a></li>
+                        <li><a href="fedback" class="nav-link" data-i18n="nav_feedback">Góp Ý Và Báo Lỗi</a></li>
+                        <li><a href="privacy" class="nav-link" data-i18n="nav_privacy">Chính Sách Bảo Mật</a></li>
                     </ul>
                 </div>
     
@@ -82,31 +83,31 @@
     <div class="main-container">
         <div class="rainbow-border-wrapper">
             <div class="create-card">
-                <h1 class="luxury-title">Thiết Lập Album VIP</h1>
+                <h1 class="luxury-title" data-i18n="luxury_title">Thiết Lập Album VIP</h1>
                 
                 <div id="accountNotice" class="text-center mb-4" style="display:none; font-size:0.85rem; font-weight:700; line-height:1.6;"></div>
                 
                 <div class="mb-4">
-                    <label style="font-size:0.75rem; color:var(--primary); font-weight:900; margin-bottom:10px; display:block; text-transform:uppercase;">Link Thư Mục Google Drive</label>
+                    <label data-i18n="drive_label" style="font-size:0.75rem; color:var(--primary); font-weight:900; margin-bottom:10px; display:block; text-transform:uppercase;">Link Thư Mục Google Drive</label>
                     <input type="text" id="driveLink" placeholder="Dán link thư mục tại đây..." autocomplete="off">
                 </div>
                 <div class="switch-container">
-                    <div class="switch-group"><span>Cho phép tải ảnh</span><label class="toggle-switch"><input type="checkbox" id="allowDownload" ><span class="slider"></span></label></div>
-                    <div class="switch-group"><span>Cho phép bình luận</span><label class="toggle-switch"><input type="checkbox" id="allowComment" checked><span class="slider"></span></label></div>
+                    <div class="switch-group"><span data-i18n="lbl_download">Cho phép tải ảnh</span><label class="toggle-switch"><input type="checkbox" id="allowDownload" ><span class="slider"></span></label></div>
+                    <div class="switch-group"><span data-i18n="lbl_comment">Cho phép bình luận</span><label class="toggle-switch"><input type="checkbox" id="allowComment" checked><span class="slider"></span></label></div>
                 
                     <div class="switch-group">
-                        <span>Giới hạn số ảnh</span>
+                        <span data-i18n="lbl_limit">Giới hạn số ảnh</span>
                         <label class="toggle-switch">
                             <input type="checkbox" id="limitPhotos" onchange="toggleLimitInput()">
                             <span class="slider"></span>
                         </label>
                     </div>
                     <div class="mb-3 mt-2 px-2" id="limitNumberContainer" style="display: none;">
-                        <label style="font-size: 0.7rem; color: var(--primary); font-weight: 900; margin-bottom: 5px; display: block; text-transform: uppercase;">Nhập số lượng ảnh giới hạn tối đa</label>
+                        <label data-i18n="lbl_limit_sub" style="font-size: 0.7rem; color: var(--primary); font-weight: 900; margin-bottom: 5px; display: block; text-transform: uppercase;">Nhập số lượng ảnh giới hạn tối đa</label>
                         <input type="text" id="limitPhotosInput" placeholder="Ví dụ: 50" autocomplete="off" style="padding: 10px; font-size: 0.8rem;">
                     </div>
                     <div class="switch-group">
-                        <span>Đóng dấu bản quyền Logo</span>
+                        <span data-i18n="lbl_watermark">Đóng dấu bản quyền Logo</span>
                         <label class="toggle-switch">
                             <input type="checkbox" id="enableWatermark" onchange="toggleWatermarkInput()">
                             <span class="slider"></span>
@@ -114,7 +115,7 @@
                     </div>
                     
                     <div class="mb-3 mt-3 px-2" id="logoUploadContainer" style="display: none;">
-                        <label style="font-size: 0.7rem; color: var(--primary); font-weight: 900; margin-bottom: 5px; display: block; text-transform: uppercase;">Tải ảnh Logo từ máy tính</label>
+                        <label data-i18n="lbl_logo_upload" style="font-size: 0.7rem; color: var(--primary); font-weight: 900; margin-bottom: 5px; display: block; text-transform: uppercase;">Tải ảnh Logo từ máy tính</label>
                         <input type="file" id="studioLogoFile" class="form-control bg-dark text-white border-secondary" accept="image/*" onchange="processLogoFile(event)" style="padding: 10px; font-size: 0.8rem;">
                         <div class="form-text text-warning" style="font-size: 0.7rem;">Khuyên dùng định dạng PNG nền trong suốt (Dung lượng <1MB).</div>
                         <div class="form-text text-warning" style="font-size: 0.7rem;">Link ảnh gửi khách chọn sẽ load lâu hơn dự kiến.</div>
@@ -123,17 +124,17 @@
                         </div>
                     </div>
                 </div>
-                <div id="authReminder" class="remind-text-rainbow">Vui lòng đăng nhập để sử dụng</div>
+                <div id="authReminder" class="remind-text-rainbow" data-i18n="auth_reminder">Vui lòng đăng nhập để sử dụng</div>
                 <div id="extraTextNotice" class="text-center mb-3" style="display:none; color:var(--primary); font-weight:900; font-size:0.85rem; letter-spacing:1px; text-transform:uppercase;"><i class="fas fa-bolt me-2"></i>Tốc độ cực nhanh - Chính xác 100%</div>
                 
                 <div id="resultBox">
                     <div style="text-align: center; margin-bottom: 10px;"><i class="fas fa-check-circle" style="color:var(--primary); font-size:1.2rem;"></i><span id="resFolderName" style="font-weight:800; color:#fff; margin-left: 5px;"></span></div>
-                    <div class="copy-link-flex"><a href="#" id="resClientLink" target="_blank">...</a><button class="btn-copy-vip" id="btnCopyMain" onclick="copyFinalLink()">COPY LINK</button></div>
+                    <div class="copy-link-flex"><a href="#" id="resClientLink" target="_blank">...</a><button class="btn-copy-vip" id="btnCopyMain" onclick="copyFinalLink()" data-i18n="btn_copy">COPY LINK</button></div>
                 </div>
 
-                <button class="btn-create d-none" id="btnCreate" onclick="handleCreateAlbum()">KHỞI TẠO ALBUM NGAY</button>
+                <button class="btn-create d-none" id="btnCreate" onclick="handleCreateAlbum()" data-i18n="btn_create">KHỞI TẠO ALBUM NGAY</button>
                 <div class="text-center mt-3">
-                    <button onclick="new bootstrap.Modal(document.getElementById('installAppModal')).show()" style="background: rgba(0,235,176,0.08); border: 1px solid rgba(0,235,176,0.3); color: var(--primary); padding: 10px 20px; border-radius: 50px; font-size: 0.75rem; font-weight: 900; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s;">
+                    <button onclick="new bootstrap.Modal(document.getElementById('installAppModal')).show()" style="background: rgba(0,235,176,0.08); border: 1px solid rgba(0,235,176,0.3); color: var(--primary); padding: 10px 20px; border-radius: 50px; font-size: 0.75rem; font-weight: 900; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s;" data-i18n="btn_install_guide">
                         <i class="fas fa-download"></i> HƯỚNG DẪN CÀI APP LÊN ĐIỆN THOẠI & MÁY TÍNH
                     </button>
                 </div>
@@ -149,27 +150,27 @@
     
 <div class="chat-panel" id="chatPanel">
     <div class="chat-header">
-        <span>HỖ TRỢ VIP & TRỢ LÝ AI</span>
+        <span data-i18n="chat_header">HỖ TRỢ VIP & TRỢ LÝ AI</span>
         <i class="fas fa-times" style="cursor:pointer" onclick="toggleChat()"></i>
     </div>
     
     <div class="chat-body" id="chatBody">
         <div class="chat-row">
             <div class="chat-avatar"><img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png"></div>
-            <div class="msg-bubble msg-ai">Dạ, chonanhnhanh.vn xin chào mình ạ! Em hỗ trợ được gì cho studio của mình không?</div>
+            <div class="msg-bubble msg-ai" data-i18n="chat_welcome">Dạ, chonanhnhanh.vn xin chào mình ạ! Em hỗ trợ được gì cho studio của mình không?</div>
         </div>
     </div>
 
     <div class="chat-suggestions" style="padding: 8px 12px; background: rgba(0,0,0,0.2); display: flex; gap: 6px; overflow-x: auto; border-top: 1px solid rgba(255,255,255,0.05); white-space: nowrap;">
-        <span onclick="sendQuickChat('Hướng dẫn tạo album từ Google Drive?')" style="background: rgba(0,235,176,0.1); border: 1px solid var(--primary); color: var(--primary); padding: 4px 10px; border-radius: 50px; font-size: 0.7rem; font-weight: 700; cursor: pointer;">📂 Tạo album?</span>
-        <span onclick="sendQuickChat('Cách gia hạn tài khoản VIP?')" style="background: rgba(0,235,176,0.1); border: 1px solid var(--primary); color: var(--primary); padding: 4px 10px; border-radius: 50px; font-size: 0.7rem; font-weight: 700; cursor: pointer;">💳 Gia hạn VIP?</span>
-        <span onclick="sendQuickChat('Cách quản lý lịch trình và in hợp đồng?')" style="background: rgba(0,235,176,0.1); border: 1px solid var(--primary); color: var(--primary); padding: 4px 10px; border-radius: 50px; font-size: 0.7rem; font-weight: 700; cursor: pointer;">📅 Quản lý lịch?</span>
+        <span onclick="sendQuickChat('Hướng dẫn tạo album từ Google Drive?')" data-i18n="chat_sug_1" style="background: rgba(0,235,176,0.1); border: 1px solid var(--primary); color: var(--primary); padding: 4px 10px; border-radius: 50px; font-size: 0.7rem; font-weight: 700; cursor: pointer;">📂 Tạo album?</span>
+        <span onclick="sendQuickChat('Cách gia hạn tài khoản VIP?')" data-i18n="chat_sug_2" style="background: rgba(0,235,176,0.1); border: 1px solid var(--primary); color: var(--primary); padding: 4px 10px; border-radius: 50px; font-size: 0.7rem; font-weight: 700; cursor: pointer;">💳 Gia hạn VIP?</span>
+        <span onclick="sendQuickChat('Cách quản lý lịch trình và in hợp đồng?')" data-i18n="chat_sug_3" style="background: rgba(0,235,176,0.1); border: 1px solid var(--primary); color: var(--primary); padding: 4px 10px; border-radius: 50px; font-size: 0.7rem; font-weight: 700; cursor: pointer;">📅 Quản lý lịch?</span>
     </div>
 
-    <div id="aiTypingStatus" class="ai-status-text">Trợ Lý Ảo đang trả lời...</div>
+    <div id="aiTypingStatus" class="ai-status-text" data-i18n="chat_typing">Trợ Lý Ảo đang trả lời...</div>
     
     <div class="chat-input-area">
-        <input type="text" id="chatInput" placeholder="Nhập câu hỏi..." onkeypress="if(event.key==='Enter') sendChat()">
+        <input type="text" id="chatInput" placeholder="Nhập câu hỏi..." data-i18n-placeholder="chat_placeholder" autocomplete="off" onkeypress="if(event.key==='Enter') sendChat()">
         <button onclick="sendChat()" style="width:36px; height:36px; background:var(--primary); border:none; border-radius:50%; cursor:pointer;">
             <i class="fas fa-paper-plane" style="color:#000;"></i>
         </button>
@@ -177,36 +178,36 @@
 </div>
 <div class="modal fade" id="studioConfigModal" tabindex="-1" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content"  border: 2px solid var(--primary); border-radius: 25px; box-shadow: 0 20px 50px rgba(0,0,0,0.8);">
+            <div class="modal-content" style="background: #080d1a; border: 2px solid var(--primary); border-radius: 25px; box-shadow: 0 20px 50px rgba(0,0,0,0.8);">
                 <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title text-primary fw-900" style="font-size: 1.1rem; text-transform: uppercase;">Cấu Hình Thông Tin Studio</h5>
+                    <h5 class="modal-title text-primary fw-900" style="font-size: 1.1rem; text-transform: uppercase;" data-i18n="modal_studio_title">Cấu Hình Thông Tin Studio</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
-                    <p style="font-size: 0.82rem; color: #94a3b8; margin-bottom: 15px;">
+                    <p style="font-size: 0.82rem; color: #94a3b8; margin-bottom: 15px;" data-i18n="modal_studio_desc">
                         Nhập thông tin chi tiết của studio để làm hóa đơn và tự động tạo đường dẫn.
                     </p>
                     <div class="mb-3">
-                        <label style="font-size: 0.7rem; color: var(--primary); font-weight: 900; margin-bottom: 5px; display: block; text-transform: uppercase;">Tên Studio / Cá Nhân</label>
+                        <label style="font-size: 0.7rem; color: var(--primary); font-weight: 900; margin-bottom: 5px; display: block; text-transform: uppercase;" data-i18n="modal_studio_name">Tên Studio / Cá Nhân</label>
                         <input type="text" id="modalStudioNameInput" placeholder="Ví dụ: Studio Chọn Ảnh Nhanh" autocomplete="off" style="padding: 12px; font-size: 0.9rem;">
                     </div>
                     <div class="mb-3">
-                        <label style="font-size: 0.7rem; color: var(--primary); font-weight: 900; margin-bottom: 5px; display: block; text-transform: uppercase;">Số điện thoại liên hệ</label>
+                        <label style="font-size: 0.7rem; color: var(--primary); font-weight: 900; margin-bottom: 5px; display: block; text-transform: uppercase;" data-i18n="modal_studio_phone">Số điện thoại liên hệ</label>
                         <input type="text" id="modalStudioPhoneInput" placeholder="Ví dụ: 0879029170" autocomplete="off" style="padding: 12px; font-size: 0.9rem;">
                     </div>
                     <div class="mb-3">
-                        <label style="font-size: 0.7rem; color: var(--primary); font-weight: 900; margin-bottom: 5px; display: block; text-transform: uppercase;">Địa chỉ Studio</label>
+                        <label style="font-size: 0.7rem; color: var(--primary); font-weight: 900; margin-bottom: 5px; display: block; text-transform: uppercase;" data-i18n="modal_studio_address">Địa chỉ Studio</label>
                         <input type="text" id="modalStudioAddressInput" placeholder="Ví dụ: Số 123, Đường Trần Phú" autocomplete="off" style="padding: 12px; font-size: 0.9rem;">
                     </div>
                     <div class="mb-3">
-                        <label style="font-size: 0.7rem; color: var(--primary); font-weight: 900; margin-bottom: 5px; display: block; text-transform: uppercase;">Logo Studio (Hiển thị hóa đơn & hệ thống)</label>
+                        <label style="font-size: 0.7rem; color: var(--primary); font-weight: 900; margin-bottom: 5px; display: block; text-transform: uppercase;" data-i18n="modal_studio_logo">Logo Studio (Hiển thị hóa đơn & hệ thống)</label>
                         <input type="file" id="modalStudioLogoFile" class="form-control bg-dark text-white border-secondary" accept="image/*" onchange="processModalLogoFile(event)" style="padding: 10px; font-size: 0.8rem;">
-                        <div class="form-text text-warning" style="font-size: 0.7rem;">Khuyên dùng PNG nền trong suốt (Dung lượng < 1MB).</div>
+                        <div class="form-text text-warning" style="font-size: 0.7rem;" data-i18n="modal_studio_logo_note">Khuyên dùng PNG nền trong suốt (Dung lượng < 1MB).</div>
                         <div class="mt-2 text-center">
                             <img id="modalLogoPreview" src="" style="max-height: 50px; display: none; border-radius: 4px; border: 1px solid var(--primary); object-fit: contain;">
                         </div>
                     </div>
-                    <button class="btn-create" style="margin-top: 10px;" onclick="saveStudioConfig()">LƯU THÔNG TIN</button>
+                    <button class="btn-create" style="margin-top: 10px;" onclick="saveStudioConfig()" data-i18n="modal_studio_save">LƯU THÔNG TIN</button>
                 </div>
             </div>
         </div>
@@ -223,13 +224,13 @@
 <div class="modal fade" id="installAppModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <!-- ĐÃ THÊM MÃ MÀU SÁNG HƠN VÀ DÙNG !IMPORTANT TRỰC TIẾP -->
-        <div class="modal-content" border: 2px solid var(--primary) !important; border-radius: 25px !important; color: #ffffff !important; box-shadow: 0 0 50px rgba(0, 235, 176, 0.4) !important;">
+        <div class="modal-content" style="background: #112240 !important; border: 2px solid var(--primary) !important; border-radius: 25px !important; color: #ffffff !important; box-shadow: 0 0 50px rgba(0, 235, 176, 0.4) !important;">
             <div class="modal-header border-0 pb-0">
-                <h5 class="modal-title text-primary fw-900" style="font-size: 1rem; text-transform: uppercase;">Cài Đặt Ứng Dụng ChonAnhNhanh</h5>
+                <h5 class="modal-title text-primary fw-900" style="font-size: 1rem; text-transform: uppercase;" data-i18n="modal_install_title">Cài Đặt Ứng Dụng ChonAnhNhanh</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
-                <p class="small mb-3" style="color: #cbd5e1 !important;">Biến website thành ứng dụng độc lập trên màn hình chính để thao tác nhanh mượt như App chuyên nghiệp!</p>
+                <p class="small mb-3" style="color: #cbd5e1 !important;" data-i18n="modal_install_desc">Biến website thành ứng dụng độc lập trên màn hình chính để thao tác nhanh mượt như App chuyên nghiệp!</p>
                 
                 <div class="p-3 mb-3 rounded" style="background: rgba(0, 235, 176, 0.05) !important; border: 1px solid rgba(0, 235, 176, 0.2) !important;">
                     <div class="fw-bold text-primary mb-1"><i class="fab fa-apple me-2"></i>Đối với iPhone / iPad (Safari):</div>
@@ -254,23 +255,15 @@
         </div>
     </div>
 </div>
-    <div id="install-prompt" style="position: fixed; bottom: 30px; left: 30px; z-index: 10000; display: none; background: var(--card-bg); border: 2px solid var(--primary); border-radius: 20px; padding: 15px; width: 320px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); align-items: center; gap: 12px;">
-        <img src="/web-app-manifest-192x192.png" style="width: 45px; height: 45px; border-radius: 10px; border: 1px solid var(--primary); object-fit: cover; flex-shrink: 0;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3177/3177440.png'">
-        <div style="flex: 1; overflow: hidden;">
-            <p style="font-size: 0.8rem; font-weight: 900; margin: 0; text-transform: uppercase;">Cài App ChonAnhNhanh</p>
-            <p style="font-size: 0.7rem; color: var(--text-muted); margin: 2px 0 0 0;">Thao tác quản lý mượt mà!</p>
-        </div>
-        <div style="display: flex; flex-direction: column; gap: 5px;">
-            <button id="install-button" onclick="triggerInstallApp()" style="background: var(--primary); color: #fff; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 900; cursor: pointer; text-transform: uppercase;">Cài đặt</button>
-            <button onclick="dismissInstall()" style="background: transparent; color: var(--text-muted); border: none; font-size: 0.65rem; cursor: pointer; text-align: center;">Để sau</button>
-        </div>
+    <div id="install-prompt" style="position: fixed; bottom: 30px; left: 30px; z-index: 10000; display: flex; background: #080d1a !important; border: 2px solid var(--primary) !important; border-radius: 20px; padding: 15px; width: 320px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); color: #fff; align-items: center; gap: 12px;">
+    <img src="/web-app-manifest-192x192.png" style="width: 45px; height: 45px; border-radius: 10px; border: 1px solid var(--primary); object-fit: cover; flex-shrink: 0;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3177/3177440.png'">
+    <div style="flex: 1; overflow: hidden;">
+        <p style="font-size: 0.8rem; font-weight: 900; color: #fff; margin: 0; text-transform: uppercase;">Cài App ChonAnhNhanh</p>
+        <p style="font-size: 0.7rem; color: #94a3b8; margin: 2px 0 0 0;">Thao tác quản lý mượt mà!</p>
     </div>
-
-    <div style="background: rgba(0, 176, 155, 0.03); border-top: 1px solid rgba(0, 176, 155, 0.1); padding: 20px 0; margin-top: 50px; text-align: center; font-size: 0.75rem;">
-        <div class="container">
-            <p class="mb-1" style="font-weight: 700; color: var(--primary);">CHONANHNHANH.VN - STUDIO WORKFLOW MANAGEMENT PLATFORM</p>
-            <p class="mb-0 text-muted">This platform is strictly designed for professional photography studios to manage schedules, CRM, and client photo selections.</p>
-        </div>
+    <div style="display: flex; flex-direction: column; gap: 5px;">
+        <button id="install-button" onclick="triggerInstallApp()" style="background: var(--primary); color: #000; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 900; cursor: pointer; text-transform: uppercase;">Cài đặt</button>
+        <button onclick="dismissInstall()" style="background: transparent; color: #94a3b8; border: none; font-size: 0.65rem; cursor: pointer; text-align: center;">Để sau</button>
     </div>
 </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
