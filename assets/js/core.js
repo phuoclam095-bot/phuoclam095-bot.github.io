@@ -46,6 +46,7 @@ async function changeLanguage(lang) {
         const response = await fetch(`./assets/locales/${lang}.json`);
         const translations = await response.json();
         
+        // Cập nhật các thẻ có data-i18n
         document.querySelectorAll('[data-i18n]').forEach(element => {
             const key = element.getAttribute('data-i18n');
             if (translations[key]) {
@@ -53,7 +54,7 @@ async function changeLanguage(lang) {
             }
         });
 
-        // Xử lý riêng cho các thẻ input placeholder nếu có
+        // Cập nhật placeholder nếu có
         document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
             const key = element.getAttribute('data-i18n-placeholder');
             if (translations[key]) {
@@ -63,6 +64,17 @@ async function changeLanguage(lang) {
         
         localStorage.setItem('preferred_lang', lang);
         updateLangUI(lang);
+
+        // --- BỔ SUNG ĐOẠN NÀY ĐỂ TỰ ĐỘNG ĐỔI CÂU CHÀO AI KHI BẤM NGÔN NGỮ ---
+        const bubble = document.getElementById('aiSuggestion');
+        if (bubble && bubble.style.display === 'block') {
+            const userName = localStorage.getItem('admin_name') || 'Anh/Chị';
+            bubble.innerHTML = lang === 'en' 
+                ? `Hello <strong id="userName">${userName}</strong>! 👋 How can I help you?` 
+                : `Dạ chào <strong id="userName">${userName}</strong>! 👋 Em hỗ trợ được gì không ạ?`;
+        }
+        // ------------------------------------------------------------------
+
     } catch (e) {
         console.error("Lỗi chuyển đổi ngôn ngữ:", e);
     }
