@@ -37,5 +37,10 @@
     "modal_studio_logo_note": "Khuyên dùng PNG nền trong suốt (Dung lượng < 1MB).",
     "modal_studio_save": "LƯU THÔNG TIN",
     "modal_install_title": "Cài Đặt Ứng Dụng ChonAnhNhanh",
-    "modal_install_desc": "Biến website thành ứng dụng độc lập trên màn hình chính để thao tác nhanh mượt như App chuyên nghiệp!"
+    "modal_install_desc": "Biến website thành ứng dụng độc lập trên màn hình chính để thao tác nhanh mượt như App chuyên nghiệp!",
+    "install_app_title": "Cài App ChonAnhNhanh",
+    "install_app_desc": "Thao tác quản lý mượt mà!",
+    "btn_install": "Cài đặt",
+    "btn_dismiss": "Để sau",
+    "chat_welcome": "Dạ, chonanhnhanh.vn xin chào mình ạ! Em hỗ trợ được gì cho studio của mình không?"
 }
