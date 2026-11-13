@@ -73,6 +73,62 @@ aside h3 {
     border: 1.5px solid rgba(0, 235, 176, 0.2) !important;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
 }
+/* 1. Làm nổi bật thanh tìm kiếm */
+.bar2 input[type=search] {
+    background: #0d1b2a !important;
+    border: 1.5px solid rgba(0, 235, 176, 0.4) !important;
+    color: #fff !important;
+}
+
+/* 2. Gom màu các nút hành động lớn (Nút chính có chữ đen hoặc trắng rõ nét) */
+button.p, #aQ, #xC {
+    background: var(--primary) !important;
+    color: #000 !important;
+    font-weight: 900 !important;
+    border: 1px solid var(--primary) !important;
+    box-shadow: 0 4px 15px rgba(0, 235, 176, 0.25);
+}
+
+/* 3. Định dạng lại các nút chức năng phụ trong cột trái cho dễ đọc */
+aside button {
+    background: #0d1b2a !important;
+    color: #f8fafc !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    font-weight: 600 !important;
+}
+
+aside button:hover {
+    background: rgba(0, 235, 176, 0.15) !important;
+    border-color: var(--primary) !important;
+    color: var(--primary) !important;
+}
+    /* Tùy chỉnh lại ô tích chọn (checkbox) */
+input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 18px;
+    height: 18px;
+    background-color: #0b1528 !important;
+    border: 1.5px solid rgba(0, 235, 176, 0.5) !important;
+    border-radius: 4px;
+    outline: none !important;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+/* Khi ô tích được chọn: hiện nền xanh ngọc và dấu check trắng */
+input[type="checkbox"]:checked {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23050a14'%3e%3cpath d='M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z'/%3e%3c/svg%3e") !important;
+    background-size: 12px 12px;
+    background-position: center;
+    background-repeat: no-repeat;
+}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b0e14;--pn:#131722;--cd:#1b2030;--tx:#e8eaf0;--mu:#8a93a6;--ac:#6d6dff;color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#0b0e14;--pn:#131722;--cd:#1b2030;--tx:#e8eaf0;--mu:#8a93a6;--ac:#6d6dff;color-scheme:dark}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
