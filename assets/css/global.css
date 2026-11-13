@@ -9,7 +9,7 @@
     --rainbow: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000); 
 }
 
-/* KHI BẬT LIGHT MODE */
+/* Chế độ Sáng (Light Mode) */
 [data-theme="light"] {
     --bg-deep: #f1f5f9;
     --card-bg: #ffffff;
@@ -132,7 +132,7 @@ input:checked + .slider:before { transform: translateX(24px); }
 }
 
 .watermark-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 20; overflow: hidden; }
-.watermark-overlay img { width: 35%; opacity: 0.3; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5); user-select: none; -webkit-user-select: none; }
+.watermark-overlay img { width: 35%; opacity: 0.3; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); user-select: none; -webkit-user-select: none; }
 .navbar-brand-left { font-weight: 900; color: var(--primary) !important; font-size: 1.2rem; text-decoration: none; text-shadow: 0 0 20px rgba(0, 235, 176, 0.4); z-index: 10; white-space: nowrap; }
 
 .chat-suggestions { padding: 8px 12px; background: rgba(0, 0, 0, 0.2); display: flex; gap: 6px; overflow-x: auto; white-space: nowrap; width: 100%; box-sizing: border-box; -ms-overflow-style: none; scrollbar-width: none; }
