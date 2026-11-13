@@ -126,19 +126,22 @@
     
     setTimeout(() => {
     const bubble = document.getElementById('aiSuggestion');
-    if(bubble && document.getElementById('chatPanel').style.display !== 'flex') {
+    if (bubble && document.getElementById('chatPanel').style.display !== 'flex') {
         // Lấy ngôn ngữ hiện đang chọn (vi hoặc en)
         const currentLang = localStorage.getItem('preferred_lang') || 'vi';
         
-        // Định nghĩa câu chào theo ngôn ngữ
+        // Lấy tên người dùng an toàn (tránh trường hợp biến name bị lỗi)
+        const userName = localStorage.getItem('admin_name') || 'Anh/Chị';
+        
         const greetingText = currentLang === 'en' 
-            ? `Hello <strong id="userName">${name}</strong>! 👋 How can I help you?` 
-            : `Dạ chào <strong id="userName">${name}</strong>! 👋 Em hỗ trợ được gì không ạ?`;
+            ? `Hello <strong id="userName">${userName}</strong>! 👋 How can I help you?` 
+            : `Dạ chào <strong id="userName">${userName}</strong>! 👋 Em hỗ trợ được gì không ạ?`;
             
         bubble.innerHTML = greetingText;
         bubble.style.display = 'block';
     }
 }, 1500);
+}
         let storedLogoBase64 = localStorage.getItem('studio_watermark_logo') || '';
 
         if (storedLogoBase64) {
@@ -649,4 +652,3 @@ async function checkAccountStatusLive() {
             }
         }).catch(() => {});
     }
-});
