@@ -42,5 +42,6 @@
     "install_app_desc": "Thao tác quản lý mượt mà!",
     "btn_install": "Cài đặt",
     "btn_dismiss": "Để sau",
-    "chat_welcome": "Dạ, chonanhnhanh.vn xin chào mình ạ! Em hỗ trợ được gì cho studio của mình không?"
+    "chat_welcome": "Dạ, chonanhnhanh.vn xin chào mình ạ! Em hỗ trợ được gì cho studio của mình không?",
+    "ai_suggestion_welcome": "Dạ chào {name}! 👋 Em hỗ trợ được gì không ạ?"
 }
