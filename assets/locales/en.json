@@ -38,5 +38,10 @@
     "modal_studio_save": "SAVE INFORMATION",
     "speed_notice": "Lightning Fast Speed - 100% Accuracy",
     "modal_install_title": "Install ChonAnhNhanh App",
-    "modal_install_desc": "Turn the website into a standalone app on your home screen for smoother operation like a pro app!"
+    "modal_install_desc": "Turn the website into a standalone app on your home screen for smoother operation like a pro app!",
+    "install_app_title": "Install ChonAnhNhanh App",
+    "install_app_desc": "Smooth management operations!",
+    "btn_install": "Install",
+    "btn_dismiss": "Later",
+    "chat_welcome": "Hello from chonanhnhanh.vn! How can I assist your studio today?"
 }
