@@ -31,21 +31,39 @@
 
 body {
     background-color: var(--bg);
-    color: #f8fafc !important
+    color: #f8fafc !important;
     background-image: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.7) 30%, rgba(5, 10, 20, 0.9) 100%), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
-    color: var(--tx);
     font-family: 'Roboto', sans-serif;
     padding-top: 130px;
 }
+
 .note, small, .bx p, .m span+span, .n {
     color: #cbd5e1 !important; 
 }
 
 aside h3 {
     color: var(--primary) !important;
+}
+
+/* 1. Viền xanh 1px cho các khung thông số bên cột trái */
+aside .bx {
+    background: #0d1b2a !important;
+    border: 1px solid rgba(0, 235, 176, 0.2) !important;
+    border-radius: 14px;
+    padding: 14px;
+}
+
+/* Viền xanh 1px cho tiêu đề đầu trang */
+header {
+    border: 1px solid rgba(0, 235, 176, 0.25) !important;
+}
+
+/* Viền xanh 1px cho các nút Thêm ảnh, Thư mục ở header */
+header button {
+    border: 1px solid rgba(0, 235, 176, 0.4) !important;
 }
     
 #drop {
@@ -61,7 +79,7 @@ aside h3 {
     box-shadow: 0 8px 25px rgba(0,0,0,0.6) !important;
 }
 
-/* 3. Tạo khung cho các thẻ tab thống kê phía trên */
+/* 3. Tạo khung và viền 1px cho các thẻ tab thống kê phía trên */
 .tb {
     background: #0d1b2a !important;
     border: 1px solid rgba(0, 235, 176, 0.25) !important;
@@ -84,14 +102,15 @@ aside h3 {
     border: 1.5px solid rgba(0, 235, 176, 0.2) !important;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
 }
-/* 1. Làm nổi bật thanh tìm kiếm */
+
+/* Thanh tìm kiếm */
 .bar2 input[type=search] {
     background: #0d1b2a !important;
     border: 1.5px solid rgba(0, 235, 176, 0.4) !important;
     color: #fff !important;
 }
 
-/* 2. Gom màu các nút hành động lớn (Nút chính có chữ đen hoặc trắng rõ nét) */
+/* Nút hành động lớn */
 button.p, #aQ, #xC {
     background: var(--primary) !important;
     color: #000 !important;
@@ -100,7 +119,7 @@ button.p, #aQ, #xC {
     box-shadow: 0 4px 15px rgba(0, 235, 176, 0.25);
 }
 
-/* 3. Định dạng lại các nút chức năng phụ trong cột trái cho dễ đọc */
+/* Nút chức năng phụ trong cột trái */
 aside button {
     background: #0d1b2a !important;
     color: #f8fafc !important;
@@ -113,6 +132,8 @@ aside button:hover {
     border-color: var(--primary) !important;
     color: var(--primary) !important;
 }
+
+/* 5. Ô tích chọn (Checkbox) với viền tinh tế 1px chính xác */
 input[type="checkbox"] {
     appearance: none !important;
     -webkit-appearance: none !important;
@@ -120,8 +141,8 @@ input[type="checkbox"] {
     width: 18px !important;
     height: 18px !important;
     background-color: #ffffff !important;
-    border: 1px solid rgba(0, 0, 0, 0.15) !important; 
-    border-radius: 1px !important;
+    border: 1px solid rgba(0, 0, 0, 0.25) !important; /* Viền siêu mỏng 1px sắc nét */
+    border-radius: 4px !important;
     outline: none !important;
     cursor: pointer !important;
     display: inline-flex !important;
