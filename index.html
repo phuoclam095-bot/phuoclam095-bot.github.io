@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chonanhnhanh.vn</title>
+    
+    <!-- Thư viện bên ngoài -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <!-- CSS Chung của hệ thống (Dark/Light mode & Biến màu) -->
+    <link rel="stylesheet" href="./assets/css/global.css">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
+        <div class="container-fluid px-3 px-lg-5 d-flex align-items-center justify-content-between">
+            <a class="navbar-brand-left m-0" href="./">CHONANHNHANH<span style="color:#f0c300">.VN</span></a>
+            
+            <!-- Nút bấm chuyển đổi Dark/Light mode và Ngôn ngữ nhanh trên Navbar -->
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn btn-sm btn-outline-primary" onclick="toggleDarkMode()"><i class="fas fa-adjust"></i> Mode</button>
+                <button class="btn btn-sm btn-outline-success" onclick="changeLanguage('vi')">VN</button>
+                <button class="btn btn-sm btn-outline-warning" onclick="changeLanguage('en')">EN</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-container" style="padding: 120px 20px; display: flex; justify-content: center;">
+        <div class="create-card" style="max-width: 600px; width: 100%;">
+            <!-- Gắn nhãn data-i18n để tự động đổi ngôn ngữ -->
+            <h1 class="luxury-title" data-i18n="luxury_title">Thiết Lập Album VIP</h1>
+            
+            <div class="mb-4">
+                <label data-i18n="drive_label" style="font-size:0.75rem; color:var(--primary); font-weight:900; margin-bottom:10px; display:block; text-transform:uppercase;">Link Thư Mục Google Drive</label>
+                <input type="text" id="driveLink" placeholder="Dán link thư mục tại đây..." autocomplete="off" style="width: 100%; padding: 15px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); color: var(--text-color); border-radius: 10px;">
+            </div>
+
+            <button class="btn-create" data-i18n="btn_create" style="background: var(--primary); color: #000; border: none; padding: 15px; width: 100%; font-weight: 900; border-radius: 50px; cursor: pointer;">Khởi Tạo Album Ngay</button>
+        </div>
+    </div>
+
+    <!-- Thư viện Bootstrap JS và Core JS chính -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./assets/js/core.js"></script>
+</body>
+</html>
