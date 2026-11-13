@@ -130,6 +130,7 @@
         // Lấy ngôn ngữ hiện đang chọn (vi hoặc en)
         const currentLang = localStorage.getItem('preferred_lang') || 'vi';
         
+        // Định nghĩa câu chào theo ngôn ngữ
         const greetingText = currentLang === 'en' 
             ? `Hello <strong id="userName">${name}</strong>! 👋 How can I help you?` 
             : `Dạ chào <strong id="userName">${name}</strong>! 👋 Em hỗ trợ được gì không ạ?`;
