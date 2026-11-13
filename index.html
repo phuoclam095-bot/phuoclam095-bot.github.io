@@ -13,7 +13,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <!-- CSS Chung -->
+    <!-- Gọi file CSS chung đã tách -->
     <link rel="stylesheet" href="./assets/css/global.css">
 </head>
 <body>
@@ -23,11 +23,12 @@
             <a class="navbar-brand-left m-0" href="./">CHONANHNHANH<span style="color:#f0c300">.VN</span></a>
             
             <div class="d-flex align-items-center ms-auto order-lg-3 gap-2">
-                <!-- Nút đổi Dark/Light mode và Đa ngôn ngữ -->
+                <!-- Nút đổi Sáng/Tối và Đa ngôn ngữ -->
                 <button class="btn btn-sm btn-outline-primary" onclick="toggleDarkMode()" title="Sáng / Tối"><i class="fas fa-adjust"></i></button>
                 <button class="btn btn-sm btn-outline-success" onclick="changeLanguage('vi')">VN</button>
                 <button class="btn btn-sm btn-outline-warning" onclick="changeLanguage('en')">EN</button>
 
+                <!-- Nút LOGIN VIP (Hệ thống JS tự động ẩn/hiện dựa theo trạng thái đăng nhập) -->
                 <div id="loggedOutNav">
                     <div class="btn-login-rainbow" onclick="startGoogleLogin()">
                         <span>LOGIN VIP</span>
@@ -55,7 +56,7 @@
                     <span class="marquee-text">Dịch vụ chọn ảnh link Google Drive cực nhanh - Chính xác 100% - Nạp tiền tự động - chonanhnhanh.vn</span>
                 </div>
                 
-                <ul class="navbar-nav" id="adminNavLinks">
+                <ul class="navbar-nav" id="adminNavLinks" style="display:none;">
                     <li><a href="./" class="nav-link active" data-i18n="nav_create">Tạo Album</a></li>
                     <li><a href="managa" class="nav-link" data-i18n="nav_manage">Quản Lý</a></li>
                     <li><a href="crm" class="nav-link" data-i18n="nav_calendar">Lịch</a></li>
@@ -109,7 +110,7 @@
                     <div class="mb-3 mt-3 px-2" id="logoUploadContainer" style="display: none;">
                         <label style="font-size: 0.7rem; color: var(--primary); font-weight: 900; margin-bottom: 5px; display: block; text-transform: uppercase;">Tải ảnh Logo từ máy tính</label>
                         <input type="file" id="studioLogoFile" class="form-control bg-dark text-white border-secondary" accept="image/*" onchange="processLogoFile(event)" style="padding: 10px; font-size: 0.8rem;">
-                        <div class="form-text text-warning" style="font-size: 0.7rem;">Khuyên dùng định dạng PNG nền trong suốt (Dung lượng <1MB).</div>
+                        <div class="form-text text-warning" style="font-size: 0.7rem;">Khuyên dùng PNG nền trong suốt (Dung lượng <1MB).</div>
                         <div class="form-text text-warning" style="font-size: 0.7rem;">Link ảnh gửi khách chọn sẽ load lâu hơn dự kiến.</div>
                         <div class="mt-2">
                             <img id="logoPreview" src="" style="max-height: 40px; display: none; border-radius: 4px; border: 1px solid var(--primary);">
@@ -135,7 +136,7 @@
         </div>
     </div>
 
-    <!-- KHUNG CHAT & MODAL -->
+    <!-- KHUNG CHAT AI & MODAL CẤU HÌNH -->
     <div class="chat-support-wrapper">
         <div class="ai-suggestion-bubble" id="aiSuggestion"></div>
         <div class="chat-trigger" onclick="toggleChat()"><i class="fas fa-comment-dots" style="color:#000; font-size:1.5rem;"></i></div>
@@ -200,9 +201,9 @@
         </div>
     </div>
 
-    <!-- SCRIPT LIÊN KẾT -->
+    <!-- NHÚNG SCRIPT -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="./assets/js/core.js"></script> <!-- Xử lý Dark/Light & Đa ngôn ngữ -->
-    <script src="./assets/js/main.js"></script> <!-- Toàn bộ logic gốc của anh -->
+    <script src="./assets/js/core.js"></script> <!-- Bộ não điều phối Dark/Light và Ngôn ngữ -->
+    <script src="./assets/js/main.js"></script> <!-- Toàn bộ function logic gốc của anh -->
 </body>
 </html>
