@@ -125,13 +125,19 @@
     }
     
     setTimeout(() => {
-        const bubble = document.getElementById('aiSuggestion');
-        if(bubble && document.getElementById('chatPanel').style.display !== 'flex') {
-            bubble.innerHTML = `Dạ chào <strong id="userName">${name}</strong>! 👋 Em hỗ trợ được gì không ạ?`;
-            bubble.style.display = 'block';
-        }
-    }, 1500);
-}
+    const bubble = document.getElementById('aiSuggestion');
+    if(bubble && document.getElementById('chatPanel').style.display !== 'flex') {
+        // Lấy ngôn ngữ hiện đang chọn (vi hoặc en)
+        const currentLang = localStorage.getItem('preferred_lang') || 'vi';
+        
+        const greetingText = currentLang === 'en' 
+            ? `Hello <strong id="userName">${name}</strong>! 👋 How can I help you?` 
+            : `Dạ chào <strong id="userName">${name}</strong>! 👋 Em hỗ trợ được gì không ạ?`;
+            
+        bubble.innerHTML = greetingText;
+        bubble.style.display = 'block';
+    }
+}, 1500);
         let storedLogoBase64 = localStorage.getItem('studio_watermark_logo') || '';
 
         if (storedLogoBase64) {
