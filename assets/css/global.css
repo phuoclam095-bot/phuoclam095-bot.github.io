@@ -234,4 +234,44 @@ input:checked + .slider:before { transform: translateX(24px); }
     background: rgba(0, 0, 0, 0.2);
     display: flex;
     gap: 6px;
-    overflow-x:
+    overflow-x: auto; 
+    white-space: nowrap;
+    width: 100%;
+    box-sizing: border-box; 
+    -ms-overflow-style: none;  
+    scrollbar-width: none;  
+}
+
+.chat-suggestions::-webkit-scrollbar {
+    display: none; 
+}
+
+.chat-suggestions span {
+    background: rgba(0, 235, 176, 0.1);
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    padding: 4px 10px;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    cursor: pointer;
+    flex-shrink: 0; 
+}
+
+#installAppModal .modal-content,
+#studioConfigModal .modal-content {
+    background: #0d1b2a !important; 
+    border: 2px solid var(--primary) !important;
+    border-radius: 25px !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 50px rgba(0, 235, 176, 0.35) !important;
+}
+
+#installAppModal .modal-body p, 
+#installAppModal .modal-body li {
+    color: #e2e8f0 !important;
+}
+
+.modal-backdrop.show {
+    opacity: 0.5 !important;
+}
