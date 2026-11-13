@@ -305,13 +305,13 @@ body[data-theme="light"], [data-theme="light"] body {
     flex-shrink: 0; 
 }
     #installAppModal .modal-content,
-    #studioConfigModal .modal-content {
-        background: #0d1b2a !important; 
-        border: 2px solid var(--primary) !important;
-        border-radius: 25px !important;
-        color: #ffffff !important;
-        box-shadow: 0 0 50px rgba(0, 235, 176, 0.35) !important;
-    }
+#studioConfigModal .modal-content {
+    background: #0d1b2a !important; 
+    border: 2px solid var(--primary) !important;
+    border-radius: 25px !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 50px rgba(0, 235, 176, 0.35) !important;
+}
 
     #installAppModal .modal-body p, 
     #installAppModal .modal-body li {
