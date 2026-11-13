@@ -1,4 +1,5 @@
-const PATHS = { CLIENT_ID: '549408699768-0hhl7oc0sjhr1c9tsa1fo9ahv5apuecc.apps.googleusercontent.com', OAUTH: 'https://wsm.congtubaclieu.com.vn/webhook/google-oauth-callback', CREATE: 'https://wsm.congtubaclieu.com.vn/webhook/create-album-auto', INFO: 'https://wsm.congtubaclieu.com.vn/webhook/get-folder-info', CHAT: 'https://wsm.congtubaclieu.com.vn/webhook/chat-admin' };
+
+        const PATHS = { CLIENT_ID: '549408699768-0hhl7oc0sjhr1c9tsa1fo9ahv5apuecc.apps.googleusercontent.com', OAUTH: 'https://wsm.congtubaclieu.com.vn/webhook/google-oauth-callback', CREATE: 'https://wsm.congtubaclieu.com.vn/webhook/create-album-auto', INFO: 'https://wsm.congtubaclieu.com.vn/webhook/get-folder-info', CHAT: 'https://wsm.congtubaclieu.com.vn/webhook/chat-admin' };
         let isVIP = false;
         function getExpiryTimestamp() {
             let raw = localStorage.getItem('admin_expiry');
@@ -45,7 +46,9 @@ const PATHS = { CLIENT_ID: '549408699768-0hhl7oc0sjhr1c9tsa1fo9ahv5apuecc.apps.g
     if (isLoggedIn) {
         if(marquee) marquee.style.setProperty('display', 'none', 'important');
         if(navLinks) navLinks.style.setProperty('display', 'flex', 'important');
+        
         if(loggedInNav) loggedInNav.style.setProperty('display', 'flex', 'important');
+        
         if(loggedOutNav) loggedOutNav.style.setProperty('display', 'none', 'important');
         if(authReminder) authReminder.style.setProperty('display', 'none', 'important');
         if(extraTextNotice) extraTextNotice.style.display = 'none';
@@ -494,12 +497,20 @@ function showInlineMessage(text, type) {
                 localStorage.setItem('admin_avatar', decodeURIComponent(params.get('user_avatar') || ''));
                 localStorage.setItem('admin_status', params.get('user_status') || 'new');
                 localStorage.setItem('admin_expiry', params.get('user_expiry') || '0');
+                
                 const sSlug = params.get('studio_slug');
                 if (sSlug) localStorage.setItem('admin_studio_slug', sSlug);
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
+            const isLoggedIn = localStorage.getItem('admin_is_logged_in');
+            if (isLoggedIn !== 'true') {
+                console.log("Chưa phát hiện trạng thái đăng nhập hợp lệ.");
+            }
+
             updateUI();
-            if (localStorage.getItem('admin_is_logged_in') === 'true') checkAccountStatusLive();
+            if (localStorage.getItem('admin_is_logged_in') === 'true') {
+                checkAccountStatusLive();
+            }
 
             setTimeout(() => {
                 const isLoggedIn = localStorage.getItem('admin_is_logged_in') === 'true';
@@ -625,8 +636,8 @@ async function checkAccountStatusLive() {
                     <div class="fw-bold text-primary mb-1"><i class="fab fa-android me-2"></i>Đối với Android & Máy tính (Chrome):</div>
                     <ol class="small mb-0 ps-3" style="color: #e2e8f0 !important; line-height: 1.6;">
                         <li>Mở trang web bằng trình duyệt <b>Google Chrome</b>.</li>
-                        <li>Chạm/bấm vào biểu tượng <b>3 chấm dọc</b> ở góc trên bên phải.</li>
-                        <li>Chọn <b>"Cài đặt ứng dụng"</b> hoặc <b>"Thêm vào màn hình chính"</b>.</li>
+                        <li>Nhìn trên thanh địa chỉ <b>icon cài đặtc</b> ở góc trên bên phải.</li>
+                        <li>Chọn <b>"Cài đặt ứng dụng"</b> hoặc <b>Chọn dấu 3 chấm chon truyền, lưu dữ liệu chia sẽ, chọn cài đặt trang...</b>.</li>
                         <li>Xác nhận để đưa biểu tượng app ra màn hình thiết bị.</li>
                     </ol>
                 </div>
@@ -638,7 +649,7 @@ async function checkAccountStatusLive() {
     <img src="/web-app-manifest-192x192.png" style="width: 45px; height: 45px; border-radius: 10px; border: 1px solid var(--primary); object-fit: cover; flex-shrink: 0;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3177/3177440.png'">
     <div style="flex: 1; overflow: hidden;">
         <p style="font-size: 0.8rem; font-weight: 900; color: #fff; margin: 0; text-transform: uppercase;">Cài App ChonAnhNhanh</p>
-        <p style="font-size: 0.7rem; color: #94a3b8; margin: 2px 0 0 0;">Thao tác quản lý mượt như App VIP!</p>
+        <p style="font-size: 0.7rem; color: #94a3b8; margin: 2px 0 0 0;">Thao tác quản lý mượt mà!</p>
     </div>
     <div style="display: flex; flex-direction: column; gap: 5px;">
         <button id="install-button" onclick="triggerInstallApp()" style="background: var(--primary); color: #000; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 900; cursor: pointer; text-transform: uppercase;">Cài đặt</button>
@@ -648,10 +659,13 @@ async function checkAccountStatusLive() {
 <script>
     let globalDeferredPrompt = null;
 
-    // 1. Lắng nghe sự kiện cài đặt từ Chrome
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         globalDeferredPrompt = e;
+
+        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+            return;
+        }
 
         const promptBanner = document.getElementById('install-prompt');
         if (promptBanner) {
@@ -659,28 +673,34 @@ async function checkAccountStatusLive() {
         }
     });
 
-    // 2. Xử lý khi bấm nút Cài đặt trên banner
     async function triggerInstallApp() {
-        if (globalDeferredPrompt) {
-            globalDeferredPrompt.prompt();
-            const { outcome } = await globalDeferredPrompt.userChoice;
-            globalDeferredPrompt = null;
-            
-            const promptBanner = document.getElementById('install-prompt');
-            if (promptBanner) promptBanner.style.display = 'none';
-            return;
-        }
 
-        if (window.matchMedia('(display-mode: standalone)').matches) {
-            alert("Ứng dụng này đã được cài đặt trên thiết bị của bạn rồi!");
-            return;
-        }
-
-        // Hướng dẫn mở nhanh menu Cài đặt thủ công của Chrome nếu bị kẹt sự kiện thư mục con
-        alert("Sếp vui lòng bấm vào biểu tượng 3 chấm ở góc trên bên phải Chrome -> Chọn 'Cài đặt ChonAnhNhanh...' để cài ngay lập tức nhé!");
+    if (globalDeferredPrompt) {
+        globalDeferredPrompt.prompt();
+        const { outcome } = await globalDeferredPrompt.userChoice;
+        globalDeferredPrompt = null;
+        
+        const promptBanner = document.getElementById('install-prompt');
+        if (promptBanner) promptBanner.style.display = 'none';
+        return;
     }
 
-    // 3. Ẩn banner khi bấm "Để sau"
+
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+        alert("Ứng dụng này đã được cài đặt trên thiết bị của bạn rồi!");
+        return;
+    }
+
+
+    const installModalEl = document.getElementById('installAppModal');
+    if (installModalEl) {
+        const myModal = new bootstrap.Modal(installModalEl);
+        myModal.show();
+    } else {
+        alert("Vui lòng bấm vào biểu tượng 3 chấm ở góc trên bên phải Chrome -> Chọn 'Cài đặt ChonAnhNhanh...' để cài ngay lập tức nhé!");
+    }
+}
+
     function dismissInstall() {
         const promptBanner = document.getElementById('install-prompt');
         if (promptBanner) {
@@ -689,28 +709,28 @@ async function checkAccountStatusLive() {
         localStorage.setItem('tt_install_dismissed', Date.now());
     }
 
-    // 4. Kiểm tra thời gian ẩn banner trong 24h
     window.addEventListener('DOMContentLoaded', () => {
+        const promptBanner = document.getElementById('install-prompt');
+
+        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+            if (promptBanner) promptBanner.style.display = 'none';
+            return;
+        }
+
         const dismissedTime = localStorage.getItem('tt_install_dismissed');
         if (dismissedTime && (Date.now() - dismissedTime < 86400000)) {
-            const promptBanner = document.getElementById('install-prompt');
             if (promptBanner) {
                 promptBanner.style.display = 'none';
             }
         }
     });
 
-    // 5. Đăng ký Service Worker và kiểm tra Controller
     if ('serviceWorker' in navigator) {
-    // Đăng ký Service Worker với scope tuyệt đối cho thư mục admin
-    navigator.serviceWorker.register('/sw.js', { scope: '/admin/' }).then(reg => {
-      console.log("Service Worker đã bám đúng scope quản trị:", reg.scope);
-      if (!navigator.serviceWorker.controller) {
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-          window.location.reload();
-        });
-      }
-    }).catch(err => {
-      console.error("Lỗi đăng ký Service Worker: ", err);
-    });
-  }
+        navigator.serviceWorker.register('/sw.js').then(reg => {
+            if (!navigator.serviceWorker.controller) {
+                navigator.serviceWorker.addEventListener('controllerchange', () => {
+                    window.location.reload();
+                });
+            }
+        }).catch(() => {});
+    }
