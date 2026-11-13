@@ -23,19 +23,19 @@
         <a class="navbar-brand-left m-0" href="./">CHONANHNHANH<span style="color:#f0c300">.VN</span></a>
         
         <div class="d-flex align-items-center ms-auto order-lg-3 gap-2">
-            <!-- Nút tùy chỉnh Dark/Light mode và Đa ngôn ngữ -->
+            <!-- Nút tùy chỉnh Sáng / Tối và Đa ngôn ngữ -->
             <button class="btn btn-sm btn-outline-primary" onclick="toggleDarkMode()" title="Sáng / Tối"><i class="fas fa-adjust"></i></button>
             <button class="btn btn-sm btn-outline-success" onclick="changeLanguage('vi')">VN</button>
             <button class="btn btn-sm btn-outline-warning" onclick="changeLanguage('en')">EN</button>
 
-            <!-- Nút LOGIN VIP (Mặc định hiển thị khi chưa đăng nhập) -->
+            <!-- Khu vực trạng thái Đăng xuất (Hiển thị nút LOGIN VIP mặc định) -->
             <div id="loggedOutNav">
                 <div class="btn-login-rainbow" onclick="startGoogleLogin()">
                     <span>LOGIN VIP</span>
                 </div>
             </div>
 
-            <!-- Khu vực khi đã đăng nhập (JS tự bật) -->
+            <!-- Khu vực trạng thái Đã đăng nhập (JS tự động bật khi có dữ liệu) -->
             <div id="loggedInNav" class="d-flex align-items-center" style="display:none;">
                 <div class="user-pill">
                     <div id="avatarPlaceholder"></div>
