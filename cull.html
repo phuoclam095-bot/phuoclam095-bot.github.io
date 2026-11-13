@@ -31,6 +31,7 @@
 
 body {
     background-color: var(--bg);
+    color: #f8fafc !important
     background-image: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.7) 30%, rgba(5, 10, 20, 0.9) 100%), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
     background-size: cover;
     background-position: center;
@@ -39,12 +40,38 @@ body {
     font-family: 'Roboto', sans-serif;
     padding-top: 130px;
 }
+.note, small, .bx p, .m span+span, .n {
+    color: #cbd5e1 !important; 
+}
 
+aside h3 {
+    color: var(--primary) !important;
+}
+    
 #drop {
-    background: rgba(13, 27, 42, 0.9) !important;
+    background: rgba(13, 27, 42, 0.85) !important;
     border: 2px dashed var(--primary) !important;
-    color: #fff !important;
-    border-radius: 20px !important;
+    box-shadow: 0 0 25px rgba(0, 235, 176, 0.25) !important;
+}
+
+/* 2. Tạo khung viền rõ nét cho từng thẻ ảnh trong lưới (Tiles) */
+.t {
+    background: #0d1b2a !important;
+    border: 1.5px solid rgba(0, 235, 176, 0.3) !important;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.6) !important;
+}
+
+/* 3. Tạo khung cho các thẻ tab thống kê phía trên */
+.tb {
+    background: #0d1b2a !important;
+    border: 1px solid rgba(0, 235, 176, 0.25) !important;
+}
+
+/* 4. Khung chứa danh sách nhóm ảnh (Burst / Trùng) */
+.g {
+    background: #0d1b2a !important;
+    border: 1.5px solid rgba(0, 235, 176, 0.2) !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
 }
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b0e14;--pn:#131722;--cd:#1b2030;--tx:#e8eaf0;--mu:#8a93a6;--ac:#6d6dff;color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#0b0e14;--pn:#131722;--cd:#1b2030;--tx:#e8eaf0;--mu:#8a93a6;--ac:#6d6dff;color-scheme:dark}
