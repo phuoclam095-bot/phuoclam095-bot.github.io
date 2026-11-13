@@ -1,4 +1,4 @@
-<script>
+
         const PATHS = { CLIENT_ID: '549408699768-0hhl7oc0sjhr1c9tsa1fo9ahv5apuecc.apps.googleusercontent.com', OAUTH: 'https://wsm.congtubaclieu.com.vn/webhook/google-oauth-callback', CREATE: 'https://wsm.congtubaclieu.com.vn/webhook/create-album-auto', INFO: 'https://wsm.congtubaclieu.com.vn/webhook/get-folder-info', CHAT: 'https://wsm.congtubaclieu.com.vn/webhook/chat-admin' };
         let isVIP = false;
         function getExpiryTimestamp() {
@@ -656,7 +656,6 @@ async function checkAccountStatusLive() {
         <button onclick="dismissInstall()" style="background: transparent; color: #94a3b8; border: none; font-size: 0.65rem; cursor: pointer; text-align: center;">Để sau</button>
     </div>
 </div>
-<script>
     let globalDeferredPrompt = null;
 
     window.addEventListener('beforeinstallprompt', (e) => {
@@ -734,4 +733,3 @@ async function checkAccountStatusLive() {
             }
         }).catch(() => {});
     }
-            </script>
