@@ -1,4 +1,4 @@
-// --- QUẢN LÝ DARK / LIGHT MODE ---
+// --- 1. XỬ LÝ CHUYỂN ĐỔI SÁNG / TỐI (DARK / LIGHT MODE) ---
 function initTheme() {
     const savedTheme = localStorage.getItem('site_theme') || 'dark';
     document.documentElement.setAttribute('data-theme', savedTheme);
@@ -7,12 +7,11 @@ function initTheme() {
 function toggleDarkMode() {
     const currentTheme = document.documentElement.getAttribute('data-theme');
     const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-    
     document.documentElement.setAttribute('data-theme', newTheme);
     localStorage.setItem('site_theme', newTheme);
 }
 
-// --- QUẢN LÝ ĐA NGÔN NGỮ (ANH / VIỆT) ---
+// --- 2. XỬ LÝ ĐA NGÔN NGỮ (VI / EN) ---
 async function changeLanguage(lang) {
     try {
         const response = await fetch(`./assets/locales/${lang}.json`);
@@ -27,7 +26,7 @@ async function changeLanguage(lang) {
         
         localStorage.setItem('preferred_lang', lang);
     } catch (e) {
-        console.error("Lỗi tải ngôn ngữ:", e);
+        console.error("Lỗi chuyển đổi ngôn ngữ:", e);
     }
 }
 
@@ -36,7 +35,7 @@ function initLanguage() {
     changeLanguage(savedLang);
 }
 
-// Chạy tự động khi tải trang
+// Tự động kích hoạt khi tải trang
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     initLanguage();
