@@ -168,7 +168,96 @@
         </button>
     </div>
 </div>
+<div class="modal fade" id="studioConfigModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background: #080d1a; border: 2px solid var(--primary); border-radius: 25px; box-shadow: 0 20px 50px rgba(0,0,0,0.8);">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title text-primary fw-900" style="font-size: 1.1rem; text-transform: uppercase;">Cấu Hình Thông Tin Studio</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p style="font-size: 0.82rem; color: #94a3b8; margin-bottom: 15px;">
+                        Nhập thông tin chi tiết của studio để làm hóa đơn và tự động tạo đường dẫn.
+                    </p>
+                    <div class="mb-3">
+                        <label style="font-size: 0.7rem; color: var(--primary); font-weight: 900; margin-bottom: 5px; display: block; text-transform: uppercase;">Tên Studio / Cá Nhân</label>
+                        <input type="text" id="modalStudioNameInput" placeholder="Ví dụ: Studio Chọn Ảnh Nhanh" autocomplete="off" style="padding: 12px; font-size: 0.9rem;">
+                    </div>
+                    <div class="mb-3">
+                        <label style="font-size: 0.7rem; color: var(--primary); font-weight: 900; margin-bottom: 5px; display: block; text-transform: uppercase;">Số điện thoại liên hệ</label>
+                        <input type="text" id="modalStudioPhoneInput" placeholder="Ví dụ: 0879029170" autocomplete="off" style="padding: 12px; font-size: 0.9rem;">
+                    </div>
+                    <div class="mb-3">
+                        <label style="font-size: 0.7rem; color: var(--primary); font-weight: 900; margin-bottom: 5px; display: block; text-transform: uppercase;">Địa chỉ Studio</label>
+                        <input type="text" id="modalStudioAddressInput" placeholder="Ví dụ: Số 123, Đường Trần Phú" autocomplete="off" style="padding: 12px; font-size: 0.9rem;">
+                    </div>
+                    <div class="mb-3">
+                        <label style="font-size: 0.7rem; color: var(--primary); font-weight: 900; margin-bottom: 5px; display: block; text-transform: uppercase;">Logo Studio (Hiển thị hóa đơn & hệ thống)</label>
+                        <input type="file" id="modalStudioLogoFile" class="form-control bg-dark text-white border-secondary" accept="image/*" onchange="processModalLogoFile(event)" style="padding: 10px; font-size: 0.8rem;">
+                        <div class="form-text text-warning" style="font-size: 0.7rem;">Khuyên dùng PNG nền trong suốt (Dung lượng < 1MB).</div>
+                        <div class="mt-2 text-center">
+                            <img id="modalLogoPreview" src="" style="max-height: 50px; display: none; border-radius: 4px; border: 1px solid var(--primary); object-fit: contain;">
+                        </div>
+                    </div>
+                    <button class="btn-create" style="margin-top: 10px;" onclick="saveStudioConfig()">LƯU THÔNG TIN</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
 
+    <div style="background: rgba(0, 235, 176, 0.05); border-top: 1px solid rgba(0, 235, 176, 0.2); padding: 20px 0; margin-top: 50px; text-align: center; color: #94a3b8; font-size: 0.75rem;">
+    <div class="container">
+        <p class="mb-1" style="font-weight: 700; color: var(--primary);">CHONANHNHANH.VN - STUDIO WORKFLOW MANAGEMENT PLATFORM</p>
+        <p class="mb-0">This platform is strictly designed for professional photography studios to manage schedules, CRM, and client photo selections via Google Drive integration. We do not generate, process, or store any artificial intelligence non-consensual intimate imagery (AI NCII) or unauthorized synthetic media.</p>
+    </div>
+</div>
+<div class="modal fade" id="installAppModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <!-- ĐÃ THÊM MÃ MÀU SÁNG HƠN VÀ DÙNG !IMPORTANT TRỰC TIẾP -->
+        <div class="modal-content" style="background: #112240 !important; border: 2px solid var(--primary) !important; border-radius: 25px !important; color: #ffffff !important; box-shadow: 0 0 50px rgba(0, 235, 176, 0.4) !important;">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title text-primary fw-900" style="font-size: 1rem; text-transform: uppercase;">Cài Đặt Ứng Dụng ChonAnhNhanh</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="small mb-3" style="color: #cbd5e1 !important;">Biến website thành ứng dụng độc lập trên màn hình chính để thao tác nhanh mượt như App chuyên nghiệp!</p>
+                
+                <div class="p-3 mb-3 rounded" style="background: rgba(0, 235, 176, 0.05) !important; border: 1px solid rgba(0, 235, 176, 0.2) !important;">
+                    <div class="fw-bold text-primary mb-1"><i class="fab fa-apple me-2"></i>Đối với iPhone / iPad (Safari):</div>
+                    <ol class="small mb-0 ps-3" style="color: #e2e8f0 !important; line-height: 1.6;">
+                        <li>Mở trang web bằng trình duyệt <b>Safari</b>.</li>
+                        <li>Chạm vào nút <b>Chia sẻ</b> (hình ô vuông có mũi tên hướng lên ở thanh công cụ phía dưới).</li>
+                        <li>Cuộn xuống và chọn <b>"Thêm vào Màn hình chính" (Add to Home Screen)</b>.</li>
+                        <li>Nhấn <b>Thêm</b> ở góc trên bên phải là xong!</li>
+                    </ol>
+                </div>
+
+                <div class="p-3 rounded" style="background: rgba(0, 235, 176, 0.05) !important; border: 1px solid rgba(0, 235, 176, 0.2) !important;">
+                    <div class="fw-bold text-primary mb-1"><i class="fab fa-android me-2"></i>Đối với Android & Máy tính (Chrome):</div>
+                    <ol class="small mb-0 ps-3" style="color: #e2e8f0 !important; line-height: 1.6;">
+                        <li>Mở trang web bằng trình duyệt <b>Google Chrome</b>.</li>
+                        <li>Nhìn trên thanh địa chỉ <b>icon cài đặtc</b> ở góc trên bên phải.</li>
+                        <li>Chọn <b>"Cài đặt ứng dụng"</b> hoặc <b>Chọn dấu 3 chấm chon truyền, lưu dữ liệu chia sẽ, chọn cài đặt trang...</b>.</li>
+                        <li>Xác nhận để đưa biểu tượng app ra màn hình thiết bị.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="install-prompt" style="position: fixed; bottom: 30px; left: 30px; z-index: 10000; display: flex; background: #080d1a !important; border: 2px solid var(--primary) !important; border-radius: 20px; padding: 15px; width: 320px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); color: #fff; align-items: center; gap: 12px;">
+    <img src="/web-app-manifest-192x192.png" style="width: 45px; height: 45px; border-radius: 10px; border: 1px solid var(--primary); object-fit: cover; flex-shrink: 0;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3177/3177440.png'">
+    <div style="flex: 1; overflow: hidden;">
+        <p style="font-size: 0.8rem; font-weight: 900; color: #fff; margin: 0; text-transform: uppercase;">Cài App ChonAnhNhanh</p>
+        <p style="font-size: 0.7rem; color: #94a3b8; margin: 2px 0 0 0;">Thao tác quản lý mượt mà!</p>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 5px;">
+        <button id="install-button" onclick="triggerInstallApp()" style="background: var(--primary); color: #000; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 900; cursor: pointer; text-transform: uppercase;">Cài đặt</button>
+        <button onclick="dismissInstall()" style="background: transparent; color: #94a3b8; border: none; font-size: 0.65rem; cursor: pointer; text-align: center;">Để sau</button>
+    </div>
+</div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="./assets/js/core.js"></script> 
     <script src="./assets/js/main.js"></script>
