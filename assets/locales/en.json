@@ -43,5 +43,6 @@
     "install_app_desc": "Smooth management operations!",
     "btn_install": "Install",
     "btn_dismiss": "Later",
-    "chat_welcome": "Hello from chonanhnhanh.vn! How can I assist your studio today?"
+    "chat_welcome": "Hello from chonanhnhanh.vn! How can I assist your studio today?",
+    "ai_suggestion_welcome": "Hello {name}! 👋 How can I help you?"
 }
