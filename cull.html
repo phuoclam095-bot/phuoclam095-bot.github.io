@@ -141,10 +141,7 @@ body{margin:0;background:#050a14;background-image:linear-gradient(to bottom, rgb
 .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.72rem; text-transform: uppercase; padding: 10px 12px !important; cursor: pointer; transition: 0.3s; position: relative; white-space: nowrap; }
 .nav-link:hover, .nav-link.active { color: var(--primary) !important; }
 .nav-link.active::after { content: ''; position: absolute; width: 30%; height: 2px; bottom: 5px; left: 35%; background: var(--primary); box-shadow: 0 0 10px var(--primary); }
-.marquee-wrapper { width: 500px; overflow: hidden; white-space: nowrap; background: rgba(0, 235, 176, 0.05); padding: 8px 0; border-radius: 50px; border: 1px solid rgba(0, 235, 176, 0.15); }
-.marquee-text { display: inline-block; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; color: var(--primary); letter-spacing: 1px; animation: marquee-run 35s linear infinite; }
 
-/* GIAO DIỆN CULLPRO GỐC */
 button{font:inherit;border:0;background:var(--cd);color:var(--tx);padding:9px 14px;border-radius:8px;cursor:pointer;font-weight:600}
 button:hover{filter:brightness(1.12)}button.p{background:var(--ac);color:#fff}button:disabled{opacity:.5}
 .w{max-width:1500px;margin:0 auto;padding:14px}
@@ -200,7 +197,6 @@ select{font:inherit;background:var(--pn);color:var(--tx);border:0;border-radius:
 .cv{flex:1;min-height:0;overflow:auto;display:flex}.cv img{display:block;margin:auto}.fit .cv img{max-width:100%;max-height:100%}
 .cf{display:flex;gap:6px;align-items:center;padding:8px;font-size:12px;flex-wrap:wrap}.cf span{flex:1;min-width:120px;color:var(--mu)}
 
-@keyframes marquee-run { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
 @media(max-width:991.98px){
     body { padding-top: 150px; }
@@ -210,7 +206,6 @@ select{font:inherit;background:var(--pn);color:var(--tx);border:0;border-radius:
     .navbar-nav { display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; gap: 8px !important; width: max-content !important; }
     .nav-link { font-size: 0.72rem !important; padding: 8px 14px !important; background: rgba(255,255,255,0.05) !important; border-radius: 10px !important; border: 1px solid rgba(0,235,176,0.15) !important; }
     .nav-link.active { background: rgba(0,235,176,0.15) !important; border-color: var(--primary) !important; }
-    .marquee-wrapper { width: 100%; max-width: 280px; margin: 0 auto !important; }
 }
 </style>
 </head>
@@ -222,9 +217,6 @@ select{font:inherit;background:var(--pn);color:var(--tx);border:0;border-radius:
         <a class="navbar-brand-left m-0" href="./">CHONANHNHANH<span style="color:#f0c300">.VN</span></a>
         
         <div class="nav-center-container" id="navCenterArea">
-            <div id="marqueeContainer" class="marquee-wrapper">
-                <span class="marquee-text">Dịch vụ chọn ảnh link Google Drive cực nhanh - Chính xác 100% - Nạp tiền tự động - chonanhnhanh.vn</span>
-            </div>
             
             <ul class="navbar-nav" id="adminNavLinks">
                 <li><a href="./" class="nav-link">Tạo Album</a></li>
