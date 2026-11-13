@@ -1,4 +1,4 @@
-<style>
+
         :root { --primary: #00ebb0; --accent: #51ff7d; --bg-deep: #050a14; --rainbow: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000); }
         [data-theme="light"] {
             --bg-deep: #f1f5f9;
@@ -234,4 +234,4 @@
     .modal-backdrop.show {
         opacity: 0.5 !important;
     }
-</style>
+
