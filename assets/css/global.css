@@ -1,6 +1,130 @@
 
         :root { --primary: #00ebb0; --accent: #51ff7d; --bg-deep: #050a14; --rainbow: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000); }
-       /* --- TÙY CHỈNH MODAL THÔNG MINH CHO CẢ 2 CHẾ ĐỘ SÁNG / TỐI --- */
+       [data-theme="light"] {
+    --bg-deep: #f4f6f9;
+    --card-bg: #ffffff;
+    --text-color: #1e293b;
+    --text-muted: #64748b;
+    --primary: #00b09b;     /* Xanh ngọc sáng rực rỡ và bắt mắt */
+    --accent: #96c93d;      /* Xanh lá mạ pastel nhẹ nhàng */
+    --border-color: #e2e8f0;
+    --navbar-bg: rgba(255, 255, 255, 0.85);
+}
+
+/* Nền tổng thể sáng sủa, mượt mà khi bật Light Mode */
+body[data-theme="light"], [data-theme="light"] body {
+    background-color: #f4f6f9 !important;
+    background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%) !important;
+    color: #1e293b !important;
+}
+
+/* Thanh Navbar dạng kính mờ (Glassmorphism) cực kỳ sang trọng */
+[data-theme="light"] .navbar {
+    background: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: blur(20px) !important;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.8) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="light"] .nav-link {
+    color: #475569 !important;
+    font-weight: 700;
+}
+
+[data-theme="light"] .nav-link:hover, 
+[data-theme="light"] .nav-link.active {
+    color: #00b09b !important;
+}
+
+/* Khung thẻ chính (Create Card) nổi bật với viền gradient và bóng mềm */
+[data-theme="light"] .rainbow-border-wrapper {
+    background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%) !important;
+    padding: 3px;
+    border-radius: 35px;
+    box-shadow: 0 20px 40px rgba(0, 176, 155, 0.15) !important;
+}
+
+[data-theme="light"] .create-card {
+    background: #ffffff !important;
+    color: #1e293b !important;
+    border-radius: 32px;
+}
+
+[data-theme="light"] .luxury-title {
+    background: linear-gradient(90deg, #0f172a, #00b09b, #0f172a) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    font-weight: 900;
+}
+
+/* Ô nhập liệu (Input) phẳng, bo tròn mềm mại */
+[data-theme="light"] input[type="text"] {
+    background: #f8fafc !important;
+    border: 2px solid #e2e8f0 !important;
+    color: #1e293b !important;
+    border-radius: 16px !important;
+}
+
+[data-theme="light"] input[type="text"]:focus {
+    border-color: #00b09b !important;
+    background: #ffffff !important;
+    box-shadow: 0 0 0 4px rgba(0, 176, 155, 0.1) !important;
+}
+
+/* Các nhóm bật/tắt (Switch groups) dạng phẳng */
+[data-theme="light"] .switch-group {
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #334155 !important;
+    border-radius: 16px !important;
+}
+
+/* Nút tạo album rực rỡ */
+[data-theme="light"] .btn-create {
+    background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%) !important;
+    color: #ffffff !important;
+    border: none;
+    box-shadow: 0 10px 20px rgba(0, 176, 155, 0.25);
+    transition: all 0.3s ease;
+}
+
+[data-theme="light"] .btn-create:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 25px rgba(0, 176, 155, 0.35);
+}
+
+/* Hộp kết quả trả về */
+[data-theme="light"] #resultBox {
+    background: #f0fdf4 !important;
+    border: 1.5px solid #86efac !important;
+    border-radius: 20px;
+}
+
+[data-theme="light"] #resFolderName {
+    color: #15803d !important;
+}
+
+/* Khung chat AI nổi góc màn hình */
+[data-theme="light"] .chat-panel {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1) !important;
+    border-radius: 25px;
+}
+
+[data-theme="light"] .msg-ai {
+    background: #f1f5f9 !important;
+    color: #1e293b !important;
+}
+
+[data-theme="light"] .user-pill {
+    background: rgba(0, 0, 0, 0.04) !important;
+    border: 1px solid #e2e8f0;
+}
+
+/* ==========================================================
+   3. ĐỒNG BỘ MODAL SÁNG / TỐI THÔNG MINH
+   ========================================================== */
 .modal-content {
     background-color: var(--card-bg, #080d1a) !important;
     border: 2px solid var(--primary) !important;
@@ -9,7 +133,6 @@
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
 }
 
-/* Riêng cho Light Mode: Ép modal chuyển sang nền trắng phẳng, viền ngọc cực xinh */
 [data-theme="light"] .modal-content {
     background-color: #ffffff !important;
     border: 2px solid #00b09b !important;
@@ -34,6 +157,12 @@
     color: #1e293b !important;
 }
 
+/* ==========================================================
+   4. CÁC STYLE KHUNG CƠ BẢN KHÁC
+   ========================================================== */
+#adminNavLinks, #loggedInNav, #loggedOutNav, #marqueeContainer { 
+    display: none !important; 
+}
 
         body { margin: 0; font-family: 'Roboto', sans-serif; background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.7) 30%, rgba(5, 10, 20, 0.9) 100%), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; min-height: 100vh; padding-top: 110px; }
         
