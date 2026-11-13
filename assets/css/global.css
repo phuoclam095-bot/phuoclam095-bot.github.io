@@ -1,13 +1,100 @@
 
         :root { --primary: #00ebb0; --accent: #51ff7d; --bg-deep: #050a14; --rainbow: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff0000); }
-        [data-theme="light"] {
-            --bg-deep: #f1f5f9;
-            --card-bg: #ffffff;
-            --text-color: #0f172a;
-            --primary: #0284c7;
-            --border-color: rgba(0, 0, 0, 0.1);
-            --navbar-bg: linear-gradient(to bottom, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
-        }
+        /* --- GIAO DIỆN PHẲNG - LIGHTMODE CHO CHONANHNHANH.VN --- */
+
+[data-theme="light"] {
+    --bg-deep: #f8fafc;
+    --card-bg: #ffffff;
+    --text-color: #0f172a;
+    --text-muted: #64748b;
+    --primary: #0d9488; /* Xanh ngọc đậm hơn một chút để nổi bật trên nền sáng */
+    --accent: #10b981;
+    --border-color: #e2e8f0;
+    --navbar-bg: rgba(255, 255, 255, 0.95);
+    --input-bg: #f1f5f9;
+}
+
+/* Áp dụng khi body ở chế độ Lightmode */
+body[data-theme="light"], [data-theme="light"] body {
+    background-color: #f8fafc !important;
+    background-image: none !important; /* Xóa ảnh nền vũ trụ tối, thay bằng màu phẳng */
+    color: #0f172a !important;
+}
+
+/* Thanh Navbar phẳng, sáng sủa, có bóng nhẹ */
+[data-theme="light"] .navbar {
+    background: #ffffff !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+[data-theme="light"] .nav-link {
+    color: #475569 !important;
+}
+
+[data-theme="light"] .nav-link:hover, 
+[data-theme="light"] .nav-link.active {
+    color: #0d9488 !important;
+}
+
+/* Khung thẻ chính (Create Card) thiết kế phẳng, viền tinh tế */
+[data-theme="light"] .rainbow-border-wrapper {
+    background: #e2e8f0 !important; /* Thay viền cầu vồng bằng viền xám phẳng hiện đại */
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05) !important;
+}
+
+[data-theme="light"] .create-card {
+    background: #ffffff !important;
+    color: #0f172a !important;
+}
+
+[data-theme="light"] .luxury-title {
+    background: linear-gradient(90deg, #0f172a, #0d9488, #0f172a) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+}
+
+/* Ô nhập liệu (Input) dạng phẳng, bo góc mềm mại */
+[data-theme="light"] input[type="text"] {
+    background: #f1f5f9 !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #0f172a !important;
+}
+
+[data-theme="light"] input[type="text"]:focus {
+    border-color: #0d9488 !important;
+    background: #ffffff !important;
+    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15) !important;
+}
+
+/* Các nhóm bật/tắt (Switch groups) dạng phẳng */
+[data-theme="light"] .switch-group {
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #334155 !important;
+}
+
+/* Hộp kết quả trả về */
+[data-theme="light"] #resultBox {
+    background: #f0fdf4 !important;
+    border: 1px solid #bbf7d0 !important;
+}
+
+[data-theme="light"] #resFolderName {
+    color: #166534 !important;
+}
+
+/* Khung chat AI nổi góc màn hình */
+[data-theme="light"] .chat-panel {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1) !important;
+}
+
+[data-theme="light"] .msg-ai {
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
+}
         body { margin: 0; font-family: 'Roboto', sans-serif; background-color: var(--bg-deep); background-image: linear-gradient(to bottom, rgba(5, 10, 20, 1) 0%, rgba(5, 10, 20, 0.7) 30%, rgba(5, 10, 20, 0.9) 100%), url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; background-attachment: fixed; color: #fff; min-height: 100vh; padding-top: 110px; }
         
    
