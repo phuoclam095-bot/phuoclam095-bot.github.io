@@ -25,7 +25,13 @@
             <div class="container-fluid px-3 px-lg-5 d-flex flex-wrap align-items-center justify-content-between">
                 <a class="navbar-brand-left m-0" href="./">CHONANHNHANH<span style="color:#f0c300">.VN</span></a>
                 
-                
+                <button class="btn btn-sm" onclick="toggleDarkMode()" title="Chuyển đổi Sáng / Tối" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(0,235,176,0.2); color: var(--primary); border-radius: 50%; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;">
+                    <i class="fas fa-adjust"></i>
+                </button>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-sm fw-bold" onclick="changeLanguage('vi')" style="background: rgba(0,235,176,0.1); border: 1px solid var(--primary); color: var(--primary); font-size: 0.65rem; padding: 6px 8px; border-top-left-radius: 20px; border-bottom-left-radius: 20px;">VN</button>
+                    <button type="button" class="btn btn-sm fw-bold" onclick="changeLanguage('en')" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: #94a3b8; font-size: 0.65rem; padding: 6px 8px; border-top-right-radius: 20px; border-bottom-right-radius: 20px;">EN</button>
+                </div>
                 <div class="d-flex align-items-center ms-auto order-lg-3">
                     <div id="loggedOutNav">
                         <div class="btn-login-rainbow" onclick="startGoogleLogin()">
