@@ -686,6 +686,7 @@ function updateHeaderUI() {
                 statusEl.innerHTML = `<span class="status-tag ${status === 'new' ? 'tag-new' : 'tag-expired'}">${status === 'new' ? 'MỚI' : 'EXPIRED'}</span>`;
                 if (mainWorkGrid) mainWorkGrid.style.setProperty('display', 'none', 'important');
                 if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'block', 'important');
+                document.querySelector('.supreme-title').style.display = 'none';
             }
         }
     } else { 
