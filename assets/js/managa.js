@@ -8,16 +8,21 @@ const PATHS = { LIST: 'https://wsm.congtubaclieu.com.vn/webhook/get-album-list',
         const pageSize = 20; 
         
         function renderAlbums(albums) {
-            const grid = document.getElementById('albumGrid');
-            if (!grid) return;
-            
-            grid.innerHTML = '';
-            displayedCount = 0;
-            window._currentFilteredAlbums = albums;
-            appendMoreAlbums();
-            
-            document.getElementById('albumCount').innerText = albums.length;
-        }
+                    const grid = document.getElementById('albumGrid');
+                    if (!grid) return;
+                    
+                    grid.innerHTML = '';
+                    displayedCount = 0;
+                    window._currentFilteredAlbums = albums;
+                    appendMoreAlbums();
+                    
+                    document.getElementById('albumCount').innerText = albums.length;
+                    
+                    const currentLang = localStorage.getItem('site_lang') || 'vi';
+                    if (typeof applyTranslations === 'function') {
+                        applyTranslations(currentLang); 
+                    }
+                }
         
         function appendMoreAlbums() {
             const grid = document.getElementById('albumGrid');
@@ -35,6 +40,10 @@ const PATHS = { LIST: 'https://wsm.congtubaclieu.com.vn/webhook/get-album-list',
             
             grid.appendChild(fragment);
             displayedCount += nextBatch.length; 
+            const currentLang = localStorage.getItem('site_lang') || 'vi';
+                    if (typeof applyTranslations === 'function') {
+                        applyTranslations(currentLang); 
+                    }
         }
         window.addEventListener('scroll', () => {
             if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 300) {
@@ -69,26 +78,26 @@ const PATHS = { LIST: 'https://wsm.congtubaclieu.com.vn/webhook/get-album-list',
     const clientPageUrl = `${PATHS.CLIENT}${studioSlug}/${albumSlug}`;
     const driveFolderUrl = `https://drive.google.com/drive/folders/${id}`;
 
-    card.innerHTML = `<div class="card-img-header" style="background-image: url('${img}'); cursor: pointer;" onclick="openDirectCoverModal('${id}', '${albumTitle}')" title="Bấm để đổi ảnh bìa"><div class="album-vip-title">${folderName}</div></div>
-        <div class="stats-grid">
-            <div class="stat-pill" onclick="openSelectedPhotosModal('${id}', '${albumTitle}')">
-                <span class="stat-val">${album.selected_photos || 0}</span>
-                <span class="stat-lab">Chọn</span>
+    card.innerHTML = `<div class="card-img-header" style="background-image: url('${img}'); cursor: pointer;" onclick="openDirectCoverModal('${id}', '${albumTitle}')" data-i18n-title="title_change_cover" title="Bấm để đổi ảnh bìa"><div class="album-vip-title">${folderName}</div></div>
+            <div class="stats-grid">
+                <div class="stat-pill" onclick="openSelectedPhotosModal('${id}', '${albumTitle}')">
+                    <span class="stat-val">${album.selected_photos || 0}</span>
+                    <span class="stat-lab" data-i18n="lbl_selected">CHỌN</span>
+                </div>
+                <div class="stat-pill"><span class="stat-val text-white">${album.total_photos || 0}</span><span class="stat-lab" data-i18n="lbl_total">TỔNG</span></div>
+                <div class="stat-pill" onclick="openNoteModal('${id}', '${albumTitle}')"><span class="stat-val text-info">${album.comments || 0}</span><span class="stat-lab" data-i18n="lbl_note">GHI CHÚ</span></div>
             </div>
-            <div class="stat-pill"><span class="stat-val text-white">${album.total_photos || 0}</span><span class="stat-lab">Tổng</span></div>
-            <div class="stat-pill" onclick="openNoteModal('${id}', '${albumTitle}')"><span class="stat-val text-info">${album.comments || 0}</span><span class="stat-lab">Note</span></div>
-        </div>
-        <div class="vip-actions-grid">
-            <button class="btn-vip" style="background: #10b981; color: #fff;" onclick="downloadSelectedZip('${id}', '${albumTitle}')" title="Tải tất cả ảnh đã chọn kèm ghi chú thành file ZIP"><i class="fas fa-file-archive"></i> TẢI FINAL</button>
-            <button class="btn-vip" style="background: #0ea5e9; color: #fff;" onclick="openAlbumLinksModal('${albumTitle}', '${clientPageUrl}', '${driveFolderUrl}')" title="Xem và sao chép liên kết truy cập album"><i class="fas fa-link"></i> LINK</button>
-            <button class="btn-vip v-export" onclick="handleExportClick('${id}', '${albumTitle}')" title="Trích xuất tên file" style="color: #ffffff !important;">
-                <i class="fa-regular fa-copy" style="color: #ffffff !important;"></i> Copy
-            </button>
-            <button class="btn-vip" style="background: #8b5cf6; grid-column: span 3;" onclick="openSettingsModal('${id}')">
-                <i class="fas fa-sliders-h me-1"></i> Cài đặt cấu hình album
-            </button>
-            <button class="btn-vip v-delete" onclick="deleteAlbum('${id}', '${albumTitle}')">Xóa album</button>
-        </div>`;
+            <div class="vip-actions-grid">
+                <button class="btn-vip" style="background: #10b981; color: #fff;" onclick="downloadSelectedZip('${id}', '${albumTitle}')" title="Tải tất cả ảnh đã chọn kèm ghi chú thành file ZIP"><i class="fas fa-file-archive"></i> <span data-i18n="btn_download_final">TẢI FINAL</span></button>
+                <button class="btn-vip" style="background: #0ea5e9; color: #fff;" onclick="openAlbumLinksModal('${albumTitle}', '${clientPageUrl}', '${driveFolderUrl}')" title="Xem và sao chép liên kết truy cập album"><i class="fas fa-link"></i> <span data-i18n="btn_link">LINK</span></button>
+                <button class="btn-vip v-export" onclick="handleExportClick('${id}', '${albumTitle}')" title="Trích xuất tên file" style="color: #ffffff !important;">
+                    <i class="fa-regular fa-copy" style="color: #ffffff !important;"></i> <span data-i18n="btn_copy_album">COPY</span>
+                </button>
+                <button class="btn-vip" style="background: #8b5cf6; grid-column: span 3;" onclick="openSettingsModal('${id}')">
+                    <i class="fas fa-sliders-h me-1"></i> <span data-i18n="btn_config_album">CÀI ĐẶT CẤU HÌNH ALBUM</span>
+                </button>
+                <button class="btn-vip v-delete" onclick="deleteAlbum('${id}', '${albumTitle}')" data-i18n="btn_delete_album">XÓA ALBUM</button>
+            </div>`;
     return card;
 }
     const PATH_ZIP_DOWNLOAD = 'https://wsm.congtubaclieu.com.vn/webhook/download-selected-zip';
