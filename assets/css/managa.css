@@ -196,9 +196,15 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02) !important;
 }
 /* ==========================================================
-   1. KHẮC PHỤC SỐ "19" BỊ CHÌM TRÊN LIGHT MODE
-   ========================================================== */
+ .search-wrapper .badge,
 [data-theme="light"] .search-wrapper .badge {
+    background: #0f766e !important;
+    color: #ffffff !important;
+    font-weight: 900 !important;
+}
+
+/* Phòng hờ trường hợp trang quản lý dùng class badge riêng */
+#albumCount {
     background: #0f766e !important;
     color: #ffffff !important;
 }
