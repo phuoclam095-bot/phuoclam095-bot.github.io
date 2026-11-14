@@ -311,7 +311,11 @@
             width: auto;  
             cursor: pointer;  
         }
-
+            .navbar {
+    min-height: 85px !important; /* Cố định chiều cao chung */
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
          .navbar-nav {
                 display: flex !important;
                 flex-direction: row !important;
