@@ -44,5 +44,56 @@
     "btn_dismiss": "Để sau",
     "chat_welcome": "Dạ, chonanhnhanh.vn xin chào mình ạ! Em hỗ trợ được gì cho studio của mình không?",
     "ai_suggestion_welcome": "Dạ chào {name}! 👋 Em hỗ trợ được gì không ạ?",
-    "speed_notice": " Tốc độ cực nhanh - Chính xác 100% "
+    "speed_notice": " Tốc độ cực nhanh - Chính xác 100% ",
+    "nav_create": "Tạo Album",
+        "nav_manage": "Quản Lý",
+        "nav_calendar": "Lịch",
+        "nav_copy": "Sao Chép",
+        "nav_cull": "Lọc Ảnh",
+        "nav_blog": "Blog",
+        "nav_payment": "Gia Hạn",
+        "nav_contact": "Liên Hệ",
+        "nav_guide": "Hướng Dẫn",
+        "nav_feedback": "Góp Ý Và Báo Lỗi",
+        "nav_privacy": "Chính Sách Bảo Mật",
+        
+        "page_title": "Quản Lý Album",
+        "search_placeholder": "Tìm kiếm tên album...",
+        
+        "vip_locked_title": "TÍNH NĂNG ĐANG BỊ KHÓA",
+        "vip_locked_desc": "Tài khoản của bạn đã hết hạn dùng thử hoặc chưa nâng cấp lên gói VIP. Vui lòng gia hạn để tiếp tục sử dụng tính năng quản lý.",
+        "btn_renew_vip": "Gia Hạn VIP Ngay",
+        
+        "modal_cover_title": "ĐỔI ẢNH BÌA ALBUM",
+        "modal_cover_desc": "Chọn bức ảnh ưng ý nhất bên dưới để làm ảnh bìa chào mừng cho khách:",
+        "loading_photos": "Đang tải danh sách ảnh...",
+        
+        "modal_note_title": "GHI CHÚ / BÌNH LUẬN CỦA KHÁCH",
+        
+        "modal_config_title": "CẤU HÌNH ALBUM",
+        "lbl_limit_photos": "Giới hạn số lượng ảnh tối đa",
+        "plc_limit_photos": "Nhập 0 nếu không giới hạn",
+        "desc_limit_photos": "Nhập 0 hoặc để trống nghĩa là khách được chọn thoải mái không giới hạn.",
+        "lbl_allow_download": "Cho phép khách tải ảnh gốc",
+        "lbl_allow_comment": "Cho phép khách viết ghi chú / bình luận",
+        "lbl_watermark": "Đóng dấu bản quyền Logo",
+        "lbl_upload_logo": "Tải ảnh Logo từ máy tính",
+        "desc_upload_logo": "Khuyên dùng định dạng PNG nền trong suốt (Dung lượng <1MB).",
+        "btn_save_changes": "LƯU THAY ĐỔI",
+        
+        "modal_export_title": "DANH SÁCH FILE ĐÃ LỌC",
+        "btn_copy_list": "SAO CHÉP DANH SÁCH",
+        
+        "modal_selected_title": "DANH SÁCH ẢNH KHÁCH ĐÃ CHỌN",
+        
+        "modal_links_title": "LIÊN KẾT TRUY CẬP ALBUM",
+        "lbl_client_link": "1. Link gửi khách chọn ảnh (Client)",
+        "lbl_drive_link": "2. Link thư mục Google Drive gốc",
+        "btn_copy": "Sao chép",
+        
+        "modal_zip_title": "Đang chuẩn bị gói ZIP...",
+        "modal_zip_desc": "Hệ thống đang tải ảnh từ máy chủ và đóng gói. Quá trình này phụ thuộc vào tốc độ mạng của bạn.",
+        "zip_tip_title": "Mẹo xử lý nhanh khi mạng chậm:",
+        "zip_tip_desc": "Thay vì đợi hệ thống đóng gói và tải file ZIP nặng, nếu bạn còn file gốc trên máy tính, bạn hãy bấm vào <b>icon COPY Bên Phải</b> của album, sau đó chuyển sang tab <b>SAO CHÉP</b> để lấy danh sách tên file ảnh xuất ra, giúp bạn lọc và trích xuất file gốc trên máy tính một cách nhanh chóng hơn!",
+        "btn_hide_zip": "Ẩn thông báo (chạy ngầm)"
 }
