@@ -424,10 +424,10 @@ body {
 .nav-link {
     position: relative !important;
 }
+
 /* ==========================================================
    CĂN CHUẨN NAVBAR NẰM CHÍNH GIỮA TUỆT ĐỐI TRÊN DESKTOP
    ========================================================== */
-@media (min-width: 992px) {
     .navbar .container-fluid {
         position: relative !important;
         display: flex !important;
@@ -435,7 +435,6 @@ body {
         align-items: center !important;
     }
 
-    /* Ép khung chứa menu luôn nằm chính giữa tuyệt đối màn hình */
     .nav-center-container {
         position: absolute !important;
         left: 50% !important;
@@ -445,7 +444,6 @@ body {
         z-index: 5 !important;
     }
 
-    /* Đảm bảo phần bên trái (Logo) và bên phải (User/Nút bấm) có chiều rộng cân đối hoặc đẩy sang 2 bên */
     .navbar-brand-left {
         z-index: 10 !important;
     }
@@ -454,7 +452,6 @@ body {
         z-index: 10 !important;
         margin-left: auto !important;
     }
-}
 
 @media (max-width: 991.98px) {
     body { padding-top: 140px; }
