@@ -746,3 +746,51 @@ body { padding-top: 150px; }
 [data-theme="light"] body #calendarGridViewContainer > div > div {
     color: #475569 !important;
 }
+/* ==========================================================
+   TIÊU DIỆT 2 LỖI ĐEN CÒN SÓT LẠI TRONG LIGHT MODE
+   ========================================================== */
+
+/* 1. XỬ LÝ TRIỆT ĐỂ BẢNG HỢP ĐỒNG BỊ DÍNH NỀN ĐEN Ở CÁC CỘT */
+[data-theme="light"] body .table-dark tr,
+[data-theme="light"] body .table-dark td,
+[data-theme="light"] body .table-dark th,
+[data-theme="light"] body #contractsTableBody tr,
+[data-theme="light"] body #contractsTableBody td {
+    background-color: transparent !important;
+    background: transparent !important;
+    color: #1e293b !important;
+}
+
+/* Đặt lại màu nền trắng sáng cho toàn bộ tbody */
+[data-theme="light"] body #contractsTableBody tr:nth-child(odd) {
+    background-color: #f8fafc !important;
+}
+[data-theme="light"] body #contractsTableBody tr:nth-child(even) {
+    background-color: #ffffff !important;
+}
+[data-theme="light"] body #contractsTableBody tr:hover {
+    background-color: rgba(0, 235, 176, 0.1) !important;
+}
+
+/* 2. ÉP TOÀN BỘ MODAL LỊCH VẠN NIÊN SANG NỀN SÁNG TRẮNG */
+[data-theme="light"] body .modal-content,
+[data-theme="light"] body div[style*="background: rgba(10, 17, 36"],
+[data-theme="light"] body div[style*="background: rgba(13, 25, 48"] {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    border-color: #cbd5e1 !important;
+}
+
+/* Biến màu nền các ô ngày trong lưới lịch thành trắng xám nhẹ */
+[data-theme="light"] body #modalCalendarDaysContainer > div {
+    background-color: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #1e293b !important;
+}
+
+/* Đổi màu chữ số ngày trong lưới lịch thành đậm rõ */
+[data-theme="light"] body #modalCalendarDaysContainer div span,
+[data-theme="light"] body #modalCalendarDaysContainer div {
+    color: #0f172a !important;
+}
