@@ -325,18 +325,16 @@ body {
     color: var(--primary) !important; 
 }
 
-.nav-link.active::after { 
-    content: '' !important; 
-    position: absolute !important; 
-    width: 60% !important;   /* Độ dài gạch chân bằng 60% chiều rộng chữ */
-    height: 3px !important;  /* Độ dày thanh gạch chân */
-    bottom: 2px !important;  /* Sát đáy khung chữ */
-    left: 20% !important;    /* Căn giữa ngay dưới chữ tab */
-    background: var(--primary) !important; 
-    box-shadow: 0 0 10px var(--primary) !important; 
-    border-radius: 4px !important;
-    display: block !important;
-}
+.nav-link.active::after {  
+        content: '';  
+        position: absolute;  
+        width: 30%;  
+        height: 2px;  
+        bottom: 5px;  
+        left: 35%;  
+        background: var(--primary);  
+        box-shadow: 0 0 10px var(--primary);  
+    }
 .user-pill {  
     background: rgba(255,255,255,0.05);  
     padding: 5px 15px;  
