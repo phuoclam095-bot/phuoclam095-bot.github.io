@@ -46,58 +46,73 @@
     "chat_welcome": "Hello from chonanhnhanh.vn! How can I assist your studio today?",
     "ai_suggestion_welcome": "Hello {name}! 👋 How can I help you?",
     "page_title_tab": "CHONANHNHANH.VN - ALBUM MANAGEMENT",
-        "theme_toggle": "Toggle Light / Dark Mode",
-        "btn_logout": "Logout",
-        "nav_create": "Create Album",
-        "nav_manage": "Manage",
-        "nav_calendar": "Calendar",
-        "nav_copy": "Copy",
-        "nav_cull": "Cull Photos",
-        "nav_blog": "Blog",
-        "nav_payment": "Renew",
-        "nav_contact": "Contact",
-        "nav_guide": "Guide",
-        "nav_feedback": "Feedback & Bugs",
-        "nav_privacy": "Privacy Policy",
-        
-        "page_heading": "Album Management",
-        "search_placeholder": "Search album name...",
-        
-        "vip_locked_title": "FEATURE LOCKED",
-        "vip_locked_desc": "Your trial has expired or you haven't upgraded to a VIP plan. Please renew to continue using management features.",
-        "btn_renew_vip": "Renew VIP Now",
-        
-        "modal_cover_title": "CHANGE ALBUM COVER",
-        "album_placeholder": "Album: ...",
-        "modal_cover_desc": "Select the best photo below as a welcome cover for clients:",
-        "loading_photos": "Loading photos...",
-        
-        "modal_note_title": "CLIENT NOTES / COMMENTS",
-        
-        "modal_config_title": "ALBUM CONFIGURATION",
-        "lbl_limit_photos": "Maximum photo selection limit",
-        "plc_limit_photos": "Enter 0 for unlimited",
-        "desc_limit_photos": "Enter 0 or leave blank to allow clients to select unlimited photos.",
-        "lbl_allow_download": "Allow clients to download original photos",
-        "lbl_allow_comment": "Allow clients to write notes / comments",
-        "lbl_watermark": "Apply Copyright Watermark",
-        "lbl_upload_logo": "Upload Logo from computer",
-        "desc_upload_logo": "Recommended: PNG with transparent background (<1MB).",
-        "btn_save_changes": "SAVE CHANGES",
-        
-        "modal_export_title": "CULLED FILES LIST",
-        "btn_copy_list": "COPY LIST",
-        
-        "modal_selected_title": "CLIENT SELECTED PHOTOS",
-        
-        "modal_links_title": "ALBUM ACCESS LINKS",
-        "lbl_client_link": "1. Client selection link",
-        "lbl_drive_link": "2. Original Google Drive folder link",
-        "btn_copy": "Copy",
-        
-        "modal_zip_title": "Preparing ZIP package...",
-        "modal_zip_desc": "The system is downloading photos from the server and packaging them. This process depends on your network speed.",
-        "zip_tip_title": "Quick tip for slow networks:",
-        "zip_tip_desc": "Instead of waiting for a heavy ZIP file, if you have original files on your PC, click the <b>COPY icon on the right</b> of the album, then go to the <b>COPY</b> tab to extract the file list for faster local culling!",
-        "btn_hide_zip": "Hide notice (run in background)"
+    "theme_toggle": "Toggle Light / Dark Mode",
+    "btn_logout": "Logout",
+    "nav_create": "Create Album",
+    "nav_manage": "Manage",
+    "nav_calendar": "Calendar",
+    "nav_copy": "Copy",
+    "nav_cull": "Cull Photos",
+    "nav_blog": "Blog",
+    "nav_payment": "Renew",
+    "nav_contact": "Contact",
+    "nav_guide": "Guide",
+    "nav_feedback": "Feedback & Bugs",
+    "nav_privacy": "Privacy Policy",
+    
+    "page_heading": "Album Management",
+    "search_placeholder": "Search album name...",
+    
+    "vip_locked_title": "FEATURE LOCKED",
+    "vip_locked_desc": "Your trial has expired or you haven't upgraded to a VIP plan. Please renew to continue using management features.",
+    "btn_renew_vip": "Renew VIP Now",
+    
+    "modal_cover_title": "CHANGE ALBUM COVER",
+    "album_placeholder": "Album: ...",
+    "modal_cover_desc": "Select the best photo below as a welcome cover for clients:",
+    "loading_photos": "Loading photos...",
+    
+    "modal_note_title": "CLIENT NOTES / COMMENTS",
+    
+    "modal_config_title": "ALBUM CONFIGURATION",
+    "lbl_limit_photos": "Maximum photo selection limit",
+    "plc_limit_photos": "Enter 0 for unlimited",
+    "desc_limit_photos": "Enter 0 or leave blank to allow clients to select unlimited photos.",
+    "lbl_allow_download": "Allow clients to download original photos",
+    "lbl_allow_comment": "Allow clients to write notes / comments",
+    "lbl_watermark": "Apply Copyright Logo Watermark",
+    "lbl_upload_logo": "Upload Logo from computer",
+    "desc_upload_logo": "Recommended: PNG with transparent background (Size < 1MB).",
+    "btn_save_changes": "SAVE CHANGES",
+    
+    "modal_export_title": "CULLED FILES LIST",
+    "btn_copy_list": "COPY LIST",
+    
+    "modal_selected_title": "CLIENT SELECTED PHOTOS",
+    
+    "modal_links_title": "ALBUM ACCESS LINKS",
+    "lbl_client_link": "1. Client photo selection link (Client)",
+    "lbl_drive_link": "2. Original Google Drive folder link",
+    "btn_copy": "Copy",
+    
+    "modal_zip_title": "Preparing ZIP package...",
+    "modal_zip_desc": "The system is downloading photos from the server and packaging them. This process depends on your network speed.",
+    "zip_tip_title": "Quick tip for slow networks:",
+    "zip_tip_desc": "Instead of waiting for a heavy ZIP file, if you have original files on your PC, click the <b>COPY icon on the right</b> of the album, then go to the <b>COPY</b> tab to extract the file list for faster local culling!",
+    "btn_hide_zip": "Hide notice (run in background)",
+    
+    "lbl_selected": "SELECTED",
+    "lbl_total": "TOTAL",
+    "lbl_note": "NOTE",
+    
+    "btn_download_final": "DOWNLOAD FINAL",
+    "btn_link": "LINK",
+    "btn_copy_album": "COPY",
+    "btn_config_album": "ALBUM SETTINGS",
+    "btn_delete_album": "DELETE ALBUM",
+    "title_change_cover": "Click to change cover",
+    
+    "text_no_notes": "There are no notes from the client for this album yet.",
+    "text_no_photos": "The client has not selected any photos yet.",
+    "text_no_data": "The album has no photos or n8n hasn't returned the photo list."
 }
