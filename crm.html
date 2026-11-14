@@ -44,56 +44,65 @@
 
     <div id="toastNotice">Đang xử lý...</div>
 
-  <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
-        <div class="container-fluid px-3 px-lg-5 d-flex flex-wrap align-items-center justify-content-between">
+ <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
+    <div class="container-fluid px-3 px-lg-5 d-flex flex-wrap align-items-center justify-content-between">
+        
+        <!-- 1. BÊN TRÁI: LOGO -->
+        <a class="navbar-brand-left m-0" href="./">CHONANHNHANH<span style="color:#f0c300">.VN</span></a>
+        
+        <!-- 2. BÊN PHẢI: GÓC NGƯỜI DÙNG VÀ CÁC NÚT BẤM (ms-auto ép sang phải) -->
+        <div class="d-flex align-items-center ms-auto order-lg-3">
             
-            <a class="navbar-brand-left m-0" href="./">CHONANHNHANH<span style="color:#f0c300">.VN</span></a>
-            <button class="btn btn-sm" id="themeToggleBtn" onclick="toggleDarkMode()" title="Chuyển đổi Sáng / Tối" style="background: rgba(0,0,0,0.05); border: 1px solid rgba(0,176,155,0.3); color: var(--primary); border-radius: 50%; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;">
-                        <i id="themeIcon" class="fas fa-moon"></i>
-                    </button>
-                
-                    <div class="btn-group ms-2" role="group" style="margin-left: 5px !important; margin-right: 5px !important;">
-                        <button type="button" id="btnVi" class="btn btn-sm fw-bold" onclick="changeLanguage('vi')" style="font-size: 0.65rem; padding: 6px 8px; border-top-left-radius: 20px; border-bottom-left-radius: 20px;">VN</button>
-                        <button type="button" id="btnEn" class="btn btn-sm fw-bold" onclick="changeLanguage('en')" style="font-size: 0.65rem; padding: 6px 8px; border-top-right-radius: 20px; border-bottom-right-radius: 20px;">EN</button>
-                    </div>
-            <div class="d-flex align-items-center ms-auto order-lg-3">
-                <div id="loggedOutNav" style="display: none;">
-                    <div class="btn-login-rainbow" onclick="startGoogleLogin()">
-                        <span>LOGIN VIP</span>
-                    </div>
-                </div>
-                <div id="loggedInNav" class="d-flex align-items-center" style="display: none;">
-                    <div class="user-pill">
-                        <div id="avatarPlaceholder"></div>
-                        <div class="d-flex flex-column overflow-hidden">
-                            <span id="userNameDisplay" style="font-weight:900; font-size:0.75rem; line-height:1"></span>
-                            <div id="userStatusDisplay"></div>
-                        </div>
-                    </div>
-                    <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()" style="cursor:pointer" title="Đăng xuất">
-                        <i class="fas fa-power-off"></i>
-                    </button>
+            <!-- Cụm nút Light/Dark -->
+            <button class="btn btn-sm" id="themeToggleBtn" onclick="toggleDarkMode()" data-i18n-title="theme_toggle" title="Chuyển đổi Sáng / Tối" style="background: rgba(0,0,0,0.05); border: 1px solid rgba(0,176,155,0.3); color: var(--primary); border-radius: 50%; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;">
+                <i id="themeIcon" class="fas fa-moon"></i>
+            </button>
+            
+            <!-- Cụm nút ngôn ngữ VN/EN -->
+            <div class="btn-group ms-2" role="group" style="margin-left: 5px !important; margin-right: 5px !important;">
+                <button type="button" id="btnVi" class="btn btn-sm fw-bold" onclick="changeLanguage('vi')" style="font-size: 0.65rem; padding: 6px 8px; border-top-left-radius: 20px; border-bottom-left-radius: 20px;">VN</button>
+                <button type="button" id="btnEn" class="btn btn-sm fw-bold" onclick="changeLanguage('en')" style="font-size: 0.65rem; padding: 6px 8px; border-top-right-radius: 20px; border-bottom-right-radius: 20px;">EN</button>
+            </div>
+            
+            <!-- Cụm Avatar và Đăng nhập -->
+            <div id="loggedOutNav" style="display: none;">
+                <div class="btn-login-rainbow" onclick="startGoogleLogin()">
+                    <span>LOGIN VIP</span>
                 </div>
             </div>
-
-            <div class="nav-center-container" id="navCenterArea">
-                <ul class="navbar-nav" id="adminNavLinks">
-                    <li><a href="./" class="nav-link">Tạo Album</a></li>
-                    <li><a href="managa" class="nav-link">Quản Lý</a></li>
-                    <li><a href="crm" class="nav-link active">Lịch</a></li>
-                    <li><a href="copy_local" class="nav-link">Sao Chép</a></li>
-                    <li><a href="cull" class="nav-link">Lọc Ảnh</a></li>
-                    <li><a href="blog" class="nav-link">Blog</a></li>
-                    <li><a href="payment" class="nav-link">Gia Hạn</a></li>
-                    <li><a href="lienhe" class="nav-link">Liên Hệ</a></li>
-                    <li><a href="guide" class="nav-link">Hướng Dẫn</a></li>
-                    <li><a href="fedback" class="nav-link">Góp Ý Và Báo Lỗi</a></li>
-                    <li><a href="privacy" class="nav-link">Chính Sách Bảo Mật</a></li>
-                </ul>
+            
+            <div id="loggedInNav" class="d-flex align-items-center" style="display: none;">
+                <div class="user-pill">
+                    <div id="avatarPlaceholder"></div>
+                    <div class="d-flex flex-column overflow-hidden">
+                        <span id="userNameDisplay" style="font-weight:900; font-size:0.75rem; line-height:1"></span>
+                        <div id="userStatusDisplay"></div>
+                    </div>
+                </div>
+                <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()" style="cursor:pointer" data-i18n-title="btn_logout" title="Đăng xuất">
+                    <i class="fas fa-power-off"></i>
+                </button>
             </div>
-
         </div>
-    </nav>
+
+        <!-- 3. Ở GIỮA: THANH MENU CHÍNH -->
+        <div class="nav-center-container" id="navCenterArea">
+            <ul class="navbar-nav" id="adminNavLinks">
+                <li><a href="./" class="nav-link" data-i18n="nav_create">Tạo Album</a></li>
+                <li><a href="managa" class="nav-link" data-i18n="nav_manage">Quản Lý</a></li>
+                <li><a href="crm" class="nav-link active" data-i18n="nav_calendar">Lịch</a></li>
+                <li><a href="copy_local" class="nav-link" data-i18n="nav_copy">Sao Chép</a></li>
+                <li><a href="cull" class="nav-link" data-i18n="nav_cull">Lọc Ảnh</a></li>
+                <li><a href="blog" class="nav-link" data-i18n="nav_blog">Blog</a></li>
+                <li><a href="payment" class="nav-link" data-i18n="nav_payment">Gia Hạn</a></li>
+                <li><a href="lienhe" class="nav-link" data-i18n="nav_contact">Liên Hệ</a></li>
+                <li><a href="guide" class="nav-link" data-i18n="nav_guide">Hướng Dẫn</a></li>
+                <li><a href="fedback" class="nav-link" data-i18n="nav_feedback">Góp Ý Và Báo Lỗi</a></li>
+                <li><a href="privacy" class="nav-link" data-i18n="nav_privacy">Chính Sách Bảo Mật</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
 
     <div class="container-fluid px-4 px-lg-5">
         <div class="mt-5"><h1 class="supreme-title">QUẢN LÝ LỊCH TRÌNH</h1></div>
