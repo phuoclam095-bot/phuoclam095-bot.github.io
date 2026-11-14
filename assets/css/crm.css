@@ -232,151 +232,119 @@ padding: 8px !important;
 
 
 /* ==========================================================
-   2. BỔ SUNG LIGHT MODE ĐẶC TRỊ (ÉP GHI ĐÈ INLINE JS HOÀN TOÀN)
+   2. BỔ SUNG LIGHT MODE (CHUẨN 5 SAO - KHÔNG CHÌM CHỮ, RỰC RỠ)
    ========================================================== */
 
 [data-theme="light"] {
     --bg-deep: #cbd5e1;
-    --card-bg: #f8fafc;
+    --card-bg: #ffffff;
     --text-main: #0f172a;
     --text-muted: #334155;
-    --border-color: #94a3b8;
 }
 
 [data-theme="light"] body {
     background-color: #cbd5e1 !important;
-    background-image: linear-gradient(to bottom, rgba(241, 245, 249, 0.92) 0%, rgba(203, 213, 225, 0.98) 100%),
+    background-image: linear-gradient(to bottom, rgba(241, 245, 249, 0.95) 0%, rgba(203, 213, 225, 0.98) 100%),
                       url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') !important;
-    color: var(--text-main) !important;
+    color: #0f172a !important;
 }
 
-/* Navbar */
-[data-theme="light"] .navbar {
-    background: rgba(255, 255, 255, 0.95) !important;
-    backdrop-filter: blur(25px);
-    border-bottom: 2px solid var(--primary) !important;
+/* Chống chìm chữ cho mọi tiêu đề trên nền sáng */
+[data-theme="light"] h1, 
+[data-theme="light"] h2, 
+[data-theme="light"] h3, 
+[data-theme="light"] h4, 
+[data-theme="light"] h5, 
+[data-theme="light"] h6,
+[data-theme="light"] .supreme-title,
+[data-theme="light"] .card-custom h5 {
+    color: #0f172a !important;
 }
-[data-theme="light"] .nav-link { color: #0f172a !important; font-weight: 800; }
-[data-theme="light"] .nav-link:hover, 
-[data-theme="light"] .nav-link.active { color: var(--primary) !important; }
 
-/* Card thống kê */
+/* Thẻ Card Thống Kê */
 [data-theme="light"] .card-custom {
     background: #ffffff !important;
-    backdrop-filter: blur(20px);
-    border: 1.5px solid rgba(0, 235, 176, 0.5) !important;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1), 0 0 20px rgba(0, 235, 176, 0.15) !important;
+    border: 1.5px solid rgba(0, 235, 176, 0.4) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08), 0 0 15px rgba(0, 235, 176, 0.1) !important;
     border-radius: 20px !important;
 }
-[data-theme="light"] .card-custom h3 { color: var(--text-main) !important; }
-[data-theme="light"] .card-custom .text-secondary { color: var(--text-muted) !important; }
+[data-theme="light"] .card-custom h3 { color: #0f172a !important; }
+[data-theme="light"] .card-custom .text-secondary { color: #475569 !important; }
 
-/* BẢNG HỢP ĐỒNG (Ép tiêu diệt hoàn toàn màu đen/xám do JS gán ngầm) */
+/* Bảng Hợp Đồng (Khử nền tối, đổi thành trắng xám ngọc trai, Hover sáng bừng xanh ngọc) */
 [data-theme="light"] .table-responsive {
     background: #ffffff !important;
     border-radius: 16px;
     border: 1.5px solid rgba(0, 235, 176, 0.4) !important;
 }
 
-[data-theme="light"] .table-dark,
-[data-theme="light"] body table.table-dark {
+[data-theme="light"] table.table-dark {
     background-color: #ffffff !important;
     color: #0f172a !important;
 }
 
-[data-theme="light"] .table-dark th {
-    background: #e2e8f0 !important;
+[data-theme="light"] table.table-dark th {
+    background: linear-gradient(180deg, #f1f5f9 0%, #cbd5e1 100%) !important;
     color: #0d9488 !important;
     border-bottom: 2px solid var(--primary) !important;
     font-weight: 900 !important;
 }
 
-/* Ép mọi hàng tr và cột td trong bảng đổi sang nền sáng, bỏ hẳn nền đen/xám */
-[data-theme="light"] .table-dark tr,
-[data-theme="light"] .table-dark td,
+[data-theme="light"] table.table-dark tr,
+[data-theme="light"] table.table-dark td,
 [data-theme="light"] #contractsTableBody tr,
 [data-theme="light"] #contractsTableBody td {
     background-color: transparent !important;
     background: transparent !important;
     color: #0f172a !important;
-    border-bottom: 1px solid #cbd5e1 !important;
+    border-bottom: 1px solid #e2e8f0 !important;
 }
 
 [data-theme="light"] #contractsTableBody tr:nth-child(odd) { background-color: #f8fafc !important; }
 [data-theme="light"] #contractsTableBody tr:nth-child(even) { background-color: #ffffff !important; }
 
-/* Khi rê chuột vào dòng tiệc/hợp đồng: Sáng bừng xanh ngọc rực rỡ, KHÔNG CÒN MÀU XÁM */
-[data-theme="light"] .table-dark tbody tr:hover,
+/* Hover bảng: Sáng rực xanh ngọc rực rỡ, KHÔNG CÒN MÀU XÁM ĐỤC */
+[data-theme="light"] table.table-dark tbody tr:hover,
 [data-theme="light"] #contractsTableBody tr:hover { 
     background-color: #ccfbef !important; 
     box-shadow: inset 5px 0 0 var(--primary) !important;
 }
 
-/* Modal chung */
+[data-theme="light"] table.table-dark td .text-white { color: #0f172a !important; font-weight: 700; }
+[data-theme="light"] table.table-dark td .text-bright-sub { color: #475569 !important; }
+
+/* Modal & Lịch Vạn Niên */
 [data-theme="light"] .modal-content {
     background: #ffffff !important;
     border: 2px solid var(--primary) !important;
-    box-shadow: 0 25px 60px rgba(0,0,0,0.25) !important;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.2) !important;
     border-radius: 24px !important;
-    color: var(--text-main) !important;
-}
-[data-theme="light"] .btn-close-white {
-    filter: invert(1) grayscale(100%) brightness(0) !important;
-    opacity: 0.9;
+    color: #0f172a !important;
 }
 
-/* Form inputs */
-[data-theme="light"] .form-control, 
-[data-theme="light"] .form-select {
-    background: #f8fafc !important;
-    border: 1.5px solid #94a3b8 !important;
+[data-theme="light"] .modal-header h5,
+[data-theme="light"] #lunarCalendarModal .modal-title {
     color: #0f172a !important;
-    border-radius: 12px !important;
-    font-weight: 600;
-}
-
-/* ----------------------------------------------------------
-   MODAL LỊCH VẠN NIÊN (LIGHT MODE - NỀN SÁNG, NỔI BẬT KHÔNG CHÌM)
-   ---------------------------------------------------------- */
-[data-theme="light"] #lunarCalendarModal .modal-content {
-    background: #f1f5f9 !important;
-}
-[data-theme="light"] #lunarCalendarModal .modal-title,
-[data-theme="light"] #lunarCalendarModal h5 {
-    color: #0f172a !important;
-    font-weight: 900;
 }
 
 [data-theme="light"] .cal-header {
     background: #ffffff !important;
     border: 2px solid rgba(0, 235, 176, 0.5) !important;
     border-radius: 14px !important;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 }
 
-[data-theme="light"] #modalConvertDate,
-[data-theme="light"] #modalSelectMonth,
-[data-theme="light"] #modalSelectYear {
-    background-color: #f8fafc !important;
-    color: #0f172a !important;
-    border: 1.5px solid #94a3b8 !important;
-    font-weight: 800;
-}
-
-/* Các ô ngày trong lịch */
 [data-theme="light"] #modalCalendarDaysContainer > div {
     background-color: #ffffff !important;
     border: 1.5px solid #cbd5e1 !important;
     border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 
-/* Hover ô lịch: Sáng rực xanh ngọc rực rỡ, không bị xám xịt */
+/* Hover ô lịch: Sáng rực rỡ */
 [data-theme="light"] #modalCalendarDaysContainer > div:hover {
     background-color: #ccfbef !important;
     border-color: #0d9488 !important;
     box-shadow: 0 6px 25px rgba(0, 235, 176, 0.4);
-    transform: translateY(-3px);
+    transform: translateY(-2px);
     z-index: 2;
 }
 
