@@ -552,3 +552,83 @@ body { padding-top: 150px; }
     box-shadow: none !important;
     border-color: rgba(0, 0, 0, 0.2) !important;
 }
+/* ==========================================================
+   BỔ SUNG LIGHT MODE ĐẶC TRỊ CHO TRANG CRM (LỊCH TRÌNH)
+   ========================================================== */
+
+/* 1. Đổi nền giao diện tổng thể sang nền sáng */
+[data-theme="light"] {
+    --bg-deep: #f8fafc;
+}
+[data-theme="light"] body {
+    background-color: var(--bg-deep);
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.9) 0%, rgba(240, 245, 250, 0.95) 100%),
+                      url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+    color: #0f172a;
+}
+
+/* 2. Đổi các con số và tiêu đề bị chìm (màu trắng) thành màu xám đen để nổi trên nền sáng */
+[data-theme="light"] .text-white,
+[data-theme="light"] h1.text-white,
+[data-theme="light"] h5.text-white {
+    color: #0f172a !important; 
+}
+
+/* Đổi số tiền vàng chói (text-warning) thành màu cam sậm dễ đọc */
+[data-theme="light"] .text-warning {
+    color: #d97706 !important; 
+}
+
+/* Đổi số tiền xanh sáng (text-info) thành màu xanh dương đậm */
+[data-theme="light"] .text-info {
+    color: #0284c7 !important; 
+}
+
+/* Cập nhật màu các tiêu đề chính */
+[data-theme="light"] .supreme-title {
+    color: #0f172a !important;
+}
+
+/* 3. Xử lý nền các khung Card (Tổng doanh thu, Cọc, Công nợ...) */
+[data-theme="light"] .card-custom {
+    background: rgba(255, 255, 255, 0.85) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
+    color: #0f172a;
+}
+
+/* 4. Fix triệt để Bảng Hợp Đồng (table-dark) không còn bị đen thui */
+[data-theme="light"] .table-dark {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+}
+[data-theme="light"] .table-dark th {
+    background: #f1f5f9 !important; /* Màu xám siêu nhạt cho tiêu đề bảng */
+    color: var(--primary) !important;
+    border-right: 1px solid #e2e8f0;
+}
+[data-theme="light"] .table-dark tbody tr:nth-child(odd) {
+    background-color: #f8fafc !important; /* Tạo sọc ngựa vằn cho dễ nhìn */
+}
+[data-theme="light"] .table-dark tbody tr:nth-child(even) {
+    background-color: #ffffff !important;
+}
+[data-theme="light"] .table-dark tbody tr:hover {
+    background-color: rgba(0, 235, 176, 0.08) !important;
+}
+[data-theme="light"] .table-dark td {
+    color: #1e293b !important; /* Chữ trong bảng màu xám đen */
+    border-bottom: 1px solid #e2e8f0 !important;
+    border-right: 1px solid #e2e8f0 !important;
+}
+
+/* Fix ô tìm kiếm và dropdown cho nền sáng */
+[data-theme="light"] .form-control, 
+[data-theme="light"] .form-select {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #0f172a !important;
+}
+[data-theme="light"] .form-control::placeholder {
+    color: #94a3b8 !important;
+}
