@@ -114,9 +114,9 @@ const PATHS = { LIST: 'https://wsm.congtubaclieu.com.vn/webhook/get-album-list',
     const statusText = document.getElementById('zipStatusText');
     if (loadingModal) loadingModal.style.display = 'flex';
     
-    if (statusText) {
-        statusText.innerHTML = `Đang đóng gói album <b>"${albumName}"</b>.<br>Tốc độ nhanh hay chậm phụ thuộc vào đường truyền mạng và dung lượng ảnh...`;
-    }
+    // if (statusText) {
+    //     statusText.innerHTML = `Đang đóng gói album <b>"${albumName}"</b>.<br>Tốc độ nhanh hay chậm phụ thuộc vào đường truyền mạng và dung lượng ảnh...`;
+    // }
 
     try {
         const response = await fetch(`${PATH_ZIP_DOWNLOAD}?folderId=${folderId}`);
