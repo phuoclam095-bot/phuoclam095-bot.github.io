@@ -325,19 +325,6 @@ body {
     color: var(--primary) !important; 
 }
 
-/* KHẮC PHỤC LỖI THANH GẠCH CHÂN BỊ KÉO DÀI RA GIỮA MÀN HÌNH: 
-   Sử dụng thuộc tính bám theo độ rộng chữ của từng `.nav-link` riêng lẻ thay vì lẹm ra khung chung */
-.nav-link.active::after { 
-    content: ''; 
-    position: absolute; 
-    width: 60% !important; 
-    height: 3px !important; 
-    bottom: 2px !important; 
-    left: 20% !important; 
-    background: var(--primary); 
-    box-shadow: 0 0 10px var(--primary); 
-    border-radius: 4px;
-}
 
 .user-pill {  
     background: rgba(255,255,255,0.05);  
@@ -434,18 +421,22 @@ body {
 .btn-copy-action:hover { transform: translateY(-3px); box-shadow: var(--neon); }
 
 #toastNotice { position: fixed; top: 110px; right: 30px; background: var(--primary); color: #000; padding: 12px 30px; border-radius: 12px; z-index: 10000; font-weight: 900; display: none; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
-
+.nav-link {
+    position: relative !important;
+}
 @media (min-width: 992px) {
-    .nav-center-container {  
-        position: absolute !important;  
-        left: 50% !important;  
-        top: 50% !important;
-        transform: translate(-50%, -50%) !important;  
-        display: flex !important;  
-        align-items: center !important;  
-        justify-content: center !important;  
-        width: max-content !important;  
-        z-index: 5;  
+    .nav-link.active::after { 
+        content: '' !important; 
+        position: absolute !important; 
+        width: 60% !important;   /* Độ dài gạch chân đúng bằng 60% chiều rộng chữ */
+        height: 3px !important;  /* Độ dày thanh */
+        bottom: 2px !important;  /* Sát đáy khung chữ */
+        left: 20% !important;    /* Căn giữa nằm ngay ngắn dưới tab */
+        right: auto !important;
+        transform: none !important;
+        background: var(--primary) !important; 
+        box-shadow: 0 0 10px var(--primary) !important; 
+        border-radius: 4px !important;
     }
 }
 
