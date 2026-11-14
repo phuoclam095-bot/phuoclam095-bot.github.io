@@ -196,6 +196,33 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02) !important;
 }
 /* ==========================================================
+   FIX LỖI TAB MENU VÀ THANH GẠCH CHÂN TRÊN LIGHT MODE
+   ========================================================== */
+
+[data-theme="light"] .nav-link {
+    color: #334155 !important; /* Đổi chữ sang màu tối đậm nét, dễ đọc trên nền sáng */
+    font-weight: 700 !important;
+}
+
+[data-theme="light"] .nav-link:hover, 
+[data-theme="light"] .nav-link.active {
+    color: #0f766e !important; /* Màu xanh ngọc lục bảo sang trọng khi active */
+}
+
+/* Định vị lại thanh gạch chân active nằm gọn gàng dưới chân chữ, không bị lệch */
+[data-theme="light"] .nav-link.active::after,
+.nav-link.active::after {
+    content: '';
+    position: absolute;
+    width: 60% !important;   /* Độ dài thanh gạch chân vừa vặn với chữ */
+    height: 3px !important;  /* Độ dày thanh */
+    bottom: 2px !important;  /* Sát đáy tab menu */
+    left: 20% !important;    /* Canh giữa thanh gạch chân */
+    background: var(--primary) !important;
+    border-radius: 4px;
+    box-shadow: 0 0 8px rgba(15, 118, 110, 0.4);
+}
+/* ==========================================================
  .search-wrapper .badge,
 [data-theme="light"] .search-wrapper .badge {
     background: #0f766e !important;
