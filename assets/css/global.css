@@ -239,20 +239,32 @@ body[data-theme="light"], [data-theme="light"] body {
         .msg-ai { background: rgba(255,255,255,0.1); color: #fff; border-bottom-left-radius: 2px; }
         .msg-user { background: var(--primary); color: #000; font-weight: 700; align-self: flex-end; border-bottom-right-radius: 2px; }
         .chat-input-area { padding: 10px; background: rgba(0,0,0,0.3); display: flex; gap: 8px; align-items: center; }
-        @media (min-width: 992px) {
-            .nav-center-container { 
-                position: absolute !important; 
-                left: 50% !important; 
-                top: 50% !important;
-                transform: translate(-50%, -50%) !important; 
-                display: flex !important; 
-                align-items: center !important; 
-                justify-content: center !important; 
-                width: max-content !important; 
-                z-index: 5; 
-            }
-            .nav-link.active::after { content: ''; position: absolute; width: 30%; height: 2px; bottom: 5px; left: 35%; background: var(--primary); box-shadow: 0 0 10px var(--primary); }
-        }
+           .nav-center-container { 
+                        position: absolute !important; 
+                        left: 50% !important; 
+                        top: 50% !important;
+                        transform: translate(-50%, -50%) !important; 
+                        display: flex !important; 
+                        align-items: center !important; 
+                        justify-content: center !important; 
+                        width: max-content !important; 
+                        z-index: 5; 
+                    }
+                    
+                    .nav-link.active::after { 
+                        content: '' !important; 
+                        position: absolute !important; 
+                        width: 60% !important;   /* Độ dài gạch chân đúng bằng 60% chiều rộng chữ */
+                        height: 3px !important;  
+                        bottom: 2px !important;  
+                        left: 20% !important;    /* Căn giữa nằm ngay ngắn dưới tab đang active */
+                        right: auto !important;
+                        transform: none !important;
+                        background: var(--primary) !important; 
+                        box-shadow: 0 0 10px var(--primary) !important; 
+                        border-radius: 4px !important;
+                    }
+                }
         @keyframes marquee-run { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         @keyframes rainbow-move { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
         @keyframes text-shine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
@@ -338,6 +350,7 @@ body[data-theme="light"], [data-theme="light"] body {
     white-space: nowrap;
     width: 100%;
     box-sizing: border-box; 
+}
 .chat-suggestions::-webkit-scrollbar {
     display: none; 
 }
