@@ -310,21 +310,19 @@
                         </div>
             
                         <div class="modal-body p-4">
-            <div class="cal-header d-flex align-items-center mb-3 px-4 py-3 rounded-4" style="background: rgba(13, 25, 48, 0.95); border: 1px solid rgba(0, 235, 176, 0.25); width: 100%; box-sizing: border-box; overflow-x: auto; white-space: nowrap;">
+            <div class="cal-header d-flex justify-content-between align-items-center mb-3 px-4 py-3 rounded-4 flex-nowrap gap-3" style="background: rgba(13, 25, 48, 0.95); border: 1px solid rgba(0, 235, 176, 0.25); width: 100%; overflow-x: auto; white-space: nowrap;">
     
-    <div class="cal-header d-flex align-items-center justify-content-between mb-3 px-4 py-3 rounded-4" style="background: rgba(13, 25, 48, 0.95); border: 1px solid rgba(0, 235, 176, 0.25); width: 100%; box-sizing: border-box; overflow-x: auto; white-space: nowrap; gap: 15px;">
-    
-    <!-- Cụm 1: BÊN TRÁI (Nút Hôm nay, Đổi tháng, Chọn Tháng/Năm) -->
-    <div class="d-flex align-items-center gap-2" style="flex-shrink: 0;">
-        <button class="btn-today-quick px-3 py-2 fw-bold text-uppercase" style="font-size: 0.8rem;" onclick="jumpToToday()">Hôm nay</button>
+    <!-- CỤM 1 (BÊN TRÁI): Hôm nay, Nút < >, Tháng Năm -->
+    <div class="d-flex align-items-center gap-3" style="flex-shrink: 0;">
+        <button class="btn-today-quick px-3 py-1 fw-bold text-uppercase" style="font-size: 0.75rem;" onclick="jumpToToday()">Hôm nay</button>
         
         <div class="d-flex align-items-center gap-1">
-            <button class="btn btn-sm btn-outline-light rounded-2 px-2.5 py-1.5 border-0" style="background: rgba(255,255,255,0.05);" onclick="changeMonthModal(-1)" title="Tháng trước"><i class="fas fa-chevron-left text-primary"></i></button>
-            <button class="btn btn-sm btn-outline-light rounded-2 px-2.5 py-1.5 border-0" style="background: rgba(255,255,255,0.05);" onclick="changeMonthModal(1)" title="Tháng sau"><i class="fas fa-chevron-right text-primary"></i></button>
+            <button class="btn btn-sm btn-outline-light rounded-2 px-2 py-1 border-0" style="background: rgba(255,255,255,0.05);" onclick="changeMonthModal(-1)"><i class="fas fa-chevron-left text-primary"></i></button>
+            <button class="btn btn-sm btn-outline-light rounded-2 px-2 py-1 border-0" style="background: rgba(255,255,255,0.05);" onclick="changeMonthModal(1)"><i class="fas fa-chevron-right text-primary"></i></button>
         </div>
         
-        <div class="d-flex align-items-center gap-1 text-white ms-2">
-            <select id="modalSelectMonth" class="form-select form-select-sm bg-transparent text-white border-0 fw-bold shadow-none p-0 pe-1 cursor-pointer custom-select-dark" style="width: auto; outline: none; font-size: 0.95rem;" onchange="jumpToMonthModal()">
+        <div class="d-flex align-items-center text-white fw-bold" style="font-size: 0.95rem;">
+            <select id="modalSelectMonth" class="form-select form-select-sm bg-transparent text-white border-0 fw-bold shadow-none p-0 pe-2 cursor-pointer custom-select-dark" style="width: auto; outline: none; font-size: 0.95rem;" onchange="jumpToMonthModal()">
                 <option value="0">Tháng 1</option><option value="1">Tháng 2</option>
                 <option value="2">Tháng 3</option><option value="3">Tháng 4</option>
                 <option value="4">Tháng 5</option><option value="5">Tháng 6</option>
@@ -332,37 +330,34 @@
                 <option value="8">Tháng 9</option><option value="9">Tháng 10</option>
                 <option value="10">Tháng 11</option><option value="11">Tháng 12</option>
             </select>
-            <span class="text-primary mx-1">/</span>
-            <select id="modalSelectYear" class="form-select form-select-sm bg-transparent text-primary border-0 fw-bold shadow-none p-0 cursor-pointer custom-select-dark" style="width: auto; outline: none; font-size: 0.95rem;" onchange="jumpToMonthModal()">
+            <select id="modalSelectYear" class="form-select form-select-sm bg-transparent text-white border-0 fw-bold shadow-none p-0 cursor-pointer custom-select-dark" style="width: auto; outline: none; font-size: 0.95rem;" onchange="jumpToMonthModal()">
             </select>
         </div>
     </div>
 
-    <!-- Cụm 2: Ở GIỮA (Quy đổi ngày Âm/Dương và Chọn ngày) -->
-    <div class="d-flex align-items-center gap-2 justify-content-center" style="flex-shrink: 0;">
+    <!-- CỤM 2 (Ở GIỮA): Chuyển đổi Âm/Dương và Ngày -->
+    <div class="d-flex align-items-center gap-2" style="flex-shrink: 0;">
         <div class="btn-group btn-group-sm" role="group">
             <input type="radio" class="btn-check" name="convertType" id="typeSolarToLunar" checked onclick="switchConvertMode()">
-            <label class="btn btn-outline-primary py-1 px-2.5" style="font-size:0.7rem; font-weight:700;" for="typeSolarToLunar">Dương➔Âm</label>
+            <label class="btn btn-outline-primary py-1 px-2" style="font-size:0.75rem; font-weight:700;" for="typeSolarToLunar">Dương➔Âm</label>
             <input type="radio" class="btn-check" name="convertType" id="typeLunarToSolar" onclick="switchConvertMode()">
-            <label class="btn btn-outline-primary py-1 px-2.5" style="font-size:0.7rem; font-weight:700;" for="typeLunarToSolar">Âm➔Dương</label>
+            <label class="btn btn-outline-primary py-1 px-2" style="font-size:0.75rem; font-weight:700;" for="typeLunarToSolar">Âm➔Dương</label>
         </div>
         
-        <div style="width: 110px;">
-            <input type="date" id="modalConvertDate" class="form-control form-control-sm text-center fw-bold shadow-none" style="font-size: 0.75rem; width: 100% !important; height: 30px !important; background: #13223f; color: #fff; border: 1px solid rgba(255,255,255,0.25); outline: none !important;" onchange="performModalConversion()">
-        </div>
+        <input type="date" id="modalConvertDate" class="form-control form-control-sm text-center fw-bold shadow-none" style="font-size: 0.8rem; width: 130px !important; background: #13223f; color: #fff; border: 1px solid rgba(255,255,255,0.25); outline: none !important;" onchange="performModalConversion()">
         
-        <div id="modalConversionResult" class="text-success fw-bold text-nowrap text-start" style="font-size: 0.72rem; width: 95px; min-width: 95px; max-width: 95px; overflow: hidden; text-overflow: ellipsis;">
-            Chọn ngày
+        <div id="modalConversionResult" class="text-warning fw-bold text-nowrap" style="font-size: 0.8rem;">
+            ➔ ÂL: Chọn ngày
         </div>
     </div>
 
-    <!-- Cụm 3: BÊN PHẢI (View Lưới / Danh sách) -->
-    <div class="d-flex align-items-center p-0" role="group" style="flex-shrink: 0; gap: 6px;">
+    <!-- CỤM 3 (BÊN PHẢI): Chế độ Lưới / Danh sách -->
+    <div class="d-flex align-items-center gap-2" role="group" style="flex-shrink: 0;">
         <input type="radio" class="btn-check" name="calendarViewMode" id="viewModeGrid" checked onclick="switchCalendarView('grid')">
-        <label class="btn btn-sm btn-outline-light px-3.5 py-1.5 fw-bold border border-secondary border-opacity-50 rounded-2" style="font-size: 0.8rem;" for="viewModeGrid"><i class="fas fa-th me-1.5 text-primary"></i> Lưới</label>
+        <label class="btn btn-sm btn-light bg-white text-dark px-3 py-1 fw-bold rounded-2 m-0" style="font-size: 0.8rem;" for="viewModeGrid"><i class="fas fa-th me-1 text-primary"></i> Lưới</label>
 
         <input type="radio" class="btn-check" name="calendarViewMode" id="viewModeList" onclick="switchCalendarView('list')">
-        <label class="btn btn-sm btn-outline-light px-3.5 py-1.5 fw-bold border border-secondary border-opacity-50 rounded-2" style="font-size: 0.8rem;" for="viewModeList"><i class="fas fa-list me-1.5 text-primary"></i> Danh Sách</label>
+        <label class="btn btn-sm btn-outline-light px-3 py-1 fw-bold border-secondary rounded-2 m-0" style="font-size: 0.8rem;" for="viewModeList"><i class="fas fa-list me-1 text-primary"></i> Danh Sách</label>
     </div>
 </div>
                 <div id="calendarGridViewContainer">
