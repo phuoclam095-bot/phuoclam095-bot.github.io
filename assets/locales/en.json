@@ -45,7 +45,10 @@
     "btn_dismiss": "Later",
     "chat_welcome": "Hello from chonanhnhanh.vn! How can I assist your studio today?",
     "ai_suggestion_welcome": "Hello {name}! 👋 How can I help you?",
-    "nav_create": "Create Album",
+    "page_title_tab": "CHONANHNHANH.VN - ALBUM MANAGEMENT",
+        "theme_toggle": "Toggle Light / Dark Mode",
+        "btn_logout": "Logout",
+        "nav_create": "Create Album",
         "nav_manage": "Manage",
         "nav_calendar": "Calendar",
         "nav_copy": "Copy",
@@ -57,14 +60,15 @@
         "nav_feedback": "Feedback & Bugs",
         "nav_privacy": "Privacy Policy",
         
-        "page_title": "Album Management",
+        "page_heading": "Album Management",
         "search_placeholder": "Search album name...",
         
         "vip_locked_title": "FEATURE LOCKED",
-        "vip_locked_desc": "Your trial has expired or you haven't upgraded to VIP. Please renew to continue using management features.",
+        "vip_locked_desc": "Your trial has expired or you haven't upgraded to a VIP plan. Please renew to continue using management features.",
         "btn_renew_vip": "Renew VIP Now",
         
         "modal_cover_title": "CHANGE ALBUM COVER",
+        "album_placeholder": "Album: ...",
         "modal_cover_desc": "Select the best photo below as a welcome cover for clients:",
         "loading_photos": "Loading photos...",
         
