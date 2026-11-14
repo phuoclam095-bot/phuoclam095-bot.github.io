@@ -234,24 +234,28 @@ padding: 8px !important;
 /* ==========================================================
    2. BỔ SUNG LIGHT MODE (CHUẨN 5 SAO - KÍNH MỜ & ĐỒNG BỘ ĐẲNG CẤP)
    ========================================================== */
+/* ==========================================================
+   GIAO DIỆN LIGHT MODE CHUẨN ĐẲNG CẤP 5 SAO (CHO TRANG CRM)
+   ========================================================== */
+
 [data-theme="light"] {
     --bg-deep: #eef2f7;
-    --card-bg: rgba(255, 255, 255, 0.85);
+    --card-bg: rgba(255, 255, 255, 0.9);
     --text-main: #0f172a;
     --text-muted: #475569;
-    --border-color: rgba(0, 235, 176, 0.25);
+    --border-color: rgba(0, 235, 176, 0.3);
 }
 
 [data-theme="light"] body {
     background-color: #eef2f7 !important;
-    background-image: linear-gradient(to bottom, rgba(245, 247, 250, 0.85) 0%, rgba(230, 238, 246, 0.95) 100%),
+    background-image: linear-gradient(to bottom, rgba(245, 247, 250, 0.9) 0%, rgba(230, 238, 246, 0.98) 100%),
                       url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') !important;
     color: var(--text-main) !important;
 }
 
-/* Navbar Light Mode (Hiệu ứng kính mờ cao cấp) */
+/* Navbar */
 [data-theme="light"] .navbar {
-    background: rgba(255, 255, 255, 0.85) !important;
+    background: rgba(255, 255, 255, 0.9) !important;
     backdrop-filter: blur(25px);
     border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
@@ -259,11 +263,11 @@ padding: 8px !important;
 [data-theme="light"] .nav-link:hover, 
 [data-theme="light"] .nav-link.active { color: var(--primary) !important; }
 
-/* Thẻ Card Thống Kê (Hiệu ứng kính mờ 5 sao) */
+/* Các Thẻ Card Thống Kê */
 [data-theme="light"] .card-custom {
-    background: rgba(255, 255, 255, 0.8) !important;
+    background: rgba(255, 255, 255, 0.85) !important;
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(0, 235, 176, 0.2) !important;
+    border: 1px solid rgba(0, 235, 176, 0.25) !important;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06) !important;
     border-radius: 20px !important;
 }
@@ -272,7 +276,7 @@ padding: 8px !important;
 
 /* Bảng Hợp Đồng Light Mode */
 [data-theme="light"] .table-dark {
-    background-color: rgba(255, 255, 255, 0.9) !important;
+    background-color: rgba(255, 255, 255, 0.95) !important;
     color: var(--text-main) !important;
 }
 [data-theme="light"] .table-dark th {
@@ -288,11 +292,11 @@ padding: 8px !important;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
     border-right: 1px solid rgba(0, 0, 0, 0.03) !important;
 }
-[data-theme="light"] .table-dark tbody tr:nth-child(odd) { background-color: rgba(248, 250, 252, 0.6) !important; }
-[data-theme="light"] .table-dark tbody tr:nth-child(even) { background-color: rgba(255, 255, 255, 0.8) !important; }
-[data-theme="light"] .table-dark tbody tr:hover { background-color: rgba(0, 235, 176, 0.1) !important; }
+[data-theme="light"] .table-dark tbody tr:nth-child(odd) { background-color: rgba(248, 250, 252, 0.8) !important; }
+[data-theme="light"] .table-dark tbody tr:nth-child(even) { background-color: rgba(255, 255, 255, 0.95) !important; }
+[data-theme="light"] .table-dark tbody tr:hover { background-color: rgba(0, 235, 176, 0.12) !important; }
 
-/* Modal chung & Nút đóng */
+/* Các Modal chung */
 [data-theme="light"] .modal-content {
     background: #ffffff !important;
     border: 1.5px solid var(--primary) !important;
@@ -304,9 +308,8 @@ padding: 8px !important;
     filter: invert(1) grayscale(100%) brightness(0) !important;
     opacity: 0.7;
 }
-[data-theme="light"] .btn-close-white:hover { opacity: 1; }
 
-/* Input, Form, Select Light Mode */
+/* Input, Form, Select */
 [data-theme="light"] .form-control, 
 [data-theme="light"] .form-select {
     background: #f8fafc !important;
@@ -314,18 +317,12 @@ padding: 8px !important;
     color: var(--text-main) !important;
     border-radius: 12px !important;
 }
-[data-theme="light"] .form-control:focus, 
-[data-theme="light"] .form-select:focus {
-    border-color: var(--primary) !important;
-    background: #ffffff !important;
-    box-shadow: 0 0 15px rgba(0, 235, 176, 0.2) !important;
-}
 
 /* ----------------------------------------------------------
-   MODAL LỊCH VẠN NIÊN (LIGHT MODE - SANG TRỌNG, KHÔNG BỊ CHÌM)
+   ĐẶC TRỊ CHO MODAL LỊCH VẠN NIÊN (LIGHT MODE)
    ---------------------------------------------------------- */
 [data-theme="light"] #lunarCalendarModal .modal-content {
-    background: #ffffff !important;
+    background: #f8fafc !important;
 }
 [data-theme="light"] #lunarCalendarModal .modal-title,
 [data-theme="light"] #lunarCalendarModal h5 {
@@ -335,33 +332,29 @@ padding: 8px !important;
 
 /* Thanh công cụ lịch (Cal-header) */
 [data-theme="light"] .cal-header {
-    background: #f1f5f9 !important;
+    background: #ffffff !important;
     border: 1px solid rgba(0, 235, 176, 0.3) !important;
     border-radius: 14px !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
 }
 
 [data-theme="light"] #modalConvertDate,
 [data-theme="light"] #modalSelectMonth,
 [data-theme="light"] #modalSelectYear {
-    background-color: #ffffff !important;
+    background-color: #f1f5f9 !important;
     color: var(--text-main) !important;
     border: 1px solid #cbd5e1 !important;
 }
 
-/* Khung lưới các ngày trong tháng */
-[data-theme="light"] #calendarGridViewContainer > div:first-child > div {
-    color: #475569 !important;
-    font-weight: 800;
-}
-
+/* Các ô ngày trong lịch */
 [data-theme="light"] #modalCalendarDaysContainer > div {
     background-color: #ffffff !important;
-    border: 1.5px solid #e2e8f0 !important;
-    border-radius: 12px;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 10px;
     transition: all 0.2s ease;
 }
 
-/* Hiệu ứng hover ô lịch: Viền neon xanh ngọc, nổi bật tinh tế */
+/* Hiệu ứng hover ô lịch: Sáng mượt, viền xanh ngọc neon, không bị xám xịt */
 [data-theme="light"] #modalCalendarDaysContainer > div:hover {
     background-color: #f0fdf4 !important;
     border-color: var(--primary) !important;
