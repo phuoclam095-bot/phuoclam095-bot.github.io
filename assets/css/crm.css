@@ -249,7 +249,7 @@ padding: 8px !important;
     color: #0f172a !important;
 }
 
-/* Chống chìm chữ cho mọi tiêu đề trên nền sáng */
+/* 1. KHỬ SẠCH TIÊU ĐỀ BỊ CHÌM */
 [data-theme="light"] h1, 
 [data-theme="light"] h2, 
 [data-theme="light"] h3, 
@@ -257,45 +257,45 @@ padding: 8px !important;
 [data-theme="light"] h5, 
 [data-theme="light"] h6,
 [data-theme="light"] .supreme-title,
-[data-theme="light"] .card-custom h5 {
+[data-theme="light"] .card-custom h5,
+[data-theme="light"] .card-custom h3 {
     color: #0f172a !important;
 }
 
-/* Thẻ Card Thống Kê */
+/* 2. THẺ CARD THỐNG KÊ */
 [data-theme="light"] .card-custom {
     background: #ffffff !important;
     border: 1.5px solid rgba(0, 235, 176, 0.4) !important;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08), 0 0 15px rgba(0, 235, 176, 0.1) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
     border-radius: 20px !important;
 }
-[data-theme="light"] .card-custom h3 { color: #0f172a !important; }
-[data-theme="light"] .card-custom .text-secondary { color: #475569 !important; }
 
-/* Bảng Hợp Đồng (Khử nền tối, đổi thành trắng xám ngọc trai, Hover sáng bừng xanh ngọc) */
+/* 3. BẢNG HỢP ĐỒNG: Ép trắng toàn tập, không còn một hột màu xám tối */
 [data-theme="light"] .table-responsive {
     background: #ffffff !important;
     border-radius: 16px;
     border: 1.5px solid rgba(0, 235, 176, 0.4) !important;
 }
 
+[data-theme="light"] .table-dark,
 [data-theme="light"] table.table-dark {
     background-color: #ffffff !important;
     color: #0f172a !important;
 }
 
-[data-theme="light"] table.table-dark th {
-    background: linear-gradient(180deg, #f1f5f9 0%, #cbd5e1 100%) !important;
+[data-theme="light"] .table-dark th {
+    background: #f1f5f9 !important;
     color: #0d9488 !important;
     border-bottom: 2px solid var(--primary) !important;
     font-weight: 900 !important;
 }
 
-[data-theme="light"] table.table-dark tr,
-[data-theme="light"] table.table-dark td,
+[data-theme="light"] .table-dark tr,
+[data-theme="light"] .table-dark td,
 [data-theme="light"] #contractsTableBody tr,
 [data-theme="light"] #contractsTableBody td {
-    background-color: transparent !important;
-    background: transparent !important;
+    background-color: #ffffff !important;
+    background: #ffffff !important;
     color: #0f172a !important;
     border-bottom: 1px solid #e2e8f0 !important;
 }
@@ -303,17 +303,17 @@ padding: 8px !important;
 [data-theme="light"] #contractsTableBody tr:nth-child(odd) { background-color: #f8fafc !important; }
 [data-theme="light"] #contractsTableBody tr:nth-child(even) { background-color: #ffffff !important; }
 
-/* Hover bảng: Sáng rực xanh ngọc rực rỡ, KHÔNG CÒN MÀU XÁM ĐỤC */
-[data-theme="light"] table.table-dark tbody tr:hover,
+/* HOVER BẢNG: Sáng rực xanh ngọc rực rỡ, KHÔNG CÒN MÀU XÁM */
+[data-theme="light"] .table-dark tbody tr:hover,
 [data-theme="light"] #contractsTableBody tr:hover { 
     background-color: #ccfbef !important; 
     box-shadow: inset 5px 0 0 var(--primary) !important;
 }
 
-[data-theme="light"] table.table-dark td .text-white { color: #0f172a !important; font-weight: 700; }
-[data-theme="light"] table.table-dark td .text-bright-sub { color: #475569 !important; }
+[data-theme="light"] .table-dark td .text-white { color: #0f172a !important; font-weight: 700; }
+[data-theme="light"] .table-dark td .text-bright-sub { color: #475569 !important; }
 
-/* Modal & Lịch Vạn Niên */
+/* 4. MODAL & LỊCH VẠN NIÊN (SÁNG RỰC, CÓ KHUNG NGÔN NGỮ/HÔM NAY RÕ RÀNG) */
 [data-theme="light"] .modal-content {
     background: #ffffff !important;
     border: 2px solid var(--primary) !important;
@@ -328,18 +328,25 @@ padding: 8px !important;
 }
 
 [data-theme="light"] .cal-header {
-    background: #ffffff !important;
+    background: #f8fafc !important;
     border: 2px solid rgba(0, 235, 176, 0.5) !important;
     border-radius: 14px !important;
 }
 
+/* Các ô ngày trong lịch vạn niên: Nền trắng sáng, viền sắc nét, chữ đậm rõ */
 [data-theme="light"] #modalCalendarDaysContainer > div {
     background-color: #ffffff !important;
     border: 1.5px solid #cbd5e1 !important;
     border-radius: 12px;
 }
 
-/* Hover ô lịch: Sáng rực rỡ */
+/* Nhận diện ngày hôm nay trong lịch sáng: Tô vàng nhẹ nổi bật cực rõ */
+[data-theme="light"] #modalCalendarDaysContainer > div[style*="background: rgba(234, 179, 8"] {
+    background-color: #fef08a !important;
+    border: 2px solid #ca8a04 !important;
+}
+
+/* Hover ô lịch: Sáng bừng xanh ngọc */
 [data-theme="light"] #modalCalendarDaysContainer > div:hover {
     background-color: #ccfbef !important;
     border-color: #0d9488 !important;
