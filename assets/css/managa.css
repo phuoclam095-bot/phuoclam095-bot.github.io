@@ -424,19 +424,35 @@ body {
 .nav-link {
     position: relative !important;
 }
+/* ==========================================================
+   CĂN CHUẨN NAVBAR NẰM CHÍNH GIỮA TUỆT ĐỐI TRÊN DESKTOP
+   ========================================================== */
 @media (min-width: 992px) {
-    .nav-link.active::after { 
-        content: '' !important; 
-        position: absolute !important; 
-        width: 60% !important;   /* Độ dài gạch chân đúng bằng 60% chiều rộng chữ */
-        height: 3px !important;  /* Độ dày thanh */
-        bottom: 2px !important;  /* Sát đáy khung chữ */
-        left: 20% !important;    /* Căn giữa nằm ngay ngắn dưới tab */
-        right: auto !important;
-        transform: none !important;
-        background: var(--primary) !important; 
-        box-shadow: 0 0 10px var(--primary) !important; 
-        border-radius: 4px !important;
+    .navbar .container-fluid {
+        position: relative !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+    }
+
+    /* Ép khung chứa menu luôn nằm chính giữa tuyệt đối màn hình */
+    .nav-center-container {
+        position: absolute !important;
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        margin: 0 !important;
+        z-index: 5 !important;
+    }
+
+    /* Đảm bảo phần bên trái (Logo) và bên phải (User/Nút bấm) có chiều rộng cân đối hoặc đẩy sang 2 bên */
+    .navbar-brand-left {
+        z-index: 10 !important;
+    }
+
+    .navbar .d-flex.align-items-center.ms-auto {
+        z-index: 10 !important;
+        margin-left: auto !important;
     }
 }
 
