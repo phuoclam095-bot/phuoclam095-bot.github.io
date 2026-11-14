@@ -794,3 +794,39 @@ body { padding-top: 150px; }
 [data-theme="light"] body #modalCalendarDaysContainer div {
     color: #0f172a !important;
 }
+/* ==========================================================
+   FIX DỨT ĐIỂM: TIÊU ĐỀ MODAL VÀ HIỆU ỨNG HOVER Ô LỊCH (LIGHT MODE)
+   ========================================================== */
+
+/* 1. Đổi tiêu đề "Lịch Vạn Niên & Lịch Trình Studio" thành chữ xám đen rõ nét */
+[data-theme="light"] body .modal-header h5,
+[data-theme="light"] body .modal-header .text-white {
+    color: #0f172a !important;
+}
+
+/* 2. Đổi nền và hiệu ứng hover các ô ngày trong Lịch Lưới cho đẹp và sáng sủa */
+[data-theme="light"] body #modalCalendarDaysContainer > div {
+    background-color: #ffffff !important; /* Nền ô ngày trắng tinh */
+    border: 1px solid #e2e8f0 !important; /* Viền xám nhạt tinh tế */
+    transition: all 0.2s ease;
+}
+
+/* Hiệu ứng khi rê chuột (hover) vào ô ngày: nổi bật nhẹ nhàng thay vì xám xịt */
+[data-theme="light"] body #modalCalendarDaysContainer > div:hover {
+    background-color: #f0fdf4 !important; /* Xanh ngọc siêu nhạt thanh lịch */
+    border-color: var(--primary) !important;
+    box-shadow: 0 4px 12px rgba(0, 235, 176, 0.15);
+    z-index: 2;
+}
+
+/* Đảm bảo chữ số ngày, lịch âm, và tên sự kiện bên trong ô lịch hiển thị cực rõ */
+[data-theme="light"] body #modalCalendarDaysContainer div,
+[data-theme="light"] body #modalCalendarDaysContainer span {
+    color: #1e293b !important;
+}
+
+/* Riêng các ngày thứ 7, chủ nhật cho nổi bật hơn một chút */
+[data-theme="light"] body #modalCalendarDaysContainer > div:nth-child(7n) span,
+[data-theme="light"] body #modalCalendarDaysContainer > div:nth-child(7n-6) span {
+    font-weight: bold;
+}
