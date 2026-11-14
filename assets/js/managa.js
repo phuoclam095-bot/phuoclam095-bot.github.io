@@ -258,9 +258,9 @@ function closeZipLoading() {
                     }
                 });
                 
-                if (!hasNote) {
-                    container.innerHTML = `<div class="text-center text-secondary py-4">Chưa có ghi chú nào từ khách hàng cho album này.</div>`;
-                }
+                // if (!hasNote) {
+                 //   container.innerHTML = `<div class="text-center text-secondary py-4">Chưa có ghi chú nào từ khách hàng cho album này.</div>`;
+               // }
                 
                 new bootstrap.Modal(document.getElementById('noteModal')).show();
             } catch(e) {
