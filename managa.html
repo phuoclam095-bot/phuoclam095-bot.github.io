@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CHONANHNHANH.VN - QUẢN LÝ ALBUM</title>
+    <title data-i18n="page_title_tab">CHONANHNHANH.VN - QUẢN LÝ ALBUM</title>
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="shortcut icon" href="/favicon.ico" />
@@ -45,7 +45,7 @@
         <div class="container-fluid px-3 px-lg-5 d-flex flex-wrap align-items-center justify-content-between">
             <a class="navbar-brand-left m-0" href="./">CHONANHNHANH<span style="color:#f0c300">.VN</span></a>
             <div class="d-flex align-items-center ms-auto order-lg-3">
-                <button class="btn btn-sm" id="themeToggleBtn" onclick="toggleDarkMode()" title="Chuyển đổi Sáng / Tối" style="background: rgba(0,0,0,0.05); border: 1px solid rgba(0,176,155,0.3); color: var(--primary); border-radius: 50%; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;">
+                <button class="btn btn-sm" id="themeToggleBtn" onclick="toggleDarkMode()" data-i18n-title="theme_toggle" title="Chuyển đổi Sáng / Tối" style="background: rgba(0,0,0,0.05); border: 1px solid rgba(0,176,155,0.3); color: var(--primary); border-radius: 50%; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;">
                         <i id="themeIcon" class="fas fa-moon"></i>
                     </button>
                 
@@ -68,7 +68,7 @@
                                 </div>
                             </div>
                         </div>
-                    <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()" style="cursor:pointer" title="Đăng xuất">
+                    <button class="btn btn-link text-danger p-0 ms-2" onclick="logoutAdmin()" style="cursor:pointer" data-i18n-title="btn_logout" title="Đăng xuất">
                         <i class="fas fa-power-off"></i>
                     </button>
                 </div>
@@ -76,17 +76,17 @@
 
             <div class="nav-center-container" id="navCenterArea">
                 <ul class="navbar-nav" id="adminNavLinks">
-                    <li><a href="./" class="nav-link">Tạo Album</a></li>
-                    <li><a href="managa" class="nav-link active">Quản Lý</a></li>
-                    <li><a href="crm" class="nav-link">Lịch</a></li>
-                    <li><a href="copy_local" class="nav-link" onclick="handleCopyTabClick(event)">Sao Chép</a></li>
-                    <li><a href="cull" class="nav-link">Lọc Ảnh</a></li>
-                    <li><a href="blog" class="nav-link">Blog</a></li>
-                    <li><a href="payment" class="nav-link">Gia Hạn</a></li>
-                    <li><a href="lienhe" class="nav-link">Liên Hệ</a></li>
-                    <li><a href="guide" class="nav-link">Hướng Dẫn</a></li>
-                    <li><a href="fedback" class="nav-link">Góp Ý Và Báo Lỗi</a></li>
-                    <li><a href="privacy" class="nav-link">Chính Sách Bảo Mật</a></li>
+                    <li><a href="./" class="nav-link" data-i18n="nav_create">Tạo Album</a></li>
+                    <li><a href="managa" class="nav-link active" data-i18n="nav_manage">Quản Lý</a></li>
+                    <li><a href="crm" class="nav-link" data-i18n="nav_calendar">Lịch</a></li>
+                    <li><a href="copy_local" class="nav-link" onclick="handleCopyTabClick(event)" data-i18n="nav_copy">Sao Chép</a></li>
+                    <li><a href="cull" class="nav-link" data-i18n="nav_cull">Lọc Ảnh</a></li>
+                    <li><a href="blog" class="nav-link" data-i18n="nav_blog">Blog</a></li>
+                    <li><a href="payment" class="nav-link" data-i18n="nav_payment">Gia Hạn</a></li>
+                    <li><a href="lienhe" class="nav-link" data-i18n="nav_contact">Liên Hệ</a></li>
+                    <li><a href="guide" class="nav-link" data-i18n="nav_guide">Hướng Dẫn</a></li>
+                    <li><a href="fedback" class="nav-link" data-i18n="nav_feedback">Góp Ý Và Báo Lỗi</a></li>
+                    <li><a href="privacy" class="nav-link" data-i18n="nav_privacy">Chính Sách Bảo Mật</a></li>
                 </ul>
             </div>
 
@@ -95,37 +95,37 @@
 
     <div class="modal fade" id="directCoverModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered" style="max-width: 1100px; width: 95%;">
-            <div class="modal-content" border: 2px solid var(--primary); border-radius: 20px;">
+            <div class="modal-content" style="border: 2px solid var(--primary); border-radius: 20px;">
                 <div class="modal-header border-0">
-                    <h5 class="modal-title text-primary fw-900" style="font-size: 1rem;">ĐỔI ẢNH BÌA ALBUM</h5>
+                    <h5 class="modal-title text-primary fw-900" style="font-size: 1rem;" data-i18n="modal_cover_title">ĐỔI ẢNH BÌA ALBUM</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
-                    <div class="alert alert-supreme text-center mb-3" id="directCoverModalInfo">Album: ...</div>
-                    <div style="font-size: 0.8rem; color: #aaa; margin-bottom: 10px;">Chọn bức ảnh ưng ý nhất bên dưới để làm ảnh bìa chào mừng cho khách:</div>
+                    <div class="alert alert-supreme text-center mb-3" id="directCoverModalInfo" data-i18n="album_placeholder">Album: ...</div>
+                    <div style="font-size: 0.8rem; color: #aaa; margin-bottom: 10px;" data-i18n="modal_cover_desc">Chọn bức ảnh ưng ý nhất bên dưới để làm ảnh bìa chào mừng cho khách:</div>
                     
                     <div id="directCoverGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; max-height: 72vh; overflow-y: auto; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
-                        <div class="text-center text-secondary py-4" style="grid-column: 1 / -1;">Đang tải danh sách ảnh...</div>
+                        <div class="text-center text-secondary py-4" style="grid-column: 1 / -1;" data-i18n="loading_photos">Đang tải danh sách ảnh...</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="container-fluid">
-        <div class="mt-3"><h1 class="supreme-title">Quản Lý Album</h1></div>
+        <div class="mt-3"><h1 class="supreme-title" data-i18n="page_heading">Quản Lý Album</h1></div>
         <div id="vipExpiredBlockNotice" style="display: none; max-width: 500px; margin: 40px auto 0; background: rgba(255, 71, 87, 0.1); border: 1.5px dashed #ff4757; border-radius: 24px; padding: 40px 20px; text-align: center; box-shadow: 0 10px 30px rgba(255, 71, 87, 0.1);">
             <i class="fas fa-lock fa-3x text-danger mb-3"></i>
-            <h4 class="fw-bold text-white mb-2">TÍNH NĂNG ĐANG BỊ KHÓA</h4>
-            <p class="text-secondary small mb-4" style="line-height: 1.6;">
+            <h4 class="fw-bold text-white mb-2" data-i18n="vip_locked_title">TÍNH NĂNG ĐANG BỊ KHÓA</h4>
+            <p class="text-secondary small mb-4" style="line-height: 1.6;" data-i18n="vip_locked_desc">
                 Tài khoản của bạn đã hết hạn dùng thử hoặc chưa nâng cấp lên gói VIP. Vui lòng gia hạn để tiếp tục sử dụng tính năng quản lý.
             </p>
-            <a href="payment" class="btn fw-900 px-4 py-2 rounded-pill text-black text-uppercase" style="background: var(--primary); border: none; font-size: 0.85rem; text-decoration: none;">Gia Hạn VIP Ngay</a>
+            <a href="payment" class="btn fw-900 px-4 py-2 rounded-pill text-black text-uppercase" style="background: var(--primary); border: none; font-size: 0.85rem; text-decoration: none;" data-i18n="btn_renew_vip">Gia Hạn VIP Ngay</a>
         </div>
         <div id="mainWorkGrid">
             <div class="search-wrapper">
                 <div class="search-inner">
                     <i class="fas fa-search me-2" style="color:var(--primary)"></i>
-                    <input type="text" id="albumSearch" placeholder="Tìm kiếm tên album..." oninput="filterAlbums()">
+                    <input type="text" id="albumSearch" data-i18n-placeholder="search_placeholder" placeholder="Tìm kiếm tên album..." oninput="filterAlbums()">
                     <span class="badge bg-dark text-primary rounded-pill px-2" id="albumCount">0</span>
                 </div>
             </div>
@@ -136,11 +136,11 @@
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header border-0">
-                    <h5 class="modal-title">GHI CHÚ / BÌNH LUẬN CỦA KHÁCH</h5>
+                    <h5 class="modal-title" data-i18n="modal_note_title">GHI CHÚ / BÌNH LUẬN CỦA KHÁCH</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
-                    <div class="alert alert-supreme text-center mb-3" id="noteModalInfo">Album: ...</div>
+                    <div class="alert alert-supreme text-center mb-3" id="noteModalInfo" data-i18n="album_placeholder">Album: ...</div>
                     <div id="noteListContainer" style="max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;">
                     </div>
                 </div>
@@ -162,38 +162,38 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header border-0">
-                    <h5 class="modal-title">CẤU HÌNH ALBUM</h5>
+                    <h5 class="modal-title" data-i18n="modal_config_title">CẤU HÌNH ALBUM</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
                     <input type="hidden" id="editFolderId">
                     <div class="mb-3">
-                        <label class="form-label text-primary fw-bold small text-uppercase">Giới hạn số lượng ảnh tối đa</label>
-                        <input type="number" id="editLimitPhotos" class="form-control bg-dark text-white border-secondary" placeholder="Nhập 0 nếu không giới hạn">
-                        <div class="form-text text-secondary" style="font-size: 0.7rem;">Nhập 0 hoặc để trống nghĩa là khách được chọn thoải mái không giới hạn.</div>
+                        <label class="form-label text-primary fw-bold small text-uppercase" data-i18n="lbl_limit_photos">Giới hạn số lượng ảnh tối đa</label>
+                        <input type="number" id="editLimitPhotos" class="form-control bg-dark text-white border-secondary" data-i18n-placeholder="plc_limit_photos" placeholder="Nhập 0 nếu không giới hạn">
+                        <div class="form-text text-secondary" style="font-size: 0.7rem;" data-i18n="desc_limit_photos">Nhập 0 hoặc để trống nghĩa là khách được chọn thoải mái không giới hạn.</div>
                     </div>
                     <div class="form-check form-switch mb-3">
                         <input class="form-check-input" type="checkbox" id="editAllowDownload">
-                        <label class="form-check-label fw-bold text-white small" for="editAllowDownload">Cho phép khách tải ảnh gốc</label>
+                        <label class="form-check-label fw-bold text-white small" for="editAllowDownload" data-i18n="lbl_allow_download">Cho phép khách tải ảnh gốc</label>
                     </div>
                     <div class="form-check form-switch mb-3">
                         <input class="form-check-input" type="checkbox" id="editAllowComment">
-                        <label class="form-check-label fw-bold text-white small" for="editAllowComment">Cho phép khách viết ghi chú / bình luận</label>
+                        <label class="form-check-label fw-bold text-white small" for="editAllowComment" data-i18n="lbl_allow_comment">Cho phép khách viết ghi chú / bình luận</label>
                     </div>
                     <div class="form-check form-switch mb-3">
                         <input class="form-check-input" type="checkbox" id="editWatermarkEnabled" onchange="toggleEditWatermarkInput()">
-                        <label class="form-check-label fw-bold text-white small" for="editWatermarkEnabled">Đóng dấu bản quyền Logo</label>
+                        <label class="form-check-label fw-bold text-white small" for="editWatermarkEnabled" data-i18n="lbl_watermark">Đóng dấu bản quyền Logo</label>
                     </div>
                     
                     <div class="mb-3 mt-3 px-2" id="editLogoUploadContainer" style="display: none;">
-                        <label style="font-size: 0.7rem; color: var(--primary); font-weight: 900; margin-bottom: 5px; display: block; text-transform: uppercase;">Tải ảnh Logo từ máy tính</label>
+                        <label style="font-size: 0.7rem; color: var(--primary); font-weight: 900; margin-bottom: 5px; display: block; text-transform: uppercase;" data-i18n="lbl_upload_logo">Tải ảnh Logo từ máy tính</label>
                         <input type="file" id="editStudioLogoFile" class="form-control bg-dark text-white border-secondary" accept="image/*" onchange="processEditLogoFile(event)" style="padding: 10px; font-size: 0.8rem;">
-                        <div class="form-text text-secondary" style="font-size: 0.7rem;">Khuyên dùng định dạng PNG nền trong suốt (Dung lượng <1MB).</div>
+                        <div class="form-text text-secondary" style="font-size: 0.7rem;" data-i18n="desc_upload_logo">Khuyên dùng định dạng PNG nền trong suốt (Dung lượng <1MB).</div>
                         <div class="mt-2">
                             <img id="editLogoPreview" src="" style="max-height: 40px; display: none; border-radius: 4px; border: 1px solid var(--primary);">
                         </div>
                     </div>
-                    <button type="button" class="btn btn-copy-action w-100" onclick="saveAlbumSettings()">LƯU THAY ĐỔI</button>
+                    <button type="button" class="btn btn-copy-action w-100" onclick="saveAlbumSettings()" data-i18n="btn_save_changes">LƯU THAY ĐỔI</button>
                 </div>
             </div>
         </div>
@@ -202,31 +202,30 @@
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header border-0">
-                    <h5 class="modal-title">DANH SÁCH FILE ĐÃ LỌC</h5>
+                    <h5 class="modal-title" data-i18n="modal_export_title">DANH SÁCH FILE ĐÃ LỌC</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
                     <div class="alert alert-supreme text-center mb-4" id="modalInfo"></div>
                     
                     <textarea id="fileNamesOutput" class="form-control mb-4" rows="12" readonly></textarea>
-                    <button type="button" class="btn btn-copy-action w-100" onclick="copyFileNames()">SAO CHÉP DANH SÁCH</button>
+                    <button type="button" class="btn btn-copy-action w-100" onclick="copyFileNames()" data-i18n="btn_copy_list">SAO CHÉP DANH SÁCH</button>
                 </div>
             </div>
         </div>
     </div>
 
-
 <div class="modal fade" id="selectedPhotosModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered" style="max-width: 1100px; width: 95%;">
-        <div class="modal-content"  border: 2px solid var(--primary); border-radius: 20px;">
+        <div class="modal-content" style="border: 2px solid var(--primary); border-radius: 20px;">
             <div class="modal-header border-0">
-                <h5 class="modal-title">DANH SÁCH ẢNH KHÁCH ĐÃ CHỌN</h5>
+                <h5 class="modal-title" data-i18n="modal_selected_title">DANH SÁCH ẢNH KHÁCH ĐÃ CHỌN</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
-                <div class="alert alert-supreme text-center mb-3" id="selectedModalInfo">Album: ...</div>
+                <div class="alert alert-supreme text-center mb-3" id="selectedModalInfo" data-i18n="album_placeholder">Album: ...</div>
                 <div id="selectedPhotosGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; max-height: 72vh; overflow-y: auto; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
-                    <div class="text-center text-secondary py-4" style="grid-column: 1 / -1;">Đang tải danh sách ảnh...</div>
+                    <div class="text-center text-secondary py-4" style="grid-column: 1 / -1;" data-i18n="loading_photos">Đang tải danh sách ảnh...</div>
                 </div>
             </div>
         </div>
@@ -257,23 +256,23 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header border-0">
-                <h5 class="modal-title">LIÊN KẾT TRUY CẬP ALBUM</h5>
+                <h5 class="modal-title" data-i18n="modal_links_title">LIÊN KẾT TRUY CẬP ALBUM</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
-                <div class="alert alert-supreme text-center mb-4" id="linksModalAlbumName" style="font-size: 0.85rem;">Album: ...</div>
+                <div class="alert alert-supreme text-center mb-4" id="linksModalAlbumName" style="font-size: 0.85rem;" data-i18n="album_placeholder">Album: ...</div>
                 <div class="mb-3">
-                    <label class="form-label text-primary fw-bold small text-uppercase">1. Link gửi khách chọn ảnh (Client)</label>
+                    <label class="form-label text-primary fw-bold small text-uppercase" data-i18n="lbl_client_link">1. Link gửi khách chọn ảnh (Client)</label>
                     <div class="input-group">
                         <input type="text" id="inputClientLink" class="form-control bg-dark text-white border-secondary" readonly style="font-size: 0.8rem;">
-                        <button class="btn btn-outline-primary" type="button" onclick="copyLinkText('inputClientLink')"><i class="fas fa-copy"></i> Sao chép</button>
+                        <button class="btn btn-outline-primary" type="button" onclick="copyLinkText('inputClientLink')"><i class="fas fa-copy"></i> <span data-i18n="btn_copy">Sao chép</span></button>
                     </div>
                 </div>
                 <div class="mb-2">
-                    <label class="form-label text-success fw-bold small text-uppercase">2. Link thư mục Google Drive gốc</label>
+                    <label class="form-label text-success fw-bold small text-uppercase" data-i18n="lbl_drive_link">2. Link thư mục Google Drive gốc</label>
                     <div class="input-group">
                         <input type="text" id="inputDriveLink" class="form-control bg-dark text-white border-secondary" readonly style="font-size: 0.8rem;">
-                        <button class="btn btn-outline-success" type="button" onclick="copyLinkText('inputDriveLink')"><i class="fas fa-copy"></i> Sao chép</button>
+                        <button class="btn btn-outline-success" type="button" onclick="copyLinkText('inputDriveLink')"><i class="fas fa-copy"></i> <span data-i18n="btn_copy">Sao chép</span></button>
                     </div>
                 </div>
             </div>
@@ -285,22 +284,22 @@
         <div class="spinner-border text-success mb-3" role="status" style="width: 3rem; height: 3rem;">
             <span class="visually-hidden">Loading...</span>
         </div>
-        <h5 style="color: #fff; font-weight: bold; margin-bottom: 10px;">Đang chuẩn bị gói ZIP...</h5>
-        <p id="zipStatusText" style="color: #a0aec0; font-size: 0.9rem; margin-bottom: 15px;">Hệ thống đang tải ảnh từ máy chủ và đóng gói. Quá trình này phụ thuộc vào tốc độ mạng của bạn.</p>
+        <h5 style="color: #fff; font-weight: bold; margin-bottom: 10px;" data-i18n="modal_zip_title">Đang chuẩn bị gói ZIP...</h5>
+        <p id="zipStatusText" style="color: #a0aec0; font-size: 0.9rem; margin-bottom: 15px;" data-i18n="modal_zip_desc">Hệ thống đang tải ảnh từ máy chủ và đóng gói. Quá trình này phụ thuộc vào tốc độ mạng của bạn.</p>
         
         <div class="zip-tip-box p-3 rounded-3 mb-3 text-start" style=" border: 1px dashed #ffc107;">
             <div class="d-flex align-items-start">
                 <div class="me-2 fs-5">💡</div>
                 <div>
-                    <span style="color: #ffc107; font-weight: bold;">Mẹo xử lý nhanh khi mạng chậm:</span>
-                    <p style="color: #cbd5e1; font-size: 0.85rem; margin-bottom: 0; margin-top: 4px;">
+                    <span style="color: #ffc107; font-weight: bold;" data-i18n="zip_tip_title">Mẹo xử lý nhanh khi mạng chậm:</span>
+                    <p style="color: #cbd5e1; font-size: 0.85rem; margin-bottom: 0; margin-top: 4px;" data-i18n="zip_tip_desc">
                         Thay vì đợi hệ thống đóng gói và tải file ZIP nặng, nếu bạn còn file gốc trên máy tính, bạn hãy bấm vào <b>icon COPY Bên Phải</b> của album, sau đó chuyển sang tab <b>SAO CHÉP</b> để lấy danh sách tên file ảnh xuất ra, giúp bạn lọc và trích xuất file gốc trên máy tính một cách nhanh chóng hơn!
                     </p>
                 </div>
             </div>
         </div>
 
-        <button onclick="closeZipLoading()" class="btn btn-outline-light btn-sm w-100">Ẩn thông báo (chạy ngầm)</button>
+        <button onclick="closeZipLoading()" class="btn btn-outline-light btn-sm w-100" data-i18n="btn_hide_zip">Ẩn thông báo (chạy ngầm)</button>
     </div>
 </div>
 </body>
