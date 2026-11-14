@@ -62,10 +62,11 @@ async function changeLanguage(lang) {
             }
         });
         
+        // Lưu trước vào localStorage
         localStorage.setItem('preferred_lang', lang);
         updateLangUI(lang);
 
-        // --- BỔ SUNG ĐOẠN NÀY ĐỂ TỰ ĐỘNG ĐỔI CÂU CHÀO AI KHI BẤM NGÔN NGỮ ---
+        // --- DÙNG TRỰC TIẾP BIẾN `lang` THAY VÌ ĐỌC LẠI LOCALSTORAGE ---
         const bubble = document.getElementById('aiSuggestion');
         if (bubble && bubble.style.display === 'block') {
             const userName = localStorage.getItem('admin_name') || 'Anh/Chị';
@@ -73,7 +74,7 @@ async function changeLanguage(lang) {
                 ? `Hello <strong id="userName">${userName}</strong>! 👋 How can I help you?` 
                 : `Dạ chào <strong id="userName">${userName}</strong>! 👋 Em hỗ trợ được gì không ạ?`;
         }
-        // ------------------------------------------------------------------
+        // -------------------------------------------------------------
 
     } catch (e) {
         console.error("Lỗi chuyển đổi ngôn ngữ:", e);
