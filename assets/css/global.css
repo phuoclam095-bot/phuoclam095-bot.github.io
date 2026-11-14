@@ -173,7 +173,16 @@ body[data-theme="light"], [data-theme="light"] body {
             white-space: nowrap !important;
         }
         .nav-link:hover, .nav-link.active { color: var(--primary) !important; }
-        .nav-link.active::after { content: ''; position: absolute; width: 30%; height: 2px; bottom: 5px; left: 35%; background: var(--primary); box-shadow: 0 0 10px var(--primary); }
+        .nav-link.active::after { 
+            content: ''; 
+            position: absolute; 
+            width: 60% !important;   /* Độ dài gạch chân vừa bằng 60% chiều rộng chữ */
+            height: 3px !important;  
+            bottom: 2px !important;  
+            left: 20% !important;    /* Canh giữa ngay dưới chữ tab */
+            background: var(--primary); 
+            box-shadow: 0 0 10px var(--primary); 
+        }
 
         .marquee-wrapper { width: 600px; overflow: hidden; white-space: nowrap; background: rgba(0, 235, 176, 0.05); padding: 10px 0; border-radius: 50px; border: 1px solid rgba(0, 235, 176, 0.15); }
         .marquee-text { display: inline-block; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; color: var(--primary); letter-spacing: 1px; animation: marquee-run 35s linear infinite; }
