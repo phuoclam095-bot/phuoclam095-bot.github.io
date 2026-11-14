@@ -251,19 +251,16 @@ body[data-theme="light"], [data-theme="light"] body {
                         z-index: 5; 
                     }
                     
-                    .nav-link.active::after { 
-                        content: '' !important; 
-                        position: absolute !important; 
-                        width: 60% !important;   /* Độ dài gạch chân đúng bằng 60% chiều rộng chữ */
-                        height: 3px !important;  
-                        bottom: 2px !important;  
-                        left: 20% !important;    /* Căn giữa nằm ngay ngắn dưới tab đang active */
-                        right: auto !important;
-                        transform: none !important;
-                        background: var(--primary) !important; 
-                        box-shadow: 0 0 10px var(--primary) !important; 
-                        border-radius: 4px !important;
-                    }
+                    .nav-link.active::after {  
+        content: '';  
+        position: absolute;  
+        width: 30%;  
+        height: 2px;  
+        bottom: 5px;  
+        left: 35%;  
+        background: var(--primary);  
+        box-shadow: 0 0 10px var(--primary);  
+    }
         @keyframes marquee-run { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         @keyframes rainbow-move { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
         @keyframes text-shine { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
