@@ -90,6 +90,90 @@
     border: 1px solid #fecaca !important;
     font-weight: 800;
 }
+/* ==========================================================
+   TỐI ƯU GIAO DIỆN LIGHT MODE CHO THỐNG KÊ & TOÀN BỘ MODAL
+   ========================================================== */
+
+/* 1. Sửa lỗi con số bị chìm, hiển thị siêu sắc nét trên Light Mode */
+[data-theme="light"] .stat-pill {
+    background: #f1f5f9 !important;
+    border: 1px solid #cbd5e1 !important;
+}
+
+[data-theme="light"] .stat-val {
+    color: #0f766e !important; /* Màu xanh ngọc đậm rõ nét */
+    font-weight: 900 !important;
+}
+
+[data-theme="light"] .stat-lab {
+    color: #475569 !important; /* Chữ tiêu đề phụ đậm đà, dễ đọc */
+    font-weight: 800 !important;
+}
+
+/* Tên Album trong danh sách quản lý */
+[data-theme="light"] .album-vip-title {
+    background: linear-gradient(transparent, rgba(255, 255, 255, 0.95)) !important;
+    color: #0f172a !important;
+    font-weight: 900 !important;
+}
+
+/* Khung card tổng thể */
+[data-theme="light"] .album-card-vip {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05) !important;
+}
+
+
+/* 2. Đồng bộ Modal (Cài đặt cấu hình, Tải Final, Export...) sang Light Mode 5 sao */
+[data-theme="light"] .modal-content {
+    background-color: #ffffff !important;
+    border: 2px solid #0f766e !important;
+    color: #0f172a !important;
+    box-shadow: 0 25px 50px rgba(15, 118, 110, 0.15) !important;
+}
+
+[data-theme="light"] .modal-header {
+    border-bottom: 1px solid #e2e8f0 !important;
+}
+
+[data-theme="light"] .modal-title {
+    color: #0f766e !important;
+}
+
+[data-theme="light"] .modal-body label,
+[data-theme="light"] .modal-body p,
+[data-theme="light"] .modal-body span,
+[data-theme="light"] .modal-body h5 {
+    color: #1e293b !important;
+}
+
+/* Ô nhập liệu và textarea bên trong modal */
+[data-theme="light"] .modal-content input[type="text"],
+[data-theme="light"] .modal-content input[type="number"],
+[data-theme="light"] .modal-content input[type="file"],
+[data-theme="light"] .modal-content textarea {
+    background-color: #f8fafc !important;
+    border: 1.5px solid #cbd5e1 !important;
+    color: #0f172a !important;
+}
+
+[data-theme="light"] .modal-content input::placeholder,
+[data-theme="light"] .modal-content textarea::placeholder {
+    color: #94a3b8 !important;
+}
+
+/* Nút đóng modal (X) */
+[data-theme="light"] .modal-header .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* Hộp thông báo màu sắc (Alert supreme) trong modal */
+[data-theme="light"] .alert-supreme {
+    background: #f0fdf4 !important;
+    border: 1px solid #bbf7d0 !important;
+    color: #166534 !important;
+}
         .album-card-vip,  
         .album-vip-title,  
         .stats-grid,  
