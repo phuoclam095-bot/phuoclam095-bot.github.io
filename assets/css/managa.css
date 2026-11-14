@@ -312,8 +312,8 @@
             cursor: pointer;  
         }
 
-        .navbar-nav { display: flex; flex-direction: row; gap: 5px; list-style: none; margin: 0; padding: 0; }
-        .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.72rem; text-transform: uppercase; padding: 9px 10px !important; cursor: pointer; transition: 0.3s ease; position: relative; white-space: nowrap; }
+         .navbar-nav { display: flex; flex-direction: row; gap: 5px; list-style: none; margin: 0; padding: 0; }
+        .nav-link { color: #94a3b8 !important; font-weight: 700; font-size: 0.72rem; text-transform: uppercase; padding: 9px 10px !important; cursor: pointer; transition: 0.3s; position: relative; white-space: nowrap; }
         .nav-link:hover, .nav-link.active { color: var(--primary) !important; }
         .user-pill {  
             background: rgba(255,255,255,0.05);  
