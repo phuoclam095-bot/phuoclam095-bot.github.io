@@ -632,3 +632,69 @@ body { padding-top: 150px; }
 [data-theme="light"] .form-control::placeholder {
     color: #94a3b8 !important;
 }
+/* ==========================================================
+   FIX LỖI CHÌM CHỮ & BACKGROUND TRANG CRM (LỊCH TRÌNH)
+   ========================================================== */
+
+/* 1. KHUNG BẢNG THỐNG KÊ (3 thẻ Card ở trên cùng) */
+[data-theme="light"] body .card-custom {
+    background-color: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Ép tất cả chữ trắng, h3 (số tiền) trong Card thành màu xám đen */
+[data-theme="light"] body .card-custom h3,
+[data-theme="light"] body .card-custom .text-white {
+    color: #0f172a !important; 
+}
+
+/* Chữ tiêu đề phụ (text-secondary) thành màu xám đậm */
+[data-theme="light"] body .card-custom .text-secondary {
+    color: #475569 !important; 
+}
+
+/* 2. NÚT "KẾT NỐI LỊCH & ĐỒNG BỘ" (btn-outline-light) */
+[data-theme="light"] body .btn-outline-light {
+    color: #0f172a !important;
+    border-color: #cbd5e1 !important;
+    background-color: #ffffff !important;
+}
+[data-theme="light"] body .btn-outline-light:hover {
+    background-color: #f1f5f9 !important;
+    border-color: #94a3b8 !important;
+}
+
+/* 3. BẢNG HỢP ĐỒNG (Ép specificity cao hơn bằng chữ "body" để ghi đè 100%) */
+[data-theme="light"] body .table-dark {
+    background-color: #ffffff !important;
+}
+
+/* Nền các hàng (tr) xen kẽ */
+[data-theme="light"] body .table-dark tbody tr:nth-child(odd) {
+    background-color: #f8fafc !important; 
+}
+[data-theme="light"] body .table-dark tbody tr:nth-child(even) {
+    background-color: #ffffff !important;
+}
+[data-theme="light"] body .table-dark tbody tr:hover {
+    background-color: rgba(0, 235, 176, 0.1) !important;
+}
+
+/* Ép màu chữ bên trong bảng */
+[data-theme="light"] body .table-dark td,
+[data-theme="light"] body .table-dark td .text-white {
+    color: #1e293b !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    border-right: 1px solid #e2e8f0 !important;
+}
+
+/* Tiền công nợ chói trong bảng chuyển thành cam đậm */
+[data-theme="light"] body .table-dark td .text-warning {
+    color: #d97706 !important; 
+}
+
+/* Chữ "Đang tải dữ liệu..." */
+[data-theme="light"] body .table-dark td.text-secondary {
+    color: #64748b !important;
+}
