@@ -386,6 +386,11 @@ body { padding-top: 150px; }
    ========================================================== */
 
 /* Khai báo lại biến nền và màu chữ chính cho Light Mode */
+/* ==========================================================
+   CHONANHNHANH.VN - BỘ CSS LIGHT MODE CHUẨN TRANG CRM (LỊCH TRÌNH)
+   ========================================================== */
+
+/* 1. NỀN TỔNG THỂ VÀ MÀU CHỮ CHUNG */
 [data-theme="light"] {
     --bg-deep: #f8fafc;
 }
@@ -397,6 +402,24 @@ body { padding-top: 150px; }
     color: #0f172a;
 }
 
+/* Tiêu đề chính */
+[data-theme="light"] .supreme-title,
+[data-theme="light"] h1.text-white,
+[data-theme="light"] h5.text-white,
+[data-theme="light"] .text-white {
+    color: #0f172a !important;
+}
+
+/* Màu số tiền & trạng thái */
+[data-theme="light"] .text-warning {
+    color: #d97706 !important; /* Cam đậm dễ nhìn */
+}
+[data-theme="light"] .text-info {
+    color: #0284c7 !important; /* Xanh dương đậm */
+}
+
+
+/* 2. THANH NAVBAR & MENU TRÊN CÙNG */
 [data-theme="light"] .navbar {
     background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.7) 100%);
     border-bottom: 1px solid rgba(0, 0, 0, 0.08);
@@ -423,68 +446,39 @@ body { padding-top: 150px; }
     background: rgba(255, 255, 255, 0.8);
 }
 
+
+/* 3. KHUNG THỐNG KÊ (3 THẺ CARD Ở TRÊN) & NÚT BẤM */
 [data-theme="light"] .card-custom {
-    background: rgba(255, 255, 255, 0.85);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
     color: #0f172a;
 }
 
-[data-theme="light"] .text-bright-sub {
-    color: #64748b !important;
-}
-
-/* Modals & Forms trong Light Mode */
-[data-theme="light"] input[type="datetime-local"] {
-    color-scheme: light;
-}
-
-[data-theme="light"] .modal-content {
-    background: #ffffff !important;
-    box-shadow: 0 0 50px rgba(0,0,0,0.1), 0 0 20px rgba(0, 235, 176, 0.1) !important;
-    color: #0f172a;
-}
-
-[data-theme="light"] .form-control, 
-[data-theme="light"] .form-select {
-    background: #f8fafc !important;
-    border: 1.5px solid #cbd5e1 !important;
+[data-theme="light"] .card-custom h3 {
     color: #0f172a !important;
 }
 
-[data-theme="light"] .form-control:focus, 
-[data-theme="light"] .form-select:focus {
-    background: #ffffff !important;
-    color: #0f172a !important;
-}
-
-[data-theme="light"] .form-control::placeholder {
-    color: #94a3b8 !important;
-}
-
-[data-theme="light"] .form-label {
+[data-theme="light"] .card-custom .text-secondary {
     color: #475569 !important;
 }
 
-/* Biểu tượng lịch và Checkbox */
-[data-theme="light"] input[type="date"]::-webkit-calendar-picker-indicator {
-    filter: invert(0); 
-}
-
-[data-theme="light"] .form-check-input {
-    background-color: #e2e8f0 !important;
+/* Nút kết nối lịch & nút phụ */
+[data-theme="light"] .btn-outline-light {
+    color: #0f172a !important;
     border-color: #cbd5e1 !important;
+    background-color: #ffffff !important;
+}
+[data-theme="light"] .btn-outline-light:hover {
+    background-color: #f1f5f9 !important;
+    border-color: #94a3b8 !important;
 }
 
-/* Đồng bộ Table (Bảng) sang giao diện sáng */
-[data-theme="light"] .table-responsive {
-    border-color: #cbd5e1;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-}
 
+/* 4. BẢNG QUẢN LÝ HỢP ĐỒNG */
 [data-theme="light"] .table-dark {
     background-color: #ffffff !important;
-    color: #0f172a;
+    color: #0f172a !important;
 }
 
 [data-theme="light"] .table-dark th {
@@ -493,6 +487,15 @@ body { padding-top: 150px; }
     border-right: 1px solid #e2e8f0;
 }
 
+[data-theme="light"] .table-dark td,
+[data-theme="light"] .table-dark tr {
+    background-color: transparent !important;
+    background: transparent !important;
+    color: #1e293b !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    border-right: 1px solid #e2e8f0 !important;
+}
+
 [data-theme="light"] .table-dark tbody tr:nth-child(odd) {
     background-color: #f8fafc !important;
 }
@@ -502,331 +505,94 @@ body { padding-top: 150px; }
 }
 
 [data-theme="light"] .table-dark tbody tr:hover {
-    background-color: rgba(0, 235, 176, 0.08) !important;
+    background-color: rgba(0, 235, 176, 0.1) !important;
 }
 
-[data-theme="light"] .table-dark td {
-    border-bottom: 1px solid #e2e8f0 !important;
-    border-right: 1px solid #e2e8f0;
-    color: #334155;
-}
 
-[data-theme="light"] .custom-select-dark option {
-    background-color: #ffffff !important;
+/* 5. MODAL CHUNG & NÚT ĐÓNG (DẤU X) */
+[data-theme="light"] .modal-content {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1) !important;
     color: #0f172a !important;
 }
 
-[data-theme="light"] .btn-today-quick {
-    background: rgba(0, 235, 176, 0.1);
-    color: #0d9488; 
+/* Đổi nút X trắng thành đen rõ nét */
+[data-theme="light"] .btn-close-white {
+    filter: invert(1) grayscale(100%) brightness(0) !important;
+    opacity: 0.7;
+}
+[data-theme="light"] .btn-close-white:hover {
+    opacity: 1;
 }
 
-[data-theme="light"] .btn-today-quick:hover {
-    background: var(--primary);
-    color: #ffffff;
-}
-
-/* Tùy chỉnh riêng cho giao diện di động trong Light Mode */
-@media (max-width: 991.98px) {
-    [data-theme="light"] .nav-link {
-        background: rgba(0, 0, 0, 0.03) !important;
-        border-color: rgba(0, 0, 0, 0.1) !important;
-    }
-    [data-theme="light"] .nav-link.active {
-        background: rgba(0, 235, 176, 0.15) !important;
-    }
-}
-.custom-select-dark option {
-        background-color: #0c152a !important;
-        color: #ffffff !important;
-        padding: 8px !important;
-    }
-    input[type="date"]:focus, select:focus {
-        outline: none !important;
-        box-shadow: none !important;
-        border-color: rgba(255,255,255,0.2) !important;
-    }
-[data-theme="light"] input[type="date"]:focus, 
-[data-theme="light"] select:focus {
-    outline: none !important;
-    box-shadow: none !important;
-    border-color: rgba(0, 0, 0, 0.2) !important;
-}
-/* ==========================================================
-   BỔ SUNG LIGHT MODE ĐẶC TRỊ CHO TRANG CRM (LỊCH TRÌNH)
-   ========================================================== */
-
-/* 1. Đổi nền giao diện tổng thể sang nền sáng */
-[data-theme="light"] {
-    --bg-deep: #f8fafc;
-}
-[data-theme="light"] body {
-    background-color: var(--bg-deep);
-    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.9) 0%, rgba(240, 245, 250, 0.95) 100%),
-                      url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
-    color: #0f172a;
-}
-
-/* 2. Đổi các con số và tiêu đề bị chìm (màu trắng) thành màu xám đen để nổi trên nền sáng */
-[data-theme="light"] .text-white,
-[data-theme="light"] h1.text-white,
-[data-theme="light"] h5.text-white {
-    color: #0f172a !important; 
-}
-
-/* Đổi số tiền vàng chói (text-warning) thành màu cam sậm dễ đọc */
-[data-theme="light"] .text-warning {
-    color: #d97706 !important; 
-}
-
-/* Đổi số tiền xanh sáng (text-info) thành màu xanh dương đậm */
-[data-theme="light"] .text-info {
-    color: #0284c7 !important; 
-}
-
-/* Cập nhật màu các tiêu đề chính */
-[data-theme="light"] .supreme-title {
-    color: #0f172a !important;
-}
-
-/* 3. Xử lý nền các khung Card (Tổng doanh thu, Cọc, Công nợ...) */
-[data-theme="light"] .card-custom {
-    background: rgba(255, 255, 255, 0.85) !important;
-    border: 1px solid rgba(0, 0, 0, 0.1) !important;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
-    color: #0f172a;
-}
-
-/* 4. Fix triệt để Bảng Hợp Đồng (table-dark) không còn bị đen thui */
-[data-theme="light"] .table-dark {
-    background-color: #ffffff !important;
-    color: #0f172a !important;
-}
-[data-theme="light"] .table-dark th {
-    background: #f1f5f9 !important; /* Màu xám siêu nhạt cho tiêu đề bảng */
-    color: var(--primary) !important;
-    border-right: 1px solid #e2e8f0;
-}
-[data-theme="light"] .table-dark tbody tr:nth-child(odd) {
-    background-color: #f8fafc !important; /* Tạo sọc ngựa vằn cho dễ nhìn */
-}
-[data-theme="light"] .table-dark tbody tr:nth-child(even) {
-    background-color: #ffffff !important;
-}
-[data-theme="light"] .table-dark tbody tr:hover {
-    background-color: rgba(0, 235, 176, 0.08) !important;
-}
-[data-theme="light"] .table-dark td {
-    color: #1e293b !important; /* Chữ trong bảng màu xám đen */
-    border-bottom: 1px solid #e2e8f0 !important;
-    border-right: 1px solid #e2e8f0 !important;
-}
-
-/* Fix ô tìm kiếm và dropdown cho nền sáng */
+/* Form input, select */
 [data-theme="light"] .form-control, 
 [data-theme="light"] .form-select {
     background: #ffffff !important;
-    border: 1px solid #cbd5e1 !important;
+    border: 1.5px solid #cbd5e1 !important;
     color: #0f172a !important;
 }
 [data-theme="light"] .form-control::placeholder {
     color: #94a3b8 !important;
 }
-/* ==========================================================
-   FIX LỖI CHÌM CHỮ & BACKGROUND TRANG CRM (LỊCH TRÌNH)
-   ========================================================== */
-
-/* 1. KHUNG BẢNG THỐNG KÊ (3 thẻ Card ở trên cùng) */
-[data-theme="light"] body .card-custom {
-    background-color: #ffffff !important;
-    border: 1px solid #cbd5e1 !important;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
-}
-
-/* Ép tất cả chữ trắng, h3 (số tiền) trong Card thành màu xám đen */
-[data-theme="light"] body .card-custom h3,
-[data-theme="light"] body .card-custom .text-white {
-    color: #0f172a !important; 
-}
-
-/* Chữ tiêu đề phụ (text-secondary) thành màu xám đậm */
-[data-theme="light"] body .card-custom .text-secondary {
-    color: #475569 !important; 
-}
-
-/* 2. NÚT "KẾT NỐI LỊCH & ĐỒNG BỘ" (btn-outline-light) */
-[data-theme="light"] body .btn-outline-light {
-    color: #0f172a !important;
-    border-color: #cbd5e1 !important;
-    background-color: #ffffff !important;
-}
-[data-theme="light"] body .btn-outline-light:hover {
-    background-color: #f1f5f9 !important;
-    border-color: #94a3b8 !important;
-}
-
-/* 3. BẢNG HỢP ĐỒNG (Ép specificity cao hơn bằng chữ "body" để ghi đè 100%) */
-[data-theme="light"] body .table-dark {
-    background-color: #ffffff !important;
-}
-
-/* Nền các hàng (tr) xen kẽ */
-[data-theme="light"] body .table-dark tbody tr:nth-child(odd) {
-    background-color: #f8fafc !important; 
-}
-[data-theme="light"] body .table-dark tbody tr:nth-child(even) {
-    background-color: #ffffff !important;
-}
-[data-theme="light"] body .table-dark tbody tr:hover {
-    background-color: rgba(0, 235, 176, 0.1) !important;
-}
-
-/* ==========================================================
-   FIX TRIỆT ĐỂ: BẢNG HỢP ĐỒNG, MODAL LỊCH VÀ DẤU X (LIGHT MODE)
-   ========================================================== */
-
-/* 1. CHỮA BỆNH BẢNG ĐEN (Xóa màu mặc định của ô TD trong Bootstrap 5) */
-[data-theme="light"] body .table-dark td,
-[data-theme="light"] body .table-dark th {
-    background-color: transparent !important; /* Xóa màu đen của ô */
-    color: #1e293b !important; /* Chữ xám đen */
-}
-
-[data-theme="light"] body .table-dark tbody tr:nth-child(odd) {
-    background-color: #f8fafc !important; /* Nền hàng lẻ */
-}
-[data-theme="light"] body .table-dark tbody tr:nth-child(even) {
-    background-color: #ffffff !important; /* Nền hàng chẵn */
-}
-[data-theme="light"] body .table-dark tbody tr:hover {
-    background-color: rgba(0, 235, 176, 0.1) !important;
-}
-
-/* 2. CHỮA BỆNH DẤU X TÀNG HÌNH */
-/* Biến nút X màu trắng (.btn-close-white) thành nút X màu đen đậm */
-[data-theme="light"] body .btn-close-white {
-    filter: invert(1) grayscale(100%) brightness(0) !important;
-    opacity: 0.7;
-}
-[data-theme="light"] body .btn-close-white:hover {
-    opacity: 1;
-}
-
-/* 3. CHỮA BỆNH MODAL LỊCH BỊ ĐEN (Đè inline CSS) */
-/* Bắt ép tất cả các nền Modal đổi màu sáng */
-[data-theme="light"] body .modal-content,
-[data-theme="light"] body #lunarCalendarModal .modal-content {
-    background: #ffffff !important;
-    border-color: #cbd5e1 !important;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.1) !important;
-}
-
-/* Đổi màu thanh Menu Công Cụ của Lịch Vạn Niên */
-[data-theme="light"] body .cal-header {
-    background: #f1f5f9 !important; /* Xám nhạt */
-    border-color: #cbd5e1 !important;
-}
-
-/* Biến toàn bộ chữ trắng trong Modal Lịch thành xám đen */
-[data-theme="light"] body #lunarCalendarModal .modal-title,
-[data-theme="light"] body #lunarCalendarModal .text-white {
-    color: #0f172a !important;
-}
-
-/* Fix các ô Input/Select chọn ngày tháng bên trong Lịch */
-[data-theme="light"] body #modalConvertDate,
-[data-theme="light"] body #modalSelectMonth,
-[data-theme="light"] body #modalSelectYear {
-    background-color: #ffffff !important;
-    color: #0f172a !important;
-    border: 1px solid #cbd5e1 !important;
-}
-
-/* Fix màu các ngày trong tuần (Thứ 2, Thứ 3...) của Lịch Lưới */
-[data-theme="light"] body #calendarGridViewContainer > div > div {
+[data-theme="light"] .form-label {
     color: #475569 !important;
 }
-/* ==========================================================
-   TIÊU DIỆT 2 LỖI ĐEN CÒN SÓT LẠI TRONG LIGHT MODE
-   ========================================================== */
 
-/* 1. XỬ LÝ TRIỆT ĐỂ BẢNG HỢP ĐỒNG BỊ DÍNH NỀN ĐEN Ở CÁC CỘT */
-[data-theme="light"] body .table-dark tr,
-[data-theme="light"] body .table-dark td,
-[data-theme="light"] body .table-dark th,
-[data-theme="light"] body #contractsTableBody tr,
-[data-theme="light"] body #contractsTableBody td {
-    background-color: transparent !important;
-    background: transparent !important;
-    color: #1e293b !important;
-}
 
-/* Đặt lại màu nền trắng sáng cho toàn bộ tbody */
-[data-theme="light"] body #contractsTableBody tr:nth-child(odd) {
-    background-color: #f8fafc !important;
-}
-[data-theme="light"] body #contractsTableBody tr:nth-child(even) {
-    background-color: #ffffff !important;
-}
-[data-theme="light"] body #contractsTableBody tr:hover {
-    background-color: rgba(0, 235, 176, 0.1) !important;
-}
-
-/* 2. ÉP TOÀN BỘ MODAL LỊCH VẠN NIÊN SANG NỀN SÁNG TRẮNG */
-[data-theme="light"] body .modal-content,
-[data-theme="light"] body div[style*="background: rgba(10, 17, 36"],
-[data-theme="light"] body div[style*="background: rgba(13, 25, 48"] {
+/* 6. GIAO DIỆN MODAL LỊCH VẠN NIÊN (LUXURY LIGHT STYLE) */
+[data-theme="light"] #lunarCalendarModal .modal-content {
     background: #ffffff !important;
+    border: 1.5px solid #cbd5e1 !important;
+}
+
+[data-theme="light"] #lunarCalendarModal .modal-header {
+    border-bottom: 1px solid #e2e8f0 !important;
+}
+
+[data-theme="light"] #lunarCalendarModal .modal-title,
+[data-theme="light"] #lunarCalendarModal h5 {
+    color: #0f172a !important;
+}
+
+/* Thanh công cụ lịch (Cal-header) */
+[data-theme="light"] .cal-header {
+    background: #f1f5f9 !important;
+    border: 1px solid #cbd5e1 !important;
+}
+
+[data-theme="light"] #modalConvertDate,
+[data-theme="light"] #modalSelectMonth,
+[data-theme="light"] #modalSelectYear {
     background-color: #ffffff !important;
     color: #0f172a !important;
-    border-color: #cbd5e1 !important;
+    border: 1px solid #cbd5e1 !important;
 }
 
-/* Biến màu nền các ô ngày trong lưới lịch thành trắng xám nhẹ */
-[data-theme="light"] body #modalCalendarDaysContainer > div {
-    background-color: #f8fafc !important;
+/* Khung lưới các ngày trong tháng */
+[data-theme="light"] #calendarGridViewContainer > div:first-child > div {
+    color: #475569 !important; /* Tiêu đề Thứ 2, Thứ 3... */
+    font-weight: 800;
+}
+
+[data-theme="light"] #modalCalendarDaysContainer > div {
+    background-color: #ffffff !important;
     border: 1px solid #e2e8f0 !important;
-    color: #1e293b !important;
-}
-
-/* Đổi màu chữ số ngày trong lưới lịch thành đậm rõ */
-[data-theme="light"] body #modalCalendarDaysContainer div span,
-[data-theme="light"] body #modalCalendarDaysContainer div {
-    color: #0f172a !important;
-}
-/* ==========================================================
-   FIX DỨT ĐIỂM: TIÊU ĐỀ MODAL VÀ HIỆU ỨNG HOVER Ô LỊCH (LIGHT MODE)
-   ========================================================== */
-
-/* 1. Đổi tiêu đề "Lịch Vạn Niên & Lịch Trình Studio" thành chữ xám đen rõ nét */
-[data-theme="light"] body .modal-header h5,
-[data-theme="light"] body .modal-header .text-white {
-    color: #0f172a !important;
-}
-
-/* 2. Đổi nền và hiệu ứng hover các ô ngày trong Lịch Lưới cho đẹp và sáng sủa */
-[data-theme="light"] body #modalCalendarDaysContainer > div {
-    background-color: #ffffff !important; /* Nền ô ngày trắng tinh */
-    border: 1px solid #e2e8f0 !important; /* Viền xám nhạt tinh tế */
+    border-radius: 8px;
     transition: all 0.2s ease;
 }
 
-/* Hiệu ứng khi rê chuột (hover) vào ô ngày: nổi bật nhẹ nhàng thay vì xám xịt */
-[data-theme="light"] body #modalCalendarDaysContainer > div:hover {
+/* Hiệu ứng khi rê chuột vào từng ô lịch: Sáng, nổi bật, tinh tế */
+[data-theme="light"] #modalCalendarDaysContainer > div:hover {
     background-color: #f0fdf4 !important; /* Xanh ngọc siêu nhạt thanh lịch */
     border-color: var(--primary) !important;
-    box-shadow: 0 4px 12px rgba(0, 235, 176, 0.15);
+    box-shadow: 0 4px 15px rgba(0, 235, 176, 0.2);
     z-index: 2;
 }
 
-/* Đảm bảo chữ số ngày, lịch âm, và tên sự kiện bên trong ô lịch hiển thị cực rõ */
-[data-theme="light"] body #modalCalendarDaysContainer div,
-[data-theme="light"] body #modalCalendarDaysContainer span {
+/* Chữ số ngày và nội dung bên trong ô lịch */
+[data-theme="light"] #modalCalendarDaysContainer div,
+[data-theme="light"] #modalCalendarDaysContainer span {
     color: #1e293b !important;
-}
-
-/* Riêng các ngày thứ 7, chủ nhật cho nổi bật hơn một chút */
-[data-theme="light"] body #modalCalendarDaysContainer > div:nth-child(7n) span,
-[data-theme="light"] body #modalCalendarDaysContainer > div:nth-child(7n-6) span {
-    font-weight: bold;
 }
