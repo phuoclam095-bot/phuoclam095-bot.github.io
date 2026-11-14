@@ -46,27 +46,35 @@ async function changeLanguage(lang) {
         const response = await fetch(`./assets/locales/${lang}.json`);
         const translations = await response.json();
         
-        // Cập nhật các thẻ có data-i18n
+        // 1. Cập nhật các thẻ có data-i18n (sử dụng innerHTML để hỗ trợ thẻ b, i nếu có)
         document.querySelectorAll('[data-i18n]').forEach(element => {
             const key = element.getAttribute('data-i18n');
             if (translations[key]) {
-                element.innerText = translations[key];
+                element.innerHTML = translations[key];
             }
         });
 
-        // Cập nhật placeholder nếu có
+        // 2. Cập nhật placeholder
         document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
             const key = element.getAttribute('data-i18n-placeholder');
             if (translations[key]) {
                 element.placeholder = translations[key];
             }
         });
+
+        // 3. Cập nhật title tooltip (Cực kỳ quan trọng cho các nút hover)
+        document.querySelectorAll('[data-i18n-title]').forEach(element => {
+            const key = element.getAttribute('data-i18n-title');
+            if (translations[key]) {
+                element.setAttribute('title', translations[key]);
+            }
+        });
         
-        // Lưu trước vào localStorage
+        // 4. Lưu biến ngôn ngữ và cập nhật giao diện nút bấm
         localStorage.setItem('preferred_lang', lang);
         updateLangUI(lang);
 
-        // --- DÙNG TRỰC TIẾP BIẾN `lang` THAY VÌ ĐỌC LẠI LOCALSTORAGE ---
+        // 5. Xử lý bóng thoại (Bubble) AI
         const bubble = document.getElementById('aiSuggestion');
         if (bubble && bubble.style.display === 'block') {
             const userName = localStorage.getItem('admin_name') || 'Anh/Chị';
@@ -74,7 +82,18 @@ async function changeLanguage(lang) {
                 ? `Hello <strong id="userName">${userName}</strong>! 👋 How can I help you?` 
                 : `Dạ chào <strong id="userName">${userName}</strong>! 👋 Em hỗ trợ được gì không ạ?`;
         }
-        // -------------------------------------------------------------
+
+        // 6. THAY ĐỔI LỚN NHẤT: Bắt buộc hàm renderAlbums chạy lại để dịch các phần tử render động bằng JS
+        // Điều này đảm bảo các thẻ Album, nút bấm Chọn/Tổng/Copy/Tải sẽ chuyển ngôn ngữ ngay mà không cần F5
+        if (typeof renderAlbums === 'function' && typeof allAlbums !== 'undefined') {
+            // Render lại danh sách đang hiển thị
+            renderAlbums(window._currentFilteredAlbums || allAlbums);
+            
+            // Nếu anh có hàm applyTranslations riêng để dịch thẻ JS thì gọi nó (tùy chọn)
+            if (typeof applyTranslations === 'function') {
+                 applyTranslations(lang);
+            }
+        }
 
     } catch (e) {
         console.error("Lỗi chuyển đổi ngôn ngữ:", e);
