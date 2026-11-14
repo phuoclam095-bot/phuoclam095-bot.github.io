@@ -232,143 +232,150 @@ padding: 8px !important;
 
 
 /* ==========================================================
-   CHONANHNHANH.VN - CRM LIGHT MODE (ĐẲNG CẤP 5 SAO - SANG TRỌNG & RỰC RỠ)
+   2. BỔ SUNG LIGHT MODE ĐẶC TRỊ (ÉP GHI ĐÈ INLINE JS HOÀN TOÀN)
    ========================================================== */
 
 [data-theme="light"] {
-    --bg-deep: #e2e8f0;
-    --card-bg: rgba(255, 255, 255, 0.85);
+    --bg-deep: #cbd5e1;
+    --card-bg: #f8fafc;
     --text-main: #0f172a;
     --text-muted: #334155;
-    --border-color: rgba(0, 235, 176, 0.4);
+    --border-color: #94a3b8;
 }
 
 [data-theme="light"] body {
-    background-color: #e2e8f0 !important;
-    background-image: linear-gradient(to bottom, rgba(240, 244, 248, 0.85) 0%, rgba(220, 230, 242, 0.95) 100%),
+    background-color: #cbd5e1 !important;
+    background-image: linear-gradient(to bottom, rgba(241, 245, 249, 0.92) 0%, rgba(203, 213, 225, 0.98) 100%),
                       url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') !important;
     color: var(--text-main) !important;
 }
 
-/* Navbar kính mờ cao cấp */
+/* Navbar */
 [data-theme="light"] .navbar {
-    background: rgba(255, 255, 255, 0.9) !important;
+    background: rgba(255, 255, 255, 0.95) !important;
     backdrop-filter: blur(25px);
-    border-bottom: 1px solid rgba(0, 235, 176, 0.2);
+    border-bottom: 2px solid var(--primary) !important;
 }
-[data-theme="light"] .nav-link { color: #1e293b !important; font-weight: 700; }
+[data-theme="light"] .nav-link { color: #0f172a !important; font-weight: 800; }
 [data-theme="light"] .nav-link:hover, 
 [data-theme="light"] .nav-link.active { color: var(--primary) !important; }
 
-/* Thẻ Card Thống Kê (Có bóng đổ neon nhẹ cực kỳ sang) */
+/* Card thống kê */
 [data-theme="light"] .card-custom {
-    background: rgba(255, 255, 255, 0.9) !important;
+    background: #ffffff !important;
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(0, 235, 176, 0.3) !important;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08), 0 0 15px rgba(0, 235, 176, 0.1) !important;
+    border: 1.5px solid rgba(0, 235, 176, 0.5) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1), 0 0 20px rgba(0, 235, 176, 0.15) !important;
     border-radius: 20px !important;
 }
 [data-theme="light"] .card-custom h3 { color: var(--text-main) !important; }
 [data-theme="light"] .card-custom .text-secondary { color: var(--text-muted) !important; }
 
-/* Bảng Hợp Đồng Light Mode (Màu mè, sinh động, không bị xám xịt) */
-[data-theme="light"] .table-dark {
-    background-color: rgba(255, 255, 255, 0.95) !important;
-    color: var(--text-main) !important;
+/* BẢNG HỢP ĐỒNG (Ép tiêu diệt hoàn toàn màu đen/xám do JS gán ngầm) */
+[data-theme="light"] .table-responsive {
+    background: #ffffff !important;
+    border-radius: 16px;
+    border: 1.5px solid rgba(0, 235, 176, 0.4) !important;
 }
-[data-theme="light"] .table-dark th {
-    background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%) !important;
-    color: var(--primary) !important;
-    border-bottom: 2px solid var(--primary) !important;
-    border-right: 1px solid rgba(0, 0, 0, 0.05);
-}
-[data-theme="light"] .table-dark td,
-[data-theme="light"] .table-dark tr {
-    background-color: transparent !important;
-    color: #0f172a !important;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
-    border-right: 1px solid rgba(0, 0, 0, 0.03) !important;
-}
-[data-theme="light"] .table-dark tbody tr:nth-child(odd) { background-color: rgba(241, 245, 249, 0.7) !important; }
-[data-theme="light"] .table-dark tbody tr:nth-child(even) { background-color: rgba(255, 255, 255, 0.95) !important; }
 
-/* Khi rê chuột vào dòng hợp đồng/tiệc: Sáng bừng ánh xanh ngọc rực rỡ thay vì màu xám xấu xí */
-[data-theme="light"] .table-dark tbody tr:hover { 
-    background-color: rgba(0, 235, 176, 0.15) !important; 
-    box-shadow: inset 4px 0 0 var(--primary) !important;
+[data-theme="light"] .table-dark,
+[data-theme="light"] body table.table-dark {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+}
+
+[data-theme="light"] .table-dark th {
+    background: #e2e8f0 !important;
+    color: #0d9488 !important;
+    border-bottom: 2px solid var(--primary) !important;
+    font-weight: 900 !important;
+}
+
+/* Ép mọi hàng tr và cột td trong bảng đổi sang nền sáng, bỏ hẳn nền đen/xám */
+[data-theme="light"] .table-dark tr,
+[data-theme="light"] .table-dark td,
+[data-theme="light"] #contractsTableBody tr,
+[data-theme="light"] #contractsTableBody td {
+    background-color: transparent !important;
+    background: transparent !important;
+    color: #0f172a !important;
+    border-bottom: 1px solid #cbd5e1 !important;
+}
+
+[data-theme="light"] #contractsTableBody tr:nth-child(odd) { background-color: #f8fafc !important; }
+[data-theme="light"] #contractsTableBody tr:nth-child(even) { background-color: #ffffff !important; }
+
+/* Khi rê chuột vào dòng tiệc/hợp đồng: Sáng bừng xanh ngọc rực rỡ, KHÔNG CÒN MÀU XÁM */
+[data-theme="light"] .table-dark tbody tr:hover,
+[data-theme="light"] #contractsTableBody tr:hover { 
+    background-color: #ccfbef !important; 
+    box-shadow: inset 5px 0 0 var(--primary) !important;
 }
 
 /* Modal chung */
 [data-theme="light"] .modal-content {
     background: #ffffff !important;
     border: 2px solid var(--primary) !important;
-    box-shadow: 0 25px 60px rgba(0,0,0,0.2) !important;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.25) !important;
     border-radius: 24px !important;
     color: var(--text-main) !important;
 }
 [data-theme="light"] .btn-close-white {
     filter: invert(1) grayscale(100%) brightness(0) !important;
-    opacity: 0.8;
+    opacity: 0.9;
 }
 
-/* Input, Form, Select */
+/* Form inputs */
 [data-theme="light"] .form-control, 
 [data-theme="light"] .form-select {
     background: #f8fafc !important;
-    border: 1.5px solid #cbd5e1 !important;
-    color: var(--text-main) !important;
+    border: 1.5px solid #94a3b8 !important;
+    color: #0f172a !important;
     border-radius: 12px !important;
-}
-[data-theme="light"] .form-control:focus, 
-[data-theme="light"] .form-select:focus {
-    border-color: var(--primary) !important;
-    background: #ffffff !important;
-    box-shadow: 0 0 15px rgba(0, 235, 176, 0.3) !important;
+    font-weight: 600;
 }
 
 /* ----------------------------------------------------------
-   MODAL LỊCH VẠN NIÊN (LIGHT MODE - KHÔNG BỊ CHÌM, CỰC NỔI BẬT)
+   MODAL LỊCH VẠN NIÊN (LIGHT MODE - NỀN SÁNG, NỔI BẬT KHÔNG CHÌM)
    ---------------------------------------------------------- */
 [data-theme="light"] #lunarCalendarModal .modal-content {
-    background: #f8fafc !important;
+    background: #f1f5f9 !important;
 }
 [data-theme="light"] #lunarCalendarModal .modal-title,
 [data-theme="light"] #lunarCalendarModal h5 {
-    color: var(--text-main) !important;
+    color: #0f172a !important;
     font-weight: 900;
 }
 
-/* Thanh công cụ lịch */
 [data-theme="light"] .cal-header {
     background: #ffffff !important;
-    border: 1.5px solid rgba(0, 235, 176, 0.4) !important;
+    border: 2px solid rgba(0, 235, 176, 0.5) !important;
     border-radius: 14px !important;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 }
 
 [data-theme="light"] #modalConvertDate,
 [data-theme="light"] #modalSelectMonth,
 [data-theme="light"] #modalSelectYear {
-    background-color: #f1f5f9 !important;
-    color: var(--text-main) !important;
-    border: 1.5px solid #cbd5e1 !important;
-    font-weight: 700;
+    background-color: #f8fafc !important;
+    color: #0f172a !important;
+    border: 1.5px solid #94a3b8 !important;
+    font-weight: 800;
 }
 
-/* Các ô ngày trong lịch (Có nền kem xám nhẹ, không bị chói trắng) */
+/* Các ô ngày trong lịch */
 [data-theme="light"] #modalCalendarDaysContainer > div {
     background-color: #ffffff !important;
     border: 1.5px solid #cbd5e1 !important;
     border-radius: 12px;
-    transition: all 0.25s ease;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 
-/* Hiệu ứng hover ô lịch: Nền xanh ngọc nhạt rực rỡ, viền neon, nổi khối 3D cực đẹp */
+/* Hover ô lịch: Sáng rực xanh ngọc rực rỡ, không bị xám xịt */
 [data-theme="light"] #modalCalendarDaysContainer > div:hover {
-    background-color: #e6fffa !important;
-    border-color: var(--primary) !important;
-    box-shadow: 0 6px 25px rgba(0, 235, 176, 0.35);
+    background-color: #ccfbef !important;
+    border-color: #0d9488 !important;
+    box-shadow: 0 6px 25px rgba(0, 235, 176, 0.4);
     transform: translateY(-3px);
     z-index: 2;
 }
@@ -376,5 +383,5 @@ padding: 8px !important;
 [data-theme="light"] #modalCalendarDaysContainer div,
 [data-theme="light"] #modalCalendarDaysContainer span {
     color: #0f172a !important;
-    font-weight: 600;
+    font-weight: 700;
 }
