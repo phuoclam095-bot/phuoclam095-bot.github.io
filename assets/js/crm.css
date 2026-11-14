@@ -536,3 +536,19 @@ body { padding-top: 150px; }
         background: rgba(0, 235, 176, 0.15) !important;
     }
 }
+.custom-select-dark option {
+        background-color: #0c152a !important;
+        color: #ffffff !important;
+        padding: 8px !important;
+    }
+    input[type="date"]:focus, select:focus {
+        outline: none !important;
+        box-shadow: none !important;
+        border-color: rgba(255,255,255,0.2) !important;
+    }
+[data-theme="light"] input[type="date"]:focus, 
+[data-theme="light"] select:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    border-color: rgba(0, 0, 0, 0.2) !important;
+}
