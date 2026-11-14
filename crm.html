@@ -312,8 +312,10 @@
                         <div class="modal-body p-4">
             <div class="cal-header d-flex align-items-center mb-3 px-4 py-3 rounded-4" style="background: rgba(13, 25, 48, 0.95); border: 1px solid rgba(0, 235, 176, 0.25); width: 100%; box-sizing: border-box; overflow-x: auto; white-space: nowrap;">
     
-    <!-- Cụm 1: Nút Hôm nay, Đổi tháng, Chọn Tháng/Năm -->
-    <div class="d-flex align-items-center gap-2 me-auto" style="flex-shrink: 0;">
+    <div class="cal-header d-flex align-items-center justify-content-between mb-3 px-4 py-3 rounded-4" style="background: rgba(13, 25, 48, 0.95); border: 1px solid rgba(0, 235, 176, 0.25); width: 100%; box-sizing: border-box; overflow-x: auto; white-space: nowrap; gap: 15px;">
+    
+    <!-- Cụm 1: BÊN TRÁI (Nút Hôm nay, Đổi tháng, Chọn Tháng/Năm) -->
+    <div class="d-flex align-items-center gap-2" style="flex-shrink: 0;">
         <button class="btn-today-quick px-3 py-2 fw-bold text-uppercase" style="font-size: 0.8rem;" onclick="jumpToToday()">Hôm nay</button>
         
         <div class="d-flex align-items-center gap-1">
@@ -336,8 +338,8 @@
         </div>
     </div>
 
-    <!-- Cụm 2: Quy đổi ngày Âm/Dương và Chọn ngày -->
-    <div class="d-flex align-items-center gap-2 mx-3" style="flex-shrink: 0;">
+    <!-- Cụm 2: Ở GIỮA (Quy đổi ngày Âm/Dương và Chọn ngày) -->
+    <div class="d-flex align-items-center gap-2 justify-content-center" style="flex-shrink: 0;">
         <div class="btn-group btn-group-sm" role="group">
             <input type="radio" class="btn-check" name="convertType" id="typeSolarToLunar" checked onclick="switchConvertMode()">
             <label class="btn btn-outline-primary py-1 px-2.5" style="font-size:0.7rem; font-weight:700;" for="typeSolarToLunar">Dương➔Âm</label>
@@ -354,7 +356,7 @@
         </div>
     </div>
 
-    <!-- Cụm 3: View Lưới / Danh sách -->
+    <!-- Cụm 3: BÊN PHẢI (View Lưới / Danh sách) -->
     <div class="d-flex align-items-center p-0" role="group" style="flex-shrink: 0; gap: 6px;">
         <input type="radio" class="btn-check" name="calendarViewMode" id="viewModeGrid" checked onclick="switchCalendarView('grid')">
         <label class="btn btn-sm btn-outline-light px-3.5 py-1.5 fw-bold border border-secondary border-opacity-50 rounded-2" style="font-size: 0.8rem;" for="viewModeGrid"><i class="fas fa-th me-1.5 text-primary"></i> Lưới</label>
