@@ -234,6 +234,10 @@ padding: 8px !important;
 /* ==========================================================
    2. BỔ SUNG LIGHT MODE (CHUẨN 5 SAO - KHÔNG CHÌM CHỮ, RỰC RỠ)
    ========================================================== */
+/* ==========================================================
+   ÉP SÂU TẬN GỐC: KHỬ HOÀN TOÀN MÀU XÁM KHI HOVER & KHOANH RÕ NGÀY HÔM NAY
+   ========================================================== */
+
 [data-theme="light"] {
     --bg-deep: #cbd5e1;
     --card-bg: #ffffff;
@@ -248,29 +252,23 @@ padding: 8px !important;
     color: #0f172a !important;
 }
 
-/* 1. ÉP NAVBAR SÁNG SỦA, KHÔNG CÒN ĐEN THUI */
+/* 1. THANH NAVBAR SÁNG SỦA */
 [data-theme="light"] .navbar {
     background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95) 0%, rgba(240, 245, 250, 0.9) 100%) !important;
     border-bottom: 2px solid var(--primary) !important;
     backdrop-filter: blur(20px);
 }
-[data-theme="light"] .navbar .nav-link {
-    color: #0f172a !important;
-    font-weight: 800 !important;
-}
+[data-theme="light"] .navbar .nav-link { color: #0f172a !important; font-weight: 800 !important; }
 [data-theme="light"] .navbar .nav-link:hover, 
-[data-theme="light"] .navbar .nav-link.active {
-    color: var(--primary) !important;
-}
+[data-theme="light"] .navbar .nav-link.active { color: var(--primary) !important; }
 
-/* 2. TIÊU ĐỀ & CHỮ TÔNG SÁNG */
+/* 2. TIÊU ĐỀ & CARD */
 [data-theme="light"] h1, [data-theme="light"] h2, [data-theme="light"] h3, 
 [data-theme="light"] h4, [data-theme="light"] h5, [data-theme="light"] h6,
 [data-theme="light"] .supreme-title {
     color: #0f172a !important;
 }
 
-/* 3. THẺ CARD THỐNG KÊ */
 [data-theme="light"] .card-custom {
     background: #ffffff !important;
     border: 1.5px solid rgba(0, 235, 176, 0.4) !important;
@@ -279,7 +277,7 @@ padding: 8px !important;
     color: #0f172a !important;
 }
 
-/* 4. BẢNG HỢP ĐỒNG & THANH HOVER (Đổi xám thành xanh ngọc rực rỡ) */
+/* 3. BẢNG HỢP ĐỒNG: TIÊU DIỆT HOÀN TOÀN MÀU XÁM KHI HOVER */
 [data-theme="light"] .table-responsive {
     background: #ffffff !important;
     border-radius: 16px;
@@ -287,7 +285,8 @@ padding: 8px !important;
 }
 
 [data-theme="light"] .table-dark,
-[data-theme="light"] table.table-dark {
+[data-theme="light"] table.table-dark,
+[data-theme="light"] .table-hover>tbody>tr:hover>* {
     background-color: #ffffff !important;
     color: #0f172a !important;
 }
@@ -312,29 +311,24 @@ padding: 8px !important;
 [data-theme="light"] #contractsTableBody tr:nth-child(odd) { background-color: #f8fafc !important; }
 [data-theme="light"] #contractsTableBody tr:nth-child(even) { background-color: #ffffff !important; }
 
-/* HOVER DÒNG HỢP ĐỒNG: Sáng bừng xanh ngọc, tuyệt đối KHÔNG CÒN MÀU XÁM */
+/* Ép cứng hiệu ứng HOVER: Sáng rực xanh ngọc mint, KHÔNG ĐƯỢC PHÉP HIỆN MÀU XÁM */
 [data-theme="light"] .table-dark tbody tr:hover,
-[data-theme="light"] #contractsTableBody tr:hover { 
-    background-color: #ccfbef !important; 
+[data-theme="light"] #contractsTableBody tr:hover,
+[data-theme="light"] .table-hover > tbody > tr:hover {
+    background-color: #ccfbef !important;
+    background: #ccfbef !important;
     box-shadow: inset 5px 0 0 var(--primary) !important;
+}
+[data-theme="light"] .table-dark tbody tr:hover td,
+[data-theme="light"] #contractsTableBody tr:hover td {
+    background-color: transparent !important;
+    color: #0f172a !important;
 }
 
 [data-theme="light"] .table-dark td .text-white { color: #0f172a !important; font-weight: 700; }
 [data-theme="light"] .table-dark td .text-bright-sub { color: #475569 !important; }
 
-/* 5. CÁC NÚT BẤM (Kết nối lịch, Xem ẩn, Thêm hợp đồng, Lịch vạn niên...) */
-[data-theme="light"] .btn-outline-light {
-    color: #0f172a !important;
-    border-color: #94a3b8 !important;
-    background-color: #f1f5f9 !important;
-    font-weight: 700 !important;
-}
-[data-theme="light"] .btn-outline-light:hover {
-    background-color: var(--primary) !important;
-    color: #000 !important;
-}
-
-/* 6. MODAL & LỊCH VẠN NIÊN (Nút X, chữ Danh Sách, ô lịch) */
+/* 4. MODAL & LỊCH VẠN NIÊN (KHOANH NỔI BẬT NGÀY HÔM NAY) */
 [data-theme="light"] .modal-content {
     background: #ffffff !important;
     border: 2px solid var(--primary) !important;
@@ -348,7 +342,6 @@ padding: 8px !important;
     color: #0f172a !important;
 }
 
-/* Xử lý nút X đóng Modal bị chìm thành màu đen rõ nét */
 [data-theme="light"] .btn-close,
 [data-theme="light"] .btn-close-white {
     filter: invert(1) grayscale(100%) brightness(0) !important;
@@ -361,20 +354,27 @@ padding: 8px !important;
     border-radius: 14px !important;
 }
 
-/* Chữ Danh Sách và các nhãn trong modal lịch */
 [data-theme="light"] #lunarCalendarModal label,
-[data-theme="light"] #lunarCalendarModal span,
+[data-theme="light"] #lunarCalendarModal span:not(.badge),
 [data-theme="light"] #lunarCalendarModal div {
     color: #0f172a !important;
 }
 
+/* Các ô ngày thường trong lịch */
 [data-theme="light"] #modalCalendarDaysContainer > div {
     background-color: #ffffff !important;
     border: 1.5px solid #cbd5e1 !important;
     border-radius: 12px;
 }
 
-/* Hover ô lịch sáng bừng sắc ngọc */
+/* KHOANH RÕ VÀ TÔ NỔI BẬT NGÀY HÔM NAY TRONG LỊCH SÁNG */
+[data-theme="light"] #modalCalendarDaysContainer > div[style*="background: rgba(234, 179, 8"] {
+    background-color: #fef08a !important;
+    border: 2.5px solid #eab308 !important;
+    box-shadow: 0 0 15px rgba(234, 179, 8, 0.4) !important;
+}
+
+/* Hover ô lịch */
 [data-theme="light"] #modalCalendarDaysContainer > div:hover {
     background-color: #ccfbef !important;
     border-color: #0d9488 !important;
