@@ -21,32 +21,12 @@
     padding: 15px;
 }
 
-/* Ép màu nền và viền cho khung kết quả ở chế độ Light Mode */
-[data-theme="light"] #resultBox {
-    background: #ffffff !important;
-    border: 1px solid #cbd5e1 !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03) !important;
-}
 
-/* Ép màu cho tên thư mục */
-[data-theme="light"] #resultBox #resFolderName {
-    color: #0f172a !important;
-    font-weight: 900 !important;
-}
 
-/* Ép màu cho thẻ đường dẫn (thẻ a) bên trong kết quả - Dùng a#resClientLink để tăng độ ưu tiên */
-[data-theme="light"] #resultBox a#resClientLink {
-    color: #0f766e !important;
-    font-weight: 700 !important;
-    text-decoration: none !important;
-}
 
-[data-theme="light"] #resultBox a#resClientLink:hover {
-    text-decoration: underline !important;
-}
-```[cite: 13]
 
-Sau khi cập nhật xong, bạn hãy ra trình duyệt bấm **Ctrl + F5** (hoặc xóa cache) để tải lại trang. Lúc này, chữ trong khung kết quả sẽ ngay lập tức đổi sang màu xanh đậm sắc nét, không bị xám hay chìm nữa!
+
+
 body[data-theme="light"], [data-theme="light"] body {
     background-color: #f1f5f9 !important;
     background-image: radial-gradient(at 10% 20%, rgba(15, 118, 110, 0.05) 0px, transparent 50%), 
@@ -191,11 +171,32 @@ body[data-theme="light"], [data-theme="light"] body {
     box-shadow: 0 15px 30px rgba(15, 118, 110, 0.4);
 }
 
-/* Hộp kết quả trả về */
+/* ==========================================================
+   FIX TRIỆT ĐỂ KHUNG KẾT QUẢ (#resultBox) TRONG LIGHT MODE
+   ========================================================== */
 [data-theme="light"] #resultBox {
-    background: #f0fdf4 !important;
-    border: 1.5px solid #bbf7d0 !important;
-    border-radius: 16px;
+    background: #ffffff !important;                   /* Nền trắng tinh tươm, tuyệt đối không xám */
+    border: 1px solid #cbd5e1 !important;             /* Viền xám sáng gọn gàng */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+    border-radius: 16px !important;
+}
+
+/* Tên thư mục trong khung kết quả: Đổi thành màu đen/xám đậm sắc nét */
+[data-theme="light"] #resultBox #resFolderName {
+    color: #0f172a !important; 
+    font-weight: 900 !important;
+}
+
+/* Đường dẫn link chia sẻ: Ép màu tối đậm, loại bỏ hoàn toàn chữ xanh */
+[data-theme="light"] #resultBox a#resClientLink {
+    color: #0f172a !important;                       /* Chữ tối màu, cực kỳ dễ đọc trên nền trắng */
+    font-weight: 700 !important;
+    text-decoration: none !important;
+}
+
+[data-theme="light"] #resultBox a#resClientLink:hover {
+    color: #0f766e !important;                       /* Khi rê chuột mới chuyển sang xanh ngọc chủ đạo */
+    text-decoration: underline !important;
 }
 
 [data-theme="light"] #resFolderName {
