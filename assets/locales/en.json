@@ -114,7 +114,7 @@
     
     "text_no_notes": "There are no notes from the client for this album yet.",
     "text_no_photos": "The client has not selected any photos yet.",
-    "text_no_data": "The album has no photos or n8n hasn't returned the photo list."
+    "text_no_data": "The album has no photos or n8n hasn't returned the photo list.",
     "toast_processing": "Processing...",
   "theme_toggle": "Toggle Light / Dark",
   "btn_logout": "Log out",
