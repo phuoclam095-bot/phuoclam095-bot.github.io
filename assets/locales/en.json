@@ -222,6 +222,8 @@
     "error_invalid_drive_link": "Invalid Google Drive folder link. (Note: The link must be public)",
     "example_placeholder": "Example: 50",
 "logo_format_note": "Recommended PNG format for transparency (Size <1MB). Client photo selection links will load slower if exceeded.",
-    "drive_placeholder": "Paste folder link here..."
-    
+    "drive_placeholder": "Paste folder link here...",
+    "logo_note_format": "Recommended transparent PNG format (Size <1MB).",
+"logo_note_speed": "Client photo selection links will load slower than expected."
+    "limit_placeholder": "Example: 50"
 }
