@@ -1144,3 +1144,7 @@ div[style*="grid-template-columns: repeat(7, 1fr)"]:first-of-type {
 [data-theme="light"] body h3#statTotalRemaining {
     color: #fbbf24 !important; /* Công nợ phải thu màu vàng cam nổi bật */
 }
+/* Mặc định ẩn tiêu đề, khi nào VIP active thì JS hoặc CSS xử lý hiện lên */
+.supreme-title {
+    display: none; 
+}
