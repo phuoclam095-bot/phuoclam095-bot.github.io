@@ -369,10 +369,18 @@ async function activateFreeTrial() {
     }
 
     const driveLink = document.getElementById('driveLink').value.trim();
-    if (!driveLink.includes('drive.google.com') || (!driveLink.includes('folders/') && !driveLink.includes('drive/u/'))) {
-        showInlineMessage("Link thư mực drive không hợp lệ. ( Lưu ý link phải công khai )", "error");
-        return;
-    }
+        if (!driveLink.includes('drive.google.com') || (!driveLink.includes('folders/') && !driveLink.includes('drive/u/'))) {
+            // Lấy ngôn ngữ hiện tại từ localStorage hoặc biến toàn cục (mặc định là 'vi')
+            const currentLang = localStorage.getItem('preferred_lang') || 'vi';
+            
+            // Thông báo song ngữ tương ứng
+            const errorMsg = currentLang === 'en' 
+                ? "Invalid Google Drive folder link. (Note: The link must be public)" 
+                : "Link thư mục drive không hợp lệ. ( Lưu ý link phải công khai )";
+                
+            showInlineMessage(errorMsg, "error");
+            return;
+        }
 
     const fIdMatch = driveLink.match(/folders\/([^/?]+)/);
     const fId = fIdMatch ? fIdMatch[1] : null;
