@@ -795,3 +795,13 @@ body { padding-top: 150px; }
 [data-theme="light"] body #modalCalendarAgendaBody div {
     color: #0f172a !important;
 }
+/* ==========================================================
+   TIÊU DIỆT HOÀN TOÀN MÀU XÁM KHI HOVER TRÊN LIGHT MODE
+   ========================================================== */
+[data-theme="light"] .table-dark.table-hover > tbody > tr:hover > *,
+[data-theme="light"] .table-dark.table-hover > tbody > tr:hover {
+    --bs-table-accent-bg: #ccfbef !important;
+    --bs-table-hover-bg: #ccfbef !important;
+    background-color: #ccfbef !important;
+    color: #0f172a !important;
+}
