@@ -175,9 +175,10 @@ body[data-theme="light"], [data-theme="light"] body {
    FIX TRIỆT ĐỂ KHUNG KẾT QUẢ (#resultBox) TRONG LIGHT MODE
    ========================================================== */
 [data-theme="light"] #resultBox {
-    background: #ffffff !important;                   /* Nền trắng tinh tươm, tuyệt đối không xám */
-    border: 1px solid #cbd5e1 !important;             /* Viền xám sáng gọn gàng */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+    background: rgba(241, 245, 249, 0.7) !important; /* Xám ngọc trai siêu nhạt, trong suốt mờ ảo */
+    backdrop-filter: blur(10px) !important;           /* Hiệu ứng kính mờ cao cấp */
+    border: 1px solid rgba(203, 213, 225, 0.6) !important; /* Viền xám cực kỳ mảnh và nhẹ */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02) !important;
     border-radius: 16px !important;
 }
 
@@ -187,20 +188,16 @@ body[data-theme="light"], [data-theme="light"] body {
     font-weight: 900 !important;
 }
 
-/* Đường dẫn link chia sẻ: Ép màu tối đậm, loại bỏ hoàn toàn chữ xanh */
+[data-theme="light"] #resultBox #resFolderName,
 [data-theme="light"] #resultBox a#resClientLink {
-    color: #0f172a !important;                       /* Chữ tối màu, cực kỳ dễ đọc trên nền trắng */
+    color: #0f172a !important;
     font-weight: 700 !important;
     text-decoration: none !important;
 }
 
 [data-theme="light"] #resultBox a#resClientLink:hover {
-    color: #0f766e !important;                       /* Khi rê chuột mới chuyển sang xanh ngọc chủ đạo */
+    color: #0f766e !important;
     text-decoration: underline !important;
-}
-
-[data-theme="light"] #resFolderName {
-    color: #166534 !important;
 }
 
 /* Khung chat AI nổi */
