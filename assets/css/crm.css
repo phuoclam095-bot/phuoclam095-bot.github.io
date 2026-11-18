@@ -382,3 +382,25 @@ padding: 8px !important;
     transform: translateY(-2px);
     z-index: 2;
 }
+/* ==========================================================
+   KHẮC PHỤC LỖI MẤT CHỮ NÚT "KẾT NỐI LỊCH & ĐỒNG BỘ" KHI HOVER
+   ========================================================== */
+[data-theme="light"] .btn.btn-outline-light,
+[data-theme="light"] button[onclick*="triggerSyncAndCheckToken"] {
+    color: #0f172a !important;
+    border-color: rgba(15, 23, 42, 0.3) !important;
+    background-color: #ffffff !important;
+    font-weight: 800 !important;
+}
+
+[data-theme="light"] .btn.btn-outline-light:hover,
+[data-theme="light"] button[onclick*="triggerSyncAndCheckToken"]:hover {
+    background-color: #0f766e !important; /* Xanh ngọc Emerald sang trọng khi hover */
+    color: #ffffff !important;
+    border-color: #0f766e !important;
+}
+
+[data-theme="light"] .btn.btn-outline-light:hover i,
+[data-theme="light"] button[onclick*="triggerSyncAndCheckToken"]:hover i {
+    color: #ffffff !important; /* Đảm bảo icon cũng chuyển trắng nổi bật trên nền xanh */
+}
