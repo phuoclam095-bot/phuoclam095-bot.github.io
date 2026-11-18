@@ -419,3 +419,63 @@ body[data-theme="light"], [data-theme="light"] body {
     .modal-backdrop.show {
         opacity: 0.5 !important;
     }
+/* ==========================================================
+   FIX TRIỆT ĐỂ: TIÊU ĐỀ & ICON TRONG MODAL LỊCH KHÔNG BỊ CHÌM
+   ========================================================== */
+
+/* 1. Ép toàn bộ tiêu đề modal ở cả Light và Dark mode có màu chữ nổi bật */
+#lunarCalendarModal .modal-header .modal-title,
+#lunarCalendarModal .modal-header h5,
+#lunarCalendarModal .modal-header span {
+    color: #ffffff !important;
+}
+
+[data-theme="light"] #lunarCalendarModal .modal-header .modal-title,
+[data-theme="light"] #lunarCalendarModal .modal-header h5,
+[data-theme="light"] #lunarCalendarModal .modal-header span {
+    color: #0f172a !important; /* Chữ xám đen sắc nét trên nền sáng */
+}
+
+/* 2. Ép icon lịch trong tiêu đề modal đổi màu đúng chuẩn */
+#lunarCalendarModal .modal-header i.fa-calendar-alt {
+    color: var(--primary) !important;
+    filter: drop-shadow(0 0 8px rgba(0, 235, 176, 0.4));
+}
+/* ==========================================================
+   FIX TRIỆT ĐỂ: NỀN TIÊU ĐỀ MODAL VÀ NÚT DẤU X (ĐÓNG)
+   ========================================================== */
+
+/* 1. Đổi nền đen của phần Header Modal Lịch thành cùng tông với giao diện */
+#lunarCalendarModal .modal-header {
+    background: #080d1a !important; /* Tông tối sang trọng cho Dark Mode */
+    border-bottom: 1px solid rgba(0, 235, 176, 0.2) !important;
+}
+
+[data-theme="light"] #lunarCalendarModal .modal-header {
+    background: #ffffff !important; /* Tông trắng sạch sẽ cho Light Mode */
+    border-bottom: 1px solid #e2e8f0 !important;
+}
+
+/* 2. Ép nút dấu X hiển thị rõ ràng, nổi bật (Không bị tàng hình nữa) */
+#lunarCalendarModal .modal-header .btn-close,
+#lunarCalendarModal .modal-header .btn-close-white {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    border-radius: 50% !important;
+    padding: 8px !important;
+    opacity: 1 !important;
+    filter: invert(0) grayscale(100%) brightness(200%) !important; /* Trắng sáng rực rỡ trên nền tối */
+    transition: all 0.2s ease;
+}
+
+[data-theme="light"] #lunarCalendarModal .modal-header .btn-close,
+[data-theme="light"] #lunarCalendarModal .modal-header .btn-close-white {
+    background-color: rgba(0, 0, 0, 0.08) !important;
+    filter: invert(1) grayscale(100%) brightness(0%) !important; /* Đen đậm rõ nét trên nền sáng */
+}
+
+/* Hiệu ứng khi di chuột vào nút X */
+#lunarCalendarModal .modal-header .btn-close:hover {
+    transform: scale(1.1);
+    background-color: var(--primary) !important;
+    filter: invert(1) grayscale(100%) brightness(0%) !important;
+}
