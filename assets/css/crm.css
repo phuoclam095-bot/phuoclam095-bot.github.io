@@ -1101,3 +1101,39 @@ div[style*="grid-template-columns: repeat(7, 1fr)"]:first-of-type {
     opacity: 1 !important;
     font-weight: 400 !important;
 }
+/* ==========================================================
+   FIX DẤU TÍCH GOOGLE & MÀU SẮC 3 Ô TIỀN THEO TÔNG DARK MODE
+   ========================================================== */
+
+/* 1. Đổi màu dấu tích (checkmark) bên trong checkbox Google thành màu sáng rõ nét */
+[data-theme="light"] .modal-body input[type="checkbox"]#syncGoogleCalendar:checked,
+[data-theme="light"] .modal-body .sync-calendar-checkbox:checked {
+    background-color: #0f766e !important;
+    border-color: #0f766e !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e") !important;
+}
+
+/* 2. Đổi màu 3 ô tiền (Tổng giá trị, Cọc, Phát sinh) theo phong cách màu sắc Dark Mode sang trọng */
+[data-theme="light"] .modal-body input#totalAmt,
+[data-theme="light"] .modal-body input#depositAmt,
+[data-theme="light"] .modal-body input#extraFee,
+[data-theme="light"] .modal-body input#editTotalAmt,
+[data-theme="light"] .modal-body input#editDepositAmt,
+[data-theme="light"] .modal-body input#editExtraFee {
+    background: #0f172a !important; /* Nền tối sang trọng giống màn hình Dark mode */
+    color: #38bdf8 !important;       /* Chữ số tiền màu xanh ngọc/xanh dương sáng nổi bật */
+    border: 1.5px solid #0f766e !important;
+    font-weight: 800 !important;
+}
+
+[data-theme="light"] .modal-body input#totalAmt:focus,
+[data-theme="light"] .modal-body input#depositAmt:focus,
+[data-theme="light"] .modal-body input#extraFee:focus,
+[data-theme="light"] .modal-body input#editTotalAmt:focus,
+[data-theme="light"] .modal-body input#editDepositAmt:focus,
+[data-theme="light"] .modal-body input#editExtraFee:focus {
+    background: #0f172a !important;
+    color: #38bdf8 !important;
+    border-color: #14b8a6 !important;
+    box-shadow: 0 0 10px rgba(15, 118, 110, 0.3) !important;
+}
