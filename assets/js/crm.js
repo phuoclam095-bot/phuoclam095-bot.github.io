@@ -42,6 +42,7 @@ function updateHeaderUI() {
                 statusEl.innerHTML = `<span class="status-tag tag-active">ACTIVE - Hạn: ${new Date(expiry).toLocaleDateString('vi-VN')}</span>`;
                 if (mainWorkGrid) mainWorkGrid.style.setProperty('display', 'block', 'important');
                 if (vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'none', 'important');
+                document.querySelector('.supreme-title').style.setProperty('display', 'block', 'important');       
             } else {
                 statusEl.innerHTML = `<span class="status-tag ${status === 'new' ? 'tag-new' : 'tag-expired'}">${status === 'new' ? 'MỚI' : 'EXPIRED'}</span>`;
                 if (mainWorkGrid) mainWorkGrid.style.setProperty('display', 'none', 'important');
@@ -55,6 +56,8 @@ function updateHeaderUI() {
         if(loggedOutNav) loggedOutNav.style.setProperty('display', 'block', 'important');
         if(mainWorkGrid) mainWorkGrid.style.setProperty('display', 'none', 'important');
         if(vipExpiredBlockNotice) vipExpiredBlockNotice.style.setProperty('display', 'block', 'important');
+        const supremeTitle = document.querySelector('.supreme-title');
+        if(supremeTitle) supremeTitle.style.display = 'none';
     }
 }
 function getExpiryTimestamp() {
