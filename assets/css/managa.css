@@ -171,7 +171,25 @@
     border: 1.5px solid #cbd5e1 !important;
     color: #0f172a !important;
 }
+/* Khung nền mặc định (dùng cho Dark Mode) */
+.cover-grid-box {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 14px;
+    max-height: 72vh;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.4) !important;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
 
+/* Khung nền tự động đổi sang màu sáng, sạch sẽ và có viền bo tinh tế khi bật Light Mode */
+[data-theme="light"] .cover-grid-box {
+    background: #f8fafc !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+}
 [data-theme="light"] .modal-content input::placeholder,
 [data-theme="light"] .modal-content textarea::placeholder {
     color: #94a3b8 !important;
