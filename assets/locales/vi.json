@@ -206,5 +206,17 @@
   "weekday_sat": "Thứ 7",
   "weekday_sun": "Chủ Nhật",
   "modal_edit_title": "CHỈNH SỬA HỢP ĐỒNG & LỊCH TRÌNH",
-  "btn_update_contract": "LƯU CẬP NHẬT HỢP ĐỒNG"
+  "btn_update_contract": "LƯU CẬP NHẬT HỢP ĐỒNG",
+    "modal_install_title": "Cài Đặt Ứng Dụng ChonAnhNhanh",
+"modal_install_desc": "Biến website thành ứng dụng độc lập trên màn hình chính để thao tác nhanh mượt như App chuyên nghiệp!",
+"install_ios_title": "Đối với iPhone / iPad (Safari):",
+"install_ios_step1": "Mở trang web bằng trình duyệt <b>Safari</b>.",
+"install_ios_step2": "Chạm vào nút <b>Chia sẻ</b> (hình ô vuông có mũi tên hướng lên ở thanh công cụ phía dưới).",
+"install_ios_step3": "Cuộn xuống và chọn <b>\"Thêm vào Màn hình chính\" (Add to Home Screen)</b>.",
+"install_ios_step4": "Nhấn <b>Thêm</b> ở góc trên bên phải là xong!",
+"install_android_title": "Đối với Android & Máy tính (Chrome):",
+"install_android_step1": "Mở trang web bằng trình duyệt <b>Google Chrome</b>.",
+"install_android_step2": "Nhìn trên thanh địa chỉ <b>icon cài đặt</b> ở góc trên bên phải.",
+"install_android_step3": "Chọn <b>\"Cài đặt ứng dụng\"</b> hoặc <b>dấu 3 chấm</b> để chọn cài đặt trang.",
+"install_android_step4": "Xác nhận để đưa biểu tượng app ra màn hình thiết bị."
 }
