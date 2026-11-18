@@ -10,202 +10,242 @@
 }
 
 [data-theme="light"] {
-    --bg-deep: #f1f5f9;                  /* Nền xám ngọc trai sang trọng, không bị chói */
+    --bg-deep: #f8fafc;
     --card-bg: #ffffff;
-    --text-color: #0f172a;               /* Chữ siêu sắc nét */
-    --text-muted: #475569;               /* Chữ phụ dễ đọc */
-    --primary: #0f766e;                  /* Xanh ngọc lục bảo (Emerald) cao cấp */
+    --text-color: #0f172a;
+    --text-muted: #475569;
+    --primary: #0f766e;
     --accent: #0d9488;
     --border-color: #cbd5e1;
-    --navbar-bg: rgba(255, 255, 255, 0.95);
+    --navbar-bg: rgba(255, 255, 255, 0.9);
 }
 
-/* Nền tổng thể mượt mà */
-body[data-theme="light"], [data-theme="light"] body {
-    background-color: #f1f5f9 !important;
-    background-image: radial-gradient(at 10% 20%, rgba(15, 118, 110, 0.04) 0px, transparent 50%), 
-                      radial-gradient(at 90% 80%, rgba(20, 184, 166, 0.04) 0px, transparent 50%) !important;
-    color: #0f172a !important;
-}
-
-/* Thanh Navbar kính mờ phẳng */
-[data-theme="light"] .navbar {
-    background: rgba(255, 255, 255, 0.9) !important;
-    backdrop-filter: blur(20px) !important;
-    border-bottom: 1px solid #cbd5e1 !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-}
-
-[data-theme="light"] .nav-link {
-    color: #1e293b !important;
-    font-weight: 700;
-}
-
-[data-theme="light"] .nav-link:hover, 
-[data-theme="light"] .nav-link.active {
-    color: #0f766e !important;
-}
-
-/* Khung thẻ chính (Create Card) */
-[data-theme="light"] .rainbow-border-wrapper {
-    background: #cbd5e1 !important;
-    padding: 2px;
-    border-radius: 28px;
-    box-shadow: 0 15px 35px -10px rgba(15, 118, 110, 0.15) !important;
-}
-
-[data-theme="light"] .create-card {
-    background: #ffffff !important;
-    color: #0f172a !important;
-    border-radius: 26px;
-    padding: 40px !important;
-    border: 1px solid #e2e8f0 !important;
-}
-
-[data-theme="light"] .luxury-title {
+[data-theme="light"] .supreme-title {
     color: #0f172a !important;
     background: none !important;
     -webkit-text-fill-color: #0f172a !important;
-    font-size: 1.8rem !important;
-    letter-spacing: -0.5px;
     font-weight: 900;
-    margin-bottom: 30px !important;
 }
 
-/* Nhãn (Label) sắc nét */
-[data-theme="light"] .create-card label, 
-[data-theme="light"] .switch-group span {
-    color: #1e293b !important;
-    font-weight: 800 !important;
-    font-size: 0.75rem;
-    letter-spacing: 0.5px;
+/* Ô tìm kiếm album */
+[data-theme="light"] .search-wrapper {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.04) !important;
+    border-radius: 20px !important;
 }
 
-/* Ô nhập liệu (Input) phẳng cao cấp */
-[data-theme="light"] input[type="text"] {
-    background: #f8fafc !important;
-    border: 2px solid #cbd5e1 !important;
+[data-theme="light"] .search-inner {
+    background: #ffffff !important;
+}
+
+[data-theme="light"] .search-wrapper input[type="text"] {
+    background: transparent !important;
     color: #0f172a !important;
-    border-radius: 12px !important;
-    font-weight: 700;
+    border: none !important;
 }
 
-[data-theme="light"] input[type="text"]::placeholder {
+[data-theme="light"] .search-wrapper input[type="text"]::placeholder {
     color: #94a3b8 !important;
 }
 
-[data-theme="light"] input[type="text"]:focus {
-    border-color: #0f766e !important;
+/* Thẻ Card chứa Album (Album Card) */
+[data-theme="light"] .album-card,
+[data-theme="light"] #albumGrid > div {
     background: #ffffff !important;
-    box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.1) !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06) !important;
+    color: #0f172a !important;
+    border-radius: 24px !important;
 }
 
-/* Nhóm bật/tắt (Switch groups) và Thanh trượt */
-[data-theme="light"] .switch-group {
-    background: #ffffff !important;
-    border: 1.5px solid #cbd5e1 !important;
-    border-radius: 12px !important;
-    padding: 12px 16px !important;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+[data-theme="light"] .album-card h5,
+[data-theme="light"] .album-card span,
+[data-theme="light"] .album-card p {
+    color: #0f172a !important;
 }
 
-[data-theme="light"] .slider {
-    background-color: #cbd5e1 !important;
-    border: 1px solid #94a3b8 !important;
-    transition: .3s;
-    border-radius: 34px;
+/* Các chỉ số thống kê trong card */
+[data-theme="light"] .stat-box,
+[data-theme="light"] .album-card .bg-dark,
+[data-theme="light"] .album-card [style*="background: rgba(0,0,0"] {
+    background: #f1f5f9 !important;
+    color: #334155 !important;
+    border: 1px solid #e2e8f0 !important;
 }
 
-[data-theme="light"] .slider:before {
-    background-color: #ffffff !important;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-}
-
-[data-theme="light"] input:checked + .slider {
-    background-color: #0f766e !important;
-    border-color: #0f766e !important;
-}
-
-[data-theme="light"] input:checked + .slider:before {
-    transform: translateX(24px);
-}
-
-/* Nút khởi tạo Album */
-[data-theme="light"] .btn-create {
+/* Các nút bấm thao tác trong card */
+[data-theme="light"] .btn-tai-final {
     background: #0f766e !important;
     color: #ffffff !important;
-    border: none;
-    border-radius: 14px !important;
-    font-weight: 900;
-    letter-spacing: 0.5px;
-    box-shadow: 0 8px 20px rgba(15, 118, 110, 0.2);
-    transition: all 0.2s ease;
+    font-weight: 800;
 }
 
-[data-theme="light"] .btn-create:hover {
-    background: #0d9488 !important;
-    transform: translateY(-1px);
-    box-shadow: 0 12px 25px rgba(15, 118, 110, 0.3);
+[data-theme="light"] .btn-link-action {
+    background: #0284c7 !important;
+    color: #ffffff !important;
+    font-weight: 800;
 }
 
-/* Hộp kết quả trả về */
-[data-theme="light"] #resultBox {
+[data-theme="light"] .btn-copy-action {
+    background: #d97706 !important;
+    color: #ffffff !important;
+    font-weight: 800;
+}
+
+[data-theme="light"] .btn-settings {
+    background: #7c3aed !important;
+    color: #ffffff !important;
+    font-weight: 800;
+}
+
+[data-theme="light"] .btn-delete-album {
+    background: #fee2e2 !important;
+    color: #dc2626 !important;
+    border: 1px solid #fecaca !important;
+    font-weight: 800;
+}
+
+[data-theme="light"] .stat-pill {
+    background: #f1f5f9 !important;
+    border: 1px solid #cbd5e1 !important;
+}
+
+[data-theme="light"] .stat-val {
+    color: #0f766e !important;
+    font-weight: 900 !important;
+}
+
+[data-theme="light"] .stat-lab {
+    color: #475569 !important;
+    font-weight: 800 !important;
+}
+
+[data-theme="light"] .album-vip-title {
+    background: linear-gradient(transparent, rgba(255, 255, 255, 0.95)) !important;
+    color: #0f172a !important;
+    font-weight: 900 !important;
+}
+
+[data-theme="light"] .album-card-vip {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Đồng bộ Modal sang Light Mode */
+[data-theme="light"] .modal-content {
+    background-color: #ffffff !important;
+    border: 2px solid #0f766e !important;
+    color: #0f172a !important;
+    box-shadow: 0 25px 50px rgba(15, 118, 110, 0.15) !important;
+}
+
+[data-theme="light"] .modal-header {
+    border-bottom: 1px solid #e2e8f0 !important;
+}
+
+[data-theme="light"] .modal-title {
+    color: #0f766e !important;
+}
+
+[data-theme="light"] .modal-body label,
+[data-theme="light"] .modal-body p,
+[data-theme="light"] .modal-body span,
+[data-theme="light"] .modal-body h5 {
+    color: #1e293b !important;
+}
+
+[data-theme="light"] .modal-content input[type="text"],
+[data-theme="light"] .modal-content input[type="number"],
+[data-theme="light"] .modal-content input[type="file"],
+[data-theme="light"] .modal-content textarea {
+    background-color: #f8fafc !important;
+    border: 1.5px solid #cbd5e1 !important;
+    color: #0f172a !important;
+}
+
+[data-theme="light"] .modal-content input::placeholder,
+[data-theme="light"] .modal-content textarea::placeholder {
+    color: #94a3b8 !important;
+}
+
+[data-theme="light"] .modal-header .btn-close {
+    background-color: #f1f5f9 !important;
+    border: 1px solid #cbd5e1 !important;
+    filter: invert(1) grayscale(100%) brightness(50%) !important;
+}
+
+[data-theme="light"] .modal-header .btn-close:hover {
+    background-color: #fee2e2 !important;
+    border-color: #fecaca !important;
+}
+
+[data-theme="light"] .alert-supreme {
     background: #f0fdf4 !important;
-    border: 1.5px solid #bbf7d0 !important;
-    border-radius: 14px;
-}
-
-[data-theme="light"] #resFolderName {
+    border: 1px solid #bbf7d0 !important;
     color: #166534 !important;
 }
 
-/* Khung chat AI nổi */
-[data-theme="light"] .chat-panel {
+[data-theme="light"] body {
+    background-color: #f8fafc !important;
+    background-image: radial-gradient(at 0% 0%, rgba(15, 118, 110, 0.03) 0px, transparent 50%), 
+                      radial-gradient(at 100% 100%, rgba(13, 148, 136, 0.03) 0px, transparent 50%) !important;
+    color: #0f172a !important;
+}
+
+[data-theme="light"] .navbar {
+    background: rgba(255, 255, 255, 0.85) !important;
+    backdrop-filter: blur(25px) !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02) !important;
+}
+
+[data-theme="light"] .search-wrapper .badge,
+#albumCount {
+    background: #0f766e !important;
+    color: #ffffff !important;
+    font-weight: 900 !important;
+}
+
+[data-theme="light"] #zipLoadingModal > div {
     background: #ffffff !important;
-    border: 1px solid #cbd5e1 !important;
-    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1) !important;
-    border-radius: 20px;
+    border: 1.5px solid #0f766e !important;
+    color: #0f172a !important;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15) !important;
 }
 
-[data-theme="light"] .chat-header {
-    background: #0f766e !important;
-    color: #ffffff !important;
-}
-
-[data-theme="light"] .msg-ai {
-    background: #f1f5f9 !important;
+[data-theme="light"] #zipLoadingModal h5 {
     color: #0f172a !important;
 }
 
-[data-theme="light"] .msg-user {
-    background: #0f766e !important;
-    color: #ffffff !important;
+[data-theme="light"] #zipLoadingModal p,
+[data-theme="light"] #zipStatusText {
+    color: #475569 !important;
 }
 
-[data-theme="light"] .user-pill {
+[data-theme="light"] .zip-tip-box {
     background: #f8fafc !important;
-    border: 1px solid #cbd5e1;
-}
-
-[data-theme="light"] .chat-suggestions span {
-    background: rgba(15, 118, 110, 0.08);
-    border: 1px solid #0f766e;
-    color: #0f766e;
-}
-
-/* Sửa lỗi hiển thị trang Quản Lý (Managa) trong Light Mode */
-[data-theme="light"] .main-container,
-[data-theme="light"] .container {
+    border: 1px dashed #d97706 !important;
     color: #0f172a !important;
 }
 
-[data-theme="light"] .table, 
-[data-theme="light"] .list-group-item,
-[data-theme="light"] .card {
-    background-color: #ffffff !important;
+[data-theme="light"] .zip-tip-box p,
+[data-theme="light"] .zip-tip-box span {
+    color: #334155 !important;
+}
+
+[data-theme="light"] #zipLoadingModal .btn-outline-light {
     color: #0f172a !important;
     border-color: #cbd5e1 !important;
+    background-color: #f1f5f9 !important;
 }
+
+[data-theme="light"] #zipLoadingModal .btn-outline-light:hover {
+    background-color: #e2e8f0 !important;
+    color: #0f172a !important;
+}
+
 /* ==========================================================
    2. GIAO DIỆN GỐC & CÁC THÀNH PHẦN HỆ THỐNG (GIỮ NGUYÊN 100%)
    ========================================================== */
