@@ -21,29 +21,32 @@
     padding: 15px;
 }
 
-/* Tùy chỉnh riêng cho Light Mode của khung kết quả (#resultBox) */
+/* Ép màu nền và viền cho khung kết quả ở chế độ Light Mode */
 [data-theme="light"] #resultBox {
-    background: #ffffff !important; /* Nền trắng tinh tươm */
-    border: 1px solid #cbd5e1 !important; /* Viền xám sáng gọn gàng */
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03) !important;
 }
 
-/* Tên thư mục hiển thị trong khung kết quả */
+/* Ép màu cho tên thư mục */
 [data-theme="light"] #resultBox #resFolderName {
-    color: #0f172a !important; /* Chữ đen đậm rõ nét */
+    color: #0f172a !important;
     font-weight: 900 !important;
 }
 
-/* Đường dẫn link chia sẻ */
-[data-theme="light"] #resultBox #resClientLink {
-    color: #0f766e !important; /* Màu xanh đậm chủ đạo, cực kỳ dễ đọc */
+/* Ép màu cho thẻ đường dẫn (thẻ a) bên trong kết quả - Dùng a#resClientLink để tăng độ ưu tiên */
+[data-theme="light"] #resultBox a#resClientLink {
+    color: #0f766e !important;
     font-weight: 700 !important;
     text-decoration: none !important;
 }
 
-[data-theme="light"] #resultBox #resClientLink:hover {
+[data-theme="light"] #resultBox a#resClientLink:hover {
     text-decoration: underline !important;
 }
+```[cite: 13]
+
+Sau khi cập nhật xong, bạn hãy ra trình duyệt bấm **Ctrl + F5** (hoặc xóa cache) để tải lại trang. Lúc này, chữ trong khung kết quả sẽ ngay lập tức đổi sang màu xanh đậm sắc nét, không bị xám hay chìm nữa!
 body[data-theme="light"], [data-theme="light"] body {
     background-color: #f1f5f9 !important;
     background-image: radial-gradient(at 10% 20%, rgba(15, 118, 110, 0.05) 0px, transparent 50%), 
