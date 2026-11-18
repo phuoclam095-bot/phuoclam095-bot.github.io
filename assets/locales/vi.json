@@ -114,7 +114,7 @@
     
     "text_no_notes": "Chưa có ghi chú nào từ khách hàng cho album này.",
     "text_no_photos": "Khách hàng chưa chọn bức ảnh nào.",
-    "text_no_data": "Album chưa có ảnh nào hoặc n8n chưa trả về danh sách ảnh."
+    "text_no_data": "Album chưa có ảnh nào hoặc n8n chưa trả về danh sách ảnh.",
     "toast_processing": "Đang xử lý...",
   "theme_toggle": "Chuyển đổi Sáng / Tối",
   "btn_logout": "Đăng xuất",
