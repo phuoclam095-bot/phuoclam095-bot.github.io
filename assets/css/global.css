@@ -537,3 +537,55 @@ body[data-theme="light"], [data-theme="light"] body {
 [data-theme="light"] #resultBox a#resClientLink:hover {
     text-decoration: underline !important;
 }
+/* ==========================================================
+   TÙY CHỈNH KHUNG UPLOAD LOGO CHO LIGHT MODE
+   ========================================================== */
+
+/* Nhãn (Label) hướng dẫn tải logo */
+[data-theme="light"] .create-card label[for="logoInput"], 
+[data-theme="light"] .create-card .upload-label-text {
+    color: #1e293b !important;
+    font-weight: 800 !important;
+}
+
+/* Phần chú thích dung lượng / định dạng bên dưới */
+[data-theme="light"] .create-card small,
+[data-theme="light"] .create-card .text-muted {
+    color: #64748b !important;
+}
+
+/* Tùy chỉnh input file (thanh chọn tệp) để mất nền đen */
+[data-theme="light"] input[type="file"] {
+    background: #f8fafc !important;
+    border: 2px dashed #cbd5e1 !important;
+    color: #0f172a !important;
+    padding: 12px !important;
+    border-radius: 14px !important;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+[data-theme="light"] input[type="file"]:hover {
+    border-color: #0f766e !important;
+    background: #f1f5f9 !important;
+}
+
+/* Tùy chỉnh nút "Chọn tệp" (Browse / Choose File) bên trong input cho từng trình duyệt */
+[data-theme="light"] input[type="file"]::file-selector-button {
+    background: #0f766e !important;
+    color: #ffffff !important;
+    border: none !important;
+    padding: 8px 16px !important;
+    border-radius: 10px !important;
+    font-weight: 700 !important;
+    cursor: pointer;
+    margin-right: 12px;
+    transition: background 0.3s ease;
+}
+
+[data-theme="light"] input[type="file"]::file-selector-button:hover {
+    background: #115e59 !important;
+}
+
+
