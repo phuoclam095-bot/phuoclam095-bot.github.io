@@ -1112,54 +1112,35 @@ div[style*="grid-template-columns: repeat(7, 1fr)"]:first-of-type {
     border-color: #0f766e !important;
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e") !important;
 }
-
-/* 2. Đổi màu 3 ô tiền (Tổng giá trị, Cọc, Phát sinh) theo phong cách màu sắc Dark Mode sang trọng */
-[data-theme="light"] .modal-body input#totalAmt,
-[data-theme="light"] .modal-body input#depositAmt,
-[data-theme="light"] .modal-body input#extraFee,
-[data-theme="light"] .modal-body input#editTotalAmt,
-[data-theme="light"] .modal-body input#editDepositAmt,
-[data-theme="light"] .modal-body input#editExtraFee {
-    background: #0f172a !important; /* Nền tối sang trọng giống màn hình Dark mode */
-    color: #38bdf8 !important;       /* Chữ số tiền màu xanh ngọc/xanh dương sáng nổi bật */
-    border: 1.5px solid #0f766e !important;
-    font-weight: 800 !important;
-}
-
-[data-theme="light"] .modal-body input#totalAmt:focus,
-[data-theme="light"] .modal-body input#depositAmt:focus,
-[data-theme="light"] .modal-body input#extraFee:focus,
-[data-theme="light"] .modal-body input#editTotalAmt:focus,
-[data-theme="light"] .modal-body input#editDepositAmt:focus,
-[data-theme="light"] .modal-body input#editExtraFee:focus {
-    background: #0f172a !important;
-    color: #38bdf8 !important;
-    border-color: #14b8a6 !important;
-    box-shadow: 0 0 10px rgba(15, 118, 110, 0.3) !important;
-}
 /* ==========================================================
-   ÉP ĐỔI MÀU 3 Ô TIỀN THEO TÔNG DARK MODE (ĐỘ ƯU TIÊN CAO NHẤT)
+   ĐỔI MÀU SẮC 3 Ô THỐNG KÊ LỚN NGOÀI MÀN HÌNH CHÍNH (DARK STYLE)
    ========================================================== */
-[data-theme="light"] body .modal-body input#totalAmt,
-[data-theme="light"] body .modal-body input#depositAmt,
-[data-theme="light"] body .modal-body input#extraFee,
-[data-theme="light"] body .modal-body input#editTotalAmt,
-[data-theme="light"] body .modal-body input#editDepositAmt,
-[data-theme="light"] body .modal-body input#editExtraFee {
-    background-color: #0f172a !important; /* Nền tối sang trọng */
-    color: #38bdf8 !important;       /* Chữ số tiền màu xanh ngọc sáng */
-    border: 1.5px solid #0f766e !important;
-    font-weight: 800 !important;
+
+/* 1. Đổi nền và viền của 3 khung thẻ thống kê lớn ngoài màn hình */
+[data-theme="light"] body .card-custom:has(#statTotalRevenue),
+[data-theme="light"] body .card-custom:has(#statTotalDeposit),
+[data-theme="light"] body .card-custom:has(#statTotalRemaining) {
+    background: #080d1a !important; /* Nền tối sang trọng */
+    border: 1.5px solid #0f766e !important; /* Viền xanh ngọc Emerald */
+    box-shadow: 0 10px 30px rgba(15, 118, 110, 0.15) !important;
 }
 
-[data-theme="light"] body .modal-body input#totalAmt:focus,
-[data-theme="light"] body .modal-body input#depositAmt:focus,
-[data-theme="light"] body .modal-body input#extraFee:focus,
-[data-theme="light"] body .modal-body input#editTotalAmt:focus,
-[data-theme="light"] body .modal-body input#editDepositAmt:focus,
-[data-theme="light"] body .modal-body input#editExtraFee:focus {
-    background-color: #0f172a !important;
-    color: #38bdf8 !important;
-    border-color: #14b8a6 !important;
-    box-shadow: 0 0 10px rgba(15, 118, 110, 0.3) !important;
+/* 2. Đổi màu các nhãn chữ tiêu đề phụ trong 3 ô thành màu sáng dễ đọc */
+[data-theme="light"] body .card-custom:has(#statTotalRevenue) .text-secondary,
+[data-theme="light"] body .card-custom:has(#statTotalDeposit) .text-secondary,
+[data-theme="light"] body .card-custom:has(#statTotalRemaining) .text-secondary {
+    color: #94a3b8 !important; 
+}
+
+/* 3. Ép màu sắc các con số tiền bên trong 3 ô này nổi bật rực rỡ */
+[data-theme="light"] body h3#statTotalRevenue {
+    color: #ffffff !important; /* Tổng doanh thu màu trắng sáng */
+}
+
+[data-theme="light"] body h3#statTotalDeposit {
+    color: #38bdf8 !important; /* Tiền cọc màu xanh dương/ngọc sáng */
+}
+
+[data-theme="light"] body h3#statTotalRemaining {
+    color: #fbbf24 !important; /* Công nợ phải thu màu vàng cam nổi bật */
 }
