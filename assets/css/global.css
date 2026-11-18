@@ -21,7 +21,7 @@
     padding: 15px;
 }
 
-/* Riêng cho Light Mode: Đổi nền xám sáng sạch sẽ, chữ sắc nét */
+/* Tùy chỉnh riêng cho Light Mode của khung kết quả (#resultBox) */
 [data-theme="light"] #resultBox {
     background: #ffffff !important; /* Nền trắng tinh tươm */
     border: 1px solid #cbd5e1 !important; /* Viền xám sáng gọn gàng */
@@ -43,7 +43,7 @@
 
 [data-theme="light"] #resultBox #resClientLink:hover {
     text-decoration: underline !important;
-/* Nền tổng thể mượt mà với hiệu ứng ánh sáng nhẹ */
+}
 body[data-theme="light"], [data-theme="light"] body {
     background-color: #f1f5f9 !important;
     background-image: radial-gradient(at 10% 20%, rgba(15, 118, 110, 0.05) 0px, transparent 50%), 
