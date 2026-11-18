@@ -23,17 +23,26 @@
 
 /* Riêng cho Light Mode: Đổi nền xám sáng sạch sẽ, chữ sắc nét */
 [data-theme="light"] #resultBox {
-    background: #f1f5f9 !important;
-    border: 1px solid #cbd5e1 !important;
+    background: #ffffff !important; /* Nền trắng tinh tươm */
+    border: 1px solid #cbd5e1 !important; /* Viền xám sáng gọn gàng */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03) !important;
 }
 
+/* Tên thư mục hiển thị trong khung kết quả */
 [data-theme="light"] #resultBox #resFolderName {
-    color: #0f172a !important; /* Đổi tên thư mục thành chữ tối đậm */
+    color: #0f172a !important; /* Chữ đen đậm rõ nét */
+    font-weight: 900 !important;
 }
 
+/* Đường dẫn link chia sẻ */
 [data-theme="light"] #resultBox #resClientLink {
-    color: #0f766e !important; /* Đổi màu link thành xanh đậm chủ đạo */
+    color: #0f766e !important; /* Màu xanh đậm chủ đạo, cực kỳ dễ đọc */
+    font-weight: 700 !important;
+    text-decoration: none !important;
 }
+
+[data-theme="light"] #resultBox #resClientLink:hover {
+    text-decoration: underline !important;
 /* Nền tổng thể mượt mà với hiệu ứng ánh sáng nhẹ */
 body[data-theme="light"], [data-theme="light"] body {
     background-color: #f1f5f9 !important;
