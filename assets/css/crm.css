@@ -1120,21 +1120,21 @@ div[style*="grid-template-columns: repeat(7, 1fr)"]:first-of-type {
 [data-theme="light"] body .card-custom:has(#statTotalRevenue),
 [data-theme="light"] body .card-custom:has(#statTotalDeposit),
 [data-theme="light"] body .card-custom:has(#statTotalRemaining) {
-    background: #080d1a !important; /* Nền tối sang trọng */
-    border: 1.5px solid #0f766e !important; /* Viền xanh ngọc Emerald */
-    box-shadow: 0 10px 30px rgba(15, 118, 110, 0.15) !important;
+    background: #ffffff !important; /* Nền trắng sạch sẽ, sang trọng */
+    border: 1.5px solid rgba(15, 118, 110, 0.3) !important; /* Viền xanh ngọc nhẹ nhàng */
+    box-shadow: 0 10px 25px rgba(15, 118, 110, 0.06) !important;
 }
 
 /* 2. Đổi màu các nhãn chữ tiêu đề phụ trong 3 ô thành màu sáng dễ đọc */
 [data-theme="light"] body .card-custom:has(#statTotalRevenue) .text-secondary,
 [data-theme="light"] body .card-custom:has(#statTotalDeposit) .text-secondary,
 [data-theme="light"] body .card-custom:has(#statTotalRemaining) .text-secondary {
-    color: #94a3b8 !important; 
+    color: #475569 !important;
 }
 
 /* 3. Ép màu sắc các con số tiền bên trong 3 ô này nổi bật rực rỡ */
 [data-theme="light"] body h3#statTotalRevenue {
-    color: #ffffff !important; /* Tổng doanh thu màu trắng sáng */
+    color: #0f172a !important; /* Tổng doanh thu màu trắng sáng */
 }
 
 [data-theme="light"] body h3#statTotalDeposit {
