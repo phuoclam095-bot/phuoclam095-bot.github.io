@@ -147,7 +147,7 @@ function getExpiryTimestamp() {
                 }
             });
         
-            const currentLang = localStorage.getItem('admin_lang') || 'vi';
+            const currentLang = localStorage.getItem('preferred_lang') || 'vi';
             const allMonthsText = (currentLang === 'en') ? 'All Months' : 'Tất cả các tháng';
             const monthLabel = (currentLang === 'en') ? 'Month' : 'Tháng';
 
