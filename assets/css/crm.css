@@ -1137,3 +1137,29 @@ div[style*="grid-template-columns: repeat(7, 1fr)"]:first-of-type {
     border-color: #14b8a6 !important;
     box-shadow: 0 0 10px rgba(15, 118, 110, 0.3) !important;
 }
+/* ==========================================================
+   ÉP ĐỔI MÀU 3 Ô TIỀN THEO TÔNG DARK MODE (ĐỘ ƯU TIÊN CAO NHẤT)
+   ========================================================== */
+[data-theme="light"] body .modal-body input#totalAmt,
+[data-theme="light"] body .modal-body input#depositAmt,
+[data-theme="light"] body .modal-body input#extraFee,
+[data-theme="light"] body .modal-body input#editTotalAmt,
+[data-theme="light"] body .modal-body input#editDepositAmt,
+[data-theme="light"] body .modal-body input#editExtraFee {
+    background-color: #0f172a !important; /* Nền tối sang trọng */
+    color: #38bdf8 !important;       /* Chữ số tiền màu xanh ngọc sáng */
+    border: 1.5px solid #0f766e !important;
+    font-weight: 800 !important;
+}
+
+[data-theme="light"] body .modal-body input#totalAmt:focus,
+[data-theme="light"] body .modal-body input#depositAmt:focus,
+[data-theme="light"] body .modal-body input#extraFee:focus,
+[data-theme="light"] body .modal-body input#editTotalAmt:focus,
+[data-theme="light"] body .modal-body input#editDepositAmt:focus,
+[data-theme="light"] body .modal-body input#editExtraFee:focus {
+    background-color: #0f172a !important;
+    color: #38bdf8 !important;
+    border-color: #14b8a6 !important;
+    box-shadow: 0 0 10px rgba(15, 118, 110, 0.3) !important;
+}
