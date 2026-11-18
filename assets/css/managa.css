@@ -58,7 +58,11 @@
     color: #0f172a !important;
     border-radius: 24px !important;
 }
-
+/* Tùy chỉnh lớp nền mờ (backdrop) của Modal riêng cho Light Mode */
+[data-theme="light"] .modal-backdrop.show {
+    background-color: rgba(15, 23, 42, 0.4) !important; /* Tông màu tối nhẹ hoặc chỉnh theo ý muốn */
+    backdrop-filter: blur(4px); /* Hiệu ứng làm mờ nền phía sau */
+}
 [data-theme="light"] .album-card h5,
 [data-theme="light"] .album-card span,
 [data-theme="light"] .album-card p {
