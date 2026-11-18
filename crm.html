@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CHONANHNHANH.VN - QUẢN LÝ LỊCH TRÌNH </title>
+    <title>CHONANHNHANH.VN - QUẢN LÝ LỊCH TRÌNH</title>
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="shortcut icon" href="/favicon.ico" />
@@ -42,7 +42,7 @@
 </head>
 <body>
 
-    <div id="toastNotice">Đang xử lý...</div>
+    <div id="toastNotice" data-i18n="toast_processing">Đang xử lý...</div>
 
  <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
     <div class="container-fluid px-3 px-lg-5 d-flex flex-wrap align-items-center justify-content-between">
@@ -50,7 +50,7 @@
         <!-- 1. BÊN TRÁI: LOGO -->
         <a class="navbar-brand-left m-0" href="./">CHONANHNHANH<span style="color:#f0c300">.VN</span></a>
         
-        <!-- 2. BÊN PHẢI: GÓC NGƯỜI DÙNG VÀ CÁC NÚT BẤM (ms-auto ép sang phải) -->
+        <!-- 2. BÊN PHẢI: GÓC NGƯỜI DÙNG VÀ CÁC NÚT BẤM -->
         <div class="d-flex align-items-center ms-auto order-lg-3">
             
             <!-- Cụm nút Light/Dark -->
@@ -105,60 +105,59 @@
 </nav>
 
     <div class="container-fluid px-4 px-lg-5">
-        <div class="mt-5"><h1 class="supreme-title">QUẢN LÝ LỊCH TRÌNH</h1></div>
+        <div class="mt-5"><h1 class="supreme-title" data-i18n="crm_schedule_management">QUẢN LÝ LỊCH TRÌNH</h1></div>
         
         <div id="vipExpiredBlockNotice" style="display: none; max-width: 500px; margin: 40px auto 0; background: rgba(255, 71, 87, 0.1); border: 1.5px dashed #ff4757; border-radius: 24px; padding: 40px 20px; text-align: center; box-shadow: 0 10px 30px rgba(255, 71, 87, 0.1);">
             <i class="fas fa-lock fa-3x text-danger mb-3"></i>
-            <h4 class="fw-bold text-white mb-2">TÍNH NĂNG ĐANG BỊ KHÓA</h4>
-            <p class="text-secondary small mb-4" style="line-height: 1.6;">
+            <h4 class="fw-bold text-white mb-2" data-i18n="vip_locked_title">TÍNH NĂNG ĐANG BỊ KHÓA</h4>
+            <p class="text-secondary small mb-4" style="line-height: 1.6;" data-i18n="vip_locked_desc">
                 Tài khoản của bạn đã hết hạn dùng thử hoặc chưa kích hoạt VIP. Vui lòng gia hạn để tiếp tục sử dụng tính năng quản lý lịch trình.
             </p>
-            <a href="payment" class="btn fw-900 px-4 py-2 rounded-pill text-black text-uppercase" style="background: var(--primary); border: none; font-size: 0.85rem; text-decoration: none;">Gia Hạn VIP Ngay</a>
+            <a href="payment" class="btn fw-900 px-4 py-2 rounded-pill text-black text-uppercase" style="background: var(--primary); border: none; font-size: 0.85rem; text-decoration: none;" data-i18n="vip_renew_btn">Gia Hạn VIP Ngay</a>
         </div>
 
         <div id="mainWorkGrid">
             <div class="row g-4 mb-4">
                 <div class="col-md-4">
                     <div class="card-custom">
-                        <span class="text-secondary small fw-bold text-uppercase">Tổng Doanh Thu Hợp Đồng</span>
+                        <span class="text-secondary small fw-bold text-uppercase" data-i18n="crm_total_revenue">Tổng Doanh Thu Hợp Đồng</span>
                         <h3 class="fw-900 text-white mt-2 mb-0" id="statTotalRevenue">0 VNĐ</h3>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="card-custom">
-                        <span class="text-secondary small fw-bold text-uppercase">Tiền Cọc Thực Nhận</span>
+                        <span class="text-secondary small fw-bold text-uppercase" data-i18n="crm_total_deposit">Tiền Cọc Thực Nhận</span>
                         <h3 class="fw-900 text-info mt-2 mb-0" id="statTotalDeposit">0 VNĐ</h3>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="card-custom">
-                        <span class="text-secondary small fw-bold text-uppercase">Công Nợ Phải Thu</span>
+                        <span class="text-secondary small fw-bold text-uppercase" data-i18n="crm_total_remaining">Công Nợ Phải Thu</span>
                         <h3 class="fw-900 text-warning mt-2 mb-0" id="statTotalRemaining">0 VNĐ</h3>
                     </div>
                 </div>
             </div>
 
-
             <div class="card-custom">
                 <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
-                    <h5 class="fw-900 text-white mb-0">QUẢN LÝ HỢP ĐỒNG & LỊCH TRÌNH STUDIO</h5>
+                    <h5 class="fw-900 text-white mb-0" data-i18n="crm_contract_management_title">QUẢN LÝ HỢP ĐỒNG & LỊCH TRÌNH STUDIO</h5>
                     <div class="d-flex align-items-center flex-wrap gap-2">
-                        <button class="btn btn-sm btn-outline-info fw-bold  text-uppercase" data-bs-toggle="modal" data-bs-target="#lunarCalendarModal">
-                            <i class="fas fa-calendar-alt me-1"></i> Lịch Vạn Niên
+                        <button class="btn btn-sm btn-outline-info fw-bold text-uppercase" data-bs-toggle="modal" data-bs-target="#lunarCalendarModal">
+                            <i class="fas fa-calendar-alt me-1"></i> <span data-i18n="crm_lunar_calendar">Lịch Vạn Niên</span>
                         </button>
-                        <input type="text" id="searchInput" class="form-control form-control-sm" placeholder="🔍 Tìm tên, SĐT, ngày..." style="width: 220px;" oninput="filterContracts()">
+                        <input type="text" id="searchInput" class="form-control form-control-sm" placeholder="🔍 Tìm tên, SĐT, ngày..." data-i18n-placeholder="crm_search_placeholder" style="width: 220px;" oninput="filterContracts()">
                         
                         <select id="monthFilter" class="form-select form-select-sm" style="width: 160px;" onchange="filterContracts()">
-                            <option value="">Tất cả các tháng</option>
+                            <option value="" data-i18n="crm_all_months">Tất cả các tháng</option>
                         </select>
                         <button class="btn btn-sm btn-outline-warning fw-bold text-uppercase" id="btnToggleHidden" onclick="toggleShowHidden()">
-                            <i class="fas fa-eye-slash me-1"></i> Xem ẩn (<span id="hiddenCount">0</span>)
+                            <i class="fas fa-eye-slash me-1"></i> <span data-i18n="crm_view_hidden">Xem ẩn</span> (<span id="hiddenCount">0</span>)
                         </button>
                         <button class="btn btn-outline-light fw-bold px-3 py-2 rounded-3 text-uppercase" style="font-size: 0.75rem; border-color: rgba(255,255,255,0.2);" onclick="triggerSyncAndCheckToken()">
-                            <i class="fab fa-google text-primary me-2"></i> Kết nối Lịch & Đồng bộ
+                            <i class="fab fa-google text-primary me-2"></i> <span data-i18n="crm_sync_calendar">Kết nối Lịch & Đồng bộ</span>
                         </button>
                         <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#addContractModal">
-                            <i class="fas fa-plus me-2"></i> Thêm Hợp Đồng Mới
+                            <i class="fas fa-plus me-2"></i> <span data-i18n="crm_add_contract">Thêm Hợp Đồng Mới</span>
                         </button>
                     </div>
                 </div>
@@ -166,20 +165,20 @@
                     <table class="table table-dark table-hover mb-0">
                         <thead>
                             <tr>
-                                <th>Khách Hàng & Liên Hệ</th>
-                                <th>Gói Dịch Vụ & Địa Điểm</th>
-                                <th>Ngày Giờ Diễn Ra</th>
-                                <th>Tổng Tiền</th>
-                                <th>Đã Cọc</th>
-                                <th>Còn Lại</th>
-                                <th>Phát Sinh</th>
-                                <th>Trạng Thái</th>
-                                <th class="text-end">Hành Động</th>
+                                <th data-i18n="col_customer">Khách Hàng & Liên Hệ</th>
+                                <th data-i18n="col_service_location">Gói Dịch Vụ & Địa Điểm</th>
+                                <th data-i18n="col_event_date">Ngày Giờ Diễn Ra</th>
+                                <th data-i18n="col_total_amount">Tổng Tiền</th>
+                                <th data-i18n="col_deposit">Đã Cọc</th>
+                                <th data-i18n="col_remaining">Còn Lại</th>
+                                <th data-i18n="col_extra_fee">Phát Sinh</th>
+                                <th data-i18n="col_status">Trạng Thái</th>
+                                <th class="text-end" data-i18n="col_actions">Hành Động</th>
                             </tr>
                         </thead>
                         <tbody id="contractsTableBody">
                             <tr>
-                                <td colspan="9" class="text-center text-secondary py-5">Đang tải dữ liệu thực tế từ hệ thống...</td>
+                                <td colspan="9" class="text-center text-secondary py-5" data-i18n="crm_loading_data">Đang tải dữ liệu thực tế từ hệ thống...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -191,50 +190,50 @@
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title fw-900 text-primary">THÊM HỢP ĐỒNG & LỊCH TRÌNH MỚI</h5>
+                    <h5 class="modal-title fw-900 text-primary" data-i18n="modal_add_title">THÊM HỢP ĐỒNG & LỊCH TRÌNH MỚI</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
                     <form id="contractForm">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label small fw-bold text-secondary">TÊN KHÁCH HÀNG <span class="text-danger">*</span></label>
-                                <input type="text" id="custName" class="form-control" placeholder="VD: Anh Minh & Chị Lan" required>
+                                <label class="form-label small fw-bold text-secondary"><span data-i18n="label_cust_name">TÊN KHÁCH HÀNG</span> <span class="text-danger">*</span></label>
+                                <input type="text" id="custName" class="form-control" placeholder="VD: Anh Minh & Chị Lan" data-i18n-placeholder="placeholder_cust_name" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label small fw-bold text-secondary">SỐ ĐIỆN THOẠI</label>
-                                <input type="text" id="custPhone" class="form-control" placeholder="VD: 0912345678">
+                                <label class="form-label small fw-bold text-secondary" data-i18n="label_cust_phone">SỐ ĐIỆN THOẠI</label>
+                                <input type="text" id="custPhone" class="form-control" placeholder="VD: 0912345678" data-i18n-placeholder="placeholder_cust_phone">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label small fw-bold text-secondary">EMAIL KHÁCH HÀNG (Nhận thông báo)</label>
-                                <input type="email" id="custEmail" class="form-control" placeholder="VD: customer@gmail.com (Không bắt buộc)">
+                                <label class="form-label small fw-bold text-secondary" data-i18n="label_cust_email">EMAIL KHÁCH HÀNG (Nhận thông báo)</label>
+                                <input type="email" id="custEmail" class="form-control" placeholder="VD: customer@gmail.com (Không bắt buộc)" data-i18n-placeholder="placeholder_cust_email">
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label small fw-bold text-secondary">GÓI DỊCH VỤ</label>
-                                <input type="text" id="servicePkg" class="form-control" placeholder="VD: Cưới VIP Studio trọn gói">
+                                <label class="form-label small fw-bold text-secondary" data-i18n="label_service_pkg">GÓI DỊCH VỤ</label>
+                                <input type="text" id="servicePkg" class="form-control" placeholder="VD: Cưới VIP Studio trọn gói" data-i18n-placeholder="placeholder_service_pkg">
                             </div>
                         </div>
                         <div class="row">
                         <div class="col-md-6 mb-3">
                             <div class="d-flex justify-content-between align-items-center mb-1">
-                                <label class="form-label small fw-bold text-secondary m-0">NGÀY GIỜ SỰ KIỆN <span class="text-danger">*</span></label>
+                                <label class="form-label small fw-bold text-secondary m-0"><span data-i18n="label_event_date">NGÀY GIỜ SỰ KIỆN</span> <span class="text-danger">*</span></label>
                                 <div class="form-check form-switch m-0" style="min-height: auto;">
                                     <input class="form-check-input" type="checkbox" id="isLunarEvent" onchange="toggleEventDateInputMode()" style="cursor: pointer; background-color: #13223f; border-color: var(--primary); background-image: url(&quot;data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23ffffff'/%3e%3c/svg%3e&quot;);">
-                                    <label class="form-check-label text-warning small fw-bold ms-1" for="isLunarEvent" style="cursor: pointer; font-size: 0.7rem !important;">Nhập bằng Lịch Âm</label>
+                                    <label class="form-check-label text-warning small fw-bold ms-1" for="isLunarEvent" style="cursor: pointer; font-size: 0.7rem !important;" data-i18n="label_lunar_input">Nhập bằng Lịch Âm</label>
                                 </div>
                             </div>
                             
                             <input type="datetime-local" id="eventDate" class="form-control" lang="vi" step="60" onchange="previewLunarSolarEventDate()" required>
                             
-                            <div id="eventDateNotes" class="form-text text-info fw-bold mt-1" style="font-size: 0.72rem;">
+                            <div id="eventDateNotes" class="form-text text-info fw-bold mt-1" style="font-size: 0.72rem;" data-i18n="note_solar_date">
                                 📅 Ngày Dương lịch chuẩn cho sự kiện.
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label small fw-bold text-secondary">ĐỊA ĐIỂM CHỤP / TỔ CHỨC</label>
-                            <input type="text" id="eventLocation" class="form-control" placeholder="VD: Phim trường Paris hoặc Khách sạn">
+                            <label class="form-label small fw-bold text-secondary" data-i18n="label_event_location">ĐỊA ĐIỂM CHỤP / TỔ CHỨC</label>
+                            <input type="text" id="eventLocation" class="form-control" placeholder="VD: Phim trường Paris hoặc Khách sạn" data-i18n-placeholder="placeholder_event_location">
                         </div>
                     </div>
                         
@@ -248,8 +247,8 @@
                                         
                                         <label class="form-check-label text-white fw-bold ms-3" for="syncGoogleCalendar" style="cursor: pointer; font-size: 0.85rem; line-height: 1.4;">
                                             <i class="fab fa-google text-primary me-1 fs-6"></i> 
-                                            <span style="color: var(--primary);">Tích vào nếu bạn muốn thêm lịch này vào lịch Google</span>
-                                            <div id="syncStatusText" class="text-success fw-bold mt-1" style="font-size: 0.75rem;">
+                                            <span style="color: var(--primary);" data-i18n="sync_calendar_text">Tích vào nếu bạn muốn thêm lịch này vào lịch Google</span>
+                                            <div id="syncStatusText" class="text-success fw-bold mt-1" style="font-size: 0.75rem;" data-i18n="sync_status_ready">
                                                 ⚡ Trạng thái: Sẽ tự động đồng bộ lịch khi lưu.
                                             </div>
                                         </label>
@@ -259,35 +258,35 @@
                         </div>  
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <label class="form-label small fw-bold text-secondary">TỔNG GIÁ TRỊ (VNĐ)</label>
+                                <label class="form-label small fw-bold text-secondary" data-i18n="label_total_amt">TỔNG GIÁ TRỊ (VNĐ)</label>
                                 <input type="number" id="totalAmt" class="form-control" value="0" oninput="autoCalculate()">
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label class="form-label small fw-bold text-secondary">TIỀN ĐÃ CỌC (VNĐ)</label>
+                                <label class="form-label small fw-bold text-secondary" data-i18n="label_deposit_amt">TIỀN ĐÃ CỌC (VNĐ)</label>
                                 <input type="number" id="depositAmt" class="form-control" value="0" oninput="autoCalculate()">
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label class="form-label small fw-bold text-secondary">CHI PHÍ PHÁT SINH (VNĐ)</label>
-                                <input type="number" id="extraFee" class="form-control" value="0" placeholder="VD: Thuê thêm váy, phụ phí..." oninput="autoCalculate()">
+                                <label class="form-label small fw-bold text-secondary" data-i18n="label_extra_fee">CHI PHÍ PHÁT SINH (VNĐ)</label>
+                                <input type="number" id="extraFee" class="form-control" value="0" placeholder="VD: Thuê thêm váy, phụ phí..." data-i18n-placeholder="placeholder_extra_fee" oninput="autoCalculate()">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12 mb-3">
-                                <label class="form-label small fw-bold text-secondary">TRẠNG THÁI THANH TOÁN (TỰ ĐỘNG CẬP NHẬT)</label>
-                                <input type="text" id="paymentStatus" class="form-control text-info fw-bold" readonly value="Chưa cọc">
+                                <label class="form-label small fw-bold text-secondary" data-i18n="label_payment_status">TRẠNG THÁI THANH TOÁN (TỰ ĐỘNG CẬP NHẬT)</label>
+                                <input type="text" id="paymentStatus" class="form-control text-info fw-bold" readonly value="Chưa cọc" data-i18n-value="status_unpaid">
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label small fw-bold text-secondary">GHI CHÚ CHI PHÍ / YÊU CẦU PHÁT SINH</label>
-                            <textarea id="eventNote" class="form-control" rows="2" placeholder="Ghi chú chi tiết nội dung phát sinh hoặc yêu cầu của khách..."></textarea>
+                            <label class="form-label small fw-bold text-secondary" data-i18n="label_event_note">GHI CHÚ CHI PHÍ / YÊU CẦU PHÁT SINH</label>
+                            <textarea id="eventNote" class="form-control" rows="2" placeholder="Ghi chú chi tiết nội dung phát sinh hoặc yêu cầu của khách..." data-i18n-placeholder="placeholder_event_note"></textarea>
                         </div>
                         <div class="mb-4 p-3 rounded" style="background: rgba(0, 235, 176, 0.05); border: 1px dashed var(--primary);">
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="small fw-bold text-secondary">CÔNG NỢ CÒN LẠI PHẢI THU:</span>
+                                <span class="small fw-bold text-secondary" data-i18n="label_remaining_debt">CÔNG NỢ CÒN LẠI PHẢI THU:</span>
                                 <span id="remainingPreview" class="text-warning fw-900 fs-5">0 VNĐ</span>
                             </div>
                         </div>
-                        <button type="button" id="saveContractBtn" class="btn btn-primary-custom w-100 py-3" onclick="saveContract()">
+                        <button type="button" id="saveContractBtn" class="btn btn-primary-custom w-100 py-3" onclick="saveContract()" data-i18n="btn_save_contract">
                             LƯU HỢP ĐỒNG & ĐỒNG BỘ LỊCH GOOGLE CALENDAR
                         </button>
                     </form>
@@ -304,7 +303,7 @@
                     <div class="modal-content" style="background: rgba(10, 17, 36, 0.98) !important; border: 1.5px solid var(--primary) !important; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.8);">
                         <div class="modal-header border-bottom border-secondary position-relative py-3 px-4">
                             <h5 class="modal-title text-white fw-bold m-0 w-100 text-center" style="font-size: 1.1rem;">
-                                <i class="fas fa-calendar-alt text-primary me-2"></i> Lịch Vạn Niên & Lịch Trình Studio
+                                <i class="fas fa-calendar-alt text-primary me-2"></i> <span data-i18n="lunar_modal_title">Lịch Vạn Niên & Lịch Trình Studio</span>
                             </h5>
                             <button type="button" class="btn-close btn-close-white position-absolute end-0 me-4" data-bs-dismiss="modal" aria-label="Close" style="z-index: 5;"></button>
                         </div>
@@ -314,7 +313,7 @@
     
     <!-- CỤM 1 (BÊN TRÁI): Hôm nay, Nút < >, Tháng Năm -->
     <div class="d-flex align-items-center gap-3" style="flex-shrink: 0;">
-        <button class="btn-today-quick px-3 py-1 fw-bold text-uppercase" style="font-size: 0.75rem;" onclick="jumpToToday()">Hôm nay</button>
+        <button class="btn-today-quick px-3 py-1 fw-bold text-uppercase" style="font-size: 0.75rem;" onclick="jumpToToday()" data-i18n="btn_today">Hôm nay</button>
         
         <div class="d-flex align-items-center gap-1">
             <button class="btn btn-sm btn-outline-light rounded-2 px-2 py-1 border-0" style="background: rgba(255,255,255,0.05);" onclick="changeMonthModal(-1)"><i class="fas fa-chevron-left text-primary"></i></button>
@@ -323,12 +322,12 @@
         
         <div class="d-flex align-items-center text-white fw-bold" style="font-size: 0.95rem;">
             <select id="modalSelectMonth" class="form-select form-select-sm bg-transparent text-white border-0 fw-bold shadow-none p-0 pe-2 cursor-pointer custom-select-dark" style="width: auto; outline: none; font-size: 0.95rem;" onchange="jumpToMonthModal()">
-                <option value="0">Tháng 1</option><option value="1">Tháng 2</option>
-                <option value="2">Tháng 3</option><option value="3">Tháng 4</option>
-                <option value="4">Tháng 5</option><option value="5">Tháng 6</option>
-                <option value="6">Tháng 7</option><option value="7">Tháng 8</option>
-                <option value="8">Tháng 9</option><option value="9">Tháng 10</option>
-                <option value="10">Tháng 11</option><option value="11">Tháng 12</option>
+                <option value="0" data-i18n="month_1">Tháng 1</option><option value="1" data-i18n="month_2">Tháng 2</option>
+                <option value="2" data-i18n="month_3">Tháng 3</option><option value="3" data-i18n="month_4">Tháng 4</option>
+                <option value="4" data-i18n="month_5">Tháng 5</option><option value="5" data-i18n="month_6">Tháng 6</option>
+                <option value="6" data-i18n="month_7">Tháng 7</option><option value="7" data-i18n="month_8">Tháng 8</option>
+                <option value="8" data-i18n="month_9">Tháng 9</option><option value="9" data-i18n="month_10">Tháng 10</option>
+                <option value="10" data-i18n="month_11">Tháng 11</option><option value="11" data-i18n="month_12">Tháng 12</option>
             </select>
             <select id="modalSelectYear" class="form-select form-select-sm bg-transparent text-white border-0 fw-bold shadow-none p-0 cursor-pointer custom-select-dark" style="width: auto; outline: none; font-size: 0.95rem;" onchange="jumpToMonthModal()">
             </select>
@@ -339,14 +338,14 @@
     <div class="d-flex align-items-center gap-2" style="flex-shrink: 0;">
         <div class="btn-group btn-group-sm" role="group">
             <input type="radio" class="btn-check" name="convertType" id="typeSolarToLunar" checked onclick="switchConvertMode()">
-            <label class="btn btn-outline-primary py-1 px-2" style="font-size:0.75rem; font-weight:700;" for="typeSolarToLunar">Dương➔Âm</label>
+            <label class="btn btn-outline-primary py-1 px-2" style="font-size:0.75rem; font-weight:700;" for="typeSolarToLunar" data-i18n="convert_solar_lunar">Dương➔Âm</label>
             <input type="radio" class="btn-check" name="convertType" id="typeLunarToSolar" onclick="switchConvertMode()">
-            <label class="btn btn-outline-primary py-1 px-2" style="font-size:0.75rem; font-weight:700;" for="typeLunarToSolar">Âm➔Dương</label>
+            <label class="btn btn-outline-primary py-1 px-2" style="font-size:0.75rem; font-weight:700;" for="typeLunarToSolar" data-i18n="convert_lunar_solar">Âm➔Dương</label>
         </div>
         
         <input type="date" id="modalConvertDate" class="form-control form-control-sm text-center fw-bold shadow-none" style="font-size: 0.8rem; width: 130px !important; background: #13223f; color: #fff; border: 1px solid rgba(255,255,255,0.25); outline: none !important;" onchange="performModalConversion()">
         
-        <div id="modalConversionResult" class="text-warning fw-bold text-nowrap" style="font-size: 0.8rem;">
+        <div id="modalConversionResult" class="text-warning fw-bold text-nowrap" style="font-size: 0.8rem;" data-i18n="convert_select_date_hint">
             ➔ ÂL: Chọn ngày
         </div>
     </div>
@@ -354,21 +353,21 @@
     <!-- CỤM 3 (BÊN PHẢI): Chế độ Lưới / Danh sách -->
     <div class="d-flex align-items-center gap-2" role="group" style="flex-shrink: 0;">
         <input type="radio" class="btn-check" name="calendarViewMode" id="viewModeGrid" checked onclick="switchCalendarView('grid')">
-        <label class="btn btn-sm btn-light bg-white text-dark px-3 py-1 fw-bold rounded-2 m-0" style="font-size: 0.8rem;" for="viewModeGrid"><i class="fas fa-th me-1 text-primary"></i> Lưới</label>
+        <label class="btn btn-sm btn-light bg-white text-dark px-3 py-1 fw-bold rounded-2 m-0" style="font-size: 0.8rem;" for="viewModeGrid"><i class="fas fa-th me-1 text-primary"></i> <span data-i18n="view_grid">Lưới</span></label>
 
         <input type="radio" class="btn-check" name="calendarViewMode" id="viewModeList" onclick="switchCalendarView('list')">
-        <label class="btn btn-sm btn-outline-light px-3 py-1 fw-bold border-secondary rounded-2 m-0" style="font-size: 0.8rem;" for="viewModeList"><i class="fas fa-list me-1 text-primary"></i> Danh Sách</label>
+        <label class="btn btn-sm btn-outline-light px-3 py-1 fw-bold border-secondary rounded-2 m-0" style="font-size: 0.8rem;" for="viewModeList"><i class="fas fa-list me-1 text-primary"></i> <span data-i18n="view_list">Danh Sách</span></label>
     </div>
 </div>
                 <div id="calendarGridViewContainer">
                     <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; margin-bottom: 6px;">
-                        <div style="font-weight: 900; color: #94a3b8; font-size: 0.75rem;">Thứ 2</div>
-                        <div style="font-weight: 900; color: #94a3b8; font-size: 0.75rem;">Thứ 3</div>
-                        <div style="font-weight: 900; color: #94a3b8; font-size: 0.75rem;">Thứ 4</div>
-                        <div style="font-weight: 900; color: #94a3b8; font-size: 0.75rem;">Thứ 5</div>
-                        <div style="font-weight: 900; color: #94a3b8; font-size: 0.75rem;">Thứ 6</div>
-                        <div style="font-weight: 900; color: #f59e0b; font-size: 0.75rem;">Thứ 7</div>
-                        <div style="font-weight: 900; color: #ff4757; font-size: 0.75rem;">Chủ Nhật</div>
+                        <div style="font-weight: 900; color: #94a3b8; font-size: 0.75rem;" data-i18n="weekday_mon">Thứ 2</div>
+                        <div style="font-weight: 900; color: #94a3b8; font-size: 0.75rem;" data-i18n="weekday_tue">Thứ 3</div>
+                        <div style="font-weight: 900; color: #94a3b8; font-size: 0.75rem;" data-i18n="weekday_wed">Thứ 4</div>
+                        <div style="font-weight: 900; color: #94a3b8; font-size: 0.75rem;" data-i18n="weekday_thu">Thứ 5</div>
+                        <div style="font-weight: 900; color: #94a3b8; font-size: 0.75rem;" data-i18n="weekday_fri">Thứ 6</div>
+                        <div style="font-weight: 900; color: #f59e0b; font-size: 0.75rem;" data-i18n="weekday_sat">Thứ 7</div>
+                        <div style="font-weight: 900; color: #ff4757; font-size: 0.75rem;" data-i18n="weekday_sun">Chủ Nhật</div>
                     </div>
                     <div id="modalCalendarDaysContainer" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; min-height: 620px;">
                     </div>
@@ -385,7 +384,7 @@
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title fw-900 text-info">CHỈNH SỬA HỢP ĐỒNG & LỊCH TRÌNH</h5>
+                    <h5 class="modal-title fw-900 text-info" data-i18n="modal_edit_title">CHỈNH SỬA HỢP ĐỒNG & LỊCH TRÌNH</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
@@ -393,74 +392,74 @@
                         <input type="hidden" id="editContractId">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label small fw-bold text-secondary">TÊN KHÁCH HÀNG <span class="text-danger">*</span></label>
+                                <label class="file-label small fw-bold text-secondary"><span data-i18n="label_cust_name">TÊN KHÁCH HÀNG</span> <span class="text-danger">*</span></label>
                                 <input type="text" id="editCustName" class="form-control" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label small fw-bold text-secondary">SỐ ĐIỆN THOẠI</label>
+                                <label class="form-label small fw-bold text-secondary" data-i18n="label_cust_phone">SỐ ĐIỆN THOẠI</label>
                                 <input type="text" id="editCustPhone" class="form-control">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label small fw-bold text-secondary">EMAIL KHÁCH HÀNG</label>
+                                <label class="form-label small fw-bold text-secondary" data-i18n="label_cust_email">EMAIL KHÁCH HÀNG</label>
                                 <input type="email" id="editCustEmail" class="form-control">
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label small fw-bold text-secondary">GÓI DỊCH VỤ</label>
+                                <label class="form-label small fw-bold text-secondary" data-i18n="label_service_pkg">GÓI DỊCH VỤ</label>
                                 <input type="text" id="editServicePkg" class="form-control">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <label class="form-label small fw-bold text-secondary m-0">NGÀY GIỜ SỰ KIỆN <span class="text-danger">*</span></label>
+                                    <label class="form-label small fw-bold text-secondary m-0"><span data-i18n="label_event_date">NGÀY GIỜ SỰ KIỆN</span> <span class="text-danger">*</span></label>
                                     <div class="form-check form-switch m-0" style="min-height: auto;">
                                         <input class="form-check-input" type="checkbox" id="editIsLunarEvent" onchange="toggleEditEventDateInputMode()" style="cursor: pointer; background-color: #13223f; border-color: var(--primary);">
-                                        <label class="form-check-label text-warning small fw-bold ms-1" for="editIsLunarEvent" style="cursor: pointer; font-size: 0.7rem !important;">Nhập bằng Lịch Âm</label>
+                                        <label class="form-check-label text-warning small fw-bold ms-1" for="editIsLunarEvent" style="cursor: pointer; font-size: 0.7rem !important;" data-i18n="label_lunar_input">Nhập bằng Lịch Âm</label>
                                     </div>
                                 </div>
                                 <input type="datetime-local" id="editEventDate" class="form-control" lang="vi" step="60" onchange="previewEditLunarSolarEventDate()" required>
-                                <div id="editEventDateNotes" class="form-text text-info fw-bold mt-1" style="font-size: 0.72rem;">
+                                <div id="editEventDateNotes" class="form-text text-info fw-bold mt-1" style="font-size: 0.72rem;" data-i18n="note_solar_date">
                                     📅 Ngày Dương lịch chuẩn cho sự kiện.
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label small fw-bold text-secondary">ĐỊA ĐIỂM CHỤP / TỔ CHỨC</label>
+                                <label class="form-label small fw-bold text-secondary" data-i18n="label_event_location">ĐỊA ĐIỂM CHỤP / TỔ CHỨC</label>
                                 <input type="text" id="editEventLocation" class="form-control">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <label class="form-label small fw-bold text-secondary">TỔNG GIÁ TRỊ (VNĐ)</label>
+                                <label class="form-label small fw-bold text-secondary" data-i18n="label_total_amt">TỔNG GIÁ TRỊ (VNĐ)</label>
                                 <input type="number" id="editTotalAmt" class="form-control" value="0" oninput="autoCalculateEdit()">
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label class="form-label small fw-bold text-secondary">TIỀN ĐÃ CỌC (VNĐ)</label>
+                                <label class="form-label small fw-bold text-secondary" data-i18n="label_deposit_amt">TIỀN ĐÃ CỌC (VNĐ)</label>
                                 <input type="number" id="editDepositAmt" class="form-control" value="0" oninput="autoCalculateEdit()">
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label class="form-label small fw-bold text-secondary">CHI PHÍ PHÁT SINH (VNĐ)</label>
+                                <label class="form-label small fw-bold text-secondary" data-i18n="label_extra_fee">CHI PHÍ PHÁT SINH (VNĐ)</label>
                                 <input type="number" id="editExtraFee" class="form-control" value="0" oninput="autoCalculateEdit()">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12 mb-3">
-                                <label class="form-label small fw-bold text-secondary">TRẠNG THÁI THANH TOÁN</label>
-                                <input type="text" id="editPaymentStatus" class="form-control text-info fw-bold" readonly value="Chưa cọc">
+                                <label class="form-label small fw-bold text-secondary" data-i18n="label_payment_status">TRẠNG THÁI THANH TOÁN</label>
+                                <input type="text" id="editPaymentStatus" class="form-control text-info fw-bold" readonly value="Chưa cọc" data-i18n-value="status_unpaid">
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label small fw-bold text-secondary">GHI CHÚ / YÊU CẦU PHÁT SINH</label>
+                            <label class="form-label small fw-bold text-secondary" data-i18n="label_event_note">GHI CHÚ / YÊU CẦU PHÁT SINH</label>
                             <textarea id="editEventNote" class="form-control" rows="2"></textarea>
                         </div>
                         <div class="mb-4 p-3 rounded" style="background: rgba(0, 235, 176, 0.05); border: 1px dashed var(--primary);">
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="small fw-bold text-secondary">CÔNG NỢ CÒN LẠI PHẢI THU:</span>
+                                <span class="small fw-bold text-secondary" data-i18n="label_remaining_debt">CÔNG NỢ CÒN LẠI PHẢI THU:</span>
                                 <span id="editRemainingPreview" class="text-warning fw-900 fs-5">0 VNĐ</span>
                             </div>
                         </div>
-                        <button type="button" class="btn btn-info w-100 py-3 fw-900 text-uppercase" style="border-radius: 12px;" onclick="updateContract()">LƯU CẬP NHẬT HỢP ĐỒNG</button>
+                        <button type="button" class="btn btn-info w-100 py-3 fw-900 text-uppercase" style="border-radius: 12px;" onclick="updateContract()" data-i18n="btn_update_contract">LƯU CẬP NHẬT HỢP ĐỒNG</button>
                     </form>
                 </div>
             </div>
