@@ -805,3 +805,102 @@ body { padding-top: 150px; }
     background-color: #ccfbef !important;
     color: #0f172a !important;
 }
+/* ==========================================================
+   THIẾT KẾ LẠI GIAO DIỆN LỊCH VẠN NIÊN CAO CẤP (5 SAO)
+   ========================================================== */
+
+/* 1. Khung tổng thể Modal Lịch */
+#lunarCalendarModal .modal-content {
+    background: #080d1a !important;
+    border: 1.5px solid rgba(0, 235, 176, 0.3) !important;
+    border-radius: 30px !important;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8) !important;
+    overflow: hidden;
+}
+
+[data-theme="light"] #lunarCalendarModal .modal-content {
+    background: #f8fafc !important;
+    border: 1.5px solid #cbd5e1 !important;
+    box-shadow: 0 25px 50px rgba(15, 118, 110, 0.15) !important;
+}
+
+/* 2. Thanh tiêu đề công cụ (Cal-Header) bo tròn, kính mờ sang trọng */
+#lunarCalendarModal .cal-header {
+    background: rgba(13, 25, 48, 0.9) !important;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 235, 176, 0.2) !important;
+    border-radius: 20px !important;
+    padding: 14px 20px !important;
+}
+
+[data-theme="light"] #lunarCalendarModal .cal-header {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+/* 3. Lưới các ngày trong tuần (Thứ 2 - Chủ Nhật) */
+#lunarCalendarModal .calendar-weekday-grid,
+div[style*="grid-template-columns: repeat(7, 1fr)"]:first-of-type {
+    background: rgba(0, 235, 176, 0.05);
+    border-radius: 14px;
+    padding: 10px 0;
+    margin-bottom: 10px;
+}
+
+[data-theme="light"] #lunarCalendarModal .calendar-weekday-grid,
+[data-theme="light"] div[style*="grid-template-columns: repeat(7, 1fr)"]:first-of-type {
+    background: #f1f5f9;
+}
+
+/* 4. Từng ô ngày (Day Cell) phong cách Card hiện đại, bo góc mềm mại */
+#modalCalendarDaysContainer > div {
+    background: rgba(10, 20, 40, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    border-radius: 16px !important;
+    padding: 8px !important;
+    transition: all 0.25s ease;
+    min-height: 110px;
+    display: flex;
+    flex-direction: column;
+}
+
+[data-theme="light"] #modalCalendarDaysContainer > div {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.01);
+}
+
+/* Hiệu ứng khi rê chuột vào ô ngày */
+#modalCalendarDaysContainer > div:hover {
+    border-color: var(--primary) !important;
+    box-shadow: 0 8px 25px rgba(0, 235, 176, 0.25);
+    transform: translateY(-3px);
+    z-index: 5;
+}
+
+/* 5. Khoanh nổi bật ngày HÔM NAY siêu sang */
+#modalCalendarDaysContainer > div[style*="background: rgba(234, 179, 8"],
+#modalCalendarDaysContainer > div.today-highlight {
+    background: linear-gradient(135deg, rgba(234, 179, 8, 0.15), rgba(234, 179, 8, 0.05)) !important;
+    border: 2px solid #eab308 !important;
+    box-shadow: 0 0 20px rgba(234, 179, 8, 0.3) !important;
+}
+
+[data-theme="light"] #modalCalendarDaysContainer > div[style*="background: rgba(234, 179, 8"] {
+    background: #fef9c3 !important;
+    border: 2px solid #ca8a04 !important;
+}
+
+/* 6. Thẻ sự kiện bên trong lịch (Event Pill) biến thành dạng huy hiệu mượt mà */
+#modalCalendarDaysContainer .badge, 
+#modalCalendarDaysContainer div[style*="background"],
+#modalCalendarDaysContainer a {
+    border-radius: 8px !important;
+    font-size: 0.7rem !important;
+    font-weight: 700 !important;
+    padding: 4px 8px !important;
+    margin-top: 3px;
+    letter-spacing: 0.3px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
