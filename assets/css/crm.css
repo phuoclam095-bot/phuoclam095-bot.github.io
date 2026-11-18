@@ -1059,3 +1059,45 @@ div[style*="grid-template-columns: repeat(7, 1fr)"]:first-of-type {
 [data-theme="light"] #modalCalendarAgendaBody p {
     color: #0f172a !important;
 }
+/* ==========================================================
+   FIX TRỊ TẬN GỐC: NHÃN (LABELS) SẮC NÉT VÀ CHECKBOX ĐỒNG BỘ GOOGLE
+   ========================================================== */
+
+/* 1. Ép tất cả các nhãn (label) trong form modal thành màu xám đen đậm đà, sắc nét */
+[data-theme="light"] .modal-body .form-label,
+[data-theme="light"] .modal-body label:not(.form-check-label) {
+    color: #0f172a !important; /* Xám đen cực kỳ sắc nét */
+    font-weight: 800 !important;
+}
+
+/* 2. Làm rõ và nổi bật khung banner đồng bộ Google Calendar */
+[data-theme="light"] .modal-body .sync-banner-box,
+[data-theme="light"] .modal-body div[style*="background: rgba(0, 235, 176, 0.04)"] {
+    background: #ffffff !important;
+    border: 1.5px solid #0f766e !important; /* Viền xanh Emerald sang trọng */
+    box-shadow: 0 4px 15px rgba(15, 118, 110, 0.1) !important;
+}
+
+/* 3. Đổi chữ trong khung đồng bộ Google thành màu tối dễ đọc */
+[data-theme="light"] .modal-body .sync-calendar-label,
+[data-theme="light"] .modal-body label[for="syncGoogleCalendar"] {
+    color: #0f172a !important;
+    font-weight: 800 !important;
+}
+
+/* 4. Làm nổi bật nút Checkbox tích chọn đồng bộ Google */
+[data-theme="light"] .modal-body input[type="checkbox"]#syncGoogleCalendar,
+[data-theme="light"] .modal-body .sync-calendar-checkbox {
+    background-color: #ffffff !important;
+    border: 2px solid #0f766e !important;
+    accent-color: #0f766e !important;
+    width: 22px !important;
+    height: 22px !important;
+}
+
+/* 5. Giữ nguyên vẹn độ mờ hoàn hảo cho các chữ gợi ý (placeholder) như cũ */
+[data-theme="light"] .modal-body .form-control::placeholder {
+    color: #94a3b8 !important; /* Giữ nguyên màu chữ gợi ý mờ dịu mắt */
+    opacity: 1 !important;
+    font-weight: 400 !important;
+}
