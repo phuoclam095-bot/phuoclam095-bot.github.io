@@ -999,3 +999,63 @@ div[style*="grid-template-columns: repeat(7, 1fr)"]:first-of-type {
     background: #ffffff !important; /* Nền trắng sạch sẽ cho từng ô ở Light Mode */
     border: 1px solid #cbd5e1 !important;
 }
+/* ==========================================================
+   LÀM ĐẸP VÀ BO TRÒN CHẾ ĐỘ DANH SÁCH (LIST VIEW / AGENDA)
+   ========================================================== */
+
+/* 1. Khung tổng thể chứa danh sách sự kiện */
+#calendarListViewContainer {
+    background: rgba(5, 10, 20, 0.85) !important;
+    border: 1px solid rgba(0, 235, 176, 0.2) !important;
+    border-radius: 24px !important;
+    padding: 20px !important;
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="light"] #calendarListViewContainer {
+    background: #e2e8f0 !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+
+/* 2. Từng thẻ sự kiện (card/item) bên trong danh sách */
+#modalCalendarAgendaBody .card,
+#modalCalendarAgendaBody div[style*="background"],
+#modalCalendarAgendaBody .agenda-item {
+    background: #0c152a !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 16px !important;
+    padding: 14px 18px !important;
+    margin-bottom: 12px !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: all 0.2s ease;
+}
+
+[data-theme="light"] #modalCalendarAgendaBody .card,
+[data-theme="light"] #modalCalendarAgendaBody div[style*="background"],
+[data-theme="light"] #modalCalendarAgendaBody .agenda-item {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+}
+
+/* Hiệu ứng khi rê chuột vào từng thẻ danh sách */
+#modalCalendarAgendaBody .card:hover,
+#modalCalendarAgendaBody .agenda-item:hover {
+    border-color: var(--primary) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 235, 176, 0.2);
+}
+
+/* 3. Màu chữ bên trong danh sách cho sắc nét */
+#modalCalendarAgendaBody, 
+#modalCalendarAgendaBody span, 
+#modalCalendarAgendaBody p {
+    color: #ffffff !important;
+}
+
+[data-theme="light"] #modalCalendarAgendaBody, 
+[data-theme="light"] #modalCalendarAgendaBody span, 
+[data-theme="light"] #modalCalendarAgendaBody p {
+    color: #0f172a !important;
+}
