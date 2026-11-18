@@ -1437,13 +1437,3 @@ async function triggerSyncAndCheckToken() {
         });
     }
 });
-document.addEventListener('click', (e) => {
-    if (e.target && (e.target.id === 'btnVi' || e.target.id === 'btnEn')) {
-        setTimeout(() => {
-            if (typeof allContractsGlobal !== 'undefined' && Array.isArray(allContractsGlobal)) {
-                populateMonthFilter(allContractsGlobal);
-                renderTable(allContractsGlobal);
-            }
-        }, 150);
-    }
-});
