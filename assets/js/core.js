@@ -50,7 +50,7 @@ async function changeLanguage(lang) {
         document.querySelectorAll('[data-i18n]').forEach(element => {
             const key = element.getAttribute('data-i18n');
             if (translations[key]) {
-                element.innerText = translations[key];
+                element.innerHTML = translatedText;
             }
         });
 
