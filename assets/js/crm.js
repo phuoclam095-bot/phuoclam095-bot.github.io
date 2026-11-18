@@ -147,10 +147,14 @@ function getExpiryTimestamp() {
                 }
             });
         
-            let optionsHTML = '<option value="">Tất cả các tháng</option>';
+            const currentLang = localStorage.getItem('admin_lang') || 'vi';
+            const allMonthsText = (currentLang === 'en') ? 'All Months' : 'Tất cả các tháng';
+            const monthLabel = (currentLang === 'en') ? 'Month' : 'Tháng';
+
+            let optionsHTML = `<option value="">${allMonthsText}</option>`;
             Array.from(monthsSet).sort().forEach(ym => {
                 let parts = ym.split('-');
-                optionsHTML += `<option value="${ym}">Tháng ${parts[1]} / ${parts[0]}</option>`;
+                optionsHTML += `<option value="${ym}">${monthLabel} ${parts[1]} / ${parts[0]}</option>`;
             });
         
             monthSelect.innerHTML = optionsHTML;
