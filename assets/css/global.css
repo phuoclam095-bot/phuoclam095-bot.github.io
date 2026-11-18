@@ -458,3 +458,22 @@ body[data-theme="light"], [data-theme="light"] body {
     .modal-backdrop.show {
         opacity: 0.5 !important;
     }
+/* Ép toàn bộ chữ hướng dẫn trong Light Mode hiển thị rõ, đậm, không bị chìm */
+[data-theme="light"] #installAppModal .modal-body p,
+[data-theme="light"] #installAppModal .modal-body li,
+[data-theme="light"] #installAppModal .modal-body span {
+    color: #1e293b !important; /* Màu xám đậm / đen chủ đạo cực kỳ sắc nét */
+}
+
+[data-theme="light"] #installAppModal .modal-body b {
+    color: #0f172a !important; /* Chữ in đậm hiển thị sắc nét nhất */
+}
+
+[data-theme="light"] #installAppModal .install-step-box {
+    background: #f1f5f9 !important; /* Nền hộp xám nhẹ sang trọng */
+    border: 1px solid #cbd5e1 !important; /* Viền hộp gọn gàng */
+}
+
+[data-theme="light"] #installAppModal .install-step-box .fw-bold.text-primary {
+    color: #0f766e !important; /* Màu tiêu đề xanh đậm nổi bật */
+}
