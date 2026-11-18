@@ -66,7 +66,8 @@ async function changeLanguage(lang) {
         localStorage.setItem('preferred_lang', lang);
         updateLangUI(lang);
         if (typeof allContractsGlobal !== 'undefined' && Array.isArray(allContractsGlobal)) {
-            populateMonthFilter(allContractsGlobal);
+            if (typeof populateMonthFilter === 'function') populateMonthFilter(allContractsGlobal);
+            if (typeof renderTable === 'function') renderTable(allContractsGlobal);
         }
         // --- DÙNG TRỰC TIẾP BIẾN `lang` THAY VÌ ĐỌC LẠI LOCALSTORAGE ---
         const bubble = document.getElementById('aiSuggestion');
