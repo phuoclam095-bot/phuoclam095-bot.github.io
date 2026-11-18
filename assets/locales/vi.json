@@ -221,5 +221,6 @@
 "install_android_step4": "Xác nhận để đưa biểu tượng app ra màn hình thiết bị.",
     "error_invalid_drive_link": "Link thư mục drive không hợp lệ. ( Lưu ý link phải công khai )",
     "example_placeholder": "Ví dụ: 50",
-"logo_format_note": "Khuyên dùng định dạng PNG nên trong suốt (Dung lượng <1MB). Link ảnh gửi khách chọn sẽ load lâu hơn dự kiến."
+"logo_format_note": "Khuyên dùng định dạng PNG nên trong suốt (Dung lượng <1MB). Link ảnh gửi khách chọn sẽ load lâu hơn dự kiến.",
+ "drive_placeholder": "Dán link thư mục tại đây..."   
 }
