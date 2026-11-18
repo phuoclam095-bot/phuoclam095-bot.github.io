@@ -180,6 +180,22 @@ body[data-theme="light"], [data-theme="light"] body {
     border: 1px solid #0f766e;
     color: #0f766e;
 }
+[data-theme="light"] #installAppModal .modal-content,
+[data-theme="light"] #studioConfigModal .modal-content {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border-color: #0f766e !important;
+}
+
+[data-theme="light"] #installAppModal p,
+[data-theme="light"] #installAppModal li {
+    color: #334155 !important;
+}
+
+[data-theme="light"] #installAppModal .rounded {
+    background: #f1f5f9 !important;
+    border-color: #cbd5e1 !important;
+}
    ========================================================== */
 #adminNavLinks, #loggedInNav, #loggedOutNav, #marqueeContainer { 
     display: none !important; 
