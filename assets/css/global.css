@@ -21,7 +21,30 @@ body[data-theme="light"], [data-theme="light"] body {
                       radial-gradient(at 90% 80%, rgba(20, 184, 166, 0.05) 0px, transparent 50%) !important;
     color: #0f172a !important;
 }
+/* Thiết lập chung cho hộp hướng dẫn cài app để không bao giờ bị chìm chữ */
+.install-step-box {
+    background: rgba(0, 235, 176, 0.08) !important;
+    border: 1px solid rgba(0, 235, 176, 0.25) !important;
+    color: #fff !important;
+}
 
+.install-step-box ol li {
+    color: #cbd5e1 !important;
+}
+
+/* Riêng cho Light Mode: Chuyển sang nền sáng, chữ đậm rõ ràng, sắc nét */
+[data-theme="light"] .install-step-box {
+    background: #f1f5f9 !important;
+    border: 1px solid #cbd5e1 !important;
+}
+
+[data-theme="light"] .install-step-box ol li {
+    color: #334155 !important;
+}
+
+[data-theme="light"] .install-step-box .text-primary {
+    color: #0f766e !important;
+}
 /* Thanh Navbar kính mờ sang trọng */
 [data-theme="light"] .navbar {
     background: rgba(255, 255, 255, 0.85) !important;
