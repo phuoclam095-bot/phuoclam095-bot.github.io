@@ -507,3 +507,33 @@ body[data-theme="light"], [data-theme="light"] body {
 [data-theme="light"] #installAppModal .install-step-box .fw-bold.text-primary {
     color: #0f766e !important; /* Màu tiêu đề xanh đậm nổi bật */
 }
+/* --- ÉP SẠCH NỀN XÁM, CHUYỂN THÀNH KÍNH MỜ TRẮNG SÁNG TRONG LIGHT MODE --- */
+[data-theme="light"] #resultBox {
+    background: rgba(255, 255, 255, 0.85) !important; /* Trắng sáng tinh tươm, trong suốt nhẹ */
+    backdrop-filter: blur(10px) !important;
+    border: 1.5px solid #cbd5e1 !important;             /* Viền xám sáng cực kỳ tinh tế */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03) !important;
+    border-radius: 16px !important;
+}
+
+/* Ép vùng chứa đường dẫn bên trong thành màu trắng sáng, không bị xám xịt */
+[data-theme="light"] #resultBox .copy-link-flex {
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+/* Tên thư mục và link hiển thị rõ nét */
+[data-theme="light"] #resultBox #resFolderName {
+    color: #0f172a !important; 
+    font-weight: 900 !important;
+}
+
+[data-theme="light"] #resultBox a#resClientLink {
+    color: #0f766e !important;                         /* Xanh ngọc đậm chủ đạo, cực kỳ dễ đọc */
+    font-weight: 700 !important;
+    text-decoration: none !important;
+}
+
+[data-theme="light"] #resultBox a#resClientLink:hover {
+    text-decoration: underline !important;
+}
