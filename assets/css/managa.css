@@ -10,14 +10,28 @@
 }
 
 [data-theme="light"] {
-    --bg-deep: #f8fafc;
+    --bg-deep: #f1f5f9;
     --card-bg: #ffffff;
     --text-color: #0f172a;
     --text-muted: #475569;
     --primary: #0f766e;
-    --accent: #0d9488;
+    --accent: #14b8a6;
     --border-color: #cbd5e1;
-    --navbar-bg: rgba(255, 255, 255, 0.9);
+    --navbar-bg: rgba(255, 255, 255, 0.95);
+}
+
+[data-theme="light"] body {
+    background-color: #f1f5f9 !important;
+    background-image: radial-gradient(at 10% 20%, rgba(15, 118, 110, 0.05) 0px, transparent 50%), 
+                      radial-gradient(at 90% 80%, rgba(20, 184, 166, 0.05) 0px, transparent 50%) !important;
+    color: #0f172a !important;
+}
+
+[data-theme="light"] .navbar {
+    background: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: blur(25px) !important;
+    border-bottom: 1px solid #cbd5e1 !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04) !important;
 }
 
 [data-theme="light"] .supreme-title {
@@ -29,14 +43,14 @@
 
 /* Ô tìm kiếm album */
 [data-theme="light"] .search-wrapper {
-    background: #ffffff !important;
-    border: 1px solid #cbd5e1 !important;
+    background: #cbd5e1 !important;
+    border-radius: 50px !important;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.04) !important;
-    border-radius: 20px !important;
 }
 
 [data-theme="light"] .search-inner {
     background: #ffffff !important;
+    border-radius: 50px !important;
 }
 
 [data-theme="light"] .search-wrapper input[type="text"] {
@@ -51,9 +65,10 @@
 
 /* Thẻ Card chứa Album (Album Card) */
 [data-theme="light"] .album-card,
+[data-theme="light"] .album-card-vip,
 [data-theme="light"] #albumGrid > div {
     background: #ffffff !important;
-    border: 1px solid #e2e8f0 !important;
+    border: 1.5px solid #cbd5e1 !important;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06) !important;
     color: #0f172a !important;
     border-radius: 24px !important;
@@ -65,50 +80,14 @@
     color: #0f172a !important;
 }
 
-/* Các chỉ số thống kê trong card */
+/* Các chỉ số thống kê trong card (thay vì nền đen tối) */
 [data-theme="light"] .stat-box,
 [data-theme="light"] .album-card .bg-dark,
-[data-theme="light"] .album-card [style*="background: rgba(0,0,0"] {
-    background: #f1f5f9 !important;
+[data-theme="light"] .album-card [style*="background: rgba(0,0,0"],
+[data-theme="light"] .stats-grid .stat-pill {
+    background: #f8fafc !important;
     color: #334155 !important;
-    border: 1px solid #e2e8f0 !important;
-}
-
-/* Các nút bấm thao tác trong card */
-[data-theme="light"] .btn-tai-final {
-    background: #0f766e !important;
-    color: #ffffff !important;
-    font-weight: 800;
-}
-
-[data-theme="light"] .btn-link-action {
-    background: #0284c7 !important;
-    color: #ffffff !important;
-    font-weight: 800;
-}
-
-[data-theme="light"] .btn-copy-action {
-    background: #d97706 !important;
-    color: #ffffff !important;
-    font-weight: 800;
-}
-
-[data-theme="light"] .btn-settings {
-    background: #7c3aed !important;
-    color: #ffffff !important;
-    font-weight: 800;
-}
-
-[data-theme="light"] .btn-delete-album {
-    background: #fee2e2 !important;
-    color: #dc2626 !important;
-    border: 1px solid #fecaca !important;
-    font-weight: 800;
-}
-
-[data-theme="light"] .stat-pill {
-    background: #f1f5f9 !important;
-    border: 1px solid #cbd5e1 !important;
+    border: 1.5px solid #cbd5e1 !important;
 }
 
 [data-theme="light"] .stat-val {
@@ -121,130 +100,9 @@
     font-weight: 800 !important;
 }
 
+/* Tiêu đề chìm trên hình nền card */
 [data-theme="light"] .album-vip-title {
-    background: linear-gradient(transparent, rgba(255, 255, 255, 0.95)) !important;
-    color: #0f172a !important;
-    font-weight: 900 !important;
-}
-
-[data-theme="light"] .album-card-vip {
-    background: #ffffff !important;
-    border: 1px solid #cbd5e1 !important;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05) !important;
-}
-
-/* Đồng bộ Modal sang Light Mode */
-[data-theme="light"] .modal-content {
-    background-color: #ffffff !important;
-    border: 2px solid #0f766e !important;
-    color: #0f172a !important;
-    box-shadow: 0 25px 50px rgba(15, 118, 110, 0.15) !important;
-}
-
-[data-theme="light"] .modal-header {
-    border-bottom: 1px solid #e2e8f0 !important;
-}
-
-[data-theme="light"] .modal-title {
-    color: #0f766e !important;
-}
-
-[data-theme="light"] .modal-body label,
-[data-theme="light"] .modal-body p,
-[data-theme="light"] .modal-body span,
-[data-theme="light"] .modal-body h5 {
-    color: #1e293b !important;
-}
-
-[data-theme="light"] .modal-content input[type="text"],
-[data-theme="light"] .modal-content input[type="number"],
-[data-theme="light"] .modal-content input[type="file"],
-[data-theme="light"] .modal-content textarea {
-    background-color: #f8fafc !important;
-    border: 1.5px solid #cbd5e1 !important;
-    color: #0f172a !important;
-}
-
-[data-theme="light"] .modal-content input::placeholder,
-[data-theme="light"] .modal-content textarea::placeholder {
-    color: #94a3b8 !important;
-}
-
-[data-theme="light"] .modal-header .btn-close {
-    background-color: #f1f5f9 !important;
-    border: 1px solid #cbd5e1 !important;
-    filter: invert(1) grayscale(100%) brightness(50%) !important;
-}
-
-[data-theme="light"] .modal-header .btn-close:hover {
-    background-color: #fee2e2 !important;
-    border-color: #fecaca !important;
-}
-
-[data-theme="light"] .alert-supreme {
-    background: #f0fdf4 !important;
-    border: 1px solid #bbf7d0 !important;
-    color: #166534 !important;
-}
-
-[data-theme="light"] body {
-    background-color: #f8fafc !important;
-    background-image: radial-gradient(at 0% 0%, rgba(15, 118, 110, 0.03) 0px, transparent 50%), 
-                      radial-gradient(at 100% 100%, rgba(13, 148, 136, 0.03) 0px, transparent 50%) !important;
-    color: #0f172a !important;
-}
-
-[data-theme="light"] .navbar {
-    background: rgba(255, 255, 255, 0.85) !important;
-    backdrop-filter: blur(25px) !important;
-    border-bottom: 1px solid #e2e8f0 !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02) !important;
-}
-
-[data-theme="light"] .search-wrapper .badge,
-#albumCount {
-    background: #0f766e !important;
-    color: #ffffff !important;
-    font-weight: 900 !important;
-}
-
-[data-theme="light"] #zipLoadingModal > div {
-    background: #ffffff !important;
-    border: 1.5px solid #0f766e !important;
-    color: #0f172a !important;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15) !important;
-}
-
-[data-theme="light"] #zipLoadingModal h5 {
-    color: #0f172a !important;
-}
-
-[data-theme="light"] #zipLoadingModal p,
-[data-theme="light"] #zipStatusText {
-    color: #475569 !important;
-}
-
-[data-theme="light"] .zip-tip-box {
-    background: #f8fafc !important;
-    border: 1px dashed #d97706 !important;
-    color: #0f172a !important;
-}
-
-[data-theme="light"] .zip-tip-box p,
-[data-theme="light"] .zip-tip-box span {
-    color: #334155 !important;
-}
-
-[data-theme="light"] #zipLoadingModal .btn-outline-light {
-    color: #0f172a !important;
-    border-color: #cbd5e1 !important;
-    background-color: #f1f5f9 !important;
-}
-
-[data-theme="light"] #zipLoadingModal .btn-outline-light:hover {
-    background-color: #e2e8f0 !important;
-    color: #0f172a !important;
-}
+    background: linear-gradient(transparent, rgba(255, 255
 
 /* ==========================================================
    2. GIAO DIỆN GỐC & CÁC THÀNH PHẦN HỆ THỐNG (GIỮ NGUYÊN 100%)
