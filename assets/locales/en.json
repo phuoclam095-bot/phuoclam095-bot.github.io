@@ -219,5 +219,9 @@
     "install_android_step2": "Look at the address bar or tap the <b>menu icon</b> at the top right.",
     "install_android_step3": "Select <b>\"Install app\"</b> or choose the browser menu options.",
     "install_android_step4": "Confirm to place the app icon on your device screen.",
-    "error_invalid_drive_link": "Invalid Google Drive folder link. (Note: The link must be public)"
+    "error_invalid_drive_link": "Invalid Google Drive folder link. (Note: The link must be public)",
+    "example_placeholder": "Example: 50",
+"logo_format_note": "Recommended PNG format for transparency (Size <1MB). Client photo selection links will load slower if exceeded.",
+    "drive_placeholder": "Paste folder link here..."
+    
 }
