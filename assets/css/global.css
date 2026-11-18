@@ -95,16 +95,30 @@ body[data-theme="light"], [data-theme="light"] body {
 
 /* Các nhóm bật/tắt (Switch groups) có điểm nhấn */
 [data-theme="light"] .switch-group {
-    background: #f8fafc !important;
-    border: 1px solid #cbd5e1 !important;
+    background: #ffffff !important;
+    border: 1.5px solid #cbd5e1 !important;
     border-radius: 14px !important;
     padding: 14px 18px !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
 }
 
 [data-theme="light"] .slider {
-    background: #94a3b8 !important;
+    background-color: #cbd5e1 !important; /* Xám đậm hơn để không bị chói trắng */
+    border: 1px solid #94a3b8 !important;
+    transition: .3s;
+}
+[data-theme="light"] .slider:before {
+    background-color: #ffffff !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+[data-theme="light"] input:checked + .slider {
+    background-color: #0f766e !important; 
+    border-color: #0f766e !important;
 }
 
+[data-theme="light"] input:checked + .slider:before {
+    transform: translateX(24px);
+}
 /* Nút khởi tạo Album phong cách Emerald 5 sao */
 [data-theme="light"] .btn-create {
     background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%) !important;
