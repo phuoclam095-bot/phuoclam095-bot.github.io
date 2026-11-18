@@ -3,28 +3,28 @@
       [data-theme="light"] {
     --bg-deep: #f8fafc;
     --card-bg: #ffffff;
-    --text-color: #0f172a;       /* Chữ siêu sắc nét, không bị chìm */
-    --text-muted: #475569;       /* Chữ phụ đậm đà, dễ đọc */
-    --primary: #0f766e;          /* Xanh ngọc lục bảo (Emerald) cực kỳ sang trọng */
+    --text-color: #0f172a;       /* Chữ siêu sắc nét */
+    --text-muted: #475569;       /* Chữ phụ dễ đọc */
+    --primary: #0f766e;          /* Xanh ngọc lục bảo (Emerald) cao cấp */
     --accent: #0d9488;
     --border-color: #cbd5e1;
-    --navbar-bg: rgba(255, 255, 255, 0.9);
+    --navbar-bg: rgba(255, 255, 255, 0.95);
 }
 
-/* Nền tổng thể mượt mà, sang trọng */
+/* Nền tổng thể mượt mà, sáng sủa */
 body[data-theme="light"], [data-theme="light"] body {
     background-color: #f8fafc !important;
-    background-image: radial-gradient(at 0% 0%, rgba(15, 118, 110, 0.03) 0px, transparent 50%), 
-                      radial-gradient(at 100% 100%, rgba(13, 148, 136, 0.03) 0px, transparent 50%) !important;
+    background-image: radial-gradient(at 0% 0%, rgba(15, 118, 110, 0.04) 0px, transparent 50%), 
+                      radial-gradient(at 100% 100%, rgba(13, 148, 136, 0.04) 0px, transparent 50%) !important;
     color: #0f172a !important;
 }
 
-/* Thanh Navbar kính mờ siêu mỏng */
+/* Thanh Navbar kính mờ phẳng, hiện đại */
 [data-theme="light"] .navbar {
-    background: rgba(255, 255, 255, 0.85) !important;
-    backdrop-filter: blur(25px) !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: blur(20px) !important;
     border-bottom: 1px solid #e2e8f0 !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
 }
 
 [data-theme="light"] .nav-link {
@@ -37,19 +37,20 @@ body[data-theme="light"], [data-theme="light"] body {
     color: #0f766e !important;
 }
 
-/* Khung thẻ chính (Create Card) - Viền Gradient 5 sao & Bóng đổ mềm */
+/* Khung thẻ chính (Create Card) - Thiết kế phẳng, viền tinh tế */
 [data-theme="light"] .rainbow-border-wrapper {
-    background: linear-gradient(135deg, #0f766e 0%, #14b8a6 50%, #0d9488 100%) !important;
-    padding: 2.5px;
-    border-radius: 32px;
-    box-shadow: 0 25px 50px -12px rgba(15, 118, 110, 0.15) !important;
+    background: #e2e8f0 !important; /* Thay viền bảy sắc cầu vồng thành phẳng tối giản */
+    padding: 2px;
+    border-radius: 28px;
+    box-shadow: 0 10px 30px -5px rgba(15, 118, 110, 0.1) !important;
 }
 
 [data-theme="light"] .create-card {
     background: #ffffff !important;
     color: #0f172a !important;
-    border-radius: 30px;
-    padding: 45px !important;
+    border-radius: 26px;
+    padding: 40px !important;
+    border: 1px solid #e2e8f0 !important;
 }
 
 [data-theme="light"] .luxury-title {
@@ -59,10 +60,10 @@ body[data-theme="light"], [data-theme="light"] body {
     font-size: 1.8rem !important;
     letter-spacing: -0.5px;
     font-weight: 900;
-    margin-bottom: 35px !important;
+    margin-bottom: 30px !important;
 }
 
-/* Nhãn (Label) hiển thị cực kỳ rõ ràng, sắc nét */
+/* Nhãn (Label) hiển thị rõ ràng, sắc nét */
 [data-theme="light"] .create-card label, 
 [data-theme="light"] .switch-group span {
     color: #334155 !important;
@@ -76,7 +77,7 @@ body[data-theme="light"], [data-theme="light"] body {
     background: #f1f5f9 !important;
     border: 2px solid #cbd5e1 !important;
     color: #0f172a !important;
-    border-radius: 14px !important;
+    border-radius: 12px !important;
     font-weight: 700;
 }
 
@@ -87,51 +88,61 @@ body[data-theme="light"], [data-theme="light"] body {
 [data-theme="light"] input[type="text"]:focus {
     border-color: #0f766e !important;
     background: #ffffff !important;
-    box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.12) !important;
+    box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.1) !important;
 }
 
 /* Các nhóm bật/tắt (Switch groups) tinh tế */
 [data-theme="light"] .switch-group {
     background: #f8fafc !important;
     border: 1px solid #e2e8f0 !important;
-    border-radius: 14px !important;
-    padding: 14px 18px !important;
+    border-radius: 12px !important;
+    padding: 12px 16px !important;
 }
 
-/* Nút khởi tạo Album phong cách 5 sao (Gradient Emerald) */
+[data-theme="light"] .slider {
+    background: #cbd5e1 !important;
+}
+
+/* Nút khởi tạo phong cách phẳng Emerald */
 [data-theme="light"] .btn-create {
-    background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%) !important;
+    background: #0f766e !important;
     color: #ffffff !important;
     border: none;
-    border-radius: 16px !important;
+    border-radius: 14px !important;
     font-weight: 900;
     letter-spacing: 0.5px;
-    box-shadow: 0 10px 25px rgba(15, 118, 110, 0.25);
-    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(15, 118, 110, 0.2);
+    transition: all 0.2s ease;
 }
 
 [data-theme="light"] .btn-create:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 30px rgba(15, 118, 110, 0.35);
+    background: #0d9488 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 12px 25px rgba(15, 118, 110, 0.3);
 }
 
 /* Hộp kết quả trả về */
 [data-theme="light"] #resultBox {
     background: #f0fdf4 !important;
     border: 1.5px solid #bbf7d0 !important;
-    border-radius: 16px;
+    border-radius: 14px;
 }
 
 [data-theme="light"] #resFolderName {
     color: #166534 !important;
 }
 
-/* Khung chat AI nổi */
+/* Khung chat AI nổi giao diện sáng */
 [data-theme="light"] .chat-panel {
     background: #ffffff !important;
     border: 1px solid #cbd5e1 !important;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15) !important;
-    border-radius: 24px;
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1) !important;
+    border-radius: 20px;
+}
+
+[data-theme="light"] .chat-header {
+    background: #0f766e !important;
+    color: #ffffff !important;
 }
 
 [data-theme="light"] .msg-ai {
@@ -139,9 +150,21 @@ body[data-theme="light"], [data-theme="light"] body {
     color: #0f172a !important;
 }
 
+[data-theme="light"] .msg-user {
+    background: #0f766e !important;
+    color: #ffffff !important;
+}
+
 [data-theme="light"] .user-pill {
-    background: rgba(0, 0, 0, 0.04) !important;
+    background: #f1f5f9 !important;
     border: 1px solid #cbd5e1;
+}
+
+[data-theme="light"] .chat-suggestions span {
+    background: rgba(15, 118, 110, 0.08);
+    border: 1px solid #0f766e;
+    color: #0f766e;
+}
 }
    ========================================================== */
 #adminNavLinks, #loggedInNav, #loggedOutNav, #marqueeContainer { 
