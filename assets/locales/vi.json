@@ -218,5 +218,6 @@
 "install_android_step1": "Mở trang web bằng trình duyệt <b>Google Chrome</b>.",
 "install_android_step2": "Nhìn trên thanh địa chỉ <b>icon cài đặt</b> ở góc trên bên phải.",
 "install_android_step3": "Chọn <b>\"Cài đặt ứng dụng\"</b> hoặc <b>dấu 3 chấm</b> để chọn cài đặt trang.",
-"install_android_step4": "Xác nhận để đưa biểu tượng app ra màn hình thiết bị."
+"install_android_step4": "Xác nhận để đưa biểu tượng app ra màn hình thiết bị.",
+    "error_invalid_drive_link": "Link thư mục drive không hợp lệ. ( Lưu ý link phải công khai )"
 }
