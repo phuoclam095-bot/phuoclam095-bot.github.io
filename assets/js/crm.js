@@ -94,13 +94,15 @@ function getExpiryTimestamp() {
             
             document.getElementById('remainingPreview').innerText = remaining.toLocaleString('vi-VN') + ' VNĐ';
 
+            const currentLang = localStorage.getItem('preferred_lang') || 'vi';
             const statusInput = document.getElementById('paymentStatus');
+            
             if (deposit <= 0) {
-                statusInput.value = "Chưa cọc";
+                statusInput.value = (currentLang === 'en') ? "Unpaid" : "Chưa cọc";
             } else if (remaining <= 0) {
-                statusInput.value = "Đã tất toán";
+                statusInput.value = (currentLang === 'en') ? "Settled" : "Đã tất toán";
             } else {
-                statusInput.value = "Đã cọc ";
+                statusInput.value = (currentLang === 'en') ? "Deposited" : "Đã cọc ";
             }
         }
         let allContractsGlobal = []; 
@@ -177,6 +179,7 @@ function getExpiryTimestamp() {
         }
 
         function renderTable(contracts) {
+            let currentLang = localStorage.getItem('preferred_lang') || 'vi';
             const tbody = document.getElementById('contractsTableBody');
             tbody.innerHTML = '';
             let displayedContracts = contracts.filter(c => showHiddenMode ? c.is_hidden === true : c.is_hidden !== true);
@@ -185,7 +188,8 @@ function getExpiryTimestamp() {
                 document.getElementById('hiddenCount').innerText = totalHidden;
             }
             if (displayedContracts.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" class="text-center text-secondary py-5">Chưa có hợp đồng nào.</td></tr>`;
+                let emptyText = (currentLang === 'en') ? 'No contracts found.' : 'Chưa có hợp đồng nào.';
+                tbody.innerHTML = `<tr><td colspan="9" class="text-center text-secondary py-5">${emptyText}</td></tr>`;
                 return;
             }
             let totalRev = 0;
@@ -221,41 +225,62 @@ function getExpiryTimestamp() {
                         let isLeap = lunarObj.getMonth() < 0;
                         let leapStr = isLeap ? ' (nhuận)' : '';
                         
-                        return `${solarStr}<br><span style="font-size:0.72rem; color: #f0c300; font-weight:700;"><i class="fas fa-moon me-1"></i>Âm: ${lD}/${lM}${leapStr}/${lY}</span>`;
+                        let lunarLabel = (currentLang === 'en') ? 'Lunar' : 'Âm';
+                        return `${solarStr}<br><span style="font-size:0.72rem; color: #f0c300; font-weight:700;"><i class="fas fa-moon me-1"></i>${lunarLabel}: ${lD}/${lM}${leapStr}/${lY}</span>`;
                     } catch(e) {
                         return solarStr;
                     }
                 })() : '';
                 let actionButtons = '';
+                let settleText = (currentLang === 'en') ? 'Settle' : 'Tất toán';
                 if (c.payment_status !== 'Đã tất toán') {
-                    actionButtons += `<button class="btn-settle me-1" onclick="settleContract(${c.id})">Tất toán</button>`;
+                    actionButtons += `<button class="btn-settle me-1" onclick="settleContract(${c.id})">${settleText}</button>`;
                 }
         
+                let tipUnhide = (currentLang === 'en') ? 'Restore schedule' : 'Bỏ ẩn';
+                let tipHide = (currentLang === 'en') ? 'Hide schedule' : 'Ẩn lịch';
+                let tipEdit = (currentLang === 'en') ? 'Edit information' : 'Chỉnh sửa thông tin';
+                let tipPrint = (currentLang === 'en') ? 'Export contract' : 'Xuất hợp đồng';
+                let tipDelete = (currentLang === 'en') ? 'Delete permanently' : 'Xóa vĩnh viễn';
+
                 if (c.is_hidden) {
-                    actionButtons += `<button class="btn btn-sm btn-outline-info p-1 px-2 me-1" style="font-size:0.65rem;" onclick="toggleHideContract(${c.id}, false)" title="Bỏ ẩn"><i class="fas fa-eye"></i></button>`;
+                    actionButtons += `<button class="btn btn-sm btn-outline-info p-1 px-2 me-1" style="font-size:0.65rem;" onclick="toggleHideContract(${c.id}, false)" title="${tipUnhide}"><i class="fas fa-eye"></i></button>`;
                 } else {
-                    actionButtons += `<button class="btn btn-sm btn-outline-secondary p-1 px-2 me-1" style="font-size:0.65rem;" onclick="toggleHideContract(${c.id}, true)" title="Ẩn lịch"><i class="fas fa-eye-slash"></i></button>`;
+                    actionButtons += `<button class="btn btn-sm btn-outline-secondary p-1 px-2 me-1" style="font-size:0.65rem;" onclick="toggleHideContract(${c.id}, true)" title="${tipHide}"><i class="fas fa-eye-slash"></i></button>`;
                 }
-                actionButtons += `<button class="btn btn-sm btn-outline-info p-1 px-2 me-1" style="font-size:0.65rem;" onclick='openEditModal(${JSON.stringify(c)})' title="Chỉnh sửa thông tin"><i class="fas fa-pen"></i></button>`;
-                actionButtons += `<button class="btn btn-sm btn-outline-warning p-1 px-2 me-1" style="font-size:0.65rem;" onclick='printContract(${JSON.stringify(c)})' title="Xuất hợp đồng"><i class="fas fa-file-pdf"></i></button>`;
-                actionButtons += `<button class="btn btn-sm btn-outline-danger p-1 px-2" style="font-size:0.65rem;" onclick="deleteContract(${c.id})" title="Xóa vĩnh viễn"><i class="fas fa-trash"></i></button>`;
+                actionButtons += `<button class="btn btn-sm btn-outline-info p-1 px-2 me-1" style="font-size:0.65rem;" onclick='openEditModal(${JSON.stringify(c)})' title="${tipEdit}"><i class="fas fa-pen"></i></button>`;
+                actionButtons += `<button class="btn btn-sm btn-outline-warning p-1 px-2 me-1" style="font-size:0.65rem;" onclick='printContract(${JSON.stringify(c)})' title="${tipPrint}"><i class="fas fa-file-pdf"></i></button>`;
+                actionButtons += `<button class="btn btn-sm btn-outline-danger p-1 px-2" style="font-size:0.65rem;" onclick="deleteContract(${c.id})" title="${tipDelete}"><i class="fas fa-trash"></i></button>`;
         
+                let rawStatus = c.payment_status || 'Chưa cọc';
+                let displayStatus = rawStatus;
+                if (currentLang === 'en') {
+                    if (rawStatus === 'Đã tất toán') displayStatus = 'Settled';
+                    else if (rawStatus === 'Chưa cọc') displayStatus = 'Unpaid';
+                    else if (rawStatus.includes('Đã cọc')) displayStatus = 'Deposited';
+                }
+
+                let displayPhone = (c.customer_phone && c.customer_phone.trim() !== '') ? c.customer_phone : ((currentLang === 'en') ? 'No phone' : 'Chưa có SĐT');
+                let displayLocation = (c.event_location && c.event_location.trim() !== '') ? c.event_location : ((currentLang === 'en') ? 'At studio' : 'Tại studio');
+                let displayCustomer = (c.customer_name && c.customer_name.trim() !== '') ? c.customer_name : ((currentLang === 'en') ? 'Retail customer' : 'Khách lẻ');
+                let displayPackage = (c.service_package && c.service_package.trim() !== '') ? c.service_package : ((currentLang === 'en') ? 'Photo package' : 'Gói chụp');
+
                 tbody.innerHTML += `
                     <tr>
                         <td>
-                            <div class="fw-bold text-white">${c.customer_name || 'Khách lẻ'}</div>
-                            <div class="text-bright-sub"><i class="fas fa-phone-alt me-1 text-primary" style="font-size: 0.7rem;"></i>${c.customer_phone || 'Chưa có SĐT'}</div>
+                            <div class="fw-bold text-white">${displayCustomer}</div>
+                            <div class="text-bright-sub"><i class="fas fa-phone-alt me-1 text-primary" style="font-size: 0.7rem;"></i>${displayPhone}</div>
                         </td>
                         <td>
-                            <div class="fw-bold text-white">${c.service_package || 'Gói chụp'}</div>
-                            <div class="text-bright-sub"><i class="fas fa-map-marker-alt me-1 text-danger" style="font-size: 0.7rem;"></i>${c.event_location || 'Tại studio'}</div>
+                            <div class="fw-bold text-white">${displayPackage}</div>
+                            <div class="text-bright-sub"><i class="fas fa-map-marker-alt me-1 text-danger" style="font-size: 0.7rem;"></i>${displayLocation}</div>
                         </td>
                         <td>${formattedDate}</td>
                         <td>${grandTotal.toLocaleString('vi-VN')} ₫</td>
                         <td>${deposit.toLocaleString('vi-VN')} ₫</td>
                         <td class="text-warning fw-bold">${remaining > 0 ? remaining.toLocaleString('vi-VN') + ' ₫' : '0 ₫'}</td>
                         <td>${extra > 0 ? extra.toLocaleString('vi-VN') + ' ₫' : '0 ₫'}</td>
-                        <td><span class="badge ${c.payment_status === 'Đã tất toán' ? 'bg-success' : 'bg-info'} text-dark">${c.payment_status || 'Đã cọc'}</span></td>
+                        <td><span class="badge ${rawStatus === 'Đã tất toán' ? 'bg-success' : 'bg-info'} text-dark">${displayStatus}</span></td>
                         <td class="text-end text-nowrap">
                             ${actionButtons}
                         </td>
@@ -622,15 +647,21 @@ async function printContract(c) {
             
             document.getElementById('editRemainingPreview').innerText = remaining.toLocaleString('vi-VN') + ' VNĐ';
         
+            const currentLang = localStorage.getItem('preferred_lang') || 'vi';
             const statusInput = document.getElementById('editPaymentStatus');
+            
             if (deposit <= 0) {
-                statusInput.value = "Chưa cọc";
+                statusInput.value = (currentLang === 'en') ? "Unpaid" : "Chưa cọc";
             } else if (remaining <= 0) {
-                statusInput.value = "Đã tất toán";
+                statusInput.value = (currentLang === 'en') ? "Settled" : "Đã tất toán";
             } else {
-                statusInput.value = "Đã cọc ";
+                statusInput.value = (currentLang === 'en') ? "Deposited" : "Đã cọc ";
             }
         }
+function getLocalizedMsg(viMsg, enMsg) {
+    const currentLang = localStorage.getItem('preferred_lang') || 'vi';
+    return (currentLang === 'en') ? enMsg : viMsg;
+}
     
         function toggleEditEventDateInputMode() {
             const isLunar = document.getElementById('editIsLunarEvent').checked;
@@ -1404,5 +1435,15 @@ async function triggerSyncAndCheckToken() {
         calendarModalEl.addEventListener('show.bs.modal', () => {
             fixModalBackdrop();
         });
+    }
+});
+document.addEventListener('click', (e) => {
+    if (e.target && (e.target.id === 'btnVi' || e.target.id === 'btnEn')) {
+        setTimeout(() => {
+            if (typeof allContractsGlobal !== 'undefined' && Array.isArray(allContractsGlobal)) {
+                populateMonthFilter(allContractsGlobal);
+                renderTable(allContractsGlobal);
+            }
+        }, 150);
     }
 });
