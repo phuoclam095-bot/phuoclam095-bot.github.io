@@ -667,12 +667,11 @@ async function init() {
             data = rawData[0] || {};
             data.photos = rawData;
         } else {
-            data = rawData;
-            foundCoverId = data.cover_image_id || data.coverImageId;
+            data = rawData || {};
+            foundCoverId = data.cover_image_id || data.coverImageId || '';
         }
 
         photos = data.photos || (Array.isArray(rawData) ? rawData : []);
-        albumSettings = data.settings || albumSettings;
         
         window.fid = data.folder_id || albumSlug; 
         fid = window.fid;
@@ -681,16 +680,42 @@ async function init() {
             throw new Error("Album này hiện tại chưa có bức ảnh nào hoặc đang trong quá trình đồng bộ.");
         }
 
-        let folderName = photos[0].folderName || data.folderName || "VIP ALBUM";
-        let rawStudioName = studioSlug || data.studio_slug || data.studioName || data.studio_name || "";
+        const firstItem = photos[0] || {};
+        const nestedSettings = (!Array.isArray(rawData) && data.settings && typeof data.settings === 'object') ? data.settings : {};
+
+        const toBool = (val, fallback = false) => {
+            if (val === undefined || val === null) return fallback;
+            if (typeof val === 'boolean') return val;
+            if (typeof val === 'number') return val === 1;
+            return String(val).trim().toLowerCase() === 'true';
+        };
+
+        const rawDownload = nestedSettings.download ?? nestedSettings.allow_download ?? firstItem.allow_download ?? firstItem.download ?? data.allow_download ?? false;
+        const rawComment = nestedSettings.comment ?? nestedSettings.allow_comment ?? firstItem.allow_comment ?? firstItem.comment ?? data.allow_comment ?? false;
+        const rawLimit = nestedSettings.limitPhotos ?? nestedSettings.limit_photos ?? firstItem.limit_photos ?? firstItem.limitPhotos ?? data.limit_photos ?? 0;
+        const rawWatermark = nestedSettings.watermark_enabled ?? firstItem.watermark_enabled ?? data.watermark_enabled ?? true;
+        const rawLogo = nestedSettings.watermark_logo ?? firstItem.watermark_logo ?? data.watermark_logo ?? '';
+
+        albumSettings = {
+            ...albumSettings,
+            ...nestedSettings,
+            download: toBool(rawDownload, false),
+            comment: toBool(rawComment, false),
+            limitPhotos: parseInt(rawLimit, 10) || 0,
+            watermark_enabled: toBool(rawWatermark, true),
+            watermark_logo: rawLogo || ''
+        };
+
+        let folderName = firstItem.folderName || data.folderName || "VIP ALBUM";
+        let rawStudioName = studioSlug || firstItem.studio_slug || data.studio_slug || data.studioName || firstItem.studio_name || data.studio_name || "";
         
-        if (rawStudioName.toLowerCase() === 'studio' && studioSlug) {
+        if (rawStudioName && String(rawStudioName).toLowerCase() === 'studio' && studioSlug) {
             rawStudioName = studioSlug;
         }
 
         const finalStudioName = rawStudioName ? String(rawStudioName).toUpperCase() : "CHONANHNHANH.VN";
 
-        if (rawStudioName && rawStudioName.toLowerCase() !== 'studio') {
+        if (rawStudioName && String(rawStudioName).toLowerCase() !== 'studio') {
             document.title = `${finalStudioName} - ${folderName}`;
             document.getElementById('albumTitle').innerText = `${finalStudioName} - ${folderName}`;
         } else {
@@ -698,34 +723,30 @@ async function init() {
             document.getElementById('albumTitle').innerText = folderName;
         }
 
-        // 1. TẮT NGAY LẬP TỨC OVERLAY XOAY XOAY VÀ HIỆN MÀN HÌNH CHÀO MỪNG CỰC NHANH
         loadOverlay.style.display = 'none';
 
-        // Khôi phục trạng thái ảnh đã chọn của khách từ LocalStorage
         const local = localStorage.getItem('anh_da_chon_cua_khach_' + (window.fid || albumSlug));
         if (local) selectedIds = JSON.parse(local);
 
-        // Hiển thị màn hình chào mừng ngay lập tức
         setupDriveCoverImage(photos, {
             folderName: folderName,
             studio_name: finalStudioName,
             cover_image_id: foundCoverId
         });
 
-        // 2. Đưa việc khởi tạo lưới ảnh (initGrid) xuống chạy ngầm hoặc sau một nhịp để không nghẽn luồng chính
         setTimeout(() => {
             initGrid();
         }, 50);
 
         const clientLogo = albumSettings.watermark_logo || '';
-        const isWatermarkOn = albumSettings.watermark_enabled !== false;
-        watermarkHTML = (isWatermarkOn && clientLogo) ? `<div class="watermark-overlay"><img src="${clientLogo}" alt="Logo"></div>` : '';
-        
-        const allowDownload = Boolean(albumSettings.download === true || albumSettings.download === 'true' || albumSettings.download === 1);
-        const allowComment = Boolean(albumSettings.comment === true || albumSettings.comment === 'true' || albumSettings.comment === 1);
-        
-        document.getElementById('btnDownload').style.display = allowDownload ? 'flex' : 'none';
-        document.getElementById('btnComment').style.display = allowComment ? 'flex' : 'none';
+        watermarkHTML = (albumSettings.watermark_enabled && clientLogo)
+            ? `<div class="watermark-overlay"><img src="${clientLogo}" alt="Logo"></div>`
+            : '';
+
+        const btnDownloadEl = document.getElementById('btnDownload');
+        const btnCommentEl = document.getElementById('btnComment');
+        if (btnDownloadEl) btnDownloadEl.style.setProperty('display', albumSettings.download ? 'flex' : 'none', 'important');
+        if (btnCommentEl) btnCommentEl.style.setProperty('display', albumSettings.comment ? 'flex' : 'none', 'important');
 
     } catch(e) { 
         console.error(e);
