@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chụp & Quét QR CCCD</title>
+  <title>Quét QR CCCD </title>
   <style>
     * { box-sizing: border-box; }
     body {
@@ -21,35 +21,27 @@
       padding: 16px;
       margin-bottom: 14px;
     }
-    .btn-snap {
-      display: block;
+    video {
       width: 100%;
-      text-align: center;
-      padding: 14px;
-      border-radius: 10px;
-      background: #0f766e;
-      color: #fff;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
+      max-height: 360px;
+      background: #000;
+      border-radius: 8px;
+      object-fit: cover;
     }
     .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-    button, .btn-sub {
+    button, .btn-file {
       padding: 9px 12px;
       border-radius: 8px;
       border: 1px solid #cbd5e1;
       background: #fff;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 600;
       cursor: pointer;
     }
-    video {
-      width: 100%;
-      max-height: 320px;
-      background: #000;
-      border-radius: 8px;
-      margin-top: 10px;
-      display: none;
+    button.primary {
+      background: #0f766e;
+      color: #fff;
+      border-color: #0f766e;
     }
     #status {
       margin-top: 10px;
@@ -82,27 +74,23 @@
 </head>
 <body>
   <div class="card">
-    <h2 style="margin:0 0 6px;">Quét Mã QR CCCD</h2>
-    <p style="margin:0 0 12px; font-size:13px; color:#475569;">
-      Bấm nút dưới để mở camera chụp rõ mã QR trên CCCD (hoặc chọn ảnh có sẵn).
+    <h2 style="margin:0 0 6px;">Quét QR CCCD (ZXing)</h2>
+    <p style="margin:0 0 10px; font-size:13px; color:#475569;">
+      Đưa mã QR CCCD vào trước camera (cách khoảng 15–20 cm, tránh bóng đèn chiếu thẳng).
     </p>
 
-    <!-- Chụp trực tiếp bằng camera mặc định của máy (lấy nét & độ phân giải tốt) -->
-    <label class="btn-snap">
-      Chụp ảnh mã QR CCCD
-      <input type="file" id="cameraCaptureInput" accept="image/*" capture="environment" hidden />
-    </label>
+    <video id="video" playsinline muted></video>
 
     <div class="row">
-      <label class="btn-sub">
-        Chọn ảnh từ thư viện
-        <input type="file" id="galleryInput" accept="image/*" hidden />
+      <button type="button" class="primary" id="btnStart">Bật camera</button>
+      <button type="button" id="btnStop">Tắt camera</button>
+      <label class="btn-file">
+        Quét từ ảnh
+        <input type="file" id="fileInput" accept="image/*" hidden />
       </label>
-      <button type="button" id="btnLiveToggle">Thử quét live</button>
     </div>
 
-    <video id="video" playsinline muted></video>
-    <div id="status">Sẵn sàng quét.</div>
+    <div id="status">Đang khởi tạo...</div>
   </div>
 
   <div class="card">
@@ -117,7 +105,7 @@
   </div>
 
   <div class="card">
-    <h3 style="margin:0 0 4px; font-size:16px;">Dữ liệu thô</h3>
+    <h3 style="margin:0 0 4px; font-size:16px;">Chuỗi thô QR</h3>
     <pre id="rawBox">Chưa có dữ liệu.</pre>
   </div>
 
@@ -127,11 +115,9 @@
     const videoEl = document.getElementById('video');
     const statusEl = document.getElementById('status');
     const rawBox = document.getElementById('rawBox');
-    const btnLiveToggle = document.getElementById('btnLiveToggle');
 
     const codeReader = new BrowserMultiFormatReader();
-    let liveControls = null;
-    let isLive = false;
+    let controls = null;
 
     function fmtDate(d8) {
       return /^\d{8}$/.test(d8) ? `${d8.slice(0,2)}/${d8.slice(2,4)}/${d8.slice(4)}` : '';
@@ -168,76 +154,67 @@
 
       const detail = info.parts.map((v, i) => `[${i}]: "${v}"`).join('\n');
       rawBox.textContent = `${text}\n\n${detail}`;
-      statusEl.textContent = 'Đọc mã QR thành công!';
+      statusEl.textContent = 'Quét thành công!';
     }
 
-    async function handleFile(file) {
+    async function stopScan() {
+      if (controls) {
+        controls.stop();
+        controls = null;
+      }
+    }
+
+    async function startScan() {
+      await stopScan();
+      statusEl.textContent = 'Đang bật camera...';
+      try {
+        controls = await codeReader.decodeFromConstraints(
+          {
+            video: {
+              facingMode: { ideal: 'environment' },
+              width: { ideal: 1920 },
+              height: { ideal: 1080 }
+            }
+          },
+          videoEl,
+          (result, err) => {
+            if (result) {
+              const text = result.getText();
+              showResult(text);
+              stopScan();
+            }
+          }
+        );
+        statusEl.textContent = 'Camera đang quét... Đưa mã QR CCCD vào khung.';
+      } catch (e) {
+        statusEl.textContent = 'Lỗi mở camera: ' + e.message;
+      }
+    }
+
+    document.getElementById('btnStart').addEventListener('click', startScan);
+    document.getElementById('btnStop').addEventListener('click', async () => {
+      await stopScan();
+      statusEl.textContent = 'Đã tắt camera.';
+    });
+
+    document.getElementById('fileInput').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
       if (!file) return;
-      await stopLive();
-      statusEl.textContent = 'Đang giải mã QR từ ảnh...';
+      await stopScan();
+      statusEl.textContent = 'Đang quét từ ảnh...';
       const url = URL.createObjectURL(file);
       try {
         const result = await codeReader.decodeFromImageUrl(url);
         showResult(result.getText());
       } catch (err) {
-        statusEl.textContent = 'Không đọc được QR từ ảnh. Hãy chụp gần và rõ hơn, tránh lóa đèn.';
+        statusEl.textContent = 'Không quét được từ ảnh này.';
       } finally {
         URL.revokeObjectURL(url);
+        e.target.value = '';
       }
-    }
-
-    document.getElementById('cameraCaptureInput').addEventListener('change', async (e) => {
-      await handleFile(e.target.files[0]);
-      e.target.value = '';
     });
 
-    document.getElementById('galleryInput').addEventListener('change', async (e) => {
-      await handleFile(e.target.files[0]);
-      e.target.value = '';
-    });
-
-    async function stopLive() {
-      if (liveControls) {
-        liveControls.stop();
-        liveControls = null;
-      }
-      videoEl.style.display = 'none';
-      isLive = false;
-      btnLiveToggle.textContent = 'Thử quét live';
-    }
-
-    async function startLive() {
-      await stopLive();
-      videoEl.style.display = 'block';
-      statusEl.textContent = 'Đang bật camera live...';
-      try {
-        liveControls = await codeReader.decodeFromConstraints(
-          {
-            video: {
-              facingMode: { ideal: 'environment' },
-              focusMode: { ideal: 'continuous' }
-            }
-          },
-          videoEl,
-          (result) => {
-            if (result) {
-              showResult(result.getText());
-              stopLive();
-            }
-          }
-        );
-        isLive = true;
-        btnLiveToggle.textContent = 'Tắt quét live';
-        statusEl.textContent = 'Đang quét live...';
-      } catch (err) {
-        statusEl.textContent = 'Không quét live được trên thiết bị này, hãy dùng nút "Chụp ảnh mã QR CCCD".';
-      }
-    }
-
-    btnLiveToggle.addEventListener('click', () => {
-      if (isLive) stopLive();
-      else startLive();
-    });
+    startScan();
   </script>
 </body>
 </html>
