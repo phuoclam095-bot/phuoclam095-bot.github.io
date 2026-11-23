@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chụp Gần Mã QR CCCD</title>
+  <title>Chụp & Quét QR CCCD</title>
   <style>
     * { box-sizing: border-box; }
     body {
       font-family: system-ui, -apple-system, Arial, sans-serif;
-      max-width: 480px;
+      max-width: 520px;
       margin: 20px auto;
       padding: 0 14px;
       background: #f8fafc;
@@ -21,7 +21,7 @@
       padding: 16px;
       margin-bottom: 14px;
     }
-    .btn-main {
+    .btn-snap {
       display: block;
       width: 100%;
       text-align: center;
@@ -33,9 +33,8 @@
       font-weight: 700;
       cursor: pointer;
     }
-    .btn-sub {
-      display: inline-block;
-      margin-top: 10px;
+    .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    button, .btn-sub {
       padding: 9px 12px;
       border-radius: 8px;
       border: 1px solid #cbd5e1;
@@ -44,29 +43,31 @@
       font-weight: 600;
       cursor: pointer;
     }
-    .tip {
-      margin: 10px 0 0;
-      padding: 10px 12px;
+    video {
+      width: 100%;
+      max-height: 320px;
+      background: #000;
       border-radius: 8px;
-      background: #fffbeb;
-      border: 1px solid #fde68a;
-      font-size: 13px;
-      color: #92400e;
-    }
-    .status {
       margin-top: 10px;
-      padding: 10px 12px;
-      border-radius: 8px;
+      display: none;
+    }
+    #status {
+      margin-top: 10px;
       font-size: 13px;
       font-weight: 600;
-      background: #ecfdf5;
-      color: #065f46;
+      color: #0f766e;
     }
-    .status.err {
-      background: #fef2f2;
-      color: #991b1b;
-      border: 1px solid #fecaca;
+    .field {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 7px 0;
+      border-bottom: 1px dashed #e2e8f0;
+      font-size: 14px;
     }
+    .field:last-child { border-bottom: none; }
+    .k { color: #64748b; font-weight: 600; }
+    .v { font-weight: 600; text-align: right; word-break: break-word; }
     pre {
       background: #0f172a;
       color: #e2e8f0;
@@ -75,7 +76,7 @@
       font-size: 12px;
       white-space: pre-wrap;
       word-break: break-all;
-      margin: 0;
+      margin: 8px 0 0;
     }
   </style>
 </head>
@@ -83,105 +84,159 @@
   <div class="card">
     <h2 style="margin:0 0 6px;">Quét Mã QR CCCD</h2>
     <p style="margin:0 0 12px; font-size:13px; color:#475569;">
-      Bấm nút bên dưới và đưa camera lại gần <b>đúng ô mã QR</b> trên CCCD để chụp.
+      Bấm nút dưới để mở camera chụp rõ mã QR trên CCCD (hoặc chọn ảnh có sẵn).
     </p>
 
-    <label class="btn-main">
+    <!-- Chụp trực tiếp bằng camera mặc định của máy (lấy nét & độ phân giải tốt) -->
+    <label class="btn-snap">
       Chụp ảnh mã QR CCCD
-      <input type="file" id="camInput" accept="image/*" capture="environment" hidden />
+      <input type="file" id="cameraCaptureInput" accept="image/*" capture="environment" hidden />
     </label>
 
-    <label class="btn-sub">
-      Chọn ảnh có sẵn từ máy
-      <input type="file" id="pickInput" accept="image/*" hidden />
-    </label>
-
-    <div class="tip">
-      <b>Mẹo:</b> Hãy zoom hoặc đưa camera gần vào riêng ô mã QR (tránh để khuôn mặt trên thẻ lọt vào khung hình để camera không bị bắt nhầm khuôn mặt).
+    <div class="row">
+      <label class="btn-sub">
+        Chọn ảnh từ thư viện
+        <input type="file" id="galleryInput" accept="image/*" hidden />
+      </label>
+      <button type="button" id="btnLiveToggle">Thử quét live</button>
     </div>
 
-    <div id="status" class="status">Sẵn sàng chụp/quét mã QR CCCD.</div>
+    <video id="video" playsinline muted></video>
+    <div id="status">Sẵn sàng quét.</div>
   </div>
 
   <div class="card">
-    <h3 style="margin:0 0 8px; font-size:15px;">Thông tin nhận diện</h3>
-    <pre id="out">Chưa có dữ liệu.</pre>
+    <h3 style="margin:0 0 8px; font-size:16px;">Thông tin trích xuất</h3>
+    <div class="field"><span class="k">Số CCCD:</span><span class="v" id="outCCCD">-</span></div>
+    <div class="field"><span class="k">Số CMND cũ:</span><span class="v" id="outOld">-</span></div>
+    <div class="field"><span class="k">Họ tên:</span><span class="v" id="outName">-</span></div>
+    <div class="field"><span class="k">Ngày sinh:</span><span class="v" id="outDob">-</span></div>
+    <div class="field"><span class="k">Giới tính:</span><span class="v" id="outGender">-</span></div>
+    <div class="field"><span class="k">Địa chỉ:</span><span class="v" id="outAddr">-</span></div>
+    <div class="field"><span class="k">Ngày cấp:</span><span class="v" id="outIssue">-</span></div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin:0 0 4px; font-size:16px;">Dữ liệu thô</h3>
+    <pre id="rawBox">Chưa có dữ liệu.</pre>
   </div>
 
   <script type="module">
-    import { BrowserQRCodeReader } from 'https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.5/+esm';
+    import { BrowserMultiFormatReader } from 'https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.5/+esm';
 
-    const camInput = document.getElementById('camInput');
-    const pickInput = document.getElementById('pickInput');
+    const videoEl = document.getElementById('video');
     const statusEl = document.getElementById('status');
-    const outEl = document.getElementById('out');
-    const reader = new BrowserQRCodeReader();
+    const rawBox = document.getElementById('rawBox');
+    const btnLiveToggle = document.getElementById('btnLiveToggle');
 
-    function setStatus(text, isErr = false) {
-      statusEl.textContent = text;
-      statusEl.className = isErr ? 'status err' : 'status';
+    const codeReader = new BrowserMultiFormatReader();
+    let liveControls = null;
+    let isLive = false;
+
+    function fmtDate(d8) {
+      return /^\d{8}$/.test(d8) ? `${d8.slice(0,2)}/${d8.slice(2,4)}/${d8.slice(4)}` : '';
     }
 
-    function parseCCCD(raw) {
-      const text = (raw || '').trim();
-      if (!text) return null;
+    function parseQR(text) {
+      const parts = text.split('|').map(s => s.trim());
+      const soCCCD = parts.find(p => /^\d{12}$/.test(p)) || parts[0] || '';
+      const oldId = (parts[1] && /^\d{9,12}$/.test(parts[1]) && parts[1] !== soCCCD) ? parts[1] : '';
+      const dobIdx = parts.findIndex(p => /^(0[1-9]|[12][0-9]|3[01])(0[1-9]|1[0-2])(19\d\d|20\d\d)$/.test(p));
+      const ngaySinh = dobIdx !== -1 ? fmtDate(parts[dobIdx]) : '';
+      const hoTen = (dobIdx > 0
+        ? parts.slice(0, dobIdx).reverse().find(p => /[A-Za-zÀ-ỹ\s]{2,}/.test(p) && !/^\d+$/.test(p) && p !== soCCCD && p !== oldId)
+        : '') || parts[2] || '';
+      const gioiTinh = dobIdx !== -1 ? (parts[dobIdx + 1] || '') : '';
+      const diaChi = dobIdx !== -1
+        ? (parts.slice(dobIdx + 2).find(p => p && !/^\d{8}$/.test(p)) || '')
+        : '';
+      const last = parts[parts.length - 1] || '';
+      const ngayCap = (/^\d{8}$/.test(last) && fmtDate(last) !== ngaySinh) ? fmtDate(last) : '';
 
-      if (/^https?:\/\//i.test(text) || /^000201/i.test(text) || /^WIFI:/i.test(text)) {
-        return { error: 'Mã QR này không phải của CCCD.' };
-      }
-
-      if (text.includes('|')) {
-        const parts = text.split('|').map(s => s.trim());
-        const soCCCD = parts.find(p => /^\d{12}$/.test(p));
-        const dobRaw = parts.find(p => /^(0[1-9]|[12][0-9]|3[01])(0[1-9]|1[0-2])(19\d\d|20\d\d)$/.test(p));
-        if (!soCCCD && !dobRaw) {
-          return { error: 'Chuỗi QR không đúng định dạng CCCD.' };
-        }
-        const dobIdx = parts.indexOf(dobRaw);
-        const ngaySinh = dobRaw ? `${dobRaw.slice(0,2)}/${dobRaw.slice(2,4)}/${dobRaw.slice(4)}` : '';
-        const hoTen = (dobIdx > 0
-          ? parts.slice(0, dobIdx).reverse().find(p => /[A-Za-zÀ-ỹ\s]{2,}/.test(p) && !/^\d+$/.test(p) && p !== soCCCD)
-          : '') || parts[2] || '';
-        const diaChi = dobIdx !== -1 ? (parts.slice(dobIdx + 2).find(p => p && !/^\d{8}$/.test(p)) || '') : '';
-        return { soCCCD: soCCCD || '', hoTen, ngaySinh, diaChi, raw: text };
-      }
-
-      if (/^\d{12}$/.test(text)) {
-        return { soCCCD: text, hoTen: '', ngaySinh: '', diaChi: '', raw: text };
-      }
-
-      return { error: `Mã QR không phải của CCCD: ${text.slice(0, 50)}` };
+      return { soCCCD, oldId, hoTen, ngaySinh, gioiTinh, diaChi, ngayCap, parts };
     }
 
-    async function processFile(file) {
+    function showResult(text) {
+      const info = parseQR(text);
+      document.getElementById('outCCCD').textContent = info.soCCCD || '(Không có)';
+      document.getElementById('outOld').textContent = info.oldId || '(Không có)';
+      document.getElementById('outName').textContent = info.hoTen || '(Không có)';
+      document.getElementById('outDob').textContent = info.ngaySinh || '(Không có)';
+      document.getElementById('outGender').textContent = info.gioiTinh || '(Không có)';
+      document.getElementById('outAddr').textContent = info.diaChi || '(Không có)';
+      document.getElementById('outIssue').textContent = info.ngayCap || '(Không có)';
+
+      const detail = info.parts.map((v, i) => `[${i}]: "${v}"`).join('\n');
+      rawBox.textContent = `${text}\n\n${detail}`;
+      statusEl.textContent = 'Đọc mã QR thành công!';
+    }
+
+    async function handleFile(file) {
       if (!file) return;
-      setStatus('Đang đọc mã QR từ ảnh...', false);
+      await stopLive();
+      statusEl.textContent = 'Đang giải mã QR từ ảnh...';
       const url = URL.createObjectURL(file);
       try {
-        const res = await reader.decodeFromImageUrl(url);
-        const parsed = parseCCCD(res.getText());
-        if (!parsed) return;
-        if (parsed.error) {
-          setStatus('Lỗi: ' + parsed.error, true);
-          return;
-        }
-        setStatus('Nhận diện CCCD thành công!', false);
-        outEl.textContent = JSON.stringify(parsed, null, 2);
+        const result = await codeReader.decodeFromImageUrl(url);
+        showResult(result.getText());
       } catch (err) {
-        setStatus('Không đọc được mã QR. Hãy chụp gần hơn vào ô mã QR và tránh lóa đèn.', true);
+        statusEl.textContent = 'Không đọc được QR từ ảnh. Hãy chụp gần và rõ hơn, tránh lóa đèn.';
       } finally {
         URL.revokeObjectURL(url);
       }
     }
 
-    camInput.addEventListener('change', async (e) => {
-      await processFile(e.target.files[0]);
+    document.getElementById('cameraCaptureInput').addEventListener('change', async (e) => {
+      await handleFile(e.target.files[0]);
       e.target.value = '';
     });
 
-    pickInput.addEventListener('change', async (e) => {
-      await processFile(e.target.files[0]);
+    document.getElementById('galleryInput').addEventListener('change', async (e) => {
+      await handleFile(e.target.files[0]);
       e.target.value = '';
+    });
+
+    async function stopLive() {
+      if (liveControls) {
+        liveControls.stop();
+        liveControls = null;
+      }
+      videoEl.style.display = 'none';
+      isLive = false;
+      btnLiveToggle.textContent = 'Thử quét live';
+    }
+
+    async function startLive() {
+      await stopLive();
+      videoEl.style.display = 'block';
+      statusEl.textContent = 'Đang bật camera live...';
+      try {
+        liveControls = await codeReader.decodeFromConstraints(
+          {
+            video: {
+              facingMode: { ideal: 'environment' },
+              focusMode: { ideal: 'continuous' }
+            }
+          },
+          videoEl,
+          (result) => {
+            if (result) {
+              showResult(result.getText());
+              stopLive();
+            }
+          }
+        );
+        isLive = true;
+        btnLiveToggle.textContent = 'Tắt quét live';
+        statusEl.textContent = 'Đang quét live...';
+      } catch (err) {
+        statusEl.textContent = 'Không quét live được trên thiết bị này, hãy dùng nút "Chụp ảnh mã QR CCCD".';
+      }
+    }
+
+    btnLiveToggle.addEventListener('click', () => {
+      if (isLive) stopLive();
+      else startLive();
     });
   </script>
 </body>
