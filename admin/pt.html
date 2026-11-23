@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Test Quét Toàn Bộ Thông Tin QR CCCD</title>
-  <script src="https://unpkg.com/html5-qrcode"></script>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <style>
     * { box-sizing: border-box; }
     body {
@@ -40,6 +40,21 @@
       color: #fff;
       border-color: #0f766e;
     }
+
+    /* Khung camera: giữ kích thước cố định, không bị giãn dài */
+    #reader {
+      width: 100%;
+      overflow: hidden;
+      border-radius: 10px;
+      background: #000;
+      border: none !important;
+    }
+    #reader video {
+      width: 100% !important;
+      max-height: 70vh;
+      object-fit: cover;
+    }
+
     .field {
       display: flex;
       justify-content: space-between;
@@ -109,7 +124,11 @@
   <script>
     const statusEl = document.getElementById('status');
     const rawDebugEl = document.getElementById('rawDebug');
-    const html5QrCode = new Html5Qrcode('reader');
+    const html5QrCode = new Html5Qrcode('reader', {
+      // Dùng bộ giải mã gốc của trình duyệt nếu có (nhanh và chính xác hơn với QR dày)
+      experimentalFeatures: { useBarCodeDetectorIfSupported: true },
+      verbose: false
+    });
     let isScanning = false;
 
     function formatDate8(str) {
@@ -165,16 +184,7 @@
         ngayCap = formatDate8(lastPart);
       }
 
-      return {
-        soCCCD,
-        oldID,
-        hoTen,
-        ngaySinh,
-        gioiTinh,
-        diaChi,
-        ngayCap,
-        parts
-      };
+      return { soCCCD, oldID, hoTen, ngaySinh, gioiTinh, diaChi, ngayCap, parts };
     }
 
     function renderResult(decodedText) {
@@ -198,8 +208,25 @@
       statusEl.textContent = 'Đang mở camera...';
       try {
         await html5QrCode.start(
-          { facingMode: 'environment' },
-          { fps: 12, qrbox: { width: 230, height: 230 } },
+          {
+            facingMode: 'environment'
+          },
+          {
+            fps: 15,
+            aspectRatio: 1.0,
+            disableFlip: true,
+            // Khung quét lớn (85% cạnh ngắn) vì QR CCCD rất dày
+            qrbox: (w, h) => {
+              const s = Math.floor(Math.min(w, h) * 0.85);
+              return { width: s, height: s };
+            },
+            videoConstraints: {
+              facingMode: 'environment',
+              width: { ideal: 1920 },
+              height: { ideal: 1080 },
+              advanced: [{ focusMode: 'continuous' }]
+            }
+          },
           async (decodedText) => {
             renderResult(decodedText);
             await stopCamera();
@@ -209,7 +236,9 @@
         isScanning = true;
         statusEl.textContent = 'Camera đang hoạt động. Hãy đưa mã QR vào khung.';
       } catch (err) {
-        statusEl.textContent = 'Không mở được camera (cần HTTPS hoặc localhost và cấp quyền camera). Bạn có thể bấm "Chọn ảnh QR".';
+        console.error(err);
+        statusEl.textContent = 'Không mở được camera: ' + (err && err.message ? err.message : err) +
+          ' (cần HTTPS hoặc localhost và cấp quyền camera). Bạn có thể bấm "Chọn ảnh QR".';
       }
     }
 
@@ -217,6 +246,7 @@
       if (!isScanning) return;
       try {
         await html5QrCode.stop();
+        html5QrCode.clear();
       } catch (e) {}
       isScanning = false;
     }
@@ -233,7 +263,8 @@
       await stopCamera();
       statusEl.textContent = 'Đang đọc mã QR từ ảnh...';
       try {
-        const decodedText = await html5QrCode.scanFile(file, true);
+        // false = không hiển thị ảnh vào #reader, nên khung không bị kéo dài
+        const decodedText = await html5QrCode.scanFile(file, false);
         renderResult(decodedText);
       } catch (err) {
         statusEl.textContent = 'Không đọc được mã QR từ ảnh này. Thử ảnh rõ nét hơn hoặc ít lóa hơn.';
