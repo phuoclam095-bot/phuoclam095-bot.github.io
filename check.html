@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Xác Thực Sản Phẩm Chính Hãng</title>
+  <!-- Thư viện quét cả QR Code và Mã vạch 1D (EAN-13, Code128...) -->
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: #f3f5f8; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 16px; }
+    
+    .container { width: 100%; max-width: 440px; background: #fff; border-radius: 20px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.06); }
+    .header { text-align: center; margin-bottom: 18px; }
+    .header h1 { font-size: 20px; font-weight: 700; color: #0f172a; }
+    .header p { font-size: 13px; color: #64748b; margin-top: 4px; }
+
+    /* Khung Camera */
+    .scanner-box { width: 100%; border-radius: 14px; overflow: hidden; background: #0f172a; position: relative; min-height: 240px; display: flex; align-items: center; justify-content: center; }
+    #reader { width: 100%; }
+    .cam-placeholder { text-align: center; color: #cbd5e1; padding: 24px; font-size: 14px; }
+
+    .btn-primary { width: 100%; padding: 14px; border: none; border-radius: 12px; background: #2563eb; color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
+    .btn-primary:active { transform: scale(0.98); background: #1d4ed8; }
+    .btn-stop { background: #ef4444; }
+
+    /* Nhập mã thủ công */
+    .manual-box { margin-top: 16px; padding-top: 16px; border-top: 1px dashed #e2e8f0; }
+    .manual-box label { display: block; font-size: 13px; color: #475569; margin-bottom: 6px; font-weight: 500; }
+    .input-group { display: flex; gap: 8px; }
+    .input-group input { flex: 1; padding: 12px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 15px; outline: none; }
+    .input-group input:focus { border-color: #2563eb; }
+    .input-group button { padding: 0 18px; border: none; border-radius: 10px; background: #0f172a; color: #fff; font-weight: 600; cursor: pointer; }
+
+    /* POPUP KẾT QUẢ CHỐNG HÀNG GIẢ */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.72); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 999; animation: fadeIn 0.2s ease; }
+    .modal-overlay.show { display: flex; }
+    .modal-card { width: 100%; max-width: 400px; background: #fff; border-radius: 22px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.25); animation: slideUp 0.25s ease; }
+    
+    .status-banner { padding: 22px 16px; text-align: center; color: #fff; }
+    .status-valid { background: linear-gradient(135deg, #16a34a, #15803d); }
+    .status-warning { background: linear-gradient(135deg, #f59e0b, #d97706); }
+    .status-invalid { background: linear-gradient(135deg, #dc2626, #b91c1c); }
+
+    .status-icon { width: 54px; height: 54px; border-radius: 50%; background: rgba(255,255,255,0.2); display: inline-flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 8px; }
+    .status-banner h2 { font-size: 19px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; }
+    .status-banner p { font-size: 13px; opacity: 0.95; margin-top: 4px; }
+
+    .product-body { padding: 18px; }
+    .product-header { display: flex; gap: 12px; align-items: center; padding-bottom: 14px; border-bottom: 1px solid #f1f5f9; }
+    .product-img { width: 68px; height: 68px; border-radius: 12px; object-fit: cover; background: #f8fafc; border: 1px solid #e2e8f0; }
+    .product-title { font-size: 16px; font-weight: 700; color: #0f172a; line-height: 1.3; }
+    .product-brand { font-size: 13px; color: #64748b; margin-top: 3px; }
+
+    .info-list { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; font-size: 13.5px; }
+    .info-row { display: flex; justify-content: space-between; gap: 10px; }
+    .info-label { color: #64748b; }
+    .info-val { font-weight: 600; color: #1e293b; text-align: right; }
+
+    .btn-close-modal { width: 100%; padding: 13px; margin-top: 16px; border: none; border-radius: 12px; background: #f1f5f9; color: #0f172a; font-weight: 600; font-size: 15px; cursor: pointer; }
+    .btn-close-modal:active { background: #e2e8f0; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h1>Kiểm Tra Hàng Chính Hãng</h1>
+      <p>Quét mã QR hoặc mã vạch trên bao bì sản phẩm</p>
+    </div>
+
+    <!-- Khu vực quét Camera trên Web -->
+    <div class="scanner-box">
+      <div id="reader"></div>
+      <div id="camPlaceholder" class="cam-placeholder">
+        Bấm nút bên dưới để mở camera quét mã QR hoặc mã vạch sản phẩm
+      </div>
+    </div>
+
+    <button id="btnToggleCam" class="btn-primary" onclick="toggleCamera()">
+      📷 Mở Camera Quét Mã
+    </button>
+
+    <!-- Ô nhập tay nếu camera mờ / mã trầy -->
+    <div class="manual-box">
+      <label for="manualCode">Hoặc nhập mã số dưới mã vạch / tem QR:</label>
+      <div class="input-group">
+        <input type="text" id="manualCode" placeholder="VD: 8938501234567 hoặc SP01-9988" />
+        <button onclick="checkManualCode()">Kiểm tra</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- POPUP HIỂN THỊ KẾT QUẢ -->
+  <div id="resultModal" class="modal-overlay" onclick="closeModalOnBg(event)">
+    <div class="modal-card">
+      <div id="statusBanner" class="status-banner status-valid">
+        <div id="statusIcon" class="status-icon">✓</div>
+        <h2 id="statusTitle">SẢN PHẨM CHÍNH HÃNG</h2>
+        <p id="statusSub">Xác thực thành công từ hệ thống phân phối</p>
+      </div>
+
+      <div class="product-body">
+        <div id="productHeader" class="product-header">
+          <img id="prodImg" class="product-img" src="" alt="Sản phẩm" />
+          <div>
+            <div id="prodName" class="product-title">Tên sản phẩm</div>
+            <div id="prodBrand" class="product-brand">Thương hiệu / Nhà phân phối</div>
+          </div>
+        </div>
+
+        <div id="infoList" class="info-list"></div>
+
+        <button class="btn-close-modal" onclick="closeModal()">Đóng & Quét mã khác</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================================
+    // 1. DỮ LIỆU MẪU (Sau này bạn thay đoạn này bằng API Supabase / n8n / Sheets)
+    // =========================================================================
+    const DATABASE = {
+      // Ví dụ 1: Mã tem QR chống giả riêng từng hộp (Zalo quét link ?code=SP01-9988)
+      "SP01-9988": {
+        type: "qr_serial",
+        name: "Serum Phục Hồi Da Cao Cấp 50ml",
+        brand: "Nhập khẩu & Phân phối: Công Ty ABC",
+        barcode: "8809123456789",
+        batch: "LOT-2026-08",
+        exp: "15/08/2028",
+        price: "650.000đ",
+        img: "https://placehold.co/150x150/e2e8f0/1e293b?text=SP+01",
+        scanCount: 0,
+        firstScanAt: null
+      },
+      // Ví dụ 2: Mã vạch sọc gốc của sản phẩm (Quét bằng camera trên web)
+      "8938501234567": {
+        type: "barcode",
+        name: "Kem Chống Nắng Dưỡng Ẩm SPF50+",
+        brand: "Phân phối chính thức tại Việt Nam",
+        barcode: "8938501234567",
+        batch: "LOT-2026-11",
+        exp: "20/11/2028",
+        price: "420.000đ",
+        img: "https://placehold.co/150x150/e2e8f0/1e293b?text=SP+02",
+        scanCount: 0,
+        firstScanAt: null
+      }
+    };
+
+    // =========================================================================
+    // 2. TỰ ĐỘNG BẮT MÃ KHI KHÁCH QUÉT TỪ ZALO / CAMERA ĐIỆN THOẠI (?code=...)
+    // =========================================================================
+    window.addEventListener("DOMContentLoaded", () => {
+      const params = new URLSearchParams(window.location.search);
+      const codeFromUrl = params.get("code") || params.get("id") || params.get("barcode");
+      if (codeFromUrl) {
+        verifyCode(codeFromUrl.trim());
+      }
+    });
+
+    // =========================================================================
+    // 3. XỬ LÝ CAMERA QUÉT CẢ QR & MÃ VẠCH 1D TRÊN WEB
+    // =========================================================================
+    let html5QrCode = null;
+    let isScanning = false;
+
+    async function toggleCamera() {
+      const btn = document.getElementById("btnToggleCam");
+      const placeholder = document.getElementById("camPlaceholder");
+
+      if (isScanning && html5QrCode) {
+        await html5QrCode.stop();
+        isScanning = false;
+        btn.innerHTML = "📷 Mở Camera Quét Mã";
+        btn.classList.remove("btn-stop");
+        placeholder.style.display = "block";
+        return;
+      }
+
+      placeholder.style.display = "none";
+      html5QrCode = new Html5Qrcode("reader");
+
+      try {
+        await html5QrCode.start(
+          { facingMode: "environment" }, // Ưu tiên camera sau
+          {
+            fps: 12,
+            // Khung chữ nhật ngang giúp quét tốt cả mã vạch sọc lẫn mã QR
+            qrbox: { width: 260, height: 150 },
+            formatsToSupport: [
+              Html5QrcodeSupportedFormats.QR_CODE,
+              Html5QrcodeSupportedFormats.EAN_13,
+              Html5QrcodeSupportedFormats.EAN_8,
+              Html5QrcodeSupportedFormats.CODE_128,
+              Html5QrcodeSupportedFormats.UPC_A,
+              Html5QrcodeSupportedFormats.UPC_E
+            ]
+          },
+          (decodedText) => {
+            // Nếu quét phải QR chứa nguyên đường link (VD: https://web.vn?code=SP01-9988) thì tách lấy tham số code
+            let extractedCode = decodedText;
+            try {
+              if (decodedText.startsWith("http")) {
+                const urlObj = new URL(decodedText);
+                extractedCode = urlObj.searchParams.get("code") || urlObj.searchParams.get("id") || decodedText;
+              }
+            } catch (e) {}
+
+            // Tạm dừng camera và hiện popup kết quả
+            toggleCamera();
+            verifyCode(extractedCode.trim());
+          }
+        );
+
+        isScanning = true;
+        btn.innerHTML = "⏹ Tắt Camera";
+        btn.classList.add("btn-stop");
+      } catch (err) {
+        placeholder.style.display = "block";
+        alert("Không mở được camera. Vui lòng cấp quyền Camera và đảm bảo trang web chạy qua HTTPS.");
+      }
+    }
+
+    function checkManualCode() {
+      const val = document.getElementById("manualCode").value.trim();
+      if (!val) return alert("Vui lòng nhập mã sản phẩm!");
+      verifyCode(val);
+    }
+
+    // =========================================================================
+    // 4. LOGIC KIỂM TRA CHỐNG HÀNG GIẢ & HIỂN THỊ POPUP
+    // =========================================================================
+    function verifyCode(rawCode) {
+      // TODO: Khi đưa vào vận hành thật, bạn gọi fetch('API_CUA_BAN?code=' + rawCode) tại đây
+      const item = DATABASE[rawCode];
+
+      const banner = document.getElementById("statusBanner");
+      const icon = document.getElementById("statusIcon");
+      const title = document.getElementById("statusTitle");
+      const sub = document.getElementById("statusSub");
+      const prodHeader = document.getElementById("productHeader");
+      const infoList = document.getElementById("infoList");
+
+      if (!item) {
+        // TRƯỜNG HỢP 1: MÃ KHÔNG TỒN TẠI
+        banner.className = "status-banner status-invalid";
+        icon.textContent = "✕";
+        title.textContent = "CẢNH BÁO MÃ KHÔNG HỢP LỆ";
+        sub.textContent = "Không tìm thấy thông tin trên hệ thống phân phối";
+        prodHeader.style.display = "none";
+        infoList.innerHTML = `
+          <div class="info-row"><span class="info-label">Mã đã quét:</span><span class="info-val">${rawCode}</span></div>
+          <div class="info-row"><span class="info-label">Khuyến nghị:</span><span class="info-val" style="color:#dc2626">Kiểm tra lại bao bì hoặc liên hệ CSKH</span></div>
+        `;
+      } else {
+        // Tăng số lần quét
+        item.scanCount += 1;
+        const nowStr = new Date().toLocaleString("vi-VN");
+        if (!item.firstScanAt) item.firstScanAt = nowStr;
+
+        prodHeader.style.display = "flex";
+        document.getElementById("prodImg").src = item.img;
+        document.getElementById("prodName").textContent = item.name;
+        document.getElementById("prodBrand").textContent = item.brand;
+
+        if (item.type === "qr_serial" && item.scanCount > 1) {
+          // TRƯỜNG HỢP 2: TEM CHỐNG GIẢ BỊ QUÉT LẠI NHIỀU LẦN
+          banner.className = "status-banner status-warning";
+          icon.textContent = "!";
+          title.textContent = "MÃ ĐÃ ĐƯỢC KIỂM TRA TRƯỚC ĐÓ";
+          sub.textContent = `Tem xác thực này đã được quét ${item.scanCount} lần`;
+        } else {
+          // TRƯỜNG HỢP 3: HÀNG CHÍNH HÃNG HỢP LỆ
+          banner.className = "status-banner status-valid";
+          icon.textContent = "✓";
+          title.textContent = "SẢN PHẨM CHÍNH HÃNG";
+          sub.textContent = item.type === "qr_serial"
+            ? "Xác thực thành công • Lần kiểm tra đầu tiên"
+            : "Thông tin sản phẩm phân phối chính thức";
+        }
+
+        infoList.innerHTML = `
+          <div class="info-row"><span class="info-label">Mã xác thực / Vạch:</span><span class="info-val">${rawCode}</span></div>
+          <div class="info-row"><span class="info-label">Số lô (Batch):</span><span class="info-val">${item.batch}</span></div>
+          <div class="info-row"><span class="info-label">Hạn sử dụng:</span><span class="info-val">${item.exp}</span></div>
+          <div class="info-row"><span class="info-label">Giá niêm yết:</span><span class="info-val">${item.price}</span></div>
+          ${item.type === "qr_serial" ? `
+            <div class="info-row"><span class="info-label">Lượt kiểm tra:</span><span class="info-val">${item.scanCount} lần</span></div>
+            <div class="info-row"><span class="info-label">Quét lần đầu lúc:</span><span class="info-val">${item.firstScanAt}</span></div>
+          ` : ""}
+        `;
+      }
+
+      document.getElementById("resultModal").classList.add("show");
+    }
+
+    function closeModal() {
+      document.getElementById("resultModal").classList.remove("show");
+    }
+
+    function closeModalOnBg(e) {
+      if (e.target.id === "resultModal") closeModal();
+    }
+  </script>
+</body>
+</html>
